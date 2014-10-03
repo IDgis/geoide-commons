@@ -1,4 +1,4 @@
-package nl.idgis.planoview.service.wfs;
+package nl.idgis.geoide.service.wfs;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -7,7 +7,7 @@ import java.util.Set;
 import nl.idgis.geoide.commons.domain.ServiceIdentification;
 import nl.idgis.geoide.service.FeatureServiceType;
 import nl.idgis.geoide.service.ServiceType;
-import nl.idgis.planoview.service.wfs.actors.WFS;
+import nl.idgis.geoide.service.wfs.actors.WFS;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 

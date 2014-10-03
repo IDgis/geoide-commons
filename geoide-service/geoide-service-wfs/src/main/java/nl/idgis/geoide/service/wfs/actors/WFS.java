@@ -1,4 +1,4 @@
-package nl.idgis.planoview.service.wfs.actors;
+package nl.idgis.geoide.service.wfs.actors;
 
 import java.util.Map;
 
@@ -14,11 +14,11 @@ import nl.idgis.geoide.service.messages.ServiceErrorType;
 import nl.idgis.geoide.service.messages.ServiceMessage;
 import nl.idgis.geoide.service.messages.ServiceMessageContext;
 import nl.idgis.geoide.service.messages.ServiceRequest;
+import nl.idgis.geoide.service.wfs.WFSRequestParameters;
 import nl.idgis.ogc.client.wfs.WFSCapabilitiesParser;
 import nl.idgis.ogc.client.wfs.WFSCapabilitiesParser.ParseException;
 import nl.idgis.ogc.util.MimeContentType;
 import nl.idgis.ogc.wfs.WFSCapabilities;
-import nl.idgis.planoview.service.wfs.WFSRequestParameters;
 import nl.idgis.services.Capabilities;
 import play.Logger;
 import play.libs.F.Callback;

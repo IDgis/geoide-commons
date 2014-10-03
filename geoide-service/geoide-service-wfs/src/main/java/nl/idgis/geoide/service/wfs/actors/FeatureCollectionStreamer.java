@@ -1,4 +1,4 @@
-package nl.idgis.planoview.service.wfs.actors;
+package nl.idgis.geoide.service.wfs.actors;
 
 import java.io.InputStream;
 import java.util.HashMap;
