@@ -10,8 +10,8 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import nl.idgis.geoide.commons.domain.ServiceIdentification;
 import nl.idgis.ogc.util.MimeContentType;
-import nl.idgis.planoview.commons.domain.ServiceIdentification;
 import nl.idgis.planoview.service.messages.GetServiceCapabilities;
 import nl.idgis.planoview.service.messages.OGCServiceRequest;
 import nl.idgis.planoview.service.messages.OGCServiceResponse;

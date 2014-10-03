@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import nl.idgis.planoview.commons.domain.ServiceIdentification;
+import nl.idgis.geoide.commons.domain.ServiceIdentification;
 
 public final class OGCServiceRequest extends ServiceMessage {
 	private static final long serialVersionUID = 7495192196103441861L;

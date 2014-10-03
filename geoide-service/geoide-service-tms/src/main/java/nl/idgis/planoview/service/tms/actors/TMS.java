@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import nl.idgis.planoview.commons.domain.ServiceIdentification;
+import nl.idgis.geoide.commons.domain.ServiceIdentification;
 import nl.idgis.planoview.service.actors.CachedReference;
 import nl.idgis.planoview.service.actors.Service;
 import nl.idgis.planoview.service.messages.GetServiceCapabilities;

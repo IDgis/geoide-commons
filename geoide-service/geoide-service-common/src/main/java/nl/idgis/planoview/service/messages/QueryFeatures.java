@@ -1,7 +1,7 @@
 package nl.idgis.planoview.service.messages;
 
-import nl.idgis.planoview.commons.domain.FeatureQuery;
-import nl.idgis.planoview.commons.domain.ParameterizedFeatureType;
+import nl.idgis.geoide.commons.domain.FeatureQuery;
+import nl.idgis.geoide.commons.domain.ParameterizedFeatureType;
 import nl.idgis.planoview.util.Assert;
 
 public final class QueryFeatures extends ServiceMessage {

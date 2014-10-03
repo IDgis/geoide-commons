@@ -2,7 +2,7 @@ package nl.idgis.planoview.service.messages;
 
 import java.io.Serializable;
 
-import nl.idgis.planoview.commons.domain.ServiceIdentification;
+import nl.idgis.geoide.commons.domain.ServiceIdentification;
 
 public abstract class ServiceMessage implements Serializable {
 	private static final long serialVersionUID = 3532272462881762088L;

@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import nl.idgis.planoview.commons.domain.ServiceIdentification;
+import nl.idgis.geoide.commons.domain.ServiceIdentification;
 import nl.idgis.planoview.service.FeatureServiceType;
 import nl.idgis.planoview.service.ServiceType;
 import nl.idgis.planoview.service.wfs.actors.WFS;

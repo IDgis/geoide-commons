@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import nl.idgis.planoview.commons.domain.ServiceIdentification;
+import nl.idgis.geoide.commons.domain.ServiceIdentification;
 import nl.idgis.planoview.service.ServiceType;
 import nl.idgis.planoview.service.ServiceTypeRegistry;
 import nl.idgis.planoview.service.messages.LogResponse;

@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import nl.idgis.planoview.commons.domain.ServiceIdentification;
+import nl.idgis.geoide.commons.domain.ServiceIdentification;
 import nl.idgis.planoview.util.Assert;
 import nl.idgis.services.Capabilities;
 import akka.util.ByteString;

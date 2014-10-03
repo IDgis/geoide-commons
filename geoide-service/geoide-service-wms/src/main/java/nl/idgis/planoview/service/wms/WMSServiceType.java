@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import nl.idgis.planoview.commons.domain.ParameterizedServiceLayer;
-import nl.idgis.planoview.commons.domain.Service;
-import nl.idgis.planoview.commons.domain.ServiceIdentification;
-import nl.idgis.planoview.commons.domain.ServiceRequest;
+import nl.idgis.geoide.commons.domain.ParameterizedServiceLayer;
+import nl.idgis.geoide.commons.domain.Service;
+import nl.idgis.geoide.commons.domain.ServiceIdentification;
+import nl.idgis.geoide.commons.domain.ServiceRequest;
 import nl.idgis.planoview.service.LayerServiceType;
 import nl.idgis.planoview.service.ServiceRequestContext;
 import nl.idgis.planoview.service.ServiceType;

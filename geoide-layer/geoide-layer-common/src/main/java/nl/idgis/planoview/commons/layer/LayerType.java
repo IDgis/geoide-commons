@@ -2,10 +2,10 @@ package nl.idgis.planoview.commons.layer;
 
 import java.util.List;
 
-import nl.idgis.planoview.commons.domain.FeatureQuery;
-import nl.idgis.planoview.commons.domain.Layer;
-import nl.idgis.planoview.commons.domain.ParameterizedFeatureType;
-import nl.idgis.planoview.commons.domain.ParameterizedServiceLayer;
+import nl.idgis.geoide.commons.domain.FeatureQuery;
+import nl.idgis.geoide.commons.domain.Layer;
+import nl.idgis.geoide.commons.domain.ParameterizedFeatureType;
+import nl.idgis.geoide.commons.domain.ParameterizedServiceLayer;
 import nl.idgis.planoview.service.ServiceTypeRegistry;
 
 import com.fasterxml.jackson.databind.JsonNode;

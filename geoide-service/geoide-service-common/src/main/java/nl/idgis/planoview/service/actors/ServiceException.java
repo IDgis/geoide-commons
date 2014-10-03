@@ -1,6 +1,6 @@
 package nl.idgis.planoview.service.actors;
 
-import nl.idgis.planoview.commons.domain.ServiceIdentification;
+import nl.idgis.geoide.commons.domain.ServiceIdentification;
 
 public final class ServiceException extends Exception {
 	private static final long serialVersionUID = -4093759842527382662L;

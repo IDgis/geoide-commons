@@ -2,12 +2,12 @@ package nl.idgis.planoview.service.wfs.actors;
 
 import java.util.Map;
 
+import nl.idgis.geoide.commons.domain.QName;
+import nl.idgis.geoide.commons.domain.ServiceIdentification;
 import nl.idgis.ogc.client.wfs.WFSCapabilitiesParser;
 import nl.idgis.ogc.client.wfs.WFSCapabilitiesParser.ParseException;
 import nl.idgis.ogc.util.MimeContentType;
 import nl.idgis.ogc.wfs.WFSCapabilities;
-import nl.idgis.planoview.commons.domain.QName;
-import nl.idgis.planoview.commons.domain.ServiceIdentification;
 import nl.idgis.planoview.service.actors.OGCService;
 import nl.idgis.planoview.service.messages.GetServiceCapabilities;
 import nl.idgis.planoview.service.messages.QueryFeatures;

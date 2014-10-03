@@ -10,12 +10,12 @@ import org.deegree.cs.coordinatesystems.ICRS;
 import org.deegree.geometry.io.WKBWriter;
 
 import play.Logger;
+import nl.idgis.geoide.commons.domain.QName;
+import nl.idgis.geoide.commons.domain.geometry.Srs;
+import nl.idgis.geoide.commons.domain.geometry.wkb.WkbGeometry;
 import nl.idgis.ogc.client.wfs.Feature;
 import nl.idgis.ogc.client.wfs.FeatureCollectionReader;
 import nl.idgis.ogc.util.MimeContentType;
-import nl.idgis.planoview.commons.domain.QName;
-import nl.idgis.planoview.commons.domain.geometry.Srs;
-import nl.idgis.planoview.commons.domain.geometry.wkb.WkbGeometry;
 import nl.idgis.planoview.service.messages.ProducerMessage;
 import scala.concurrent.duration.FiniteDuration;
 import akka.actor.ActorRef;
@@ -102,7 +102,7 @@ public class FeatureCollectionStreamer extends UntypedActor {
 			}
 		}
 		
-		final nl.idgis.planoview.commons.domain.feature.Feature item = new nl.idgis.planoview.commons.domain.feature.Feature (
+		final nl.idgis.geoide.commons.domain.feature.Feature item = new nl.idgis.geoide.commons.domain.feature.Feature (
 				new QName (feature.featureTypeName (), feature.featureTypeNamespace ()),
 				feature.id (),
 				properties

@@ -8,11 +8,11 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+import nl.idgis.geoide.commons.domain.ServiceIdentification;
 import nl.idgis.ogc.client.wms.WMSCapabilitiesParser;
 import nl.idgis.ogc.client.wms.WMSCapabilitiesParser.ParseException;
 import nl.idgis.ogc.util.MimeContentType;
 import nl.idgis.ogc.wms.WMSCapabilities;
-import nl.idgis.planoview.commons.domain.ServiceIdentification;
 import nl.idgis.planoview.service.actors.OGCService;
 import nl.idgis.planoview.service.messages.OGCServiceRequest;
 import nl.idgis.planoview.service.messages.OGCServiceResponse;

@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import nl.idgis.planoview.commons.domain.Layer;
+import nl.idgis.geoide.commons.domain.Layer;
 
 public class LayerTypeRegistry {
 

@@ -8,7 +8,7 @@ import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.Map;
 
-import nl.idgis.planoview.commons.domain.ServiceIdentification;
+import nl.idgis.geoide.commons.domain.ServiceIdentification;
 import nl.idgis.planoview.service.messages.GetLayerCapabilities;
 import nl.idgis.planoview.service.messages.GetServiceCapabilities;
 import nl.idgis.planoview.service.messages.ServiceCapabilities;

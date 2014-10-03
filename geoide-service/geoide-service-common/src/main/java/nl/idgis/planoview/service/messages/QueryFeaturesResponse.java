@@ -1,7 +1,7 @@
 package nl.idgis.planoview.service.messages;
 
 import akka.actor.ActorRef;
-import nl.idgis.planoview.commons.domain.ServiceIdentification;
+import nl.idgis.geoide.commons.domain.ServiceIdentification;
 
 public class QueryFeaturesResponse extends ServiceMessage {
 	private static final long serialVersionUID = -6147986331229927464L;

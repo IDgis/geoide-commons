@@ -3,7 +3,7 @@ package nl.idgis.planoview.service;
 import java.util.HashMap;
 import java.util.Map;
 
-import nl.idgis.planoview.commons.domain.Service;
+import nl.idgis.geoide.commons.domain.Service;
 
 public final class ServiceRequestContext {
 

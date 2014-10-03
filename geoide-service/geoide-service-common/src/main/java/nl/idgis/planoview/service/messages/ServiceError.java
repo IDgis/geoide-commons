@@ -1,6 +1,6 @@
 package nl.idgis.planoview.service.messages;
 
-import nl.idgis.planoview.commons.domain.ServiceIdentification;
+import nl.idgis.geoide.commons.domain.ServiceIdentification;
 
 public final class ServiceError extends ServiceMessage {
 	private static final long serialVersionUID = 4544525612462354468L;

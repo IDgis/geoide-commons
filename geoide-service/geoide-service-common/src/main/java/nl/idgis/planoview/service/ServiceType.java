@@ -2,7 +2,7 @@ package nl.idgis.planoview.service;
 
 import java.util.Set;
 
-import nl.idgis.planoview.commons.domain.ServiceIdentification;
+import nl.idgis.geoide.commons.domain.ServiceIdentification;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 
