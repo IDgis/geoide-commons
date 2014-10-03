@@ -11,7 +11,7 @@ import nl.idgis.geoide.commons.domain.JsonFactory;
 import nl.idgis.geoide.commons.domain.Layer;
 import nl.idgis.geoide.commons.domain.MapDefinition;
 import nl.idgis.geoide.commons.domain.Service;
-import nl.idgis.planoview.util.Assert;
+import nl.idgis.geoide.util.Assert;
 
 public class StaticMapProvider implements MapProvider {
 

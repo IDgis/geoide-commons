@@ -2,7 +2,7 @@ package nl.idgis.geoide.commons.domain;
 
 import java.io.Serializable;
 
-import nl.idgis.planoview.util.Assert;
+import nl.idgis.geoide.util.Assert;
 
 public final class ParameterizedFeatureType<T extends Serializable> implements Serializable {
 	private static final long serialVersionUID = -6406963210115981288L;

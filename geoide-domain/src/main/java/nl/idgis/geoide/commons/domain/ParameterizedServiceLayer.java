@@ -1,6 +1,6 @@
 package nl.idgis.geoide.commons.domain;
 
-import nl.idgis.planoview.util.Assert;
+import nl.idgis.geoide.util.Assert;
 
 public final class ParameterizedServiceLayer<T> {
 

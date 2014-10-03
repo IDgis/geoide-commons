@@ -1,7 +1,7 @@
 package nl.idgis.geoide.service.messages;
 
 import nl.idgis.geoide.commons.domain.ServiceIdentification;
-import nl.idgis.planoview.util.Assert;
+import nl.idgis.geoide.util.Assert;
 
 public final class ServiceRequest extends ServiceMessage {
 

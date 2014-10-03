@@ -2,7 +2,7 @@ package nl.idgis.geoide.commons.domain;
 
 import java.io.Serializable;
 
-import nl.idgis.planoview.util.Assert;
+import nl.idgis.geoide.util.Assert;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

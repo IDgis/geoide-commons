@@ -1,6 +1,6 @@
 package nl.idgis.geoide.commons.domain;
 
-import nl.idgis.planoview.util.Assert;
+import nl.idgis.geoide.util.Assert;
 
 public abstract class NamedServiceEntity extends Entity {
 	private static final long serialVersionUID = 2694087899306208479L;

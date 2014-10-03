@@ -1,4 +1,4 @@
-package nl.idgis.planoview.util;
+package nl.idgis.geoide.util;
 
 public class Assert {
 

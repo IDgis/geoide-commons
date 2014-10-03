@@ -2,7 +2,7 @@ package nl.idgis.geoide.service.messages;
 
 import nl.idgis.geoide.commons.domain.FeatureQuery;
 import nl.idgis.geoide.commons.domain.ParameterizedFeatureType;
-import nl.idgis.planoview.util.Assert;
+import nl.idgis.geoide.util.Assert;
 
 public final class QueryFeatures extends ServiceMessage {
 	private static final long serialVersionUID = -457496926885275865L;

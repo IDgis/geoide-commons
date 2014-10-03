@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import nl.idgis.planoview.util.Assert;
+import nl.idgis.geoide.util.Assert;
 
 public final class WFSRequestParameters implements Serializable {
 	private static final long serialVersionUID = 4264383019028954228L;

@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import nl.idgis.geoide.commons.domain.ServiceIdentification;
-import nl.idgis.planoview.util.Assert;
+import nl.idgis.geoide.util.Assert;
 import nl.idgis.services.Capabilities;
 import akka.util.ByteString;
 

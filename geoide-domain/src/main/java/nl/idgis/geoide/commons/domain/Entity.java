@@ -2,7 +2,7 @@ package nl.idgis.geoide.commons.domain;
 
 import java.io.Serializable;
 
-import nl.idgis.planoview.util.Assert;
+import nl.idgis.geoide.util.Assert;
 
 public abstract class Entity implements Serializable {
 
