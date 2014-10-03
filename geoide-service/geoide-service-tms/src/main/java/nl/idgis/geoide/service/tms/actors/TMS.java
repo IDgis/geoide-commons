@@ -1,4 +1,4 @@
-package nl.idgis.planoview.service.tms.actors;
+package nl.idgis.geoide.service.tms.actors;
 
 import java.util.ArrayList;
 import java.util.HashMap;

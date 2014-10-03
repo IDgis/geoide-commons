@@ -1,4 +1,4 @@
-package nl.idgis.planoview.service.tms;
+package nl.idgis.geoide.service.tms;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,7 +15,7 @@ import nl.idgis.geoide.commons.domain.ServiceRequest;
 import nl.idgis.geoide.service.LayerServiceType;
 import nl.idgis.geoide.service.ServiceRequestContext;
 import nl.idgis.geoide.service.ServiceType;
-import nl.idgis.planoview.service.tms.actors.TMS;
+import nl.idgis.geoide.service.tms.actors.TMS;
 
 public class TMSServiceType extends ServiceType implements LayerServiceType {
 
