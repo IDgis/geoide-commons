@@ -1,7 +1,7 @@
 package viewer.config;
 
-import nl.idgis.planoview.commons.domain.provider.MapProvider;
-import nl.idgis.planoview.commons.domain.provider.StaticMapProvider;
+import nl.idgis.geoide.commons.domain.provider.MapProvider;
+import nl.idgis.geoide.commons.domain.provider.StaticMapProvider;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

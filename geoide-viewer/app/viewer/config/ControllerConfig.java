@@ -1,8 +1,8 @@
 package viewer.config;
 
-import nl.idgis.planoview.commons.domain.provider.MapProvider;
-import nl.idgis.planoview.commons.layer.LayerTypeRegistry;
-import nl.idgis.planoview.service.ServiceTypeRegistry;
+import nl.idgis.geoide.commons.domain.provider.MapProvider;
+import nl.idgis.geoide.commons.layer.LayerTypeRegistry;
+import nl.idgis.geoide.service.ServiceTypeRegistry;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

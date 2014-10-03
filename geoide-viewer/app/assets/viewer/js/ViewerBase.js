@@ -334,7 +334,7 @@ define ([
 				var viewerState = { layers: this._buildViewerState (map.getRootLayers ()) };
 				
 				// Post the viewer state:
-				xhr.post (planoviewViewerRoutes.controllers.viewer.View.buildView ().url, {
+				xhr.post (geoideViewerRoutes.controllers.viewer.View.buildView ().url, {
 					handleAs: 'json',
 					headers: {
 						'Content-Type': 'application/json'
@@ -412,7 +412,7 @@ define ([
 		},
 		
 		_parse: function (config) {
-			this.mapId = config.mapId || domAttr.get (this.domNode, 'data-planoview-map');
+			this.mapId = config.mapId || domAttr.get (this.domNode, 'data-geoide-map');
 			
 			for (var i in config) {
 				if (i == 'mapId') {

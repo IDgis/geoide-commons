@@ -1,7 +1,7 @@
 package viewer.config;
 
-import nl.idgis.planoview.service.ServiceTypeRegistry;
-import nl.idgis.planoview.service.actors.ServiceManager;
+import nl.idgis.geoide.service.ServiceTypeRegistry;
+import nl.idgis.geoide.service.actors.ServiceManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

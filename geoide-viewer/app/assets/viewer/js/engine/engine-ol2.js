@@ -47,7 +47,7 @@ define ([
 	registry.registerLayerType ('TMS', {
 		create: function (serviceRequest) {
 			console.log ('Creating TMS layer: ', serviceRequest.id);
-			var serviceUrl = planoviewViewerRoutes.controllers.viewer.Services.serviceRequestWithLayer (
+			var serviceUrl = geoideViewerRoutes.controllers.viewer.Services.serviceRequestWithLayer (
 					serviceRequest.serviceId,
 					serviceRequest.parameters.layer,
 					''
@@ -74,7 +74,7 @@ define ([
 							var z = this.getServerZoom();
 							var path = 'EPSG:28992' + '/' + z + "/" + x + "/" + y + "." + this.type;
 							
-							return planoviewViewerRoutes.controllers.viewer.Services.serviceRequestWithLayer (
+							return geoideViewerRoutes.controllers.viewer.Services.serviceRequestWithLayer (
 									serviceRequest.serviceId,
 									serviceRequest.parameters.layer,
 									path
@@ -151,7 +151,7 @@ define ([
 		startup: function () {
 			var domNode = this.viewer.domNode;
 
-			this.mapNode = put (domNode, 'div.planoview-map-ol2');
+			this.mapNode = put (domNode, 'div.geoide-map-ol2');
 			this.olMap = new OpenLayers.Map (this.mapNode, {
 				projection: 'EPSG:28992',
 				maxExtent: new OpenLayers.Bounds (0, 289000, 300000, 620000),

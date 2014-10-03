@@ -73,7 +73,7 @@ define ([
 				var q = this._buildQuery (map, options || { });
 				
 				// Execute the query:
-				xhr.post (planoviewViewerRoutes.controllers.viewer.Query.query ().url, {
+				xhr.post (geoideViewerRoutes.controllers.viewer.Query.query ().url, {
 					handleAs: 'json',
 					headers: {
 						'Content-Type': 'application/json'

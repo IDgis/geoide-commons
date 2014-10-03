@@ -68,7 +68,7 @@ define ([
 					}),
 					tileUrlFunction: function (tileCoord, pixelRatio, projection) {
 						var path = projection.getCode () + '/' + tileCoord[0] + '/' + tileCoord[1] + '/' + tileCoord[2] + '.png';
-						return planoviewViewerRoutes.controllers.viewer.Services.serviceRequestWithLayer (
+						return geoideViewerRoutes.controllers.viewer.Services.serviceRequestWithLayer (
 							serviceRequest.serviceId,
 							serviceRequest.parameters.layer,
 							path
@@ -122,7 +122,7 @@ define ([
 		startup: function () {
 			var domNode = this.viewer.domNode;
 
-			this.mapNode = put (domNode, 'div.planoview-map-ol2');
+			this.mapNode = put (domNode, 'div.geoide-map-ol2');
 			
 			this.olMap = new ol.Map ({
 				layers: [ ],

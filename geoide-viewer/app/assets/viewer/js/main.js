@@ -5,8 +5,8 @@ require ([
 	
 	'put-selector/put',
 	
-	'planoview/Viewer',
-	'planoview/Model',
+	'geoide/Viewer',
+	'geoide/Model',
 	
 	'dojo/domReady!'
 ], function (
@@ -20,7 +20,7 @@ require ([
 	Model
 ) {
 	
-	var viewers = query ('.js-planoview-viewer').map (function (viewerNode) {
+	var viewers = query ('.js-geoide-viewer').map (function (viewerNode) {
 		var viewer = new Viewer (viewerNode, {
 			resolutions: [3440.640, 1720.320, 860.160, 430.080, 215.040, 107.520, 53.760, 26.880, 13.440, 6.720, 3.360, 1.680, 0.840, 0.420, 0.210]
 		});

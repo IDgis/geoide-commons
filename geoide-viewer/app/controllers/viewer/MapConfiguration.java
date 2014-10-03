@@ -1,7 +1,7 @@
 package controllers.viewer;
 
-import nl.idgis.planoview.commons.domain.MapDefinition;
-import nl.idgis.planoview.commons.domain.provider.MapProvider;
+import nl.idgis.geoide.commons.domain.MapDefinition;
+import nl.idgis.geoide.commons.domain.provider.MapProvider;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;

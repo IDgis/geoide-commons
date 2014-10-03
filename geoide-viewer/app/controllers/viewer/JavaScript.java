@@ -9,7 +9,7 @@ public class JavaScript extends Controller {
 	public static Result javascriptRoutes () {
 		response ().setContentType ("text/javascript");
 		return ok (
-			Routes.javascriptRouter ("planoviewViewerRoutes",
+			Routes.javascriptRouter ("geoideViewerRoutes",
 				controllers.viewer.routes.javascript.MapConfiguration.mapStructure (),
 				controllers.viewer.routes.javascript.View.buildView (),
 				controllers.viewer.routes.javascript.Services.serviceRequest (),

@@ -17,7 +17,7 @@
 		@content
 	
 		@* Scripts: *@
-		<script type="text/javascript" src="@controllers.viewer.routes.Assets.at("lib/dojo-base/dojo.js")" data-dojo-config="@controllers.viewer.RequireJS.getDojoConfig(Seq("planoview" -> controllers.viewer.routes.Assets.at("viewer/js").url), Seq("OpenLayers-" + versionOpenLayers -> true))"></script>
+		<script type="text/javascript" src="@controllers.viewer.routes.Assets.at("lib/dojo-base/dojo.js")" data-dojo-config="@controllers.viewer.RequireJS.getDojoConfig(Seq("geoide" -> controllers.viewer.routes.Assets.at("viewer/js").url), Seq("OpenLayers-" + versionOpenLayers -> true))"></script>
 		@if(versionOpenLayers.equals("3")) {
 			<script type="text/javascript" src="@controllers.viewer.routes.Assets.at("lib/ol3/ol/ol.js")"></script>
 		} else {

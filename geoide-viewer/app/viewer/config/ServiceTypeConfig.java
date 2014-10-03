@@ -2,11 +2,11 @@ package viewer.config;
 
 import java.util.Collection;
 
-import nl.idgis.planoview.service.ServiceType;
-import nl.idgis.planoview.service.ServiceTypeRegistry;
-import nl.idgis.planoview.service.tms.TMSServiceType;
-import nl.idgis.planoview.service.wms.WMSServiceType;
-import nl.idgis.planoview.service.wfs.WFSServiceType;
+import nl.idgis.geoide.service.ServiceType;
+import nl.idgis.geoide.service.ServiceTypeRegistry;
+import nl.idgis.geoide.service.tms.TMSServiceType;
+import nl.idgis.geoide.service.wms.WMSServiceType;
+import nl.idgis.geoide.service.wfs.WFSServiceType;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

@@ -2,11 +2,11 @@ package controllers.viewer;
 
 import java.util.Map;
 
-import nl.idgis.planoview.commons.domain.Service;
-import nl.idgis.planoview.commons.domain.provider.MapProvider;
-import nl.idgis.planoview.service.messages.ServiceError;
-import nl.idgis.planoview.service.messages.ServiceRequest;
-import nl.idgis.planoview.service.messages.ServiceResponse;
+import nl.idgis.geoide.commons.domain.Service;
+import nl.idgis.geoide.commons.domain.provider.MapProvider;
+import nl.idgis.geoide.service.messages.ServiceError;
+import nl.idgis.geoide.service.messages.ServiceRequest;
+import nl.idgis.geoide.service.messages.ServiceResponse;
 import play.libs.F.Function;
 import play.libs.F.Promise;
 import play.mvc.Controller;
