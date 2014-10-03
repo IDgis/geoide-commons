@@ -1,4 +1,4 @@
-package nl.idgis.planoview.service.actors;
+package nl.idgis.geoide.service.actors;
 
 import static akka.pattern.Patterns.ask;
 
@@ -9,15 +9,15 @@ import java.util.Collection;
 import java.util.Map;
 
 import nl.idgis.geoide.commons.domain.ServiceIdentification;
-import nl.idgis.planoview.service.messages.GetLayerCapabilities;
-import nl.idgis.planoview.service.messages.GetServiceCapabilities;
-import nl.idgis.planoview.service.messages.ServiceCapabilities;
-import nl.idgis.planoview.service.messages.ServiceControl;
-import nl.idgis.planoview.service.messages.ServiceError;
-import nl.idgis.planoview.service.messages.ServiceErrorType;
-import nl.idgis.planoview.service.messages.ServiceMessage;
-import nl.idgis.planoview.service.messages.ServiceMessageContext;
-import nl.idgis.planoview.service.messages.ServiceRequest;
+import nl.idgis.geoide.service.messages.GetLayerCapabilities;
+import nl.idgis.geoide.service.messages.GetServiceCapabilities;
+import nl.idgis.geoide.service.messages.ServiceCapabilities;
+import nl.idgis.geoide.service.messages.ServiceControl;
+import nl.idgis.geoide.service.messages.ServiceError;
+import nl.idgis.geoide.service.messages.ServiceErrorType;
+import nl.idgis.geoide.service.messages.ServiceMessage;
+import nl.idgis.geoide.service.messages.ServiceMessageContext;
+import nl.idgis.geoide.service.messages.ServiceRequest;
 import nl.idgis.services.Capabilities;
 import play.Logger;
 import play.libs.F.Callback;

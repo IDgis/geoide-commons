@@ -1,4 +1,4 @@
-package nl.idgis.planoview.service;
+package nl.idgis.geoide.service;
 
 public interface FeatureServiceType {
 	

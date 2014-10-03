@@ -1,4 +1,4 @@
-package nl.idgis.planoview.service.messages;
+package nl.idgis.geoide.service.messages;
 
 import nl.idgis.geoide.commons.domain.ServiceIdentification;
 import nl.idgis.services.OGCCapabilities;

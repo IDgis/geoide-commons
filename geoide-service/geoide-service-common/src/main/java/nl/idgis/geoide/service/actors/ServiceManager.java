@@ -1,4 +1,4 @@
-package nl.idgis.planoview.service.actors;
+package nl.idgis.geoide.service.actors;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -9,12 +9,12 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import nl.idgis.geoide.commons.domain.ServiceIdentification;
-import nl.idgis.planoview.service.ServiceType;
-import nl.idgis.planoview.service.ServiceTypeRegistry;
-import nl.idgis.planoview.service.messages.LogResponse;
-import nl.idgis.planoview.service.messages.RequestLog;
-import nl.idgis.planoview.service.messages.ServiceError;
-import nl.idgis.planoview.service.messages.ServiceMessage;
+import nl.idgis.geoide.service.ServiceType;
+import nl.idgis.geoide.service.ServiceTypeRegistry;
+import nl.idgis.geoide.service.messages.LogResponse;
+import nl.idgis.geoide.service.messages.RequestLog;
+import nl.idgis.geoide.service.messages.ServiceError;
+import nl.idgis.geoide.service.messages.ServiceMessage;
 import play.Logger;
 import scala.concurrent.duration.Duration;
 import akka.actor.ActorRef;

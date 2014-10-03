@@ -1,4 +1,4 @@
-package nl.idgis.planoview.service.actors;
+package nl.idgis.geoide.service.actors;
 
 import java.util.concurrent.atomic.AtomicReference;
 

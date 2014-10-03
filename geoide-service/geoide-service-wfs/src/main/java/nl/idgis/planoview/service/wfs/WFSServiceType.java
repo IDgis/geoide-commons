@@ -5,8 +5,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import nl.idgis.geoide.commons.domain.ServiceIdentification;
-import nl.idgis.planoview.service.FeatureServiceType;
-import nl.idgis.planoview.service.ServiceType;
+import nl.idgis.geoide.service.FeatureServiceType;
+import nl.idgis.geoide.service.ServiceType;
 import nl.idgis.planoview.service.wfs.actors.WFS;
 import akka.actor.ActorRef;
 import akka.actor.Props;

@@ -1,4 +1,4 @@
-package nl.idgis.planoview.service.messages;
+package nl.idgis.geoide.service.messages;
 
 import akka.actor.ActorRef;
 

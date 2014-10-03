@@ -1,4 +1,4 @@
-package nl.idgis.planoview.service.messages;
+package nl.idgis.geoide.service.messages;
 
 public enum ServiceErrorType {
 	EXCEPTION,				// An exception occurred while handling the request.
