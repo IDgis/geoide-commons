@@ -1,0 +1,380 @@
+package controllers.viewer;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import nl.idgis.planoview.commons.domain.FeatureQuery;
+import nl.idgis.planoview.commons.domain.FeatureType;
+import nl.idgis.planoview.commons.domain.Layer;
+import nl.idgis.planoview.commons.domain.ParameterizedFeatureType;
+import nl.idgis.planoview.commons.domain.ParameterizedServiceLayer;
+import nl.idgis.planoview.commons.domain.feature.Feature;
+import nl.idgis.planoview.commons.domain.geometry.Envelope;
+import nl.idgis.planoview.commons.domain.geometry.Geometry;
+import nl.idgis.planoview.commons.domain.provider.MapProvider;
+import nl.idgis.planoview.commons.layer.LayerType;
+import nl.idgis.planoview.commons.layer.LayerTypeRegistry;
+import nl.idgis.planoview.service.messages.ProducerMessage;
+import nl.idgis.planoview.service.messages.QueryFeatures;
+import nl.idgis.planoview.service.messages.QueryFeaturesResponse;
+import nl.idgis.planoview.service.messages.ServiceError;
+import play.Logger;
+import play.libs.Akka;
+import play.libs.F.Function;
+import play.libs.F.Promise;
+import play.libs.Json;
+import play.mvc.Controller;
+import play.mvc.Result;
+import scala.concurrent.duration.FiniteDuration;
+import akka.actor.ActorRef;
+import akka.actor.Cancellable;
+import akka.actor.PoisonPill;
+import akka.actor.Props;
+import akka.actor.UntypedActor;
+import akka.pattern.Patterns;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+public class Query extends Controller {
+	private final static long queryFeaturesTimeout = 20000;
+	
+	private final LayerTypeRegistry layerTypeRegistry;
+	private final MapProvider mapProvider;
+	private final ActorRef serviceManager;
+	
+	public Query (final LayerTypeRegistry layerTypeRegistry, final MapProvider mapProvider, final ActorRef serviceManager) {
+		this.layerTypeRegistry = layerTypeRegistry;
+		this.mapProvider = mapProvider;
+		this.serviceManager = serviceManager;
+	}
+	
+	public Promise<Result> query () {
+		final QueryInfo queryInfo = parseQueryInfo (request ().body ().asJson ());
+		
+		Logger.debug ("Querying " + queryInfo.layerInfos.size () + " layers");
+		
+		// Create a list of feature types:
+		final List<ParameterizedFeatureType<?>> featureTypes = createFeatureTypes (queryInfo.layerInfos);
+		
+		Logger.debug ("Querying " + featureTypes.size () + " feature types");
+
+		return queryFeatureTypes (queryInfo.query, featureTypes);
+	}
+	
+	private Promise<Result> queryFeatureTypes (final FeatureQuery query, final List<ParameterizedFeatureType<?>> featureTypes) {
+		final List<Promise<Object>> promises = new ArrayList<> (featureTypes.size ());
+		
+		for (final ParameterizedFeatureType<?> featureType: featureTypes) {
+			promises.add (Promise.wrap (Patterns.ask (
+				serviceManager, 
+				new QueryFeatures (featureType, query), 
+				queryFeaturesTimeout
+			)));
+		}
+		
+		return Promise.sequence (promises).map (new Function<List<Object>, Result> () {
+			@Override
+			public Result apply(List<Object> responses) throws Throwable {
+				final List<FeatureProducer> producers = new ArrayList<> ();
+				final List<String> errors = new ArrayList<> ();
+				
+				for (int i = 0; i < responses.size (); ++ i) {
+					final Object response = responses.get (i);
+					
+					if (response instanceof QueryFeaturesResponse) {
+						producers.add (new FeatureProducer (((QueryFeaturesResponse) response).producer (), featureTypes.get (i).getFeatureType ()));
+					} else if (response instanceof ServiceError) {
+						errors.add (((ServiceError) response).message ());
+					} else {
+						throw new IllegalArgumentException ("Invalid response message type: " + response.getClass ().getCanonicalName ());
+					}
+				}
+				
+				// Report errors if one of the GetFeature requests failed:
+				if (!errors.isEmpty ()) {
+					final ObjectNode errorResponse = Json.newObject ();
+					
+					errorResponse.put ("result", "failed");
+					errorResponse.put ("messages", Json.toJson (errors));
+					
+					return badRequest (errorResponse);
+				}
+
+				// Send chunked output for the given features:
+				final Chunks<String> chunks = new StringChunks () {
+					@Override
+					public void onReady (final Out<String> out) {
+						final ActorRef writerActor = Akka.system ().actorOf (FeatureWriter.props (producers, out));
+						writerActor.tell ("start", writerActor);
+					}
+				};
+				
+				return ok (chunks).as ("application/json");
+			}
+		});
+	}
+	
+	private List<ParameterizedFeatureType<?>> createFeatureTypes (final List<LayerInfo> layerInfos) {
+		final List<ParameterizedFeatureType<?>> featureTypes = new ArrayList<> ();
+		
+		for (final LayerInfo layerInfo: layerInfos) {
+			final LayerType layerType = layerTypeRegistry.getLayerType (layerInfo.layer);
+			
+			featureTypes.addAll (layerType.getFeatureTypes (layerInfo.layer, layerInfo.query, layerInfo.state));
+		}
+		
+		return featureTypes;
+	}
+	
+	private QueryInfo parseQueryInfo (final JsonNode queryNode) {
+		return new QueryInfo (parseLayerInfos (queryNode.path ("layers")), parseQuery (queryNode.path ("query")));
+	}
+	
+	private List<LayerInfo> parseLayerInfos (final JsonNode layersNode) {
+		if (layersNode.isMissingNode () || !layersNode.isArray ()) {
+			return Collections.emptyList ();
+		}
+		
+		final List<LayerInfo> layerInfos = new ArrayList<LayerInfo> ();
+
+		for (final JsonNode layerNode: layersNode) {
+			layerInfos.add (parseLayerInfo (layerNode));
+		}
+		
+		return layerInfos;
+	}
+	
+	private LayerInfo parseLayerInfo (final JsonNode layerNode) {
+		return new LayerInfo (getLayer (layerNode.path ("id")), layerNode.path ("state"), parseQuery (layerNode.path ("query")));
+	}
+	
+	private FeatureQuery parseQuery (final JsonNode queryNode) {
+		if (queryNode.isMissingNode ()) {
+			return null;
+		}
+		
+		return new FeatureQuery ();
+	}
+	
+	private Layer getLayer (final JsonNode id) {
+		if (id == null) {
+			throw new IllegalArgumentException ("Missing layer ID");
+		}
+		
+		final Layer layer = mapProvider.getLayer (id.asText ());
+		if (layer == null) {
+			throw new IllegalArgumentException ("No layer found with ID " + id.asText ());
+		}
+		
+		return layer;
+	}
+	
+	public static class QueryInfo {
+		public final List<LayerInfo> layerInfos;
+		public final FeatureQuery query;
+		
+		public QueryInfo (final List<LayerInfo> layerInfos, final FeatureQuery query) {
+			this.layerInfos = new ArrayList<> (layerInfos);
+			this.query = query;
+		}
+	}
+	
+	public static class LayerInfo {
+		public final Layer layer;
+		public final JsonNode state;
+		public final FeatureQuery query;
+		
+		public LayerInfo (final Layer layer, final JsonNode state, final FeatureQuery query) {
+			this.layer = layer;
+			this.state = state;
+			this.query = query;
+		}
+	}
+	
+	public static class ServiceLayerInfo {
+		public final LayerInfo layerInfo;
+		public final ParameterizedServiceLayer<?> serviceLayer;
+		
+		public ServiceLayerInfo (final LayerInfo layerInfo, final ParameterizedServiceLayer<?> serviceLayer) {
+			this.layerInfo = layerInfo;
+			this.serviceLayer = serviceLayer;
+		}
+	}
+	
+	public final static class FeatureProducer {
+		public final ActorRef producer;
+		public final FeatureType featureType;
+		
+		public FeatureProducer (final ActorRef producer, final FeatureType featureType) {
+			this.producer = producer;
+			this.featureType = featureType;
+		}
+	}
+	
+	public static class FeatureWriter extends UntypedActor {
+		private final Chunks.Out<String> out;
+		private final List<FeatureProducer> producers;
+		private Cancellable killTimeout = null;
+		private final Set<FeatureProducer> completedProducers = new HashSet<> ();
+		private boolean hasFeatures = false;
+		private Envelope envelope = null;
+		
+		public static Props props (final List<FeatureProducer> producers, final Chunks.Out<String> out) {
+			return Props.create (FeatureWriter.class, producers, out);
+		}
+		
+		public FeatureWriter (final List<FeatureProducer> producers, final Chunks.Out<String> out) {
+			if (producers == null) {
+				throw new NullPointerException ("producer cannot be null");
+			}
+			if (out == null) {
+				throw new NullPointerException ("out cannot be null");
+			}
+			
+			this.out = out;
+			this.producers = new ArrayList<> (producers);
+		}
+
+		@Override
+		public void postStop () throws Exception {
+			handleStop ();
+		}
+		
+		@Override
+		public void onReceive (final Object msg) throws Exception {
+			if ("start".equals (msg)) {
+				handleStart ();
+			} else if (msg instanceof ProducerMessage.NextItem) {
+				handleNextItem (findProducer (sender ()), (Feature)((ProducerMessage.NextItem) msg).getItem ());
+			} else if (msg instanceof ProducerMessage.EndOfStream) {
+				handleEndOfStream (findProducer (sender ()));
+			} else {
+				unhandled (msg);
+			}
+		}
+		
+		private FeatureProducer findProducer (final ActorRef ref) {
+			for (final FeatureProducer producer: producers) {
+				if (producer.producer.equals (ref)) {
+					return producer;
+				}
+			}
+			
+			throw new IllegalStateException ("Producer not found: " + ref);
+		}
+		
+		private void handleNextItem (final FeatureProducer producer, final Feature feature) {
+			clearTimeout ();
+			
+			// Send the feature:
+			out.write ((hasFeatures ? ",\n" : "\n") + Json.stringify (Json.toJson (feature)));
+			hasFeatures = true;
+			
+			// Update the envelope:
+			for (final Map.Entry<String, Object> entry: feature.getProperties ().entrySet ()) {
+				if (entry.getValue () instanceof Geometry) {
+					final Geometry geometry = (Geometry) entry.getValue ();
+					
+					envelope = envelope == null ? geometry.getRawEnvelope () : envelope.combine (geometry.getRawEnvelope ());
+				}
+			}
+			
+			// Request the next feature from the producer:
+			producer.producer.tell (new ProducerMessage.Request (1), self ());
+			
+			scheduleTimeout ();
+		}
+		
+		private void handleEndOfStream (final FeatureProducer producer) {
+			clearTimeout ();
+			
+			// Ignore duplicate messages:
+			if (completedProducers.contains (producer)) {
+				scheduleTimeout ();
+				return;
+			}
+			
+			// Add the producer to the completed set:
+			completedProducers.add (producer);
+			
+			// Terminate or continue:
+			if (completedProducers.size () == producers.size ()) {
+				self ().tell (PoisonPill.getInstance (), self ());
+			} else {
+				scheduleTimeout ();
+			}
+		}
+		
+		private void handleStart () {
+			// Write JSON preamble:
+			out.write ("{\n\"features\":[");
+			
+			// Terminate immediately if there's nothing to consume:
+			if (producers.isEmpty ()) {
+				self ().tell (PoisonPill.getInstance (), self ());
+				return;
+			}
+				
+			// Start consuming the output of each producer:
+			for (final FeatureProducer p: producers) {
+				p.producer.tell (new ProducerMessage.Request (1), self ());
+			}
+			
+			// Schedule a timeout:
+			scheduleTimeout ();
+		}
+		
+		private void handleStop () {
+			clearTimeout ();
+			
+			final StringBuilder builder = new StringBuilder ();
+			
+			builder.append ("\n],\n");
+			
+			// Write envelope:
+			if (envelope != null) {
+				builder.append ("\"envelope\":" + Json.stringify (Json.toJson (envelope)) + ",\n");
+			}
+			
+			// Write status:
+			builder.append ("\"result\":\"ok\"\n");
+			
+			builder.append ("}");
+			
+			out.write (builder.toString ());
+			out.close ();
+			
+			Logger.debug ("Feature writer terminated");
+		}
+		
+		private void clearTimeout () {
+			if (killTimeout != null) {
+				killTimeout.cancel ();
+				killTimeout = null;
+			}
+		}
+		
+		private void scheduleTimeout () {
+			clearTimeout ();
+			
+			final ActorRef self = self ();
+			
+			killTimeout = context ().system ().scheduler ().scheduleOnce (
+					new FiniteDuration (30, TimeUnit.SECONDS), 
+					new Runnable () {
+						@Override
+						public void run () {
+							Logger.debug ("Terminating feature writer due to timeout");
+							self.tell (PoisonPill.getInstance (), self);
+						}
+					}, 
+					context ().dispatcher ());
+		}
+	}
+}

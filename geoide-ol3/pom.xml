@@ -1,0 +1,87 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>nl.idgis.geoide</groupId>
+		<artifactId>geoide-commons</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	
+	<artifactId>geoide-ol3</artifactId>
+	<name>Geoide - OpenLayers 3</name>
+	
+	<packaging>jar</packaging>
+	
+	<properties>
+		<upstream.version>3.0.0</upstream.version>
+		<upstream.url>https://github.com/openlayers/ol3/releases/download/v${upstream.version}</upstream.url>
+		<upstream.name>ol3</upstream.name>
+		<destDir>${project.build.outputDirectory}/META-INF/resources/webjars/${upstream.name}/${upstream.version}</destDir>
+	</properties>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>wagon-maven-plugin</artifactId>
+				<version>1.0-beta-4</version>
+				<executions>
+					<execution>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>download-single</goal>
+						</goals>
+						<configuration>
+							<url>${upstream.url}</url>
+							<fromFile>v${upstream.version}.zip</fromFile>
+							<toFile>${project.build.directory}/${project.artifactId}.zip</toFile>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.7</version>
+				<executions>
+					<execution>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<echo message="unzip archive"/>
+								<unzip src="${project.build.directory}/${project.artifactId}.zip" dest="${project.build.directory}"/>
+								<echo message="moving resources"/>
+								<move todir="${destDir}">
+									<fileset dir="${project.build.directory}/v${upstream.version}">
+										<include name="*.js"/>
+										<include name="closure-library/"/>
+										<include name="ol/"/>
+										<include name="resources/"/>
+										<include name="css/"/>
+									</fileset>
+								</move>
+								<move todir="${destDir}/ol">
+									<fileset dir="${project.build.directory}/v${upstream.version}/build">
+										<include name="*.js"/>
+									</fileset>
+								</move>
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+		
+		<resources>
+			<resource>
+				<directory>${project.baseDir}/src/main/resources</directory>
+				<targetPath>${destDir</targetPath>
+			</resource>
+		</resources>
+		
+	</build>
+</project>

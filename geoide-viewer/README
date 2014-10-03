@@ -1,0 +1,9 @@
+Instructies voor publicatie:
+============================
+
+Publiceren naar lokaal IVY repository:
+publishLocal
+
+Vervolgens kan dit project als dependency worden gebruikt in andere projecten.
+
+mvn -DaltSnapshotDeploymentRepository=idgis-restricted-snapshots:default:http://nexus.idgis.eu/content/repositories/restricted-snapshots/ -DskipNexusStagingDeployMojo=true deploy

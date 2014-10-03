@@ -1,0 +1,9 @@
+@(mapId: String, versionOpenLayers: String)
+
+@layout.html("Viewer", versionOpenLayers) {
+	Hello, World!
+	
+	<pre>@controllers.viewer.RequireJS.getDojoConfig</pre>
+	
+	<div id="viewer-container" class="js-planoview-viewer" data-planoview-map="@mapId"></div>
+}

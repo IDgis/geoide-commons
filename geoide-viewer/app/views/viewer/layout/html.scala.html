@@ -1,0 +1,29 @@
+@(title: String, versionOpenLayers: String, bodyClass: String = null, htmlClass: String = null, lang: String = "nl")(content: Html)
+<!DOCTYPE html>
+<html lang="@lang"@if(htmlClass != null){ class="@htmlClass"}>
+	<head>
+		<title>@title</title>
+		
+		<link rel="stylesheet" href="@controllers.viewer.routes.Assets.at("lib/bootstrap/css/bootstrap.css")">
+		<link rel="stylesheet" href="@controllers.viewer.routes.Assets.at("viewer/css/layout.css")">
+		@if(versionOpenLayers.equals("3")) {
+			<link rel="stylesheet" href="@controllers.viewer.routes.Assets.at("lib/ol3/css/ol.css")"></script>
+		} else {
+			<link rel="stylesheet" href="@controllers.viewer.routes.Assets.at("lib/openlayers/theme/default/style.css")">
+		}
+	</head>
+	
+	<body@if(bodyClass != null){ class="@bodyClass"}>
+		@content
+	
+		@* Scripts: *@
+		<script type="text/javascript" src="@controllers.viewer.routes.Assets.at("lib/dojo-base/dojo.js")" data-dojo-config="@controllers.viewer.RequireJS.getDojoConfig(Seq("planoview" -> controllers.viewer.routes.Assets.at("viewer/js").url), Seq("OpenLayers-" + versionOpenLayers -> true))"></script>
+		@if(versionOpenLayers.equals("3")) {
+			<script type="text/javascript" src="@controllers.viewer.routes.Assets.at("lib/ol3/ol/ol.js")"></script>
+		} else {
+			<script type="text/javascript" src="@controllers.viewer.routes.Assets.at("lib/openlayers/OpenLayers.js")"></script>
+		}
+		<script type="text/javascript" src="@controllers.viewer.routes.JavaScript.javascriptRoutes()"></script>
+		<script type="text/javascript" src="@controllers.viewer.routes.Assets.at("viewer/js/main.js")"></script>
+	</body>
+</html>

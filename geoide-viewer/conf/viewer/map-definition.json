@@ -1,0 +1,80 @@
+{
+	"id": "test-map",
+	"label": "Test map",
+	
+	"services": [
+		{
+			"id": "test-service-1",
+			"label": "TMS nationaal georegister",
+			"identification": {
+				"serviceType": "TMS",
+				"serviceEndpoint": "http://geodata.nationaalgeoregister.nl/tms/1.0.0",
+				"serviceVersion": "1.0.0"
+			}
+		},
+		{
+			"id": "test-service-2",
+			"label": "Risicokaart pub WMS",
+			"identification": {
+				"serviceType": "WMS",
+				"serviceEndpoint": "http://rk-pub.idgis.nl/rk_services_pub/services/WMS-risicokaart",
+				"serviceVersion": "1.1.1"
+			}
+		},
+		{
+			"id": "test-wfs",
+			"label": "Risicokaart pub WFS",
+			"identification": {
+				"serviceType": "WFS",
+				"serviceEndpoint": "http://rk-pub.idgis.nl/rk_services_pub/services/WFS-risicokaart",
+				"serviceVersion": "1.1.0"
+			}
+		}
+	],
+	
+	"featureTypes": [
+		{
+			"id": "ft-lpg",
+			"label": "LPG",
+			"name": "p_LPG",
+			"service": "test-wfs"
+		}
+	],
+	
+	"serviceLayers": [
+		{
+			"id": "test-service-1-brtachtergrondkaart",
+			"label": "BRT achtergrondkaart",
+			"name": "brtachtergrondkaart",
+			"service": "test-service-1"
+		},
+		{
+			"id": "test-service-1-natura2000",
+			"label": "GBKN",
+			"name": "natura2000",
+			"service": "test-service-1"
+		},
+		{
+			"id": "test-service-2-p_LPG",
+			"label": "LPG",
+			"name": "p_LPG",
+			"service": "test-service-2",
+			"featureType": "ft-lpg"
+		}
+	],
+	
+	"layers": [
+		{
+			"id": "layer-1",
+			"layerType": "default",
+			"label": "BRT achtergrondkaart",
+			"serviceLayers": [ "test-service-1-brtachtergrondkaart", "test-service-1-natura2000" ]
+		},
+		{
+			"id": "layer-2",
+			"layerType": "default",
+			"label": "LPG",
+			"serviceLayers": [ "test-service-2-p_LPG" ]
+		}
+	]
+}

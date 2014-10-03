@@ -1,0 +1,263 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	
+	<modelVersion>4.0.0</modelVersion>
+	
+	<groupId>nl.idgis.geoide</groupId>
+	<artifactId>geoide-commons</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>Geoide - Commons</name>
+	
+	<modules>
+		<module>geoide-domain</module>
+		<module>geoide-util</module>
+		<module>geoide-ol3</module>
+		<module>geoide-domain-test</module>
+		<module>geoide-service</module>
+		<module>geoide-layer</module>
+	</modules>
+	
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		
+		<idgis-commons.version>0.0.14-SNAPSHOT</idgis-commons.version>
+		<deegree3.version>3.4-pre9</deegree3.version>
+		<jts.version>1.13</jts.version>
+	
+		<!-- These versions should match the versions that are in use by the Play framework: -->
+		<scala.version>2.11.1</scala.version>
+		<play2.version>2.3.2</play2.version>
+		<scala.abi.version>2.11</scala.abi.version>
+		<jackson.version>2.3.3</jackson.version>
+		<jodatime.version>2.3</jodatime.version>
+		<akka.version>2.3.3</akka.version>
+		<junit.version>4.11</junit.version>
+		<spring.version>4.0.3.RELEASE</spring.version>
+		<netty.version>3.9.2.Final</netty.version>
+		<slf4j.version>1.7.6</slf4j.version>
+		<commons-codec.version>1.9</commons-codec.version>
+		<guava.version>16.0.1</guava.version>
+		<xml-apis.version>1.4.01</xml-apis.version>
+	</properties>
+	
+	<repositories>
+		<repository>
+			<id>idgis-public</id>
+			<url>http://nexus.idgis.eu/content/groups/public/</url>
+			<releases>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>idgis-restricted</id>
+			<url>http://nexus.idgis.eu/content/groups/restricted/</url>
+			<releases>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<distributionManagement>
+		<repository>
+			<id>idgis-restricted-releases</id>
+			<url>http://nexus.idgis.eu/content/repositories/restricted-releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>idgis-restricted-snapshots</id>
+			<url>http://nexus.idgis.eu/content/repositories/restricted-snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>	
+	
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>nl.idgis.geoide</groupId>
+				<artifactId>geoide-util</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>nl.idgis.geoide</groupId>
+				<artifactId>geoide-ol3</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>nl.idgis.geoide</groupId>
+				<artifactId>geoide-domain</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>nl.idgis.geoide</groupId>
+				<artifactId>geoide-service-common</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>nl.idgis.geoide</groupId>
+				<artifactId>geoide-layer-common</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>nl.idgis.geoide</groupId>
+				<artifactId>geoide-layer-default</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+		
+			<dependency>
+				<groupId>nl.idgis.commons</groupId>
+				<artifactId>commons-ogc-client</artifactId>
+				<version>${idgis-commons.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-annotations</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-core</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>com.typesafe.play</groupId>
+				<artifactId>play-java-ws_${scala.abi.version}</artifactId>
+				<version>${play2.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.typesafe.akka</groupId>
+				<artifactId>akka-actor_${scala.abi.version}</artifactId>
+				<version>${akka.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.typesafe.akka</groupId>
+				<artifactId>akka-remote_${scala.abi.version}</artifactId>
+				<version>${akka.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.typesafe.akka</groupId>
+				<artifactId>akka-slf4j_${scala.abi.version}</artifactId>
+				<version>${akka.version}</version>
+			</dependency>
+			
+			<!-- deegree dependencies -->
+			<dependency>
+				<groupId>org.deegree</groupId>
+				<artifactId>deegree-core-base</artifactId>
+				<version>${deegree3.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.vividsolutions</groupId>
+				<artifactId>jts</artifactId>
+				<version>${jts.version}</version>
+			</dependency>
+			
+			<!-- Conflicting dependencies introduced by idgis-commons: -->
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jcl-over-slf4j</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+			
+			<!-- Conflicting dependencies of the play framework: -->
+			<dependency>
+				<groupId>io.netty</groupId>
+				<artifactId>netty</artifactId>
+				<version>${netty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-codec</groupId>
+				<artifactId>commons-codec</artifactId>
+				<version>${commons-codec.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.guava</groupId>
+				<artifactId>guava</artifactId>
+				<version>${guava.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.scala-lang</groupId>
+				<artifactId>scala-library</artifactId>
+				<version>${scala.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>xml-apis</groupId>
+				<artifactId>xml-apis</artifactId>
+				<version>${xml-apis.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<source>1.7</source>
+						<target>1.7</target>
+						<encoding>utf-8</encoding>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		
+		<plugins>
+			<plugin>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>package</phase>
+						<goals><goal>jar-no-fork</goal></goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>1.2</version>
+				<configuration>
+					<rules>
+						<DependencyConvergence />
+					</rules>
+					<fail>true</fail>
+				</configuration>
+				<executions>
+					<execution>
+						<id>enforce</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<phase>validate</phase>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+		
+	</build>
+</project>
