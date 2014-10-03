@@ -1,4 +1,4 @@
-package nl.idgis.planoview.service.wms;
+package nl.idgis.geoide.service.wms;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,7 +15,7 @@ import nl.idgis.geoide.commons.domain.ServiceRequest;
 import nl.idgis.geoide.service.LayerServiceType;
 import nl.idgis.geoide.service.ServiceRequestContext;
 import nl.idgis.geoide.service.ServiceType;
-import nl.idgis.planoview.service.wms.actors.WMS;
+import nl.idgis.geoide.service.wms.actors.WMS;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 

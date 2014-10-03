@@ -1,4 +1,4 @@
-package nl.idgis.planoview.service.wms;
+package nl.idgis.geoide.service.wms;
 
 import java.io.Serializable;
 import java.util.Collections;

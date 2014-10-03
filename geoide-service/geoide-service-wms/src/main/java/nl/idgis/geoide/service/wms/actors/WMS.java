@@ -1,4 +1,4 @@
-package nl.idgis.planoview.service.wms.actors;
+package nl.idgis.geoide.service.wms.actors;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
