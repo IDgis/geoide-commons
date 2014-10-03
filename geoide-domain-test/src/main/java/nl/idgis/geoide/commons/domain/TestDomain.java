@@ -1,4 +1,4 @@
-package nl.idgis.planoview.commons.domain;
+package nl.idgis.geoide.commons.domain;
 
 import nl.idgis.geoide.commons.domain.JsonFactory;
 import nl.idgis.geoide.commons.domain.MapDefinition;

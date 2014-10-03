@@ -1,6 +1,7 @@
-package nl.idgis.planoview.commons.domain;
+package nl.idgis.geoide.commons.domain;
 
 import static org.junit.Assert.*;
+import nl.idgis.geoide.commons.domain.TestDomain;
 
 import org.junit.Test;
 
