@@ -1,4 +1,4 @@
-package nl.idgis.planoview.commons.layer;
+package nl.idgis.geoide.commons.layer;
 
 import java.util.List;
 

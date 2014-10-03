@@ -10,6 +10,7 @@ import nl.idgis.geoide.commons.domain.Layer;
 import nl.idgis.geoide.commons.domain.ParameterizedFeatureType;
 import nl.idgis.geoide.commons.domain.ParameterizedServiceLayer;
 import nl.idgis.geoide.commons.domain.ServiceLayer;
+import nl.idgis.geoide.commons.layer.LayerType;
 import nl.idgis.planoview.service.ServiceTypeRegistry;
 
 import com.fasterxml.jackson.databind.JsonNode;
