@@ -4,11 +4,17 @@ name := """geoide-viewer"""
 
 Common.settings
 
-lazy val viewer = (project in file(".")).enablePlugins(PlayJava)
+lazy val viewer = (project in file("."))
+	.enablePlugins(PlayJava)
+	.dependsOn(mapView)
+	.dependsOn(toc)
+	.dependsOn(geoideConfig)
 
 lazy val mapView = (project in file("./modules/mapview")).enablePlugins(PlayJava)
 
 lazy val toc = (project in file("./modules/toc")).enablePlugins(PlayJava)
+
+lazy val geoideConfig = (project in file("./modules/config")).enablePlugins(PlayJava)
 
 libraryDependencies ++= Seq(
   javaJdbc,
