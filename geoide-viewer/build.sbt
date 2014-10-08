@@ -6,6 +6,7 @@ Common.settings
 
 lazy val viewer = (project in file("."))
 	.enablePlugins(PlayJava)
+	.aggregate(mapView, toc, geoideConfig, geoideCore)
 	.dependsOn(mapView)
 	.dependsOn(toc)
 	.dependsOn(geoideConfig)
