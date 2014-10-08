@@ -1,4 +1,4 @@
-package controllers.viewer;
+package controllers.mapview;
 
 import play.Routes;
 import play.mvc.Controller;
@@ -10,11 +10,11 @@ public class JavaScript extends Controller {
 		response ().setContentType ("text/javascript");
 		return ok (
 			Routes.javascriptRouter ("geoideViewerRoutes",
-				controllers.viewer.routes.javascript.MapConfiguration.mapStructure (),
-				controllers.viewer.routes.javascript.View.buildView (),
-				controllers.viewer.routes.javascript.Services.serviceRequest (),
-				controllers.viewer.routes.javascript.Services.serviceRequestWithLayer (),
-				controllers.viewer.routes.javascript.Query.query ()
+				controllers.mapview.routes.javascript.MapConfiguration.mapStructure (),
+				controllers.mapview.routes.javascript.View.buildView (),
+				controllers.mapview.routes.javascript.Services.serviceRequest (),
+				controllers.mapview.routes.javascript.Services.serviceRequestWithLayer (),
+				controllers.mapview.routes.javascript.Query.query ()
 			)	
 		);
 	}

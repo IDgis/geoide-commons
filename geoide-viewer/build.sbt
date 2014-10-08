@@ -14,7 +14,9 @@ lazy val mapView = (project in file("./modules/mapview")).enablePlugins(PlayJava
 
 lazy val toc = (project in file("./modules/toc")).enablePlugins(PlayJava)
 
-lazy val geoideConfig = (project in file("./modules/config")).enablePlugins(PlayJava)
+lazy val geoideConfig = (project in file("./modules/config"))
+	.enablePlugins(PlayJava)
+	.dependsOn(mapView)
 
 libraryDependencies ++= Seq(
   javaJdbc,

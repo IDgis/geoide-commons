@@ -1,4 +1,4 @@
-package controllers.viewer;
+package controllers.mapview;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -72,7 +72,7 @@ public class RequireJS {
 				final int offset = fullPath.lastIndexOf ('/');
 				final String path = offset >= 0 ? fullPath.substring (0, offset) : "";
 						
-				packageNode.put ("location", controllers.viewer.routes.Assets.at ("lib/" + webJar.getKey () + (path.isEmpty () ? "" : "/" + path)).url ());
+				packageNode.put ("location", controllers.mapview.routes.Assets.at ("lib/" + webJar.getKey () + (path.isEmpty () ? "" : "/" + path)).url ());
 			}
 		}
 

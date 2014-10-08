@@ -1,4 +1,4 @@
-package viewer.config;
+package geoide.config;
 
 import nl.idgis.geoide.service.ServiceTypeRegistry;
 import nl.idgis.geoide.service.actors.ServiceManager;
