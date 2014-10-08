@@ -1,4 +1,4 @@
-package controllers.mapview;
+package controllers.core;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,6 +25,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.MissingNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import controllers.core.routes;
 
 public class RequireJS {
 	
@@ -72,7 +74,7 @@ public class RequireJS {
 				final int offset = fullPath.lastIndexOf ('/');
 				final String path = offset >= 0 ? fullPath.substring (0, offset) : "";
 						
-				packageNode.put ("location", controllers.mapview.routes.Assets.at ("lib/" + webJar.getKey () + (path.isEmpty () ? "" : "/" + path)).url ());
+				packageNode.put ("location", controllers.core.routes.Assets.at ("lib/" + webJar.getKey () + (path.isEmpty () ? "" : "/" + path)).url ());
 			}
 		}
 

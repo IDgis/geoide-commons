@@ -9,14 +9,23 @@ lazy val viewer = (project in file("."))
 	.dependsOn(mapView)
 	.dependsOn(toc)
 	.dependsOn(geoideConfig)
+	.dependsOn(geoideCore)
 
-lazy val mapView = (project in file("./modules/mapview")).enablePlugins(PlayJava)
+lazy val mapView = (project in file("./modules/mapview"))
+	.enablePlugins(PlayJava)
+	.dependsOn(geoideCore)
 
-lazy val toc = (project in file("./modules/toc")).enablePlugins(PlayJava)
+lazy val toc = (project in file("./modules/toc"))
+	.enablePlugins(PlayJava)
+	.dependsOn(geoideCore)
 
 lazy val geoideConfig = (project in file("./modules/config"))
 	.enablePlugins(PlayJava)
 	.dependsOn(mapView)
+	.dependsOn(geoideCore)
+	
+lazy val geoideCore = (project in file("./modules/core"))
+	.enablePlugins(PlayJava)
 
 libraryDependencies ++= Seq(
   javaJdbc,
@@ -33,14 +42,7 @@ libraryDependencies ++= Seq(
   Common.Dependencies.geoideServiceWfs,
   Common.Dependencies.geoideLayerCommon,
   Common.Dependencies.geoideLayerDefault,
-  Common.Dependencies.webjarsPlay,
-  Common.Dependencies.webjarsBootstrap,
-  Common.Dependencies.webjarsDojoBase,
-  Common.Dependencies.webjarsOpenLayers,
-  Common.Dependencies.webjarsPutSelector,
-  Common.Dependencies.springContext,
-  Common.Dependencies.springAop,
-  Common.Dependencies.springTest
+  Common.Dependencies.webjarsOpenLayers
 )
 
 // Also deploy the assets:
