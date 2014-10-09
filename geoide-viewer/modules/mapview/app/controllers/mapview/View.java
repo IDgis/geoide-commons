@@ -8,6 +8,7 @@ import nl.idgis.geoide.commons.domain.ParameterizedServiceLayer;
 import nl.idgis.geoide.commons.domain.Service;
 import nl.idgis.geoide.commons.domain.ServiceRequest;
 import nl.idgis.geoide.commons.domain.provider.MapProvider;
+import nl.idgis.geoide.commons.domain.traits.Traits;
 import nl.idgis.geoide.commons.layer.LayerType;
 import nl.idgis.geoide.commons.layer.LayerTypeRegistry;
 import nl.idgis.geoide.service.LayerServiceType;
@@ -74,13 +75,13 @@ public class View extends Controller {
 			final Service service = l.getServiceLayer ().getService ();
 			
 			if (currentService != null && !service.equals (currentService) && !serviceLayerBatch.isEmpty ()) {
-				final ServiceType serviceType = serviceTypeRegistry.getServiceType (currentService.getIdentification ().getServiceType ());
+				final Traits<ServiceType> serviceType = serviceTypeRegistry.getServiceType (currentService.getIdentification ().getServiceType ());
 				
-				if (!(serviceType instanceof LayerServiceType)) {
+				if (!(serviceType.get () instanceof LayerServiceType)) {
 					throw new IllegalStateException ("Service type must be a LayerServiceType");
 				}
 				
-				serviceRequests.addAll (((LayerServiceType) serviceType).getServiceRequests (currentService, serviceLayerBatch, context));
+				serviceRequests.addAll (((LayerServiceType) serviceType.get ()).getServiceRequests (currentService, serviceLayerBatch, context));
 				serviceLayerBatch.clear ();
 			}
 			
@@ -89,13 +90,13 @@ public class View extends Controller {
 		}
 		
 		if (currentService != null && !serviceLayerBatch.isEmpty ()) {
-			final ServiceType serviceType = serviceTypeRegistry.getServiceType (currentService.getIdentification ().getServiceType ());
+			final Traits<ServiceType> serviceType = serviceTypeRegistry.getServiceType (currentService.getIdentification ().getServiceType ());
 			
-			if (!(serviceType instanceof LayerServiceType)) {
+			if (!(serviceType.get () instanceof LayerServiceType)) {
 				throw new IllegalStateException ("Service type must be a LayerServiceType");
 			}
 			
-			serviceRequests.addAll (((LayerServiceType) serviceType).getServiceRequests (currentService, serviceLayerBatch, context));
+			serviceRequests.addAll (((LayerServiceType) serviceType.get ()).getServiceRequests (currentService, serviceLayerBatch, context));
 		}
 
 		return serviceRequests;
@@ -107,9 +108,9 @@ public class View extends Controller {
 		for (final LayerWithState l: layers) {
 			final Layer layer = l.layer ();
 			final JsonNode state = l.state ();
-			final LayerType layerType = layerTypeRegistry.getLayerType (layer);
+			final Traits<LayerType> layerType = layerTypeRegistry.getLayerType (layer);
 			
-			serviceLayers.addAll (layerType.getServiceLayers (layer, state));
+			serviceLayers.addAll (layerType.get ().getServiceLayers (layer, state));
 		}
 		
 		return serviceLayers;
