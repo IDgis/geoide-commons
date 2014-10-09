@@ -6,7 +6,7 @@ addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.2")
 // web plugins
 
 // Use most recent version of sbt-web. This version packages the assets in webjar format.
-addSbtPlugin ("com.typesafe.sbt" % "sbt-web" % "1.1.0-RC1")
+addSbtPlugin ("com.typesafe.sbt" % "sbt-web" % "1.1.1")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-coffeescript" % "1.0.0")
 
