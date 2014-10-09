@@ -1,4 +1,4 @@
-package controllers.viewer;
+package controllers.mapview;
 
 import nl.idgis.geoide.commons.domain.MapDefinition;
 import nl.idgis.geoide.commons.domain.provider.MapProvider;

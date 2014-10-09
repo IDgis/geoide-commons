@@ -5,8 +5,8 @@ require ([
 	
 	'put-selector/put',
 	
-	'geoide/Viewer',
-	'geoide/Model',
+	'geoide-map/Viewer',
+	'geoide-map/Model',
 	
 	'dojo/domReady!'
 ], function (

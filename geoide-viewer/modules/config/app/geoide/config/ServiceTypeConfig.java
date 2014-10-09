@@ -1,4 +1,4 @@
-package viewer.config;
+package geoide.config;
 
 import java.util.Collection;
 

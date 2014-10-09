@@ -1,4 +1,4 @@
-package viewer.config;
+package geoide.config;
 
 import nl.idgis.geoide.commons.domain.provider.MapProvider;
 import nl.idgis.geoide.commons.layer.LayerTypeRegistry;
@@ -10,11 +10,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import akka.actor.ActorRef;
-import controllers.viewer.MapConfiguration;
-import controllers.viewer.Query;
-import controllers.viewer.Services;
-import controllers.viewer.View;
-import controllers.viewer.Viewer;
+import controllers.mapview.MapConfiguration;
+import controllers.mapview.Query;
+import controllers.mapview.Services;
+import controllers.mapview.View;
 
 @Configuration
 public class ControllerConfig {
@@ -32,11 +31,6 @@ public class ControllerConfig {
 			final ServiceTypeRegistry serviceTypeRegistry, 
 			final MapProvider mapProvider) {
 		return new View (layerTypeRegistry, serviceTypeRegistry, mapProvider);
-	}
-	
-	@Bean
-	public Viewer viewerController () {
-		return new Viewer ();
 	}
 	
 	@Bean
