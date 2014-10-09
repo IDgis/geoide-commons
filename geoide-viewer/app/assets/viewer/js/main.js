@@ -6,7 +6,7 @@ require ([
 	'put-selector/put',
 	
 	'geoide-map/Viewer',
-	'geoide-map/Model',
+	'geoide-core/Model',
 	
 	'dojo/domReady!'
 ], function (
