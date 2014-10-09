@@ -1,5 +1,3 @@
-package viewer;
-
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import play.Application;

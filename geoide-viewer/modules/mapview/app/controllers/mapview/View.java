@@ -1,4 +1,4 @@
-package controllers.viewer;
+package controllers.mapview;
 
 import java.util.ArrayList;
 import java.util.List;

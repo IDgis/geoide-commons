@@ -47,7 +47,7 @@ define ([
 	registry.registerLayerType ('TMS', {
 		create: function (serviceRequest) {
 			console.log ('Creating TMS layer: ', serviceRequest.id);
-			var serviceUrl = geoideViewerRoutes.controllers.viewer.Services.serviceRequestWithLayer (
+			var serviceUrl = geoideViewerRoutes.controllers.mapview.Services.serviceRequestWithLayer (
 					serviceRequest.serviceId,
 					serviceRequest.parameters.layer,
 					''
@@ -74,7 +74,7 @@ define ([
 							var z = this.getServerZoom();
 							var path = 'EPSG:28992' + '/' + z + "/" + x + "/" + y + "." + this.type;
 							
-							return geoideViewerRoutes.controllers.viewer.Services.serviceRequestWithLayer (
+							return geoideViewerRoutes.controllers.mapview.Services.serviceRequestWithLayer (
 									serviceRequest.serviceId,
 									serviceRequest.parameters.layer,
 									path

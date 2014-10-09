@@ -334,7 +334,7 @@ define ([
 				var viewerState = { layers: this._buildViewerState (map.getRootLayers ()) };
 				
 				// Post the viewer state:
-				xhr.post (geoideViewerRoutes.controllers.viewer.View.buildView ().url, {
+				xhr.post (geoideViewerRoutes.controllers.mapview.View.buildView ().url, {
 					handleAs: 'json',
 					headers: {
 						'Content-Type': 'application/json'

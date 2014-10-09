@@ -68,7 +68,7 @@ define ([
 					}),
 					tileUrlFunction: function (tileCoord, pixelRatio, projection) {
 						var path = projection.getCode () + '/' + tileCoord[0] + '/' + tileCoord[1] + '/' + tileCoord[2] + '.png';
-						return geoideViewerRoutes.controllers.viewer.Services.serviceRequestWithLayer (
+						return geoideViewerRoutes.controllers.mapview.Services.serviceRequestWithLayer (
 							serviceRequest.serviceId,
 							serviceRequest.parameters.layer,
 							path
