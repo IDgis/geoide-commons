@@ -10,7 +10,7 @@ import nl.idgis.geoide.service.ServiceTypeRegistry;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-public abstract class LayerType {
+public abstract class LayerType  {
 	
 	private final ServiceTypeRegistry serviceTypeRegistry;
 	
@@ -30,4 +30,5 @@ public abstract class LayerType {
 	
 	public abstract List<ParameterizedServiceLayer<?>> getServiceLayers (final Layer layer, final JsonNode state);
 	public abstract List<ParameterizedFeatureType<?>> getFeatureTypes (final Layer layer, final FeatureQuery query, final JsonNode state);
+	
 }
