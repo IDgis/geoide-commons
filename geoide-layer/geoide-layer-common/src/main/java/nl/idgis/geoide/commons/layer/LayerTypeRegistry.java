@@ -5,25 +5,26 @@ import java.util.HashMap;
 import java.util.Map;
 
 import nl.idgis.geoide.commons.domain.Layer;
+import nl.idgis.geoide.commons.domain.traits.Traits;
 
 public class LayerTypeRegistry {
 
-	private final Map<String, LayerType> layerTypes;
+	private final Map<String, Traits<LayerType>> layerTypes;
 	
-	public LayerTypeRegistry (final Collection<LayerType> layerTypes) {
+	public LayerTypeRegistry (final Collection<Traits<LayerType>> layerTypes) {
 		this.layerTypes = new HashMap<> ();
 		if (layerTypes != null) {
-			for (final LayerType layerType: layerTypes) {
-				this.layerTypes.put (layerType.getTypeName (), layerType);
+			for (final Traits<LayerType> layerType: layerTypes) {
+				this.layerTypes.put (layerType.get ().getTypeName (), layerType);
 			}
 		}
 	}
 	
-	public LayerType getLayerType (final Layer layer) {
+	public Traits<LayerType> getLayerType (final Layer layer) {
 		return getLayerType (layer.getLayerType ());
 	}
 	
-	public LayerType getLayerType (final String typeName) {
+	public Traits<LayerType> getLayerType (final String typeName) {
 		if (typeName == null) {
 			return null;
 		}
