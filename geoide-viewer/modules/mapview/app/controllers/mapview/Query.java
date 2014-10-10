@@ -17,6 +17,7 @@ import nl.idgis.geoide.commons.domain.feature.Feature;
 import nl.idgis.geoide.commons.domain.geometry.Envelope;
 import nl.idgis.geoide.commons.domain.geometry.Geometry;
 import nl.idgis.geoide.commons.domain.provider.MapProvider;
+import nl.idgis.geoide.commons.domain.traits.Traits;
 import nl.idgis.geoide.commons.layer.LayerType;
 import nl.idgis.geoide.commons.layer.LayerTypeRegistry;
 import nl.idgis.geoide.service.messages.ProducerMessage;
@@ -124,9 +125,9 @@ public class Query extends Controller {
 		final List<ParameterizedFeatureType<?>> featureTypes = new ArrayList<> ();
 		
 		for (final LayerInfo layerInfo: layerInfos) {
-			final LayerType layerType = layerTypeRegistry.getLayerType (layerInfo.layer);
+			final Traits<LayerType> layerType = layerTypeRegistry.getLayerType (layerInfo.layer);
 			
-			featureTypes.addAll (layerType.getFeatureTypes (layerInfo.layer, layerInfo.query, layerInfo.state));
+			featureTypes.addAll (layerType.get ().getFeatureTypes (layerInfo.layer, layerInfo.query, layerInfo.state));
 		}
 		
 		return featureTypes;

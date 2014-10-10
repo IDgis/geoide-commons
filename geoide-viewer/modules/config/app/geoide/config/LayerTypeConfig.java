@@ -1,7 +1,12 @@
 package geoide.config;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
+import nl.idgis.geoide.commons.domain.traits.Trait;
+import nl.idgis.geoide.commons.domain.traits.Traits;
+import nl.idgis.geoide.commons.domain.traits.spring.TypedTrait;
 import nl.idgis.geoide.commons.layer.DefaultLayerType;
 import nl.idgis.geoide.commons.layer.LayerType;
 import nl.idgis.geoide.commons.layer.LayerTypeRegistry;
@@ -24,8 +29,24 @@ public class LayerTypeConfig {
 	}
 	
 	@Bean
-	@Autowired
-	public LayerTypeRegistry layerTypeRegistry (final Collection<LayerType> layerTypes) {
-		return new LayerTypeRegistry (layerTypes);
+	@Autowired (required = false)
+	public LayerTypeRegistry layerTypeRegistry (final Collection<LayerType> layerTypes, final Collection<TypedTrait<?, ?>> traits) {
+		final List<Traits<LayerType>> traitsLayerTypes = new ArrayList<> ();
+		
+		for (final LayerType lt: layerTypes) {
+			traitsLayerTypes.add (TypedTrait.makeTraits (lt, traits));
+		}
+		
+		return new LayerTypeRegistry (traitsLayerTypes);
+	}
+	
+	public final static class A {
+	}
+	
+	@Bean
+	public TypedTrait<A, A> dummyTrait () {
+		// Add a dymmy trait to make sure that the typedtraits collection always contains at least one trait.
+		return TypedTrait.create (A.class, new Trait<A> () {
+		});
 	}
 }

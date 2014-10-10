@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import nl.idgis.geoide.commons.domain.ServiceIdentification;
+import nl.idgis.geoide.commons.domain.traits.Traits;
 import nl.idgis.geoide.service.ServiceType;
 import nl.idgis.geoide.service.ServiceTypeRegistry;
 import nl.idgis.geoide.service.messages.LogResponse;
@@ -123,7 +124,7 @@ public class ServiceManager extends UntypedActor {
 	
 	private ActorRef createServiceActor (final ServiceIdentification identification) throws Exception {
 		// Locate the factory for this service type:
-		final ServiceType serviceType = serviceTypeRegistry.getServiceType (identification.getServiceType ());
+		final Traits<ServiceType> serviceType = serviceTypeRegistry.getServiceType (identification.getServiceType ());
 		if (serviceType == null) {
 			throw new IllegalArgumentException (String.format ("No service type defined for %s", identification.getServiceType ()));
 		}
@@ -137,7 +138,7 @@ public class ServiceManager extends UntypedActor {
 				URLEncoder.encode (identification.getServiceVersion (), "UTF-8"), 
 				URLEncoder.encode (identification.getServiceEndpoint (), "UTF-8")
 			);
-		final ActorRef ref = getContext ().actorOf (serviceType.createServiceActorProps (self (), identification), name);
+		final ActorRef ref = getContext ().actorOf (serviceType.get ().createServiceActorProps (self (), identification), name);
 		
 		addService (identification, ref);
 		scheduleServiceTermination (identification);
