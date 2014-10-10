@@ -1,61 +1,49 @@
 package nl.idgis.geoide.commons.domain.toc;
 
+import java.io.Serializable;
 import java.util.List;
 
-import scala.Symbol;
+
 import nl.idgis.geoide.commons.domain.traits.Traits;
 
-public class TOCItem {
-	 private List<Traits<TOCItem>> items;
-	 private String label;
-	 private Boolean activatable;
-	 private Boolean active;
-	 private Symbol symbol;
+public final class TOCItem implements Serializable {
+	 /**
+	 * 
+	 */
+	private static final long serialVersionUID = -8476704521251938563L;
+	private final List<Traits<TOCItem>> items;
+	private final String label;
+	private final boolean activatable;
+	private final boolean active;
+	private final Symbol symbol;
 	 
 	 
-	 public TOCItem (String label) {
-		 this.label = label;
-		 this.active = false;
-		 this.activatable = false;
-	 }
-	 
-	 public void setItems (List<Traits<TOCItem>> items) {
+	 public TOCItem (List<Traits<TOCItem>> items, String label, boolean activatable, boolean active, Symbol symbol ) {
 		 this.items = items;
-		
+		 this.label = label;
+		 this.activatable = activatable;
+		 this.active = active;
+		 this.symbol = symbol;
+		 
 	 }
-	 
+	  
 	 public List<Traits<TOCItem>> getItems() {
 		 return items;
 	 }
 	 
-	 public void setLabel(String label) {
-		 this.label = label;
-	 }
-	 
+
 	 public String getLabel() {
 		 return this.label;
-	 }
-	 
-	 public void setActivatable (Boolean activatable) {
-		 this.activatable = activatable;
 	 }
 	 
 	 public Boolean getActivatable() {
 		 return this.activatable;
 	 }
-	 
-	 public void setActive(Boolean active) {
-		 this.active = active;
-	 }
-	 
+
 	 public Boolean isActive() {
 		 return active;
 	 }
-	 
-	 public void setSymbol(Symbol symbol) {
-		 this.symbol = symbol;
-	 }
-	 
+	  
 	 public Symbol getSymbol() {
 		 return this.symbol;
 	 }

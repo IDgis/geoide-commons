@@ -42,13 +42,5 @@
 			<artifactId>spring-context</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>nl.idgis.geoide</groupId>
-			<artifactId>geoide-layer-common</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>nl.idgis.geoide</groupId>
-			<artifactId>geoide-service-common</artifactId>
-		</dependency>
 	</dependencies>
 </project>
