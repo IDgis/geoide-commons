@@ -37,14 +37,22 @@ define ([
 	};
 	
 	DefaultStatefulObject = declare ([StatefulObject], {
-		_schema: defaultSchema
+		_schema: defaultSchema,
+		
+		constructor: function (content) {
+			this._buildContent (content);
+		}
 	});
 	
 	DefaultStatefulArray = declare ([StatefulArray], {
-		_schema: defaultSchema
+		_schema: defaultSchema,
+		
+		constructor: function (content) {
+			this._buildContent (content);
+		}
 	});
 	
-	return declare ([StatefulObject], {
+	return declare ([DefaultStatefulObject], {
 		_schema: defaultSchema,
 		
 		constructor: function (content) {

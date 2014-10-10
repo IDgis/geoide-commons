@@ -10,7 +10,7 @@ define ([
 		_watches: null,
 		
 		constructor: function (content) {
-			this._buildContent (content);
+			this._content = [ ];
 		},
 		
 		_buildContent: function (rootArray) {

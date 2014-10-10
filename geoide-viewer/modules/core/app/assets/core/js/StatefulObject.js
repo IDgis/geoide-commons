@@ -5,7 +5,7 @@ define (['dojo/_base/declare', './StatefulBase'], function (declare, StatefulBas
 		_globalWatchHandles: null,
 		
 		constructor: function (content) {
-			this._buildContent (content);
+			this._content = { };
 		},
 		
 		_buildContent: function (rootObject) {
@@ -41,24 +41,32 @@ define (['dojo/_base/declare', './StatefulBase'], function (declare, StatefulBas
 				previousValue = this.get (name);
 			
 			if (value !== previousValue) {
-				this._content[name] = this._wrap (value);
-				
-				// Invoke global watch handles:
-				if (this._globalWatchHandles !== null) {
-					for (i = 0; i < this._globalWatchHandles.length; ++ i) {
-						this._globalWatchHandles[i] (name, previousValue, value);
-					}
-				}
-				
-				// Invoke specific watch handles:
-				if (this._watchHandles !== null && name in this._watchHandles) {
-					for (i = 0; i < this._watchHandles[name].length; ++ i) {
-						this._watchHandles[name][i] (name, previousValue, value);
-					}
-				}
+				this._set (name, value);
+
+				this._sendWatch (name, previousValue, value);
 			}
 			
 			return this;
+		},
+		
+		_set: function (name, value) {
+			this._content[name] = value;
+		},
+		
+		_sendWatch: function (name, previousValue, value) {
+			// Invoke global watch handles:
+			if (this._globalWatchHandles !== null) {
+				for (i = 0; i < this._globalWatchHandles.length; ++ i) {
+					this._globalWatchHandles[i] (name, previousValue, value);
+				}
+			}
+			
+			// Invoke specific watch handles:
+			if (this._watchHandles !== null && name in this._watchHandles) {
+				for (i = 0; i < this._watchHandles[name].length; ++ i) {
+					this._watchHandles[name][i] (name, previousValue, value);
+				}
+			}
 		},
 		
 		watch: function (nameOrCallback, optionalCallback) {
@@ -66,7 +74,7 @@ define (['dojo/_base/declare', './StatefulBase'], function (declare, StatefulBas
 			
 			if (typeof nameOrCallback == 'function') {
 				if (this._globalWatchHandles === null) {
-					this._globalWatchHandles = { };
+					this._globalWatchHandles = [ ];
 				}
 				
 				list = this._globalWatchHandles;

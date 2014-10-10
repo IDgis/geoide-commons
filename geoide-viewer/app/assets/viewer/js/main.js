@@ -7,6 +7,7 @@ require ([
 	
 	'geoide-map/Viewer',
 	'geoide-core/Model',
+	'geoide-core/linkedCopy',
 	
 	'dojo/domReady!'
 ], function (
@@ -17,7 +18,8 @@ require ([
 	put, 
 	
 	Viewer,
-	Model
+	Model,
+	linkedCopy
 ) {
 	
 	var viewers = query ('.js-geoide-viewer').map (function (viewerNode) {
@@ -80,5 +82,7 @@ require ([
 				id: 'layer-2'
 			}
 		]
-	}); 
+	});
+	
+	window.model2 = linkedCopy (window.model);
 });
