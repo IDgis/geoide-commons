@@ -7,6 +7,7 @@ resolvers ++= Common.resolvers
 
 libraryDependencies ++= Seq(
   cache,
+  Common.Dependencies.geoideDomain,
   Common.Dependencies.webjarsPlay,
   Common.Dependencies.webjarsBootstrap,
   Common.Dependencies.webjarsDojoBase,
@@ -14,4 +15,4 @@ libraryDependencies ++= Seq(
   Common.Dependencies.springContext,
   Common.Dependencies.springAop,
   Common.Dependencies.springTest
-)  
+)

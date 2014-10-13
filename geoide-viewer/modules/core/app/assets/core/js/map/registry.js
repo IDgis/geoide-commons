@@ -25,7 +25,7 @@ define ([
 
 		var mapPromise = new Deferred ();
 		
-		xhr.get (geoideViewerRoutes.controllers.mapview.MapConfiguration.mapStructure (mapId).url, {
+		xhr.get (geoideCoreRoutes.controllers.core.MapConfiguration.mapStructure (mapId).url, {
 			handleAs: 'json'
 		}).then (function (data) {
 			var map = createMap (mapId, data);

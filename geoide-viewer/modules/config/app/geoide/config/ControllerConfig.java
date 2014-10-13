@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import akka.actor.ActorRef;
-import controllers.mapview.MapConfiguration;
+import controllers.core.MapConfiguration;
 import controllers.mapview.Query;
 import controllers.mapview.Services;
 import controllers.mapview.View;

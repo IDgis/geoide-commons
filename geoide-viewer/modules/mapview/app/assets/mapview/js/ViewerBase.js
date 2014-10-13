@@ -15,7 +15,7 @@ define ([
 	
 	'dojo/Evented',
 	
-	'./registry',
+	'geoide-core/map/registry',
 	'./LayerView',
 	'./Stateful',
 	'dojo/has!config-OpenLayers-3?./engine/engine-ol3:./engine/engine-ol2'

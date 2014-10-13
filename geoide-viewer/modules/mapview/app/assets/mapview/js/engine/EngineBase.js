@@ -3,7 +3,7 @@ define ([
 	
 	'../Stateful',
 	
-	'../registry'
+	'geoide-core/map/registry'
 ], function (
 	declare,
 
