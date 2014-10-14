@@ -1,26 +1,28 @@
 package nl.idgis.geoide.service.wms.toc;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import nl.idgis.geoide.commons.domain.ServiceLayer;
 import nl.idgis.geoide.commons.domain.toc.Symbol;
 import nl.idgis.geoide.commons.domain.toc.TOCItem;
 import nl.idgis.geoide.commons.domain.traits.Traits;
+import nl.idgis.geoide.service.ServiceType;
 import nl.idgis.geoide.service.toc.TOCServiceTypeTrait;
 
 
 public class TOCwmsTrait implements TOCServiceTypeTrait{
 	
-	public List<Traits<TOCItem>>getTOC(final List<ServiceLayer> serviceLayers) {
-		final List<Traits<TOCItem>> tocItems = new ArrayList<Traits<TOCItem>>();
+	@Override
+	public List<Traits<TOCItem>>getTOC(final ServiceType serviceType, final ServiceLayer serviceLayer) {
 		
-		for (final ServiceLayer serviceLayer: serviceLayers) {
-			List<Traits<TOCItem>> tocChildItems = new ArrayList<Traits<TOCItem>>();
-			Traits<TOCItem> t = Traits.create(new TOCItem(tocChildItems,serviceLayer.getLabel(),false,true,new Symbol()));
-			tocItems.add(t);
-		}	
-		return tocItems;
+		final List<Traits<TOCItem>> tocItems = new ArrayList<>();
+		List<Traits<TOCItem>> tocChildItems = Collections.emptyList();
+		Traits<TOCItem> t = Traits.create(new TOCItem(tocChildItems,serviceLayer.getLabel(),false,false,new Symbol()));
+		tocItems.add(t);
+			
+		return Collections.unmodifiableList(tocItems);
 	}
 
 	
