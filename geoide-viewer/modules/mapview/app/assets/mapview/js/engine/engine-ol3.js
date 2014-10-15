@@ -5,7 +5,7 @@ define ([
 	
 	'./EngineBase',
 	
-	'../registry',
+	'geoide-core/map/registry',
 	
 	'put-selector/put'
 ], function (

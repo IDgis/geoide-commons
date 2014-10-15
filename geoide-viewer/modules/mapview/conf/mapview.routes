@@ -1,6 +1,3 @@
-# Map configuration:
-GET		/map/:mapId/structure.json						@controllers.mapview.MapConfiguration.mapStructure(mapId: String)
-
 # Map view:
 POST	/view											@controllers.mapview.View.buildView()
 

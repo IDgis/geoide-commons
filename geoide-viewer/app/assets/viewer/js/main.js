@@ -6,7 +6,9 @@ require ([
 	'put-selector/put',
 	
 	'geoide-map/Viewer',
-	'geoide-map/Model',
+	'geoide-core/Model',
+	'geoide-core/linkedCopy',
+	'geoide-core/map/Map',
 	
 	'dojo/domReady!'
 ], function (
@@ -17,7 +19,9 @@ require ([
 	put, 
 	
 	Viewer,
-	Model
+	Model,
+	linkedCopy,
+	Map
 ) {
 	
 	var viewers = query ('.js-geoide-viewer').map (function (viewerNode) {
@@ -35,13 +39,13 @@ require ([
 	});
 	
 	window.setLayerVisible = function (layerId, visible) {
-		viewers[0].getLayerView (layerId).setVisible (visible).then (function () {
+		viewers[0].setLayerState (layerId, 'visible', visible).then (function () {
 			console.log ('Visibility change in effect.');
 		});
 	};
 	
 	window.setLayerState = function (layerId, key, value) {
-		viewers[0].getLayerView (layerId).setState (key, value).then (function () {
+		viewers[0].setLayerState (layerId, key, value).then (function () {
 			console.log ('State change in effect.');
 		});
 	};
@@ -80,5 +84,11 @@ require ([
 				id: 'layer-2'
 			}
 		]
-	}); 
+	});
+	
+	window.model2 = linkedCopy (window.model);
+	
+	var value = {"id":"test-map","label":"Test map","layers":[{"id":"layer-1","label":"BRT achtergrondkaart"},{"id":"layer-2","label":"LPG"}]};
+	window.mapModel = new Map (value);
+	window.mapCopy = linkedCopy (window.mapModel);
 });

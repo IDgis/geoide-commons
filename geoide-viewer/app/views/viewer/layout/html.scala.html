@@ -19,6 +19,7 @@
 		@* Scripts: *@
 		<script type="text/javascript" src="@controllers.core.routes.Assets.at("lib/dojo-base/dojo.js")" data-dojo-config="@controllers.core.RequireJS.getDojoConfig(
 			Seq(
+				"geoide-core" -> controllers.core.routes.Assets.at("lib/geoide-core/core/js").url,
 				"geoide-map" -> controllers.core.routes.Assets.at("lib/geoide-mapview/mapview/js").url
 			), 
 			Seq("OpenLayers-" + versionOpenLayers -> true))"></script>
@@ -27,6 +28,7 @@
 		} else {
 			<script type="text/javascript" src="@controllers.mapview.routes.Assets.at("lib/openlayers/OpenLayers.js")"></script>
 		}
+		<script type="text/javascript" src="@controllers.core.routes.JavaScript.javascriptRoutes()"></script>
 		<script type="text/javascript" src="@controllers.mapview.routes.JavaScript.javascriptRoutes()"></script>
 		<script type="text/javascript" src="@controllers.viewer.routes.Assets.at("viewer/js/main.js")"></script>
 	</body>

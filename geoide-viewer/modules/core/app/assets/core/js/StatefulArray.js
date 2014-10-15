@@ -1,166 +1,23 @@
 define ([
 	'dojo/_base/declare',
-	'dojo/_base/lang'
-], function (declare, lang) {
-
-	var StatefulObject, StatefulArray;
-
-	var StatefulBase = declare ([], {
-		_wrap: function (value) {
-			if (typeof value == 'object') {
-				if (value.isInstanceOf && value.isInstanceOf (StatefulBase)) {
-					return value;
-				} else if ('length' in value) {
-					// Wrap empty arrays or arrays containing objects:
-					if (value.length === 0 || typeof value[0] == 'object') {
-						return new StatefulArray (value);
-					} else {
-						return value;
-					}
-				} else {
-					return new StatefulObject (value);
-				}
-			}
-			
-			return value;
-		}
-	});
-	
-	StatefulObject = declare ([StatefulBase], {
-		_content: content,
-		_watchHandles: null,
-		_globalWatchHandles: null,
-		
-		constructor: function (content) {
-			this._buildContent (content);
-		},
-		
-		_buildContent: function (rootObject) {
-			this._content = { };
-			
-			for (var i in rootObject) {
-				if (!(rootObject.hasOwnProperty (i))) {
-					continue;
-				}
-				
-				this._content[i] = this._wrap (rootObject[i]);
-			}
-		},
-		
-		get: function (name) {
-			return this._content[name];
-		},
-		
-		set: function (nameOrValues, optionalValue) {
-			var i;
-			
-			if (typeof nameOrValues == 'object') {
-				for (i in nameOrValues) {
-					if (nameOrValues.hasOwnProperty (i)) {
-						this.set (i, nameOrvalues[i]);
-					}
-				}
-				return this;
-			}
-			
-			var name = nameOrValues,
-				value = this._wrap (optionalValue),
-				previousValue = this.get (name);
-			
-			if (value !== previousValue) {
-				this._content[name] = this._wrap (value);
-				
-				// Invoke global watch handles:
-				if (this._globalWatchHandles !== null) {
-					for (i = 0; i < this._globalWatchHandles.length; ++ i) {
-						this._globalWatchHandles[i] (name, previousValue, value);
-					}
-				}
-				
-				// Invoke specific watch handles:
-				if (this._watchHandles !== null && name in this._watchHandles) {
-					for (i = 0; i < this._watchHandles[name].length; ++ i) {
-						this._watchHandles[name][i] (name, previousValue, value);
-					}
-				}
-			}
-			
-			return this;
-		},
-		
-		watch: function (nameOrCallback, optionalCallback) {
-			var list, callback;
-			
-			if (typeof nameOrCallback == 'function') {
-				if (this._globalWatchHandles === null) {
-					this._globalWatchHandles = { };
-				}
-				
-				list = this._globalWatchHandles;
-				callback = nameOrCallback;
-			} else {
-				if (this._watchHandles === null) {
-					this._watchHandles = { };
-				}
-				if (!(nameOrCallback in this._watchHandles)) {
-					this._watchHandles[nameOrCallback] = [ ];
-				}
-				
-				list = this._watchHandles[nameOrCallback];
-				callback = optionalCallback;
-			}
-			
-			list.push (callback);
-			
-			var removeFn = function () {
-				for (var i = 0; i < list.length; ++ i) {
-					if (list[i] === callback) {
-						list.splice (i, 1);
-						return;
-					}
-				}
-			};
-			
-			return {
-				remove: removeFn,
-				unwatch: removeFn
-			};
-		},
-		
-		extract: function () {
-			var obj = { };
-			
-			for (var i in this._content) {
-				if (!this._content.hasOwnProperty (i)) {
-					continue;
-				}
-				
-				var value = this._content[i];
-				
-				if (typeof value == 'object' && value !== null && 'isInstanceOf' in value) {
-					obj[i] = value.extract ();
-				} else {
-					obj[i] = value;
-				}
-			}
-			
-			return obj;
-		}
-	});
-	
-	StatefulArray = declare ([StatefulBase], {
+	'./StatefulBase'
+], function (
+	declare,
+	StatefulBase
+) {
+	return declare ([StatefulBase], {
 		_content: null,
 		_watches: null,
 		
 		constructor: function (content) {
-			this._buildContent (content);
+			this._content = [ ];
 		},
 		
 		_buildContent: function (rootArray) {
 			this._content = [ ];
 			
 			for (var i = 0; i < rootArray.length; ++ i) {
-				this._content.push (this._wrap (rootArray[i]));
+				this._content.push (this._wrap (rootArray[i], this, i));
 			}
 		},
 		
@@ -177,7 +34,7 @@ define ([
 				throw new Error ("index must be >= 0");
 			}
 
-			value = this._wrap (value);
+			value = this._wrap (value, this, index);
 			
 			if (index < this._content.length) {
 				// Replace a value:
@@ -224,9 +81,9 @@ define ([
 		 * Similar to Array.prototype.push
 		 */
 		push: function (value) {
-			value = this._wrap (value);
+			value = this._wrap (value, this, this._content.length);
 			
-			this._content.push (this._wrap (value));
+			this._content.push (this._wrap (value, this, this._content.length));
 			
 			this._fireWatch (this._content.length - 1, [ ], [ value ]);
 			
@@ -252,7 +109,7 @@ define ([
 		 * Similar to Array.prototype.unshift
 		 */
 		unshift: function (value) {
-			value = this._wrap (value);
+			value = this._wrap (value, this, 0);
 			
 			this._content.unshift (value);
 			
@@ -284,7 +141,7 @@ define ([
 			var args = [ index, howMany ],
 				adds = [ ];
 			for (i = 2; i < arguments.length; ++ i) {
-				var v = this._wrap (arguments[i]);
+				var v = this._wrap (arguments[i], this, index + i - 2);
 				args.push (v);
 				adds.push (v);
 			}
@@ -348,11 +205,12 @@ define ([
 			}
 			
 			return list;
-		}
-	});
-	
-	return declare ([StatefulObject], {
-		constructor: function (content) {
+		},
+		
+		forEach: function (callback) {
+			for (var i = 0; i < this._content.length; ++ i) {
+				callback (this._content[i], i);
+			}
 		}
 	});
 });

@@ -10,7 +10,6 @@ public class JavaScript extends Controller {
 		response ().setContentType ("text/javascript");
 		return ok (
 			Routes.javascriptRouter ("geoideViewerRoutes",
-				controllers.mapview.routes.javascript.MapConfiguration.mapStructure (),
 				controllers.mapview.routes.javascript.View.buildView (),
 				controllers.mapview.routes.javascript.Services.serviceRequest (),
 				controllers.mapview.routes.javascript.Services.serviceRequestWithLayer (),
