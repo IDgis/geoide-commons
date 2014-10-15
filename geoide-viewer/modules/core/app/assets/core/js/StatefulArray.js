@@ -17,7 +17,7 @@ define ([
 			this._content = [ ];
 			
 			for (var i = 0; i < rootArray.length; ++ i) {
-				this._content.push (this._wrap (rootArray[i]));
+				this._content.push (this._wrap (rootArray[i], this, i));
 			}
 		},
 		
@@ -34,7 +34,7 @@ define ([
 				throw new Error ("index must be >= 0");
 			}
 
-			value = this._wrap (value);
+			value = this._wrap (value, this, index);
 			
 			if (index < this._content.length) {
 				// Replace a value:
@@ -81,9 +81,9 @@ define ([
 		 * Similar to Array.prototype.push
 		 */
 		push: function (value) {
-			value = this._wrap (value);
+			value = this._wrap (value, this, this._content.length);
 			
-			this._content.push (this._wrap (value));
+			this._content.push (this._wrap (value, this, this._content.length));
 			
 			this._fireWatch (this._content.length - 1, [ ], [ value ]);
 			
@@ -109,7 +109,7 @@ define ([
 		 * Similar to Array.prototype.unshift
 		 */
 		unshift: function (value) {
-			value = this._wrap (value);
+			value = this._wrap (value, this, 0);
 			
 			this._content.unshift (value);
 			
@@ -141,7 +141,7 @@ define ([
 			var args = [ index, howMany ],
 				adds = [ ];
 			for (i = 2; i < arguments.length; ++ i) {
-				var v = this._wrap (arguments[i]);
+				var v = this._wrap (arguments[i], this, index + i - 2);
 				args.push (v);
 				adds.push (v);
 			}

@@ -27,7 +27,7 @@ define ([
 		}
 	}
 	
-	var linkedObjectSchema = Model.prototype._schema;
+	var linkedObjectWrap = Model.prototype._wrap;
 	
 	/**
 	 * - Setting a value on the copy will only update the copy, the source remains unchanged.
@@ -39,7 +39,7 @@ define ([
 	LinkedObject = declare ([StatefulObject], {
 		_source: null,
 		_watchHandle: null,
-		_schema: linkedObjectSchema,
+		_wrap: linkedObjectWrap,
 		
 		constructor: function (source) {
 			this._source = source;
@@ -74,6 +74,10 @@ define ([
 					this._sendWatch (name, oldValue, newValue);
 				}
 			}));
+		},
+		
+		_getSchemaProperty: function (name) {
+			return this._source._getSchemaProperty (name);
 		},
 		
 		/**
@@ -127,7 +131,7 @@ define ([
 	LinkedArray = declare ([StatefulArray], {
 		_source: null,
 		_watchHandle: null,
-		_schema: linkedObjectSchema,
+		_wrap: linkedObjectWrap,
 
 		constructor: function (source) {
 			this._source = source;
@@ -144,6 +148,10 @@ define ([
 			this._makeCopy ();
 		},
 
+		_getSchemaProperty: function (name) {
+			return this._source._getSchemaProperty (name);
+		},
+		
 		_makeCopy: function () {
 			var i, value;
 			

@@ -8,6 +8,7 @@ require ([
 	'geoide-map/Viewer',
 	'geoide-core/Model',
 	'geoide-core/linkedCopy',
+	'geoide-core/map/Map',
 	
 	'dojo/domReady!'
 ], function (
@@ -19,7 +20,8 @@ require ([
 	
 	Viewer,
 	Model,
-	linkedCopy
+	linkedCopy,
+	Map
 ) {
 	
 	var viewers = query ('.js-geoide-viewer').map (function (viewerNode) {
@@ -85,4 +87,8 @@ require ([
 	});
 	
 	window.model2 = linkedCopy (window.model);
+	
+	var value = {"id":"test-map","label":"Test map","layers":[{"id":"layer-1","label":"BRT achtergrondkaart"},{"id":"layer-2","label":"LPG"}]};
+	window.mapModel = new Map (value);
+	window.mapCopy = linkedCopy (window.mapModel);
 });

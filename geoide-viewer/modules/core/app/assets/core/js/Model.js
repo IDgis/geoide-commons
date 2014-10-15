@@ -14,30 +14,28 @@ define ([
 	StatefulArray
 ) {
 	var DefaultStatefulObject, DefaultStatefulArray;
-	
-	var defaultSchema = {
-		wrap: function (value) {
-			if (typeof value == 'object') {
-				if (value.isInstanceOf && value.isInstanceOf (StatefulBase)) {
-					return value;
-				} else if ('length' in value) {
-					// Wrap empty arrays or arrays containing objects:
-					if (value.length === 0 || typeof value[0] == 'object') {
-						return new DefaultStatefulArray (value);
-					} else {
-						return value;
-					}
+
+	var defaultWrap = function (value, self, propertyName) {
+		if (typeof value == 'object') {
+			if (value.isInstanceOf && value.isInstanceOf (StatefulBase)) {
+				return value;
+			} else if ('length' in value) {
+				// Wrap empty arrays or arrays containing objects:
+				if (value.length === 0 || typeof value[0] == 'object') {
+					return new DefaultStatefulArray (value);
 				} else {
-					return new DefaultStatefulObject (value);
+					return value;
 				}
+			} else {
+				return new DefaultStatefulObject (value);
 			}
-			
-			return value;
-		}	
-	};
+		}
+		
+		return value;
+	};	
 	
 	DefaultStatefulObject = declare ([StatefulObject], {
-		_schema: defaultSchema,
+		_wrap: defaultWrap,
 		
 		constructor: function (content) {
 			this._buildContent (content);
@@ -45,7 +43,7 @@ define ([
 	});
 	
 	DefaultStatefulArray = declare ([StatefulArray], {
-		_schema: defaultSchema,
+		_wrap: defaultWrap,
 		
 		constructor: function (content) {
 			this._buildContent (content);
@@ -53,7 +51,7 @@ define ([
 	});
 	
 	return declare ([DefaultStatefulObject], {
-		_schema: defaultSchema,
+		_wrap: defaultWrap,
 		
 		constructor: function (content) {
 		}

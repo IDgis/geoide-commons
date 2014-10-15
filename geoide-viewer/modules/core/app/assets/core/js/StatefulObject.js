@@ -16,7 +16,7 @@ define (['dojo/_base/declare', './StatefulBase'], function (declare, StatefulBas
 					continue;
 				}
 				
-				this._content[i] = this._wrap (rootObject[i]);
+				this._content[i] = this._wrap (rootObject[i], this, i);
 			}
 		},
 		
@@ -25,6 +25,10 @@ define (['dojo/_base/declare', './StatefulBase'], function (declare, StatefulBas
 		},
 		
 		set: function (nameOrValues, optionalValue) {
+			if (this._readonly) {
+				throw new Error ('Cannot alter readonly object');
+			}
+			
 			var i;
 			
 			if (typeof nameOrValues == 'object') {
@@ -37,7 +41,7 @@ define (['dojo/_base/declare', './StatefulBase'], function (declare, StatefulBas
 			}
 			
 			var name = nameOrValues,
-				value = this._wrap (optionalValue),
+				value = this._wrap (optionalValue, this, name),
 				previousValue = this.get (name);
 			
 			if (value !== previousValue) {
@@ -113,6 +117,11 @@ define (['dojo/_base/declare', './StatefulBase'], function (declare, StatefulBas
 			
 			for (var i in this._content) {
 				if (!this._content.hasOwnProperty (i)) {
+					continue;
+				}
+				
+				// Skip transient properties:
+				if (this._getSchemaProperty (i).transient) {
 					continue;
 				}
 				
