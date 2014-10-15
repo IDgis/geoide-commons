@@ -15,6 +15,10 @@ define ([
 	
 	var LayerList, Layer, LayerState, MapStatefulObject, MapStatefulArray;
 	
+	var defaultState = {
+		visible: true
+	};
+	
 	var mapWrap = function (value, self, propertyName) {
 		if (typeof value == 'object') {
 			if (value.isInstanceOf && value.isInstanceOf (StatefulBase)) {
@@ -37,7 +41,7 @@ define ([
 						state: { }
 					}, value), self.map ());
 				} else if (self.isInstanceOf (Layer) && propertyName == 'state') {
-					return new LayerState (value, self.map ());  
+					return new LayerState (lang.mixin (lang.mixin ({}, defaultState), value), self.map ());  
 				} else {
 					return new MapStatefulObject (value, self.map ());
 				}

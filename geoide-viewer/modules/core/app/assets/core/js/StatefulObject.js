@@ -53,6 +53,10 @@ define (['dojo/_base/declare', './StatefulBase'], function (declare, StatefulBas
 			return this;
 		},
 		
+		has: function (name) {
+			return name in this._content;
+		},
+		
 		_set: function (name, value) {
 			this._content[name] = value;
 		},

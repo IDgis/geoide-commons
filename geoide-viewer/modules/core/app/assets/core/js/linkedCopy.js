@@ -99,6 +99,14 @@ define ([
 			return value;
 		},
 		
+		has: function (name) {
+			if (name in this._content) {
+				return true;
+			}
+			
+			return this._source.has (name);
+		},
+		
 		_set: function (name, value) {
 			if (name in this._content) {
 				var oldValue = this._content[name];

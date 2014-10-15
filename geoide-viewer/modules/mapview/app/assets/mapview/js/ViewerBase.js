@@ -42,10 +42,6 @@ define ([
 	Engine
 ) {
 
-	var defaultState = {
-		visible: true
-	};
-
 	function wrapPromise (valueOrPromise) {
 		if (valueOrPromise && typeof valueOrPromise.then === 'function') {
 			return valueOrPromise;
@@ -155,11 +151,13 @@ define ([
 		layerState: null,
 		
 		_engineAttributes: null,
+		_watchHandles: null,
 		
 		constructor: function (selector, config) {
 			this.domNode = query (selector)[0];
 			this.layerState = { };
 			this._engineAttributes = [ ];
+			this._watchHandles = [ ];
 			this.engine = new Engine (this, {
 				center: [150000, 450000],
 				zoom: 8
@@ -182,15 +180,17 @@ define ([
 			if (this.started === true) {
 				throw new Error ("Already started");
 			}
-			
-			this.map = registry.map (this.mapId);
+
+			if (!this.map) {
+				this.map = registry.map (this.mapId);
+			}
 
 			var def = new Deferred ();
 			
 			whenAll (this.map, this.engine.startup (), lang.hitch (this, function (map, engine) {
 				this.map = map;
 				
-				this._buildInitialLayerState (map);
+				this._watchLayerState ();
 				
 				// Update the viewer for the first time:
 				this._updateViewer ().then (lang.hitch (this, function () {
@@ -214,6 +214,16 @@ define ([
 			}));
 			
 			return def;
+		},
+		
+		_watchLayerState: function () {
+			var callback = lang.hitch (this, this._scheduleUpdate);
+			
+			this._watchHandles.push (this.map.get ('layers').watchElements (callback));
+			this.map.get ('layerList').forEach (lang.hitch (this, function (layer) {
+				this._watchHandles.push (layer.get ('state').watch (callback));
+				this._watchHandles.push (layer.get ('layers').watchElements (callback));
+			}));
 		},
 		
 		getLayerView: function (layerId) {
@@ -331,7 +341,7 @@ define ([
 			var def = new Deferred ();
 			
 			when (this.map, lang.hitch (this, function (map) {
-				var viewerState = { layers: this._buildViewerState (map.getRootLayers ()) };
+				var viewerState = { layers: this._buildViewerState (map.get ('layers')) };
 				
 				// Post the viewer state:
 				xhr.post (geoideViewerRoutes.controllers.mapview.View.buildView ().url, {
@@ -357,15 +367,15 @@ define ([
 		_buildViewerState: function (layers) {
 			var result = [ ];
 			
-			for (var i = 0; i < layers.length; ++ i) {
-				var layer = layers[i],
+			for (var i = 0, length = layers.length (); i < length; ++ i) {
+				var layer = layers.get (i),
 					mergedLayer = { 
-						id: layer.id,
-						state: this.layerState[layer.id] || { }
+						id: layer.get ('id'),
+						state: layer.get ('state').extract ()
 					};
 				
-				if (layer.layers) {
-					mergedLayer.layers = this._buildViewerState (layer.layers);
+				if (layer.get ('layers').length () > 0) {
+					mergedLayer.layers = this._buildViewerState (layer.get ('layers'));
 				}
 				
 				result.push (mergedLayer);
@@ -390,28 +400,8 @@ define ([
 			return this.layerState[layerId][key];
 		},
 		
-		_buildInitialLayerState: function (map) {
-			var layers = map.getLayers ();
-			
-			for (var i = 0; i < layers.length; ++ i) {
-				var layer = layers[i],
-					id = layer.id,
-					initialState = layer.state || { };
-				
-				if (!(id in this.layerState)) {
-					// Mix the initial state of the layer with the global default layer state:
-					this.layerState[id] = lang.mixin (lang.mixin ({ }, defaultState), initialState);
-				} else {
-					// Combine the initial state, the default state and the previous layer state:
-					var currentState = this.layerState[id],
-						newState = lang.mixin (lang.mixin ({ }, defaultState), initialState);
-					
-					this.layerState[id] = lang.mixin (currentState, newState);
-				}
-			}
-		},
-		
 		_parse: function (config) {
+			this.map = config.map;
 			this.mapId = config.mapId || domAttr.get (this.domNode, 'data-geoide-map');
 			
 			for (var i in config) {

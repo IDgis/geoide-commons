@@ -205,6 +205,12 @@ define ([
 			}
 			
 			return list;
+		},
+		
+		forEach: function (callback) {
+			for (var i = 0; i < this._content.length; ++ i) {
+				callback (this._content[i], i);
+			}
 		}
 	});
 });
