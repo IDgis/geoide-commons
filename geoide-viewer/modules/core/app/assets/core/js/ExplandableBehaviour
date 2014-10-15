@@ -1,0 +1,24 @@
+define ([
+
+'dojo/dom', 
+
+'dojo/Deferred',
+
+'core/DomBehaviour',
+
+'dojo/domReady!'
+], 
+
+function(
+dom,
+ 
+Deferred,
+
+DomBehaviour 
+) {
+
+	return declare([DomBehaviour],{});
+	
+	
+	
+});
