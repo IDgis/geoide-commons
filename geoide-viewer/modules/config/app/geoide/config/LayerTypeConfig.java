@@ -13,6 +13,7 @@ import nl.idgis.geoide.commons.layer.LayerTypeRegistry;
 import nl.idgis.geoide.service.ServiceTypeRegistry;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -30,7 +31,7 @@ public class LayerTypeConfig {
 	
 	@Bean
 	@Autowired (required = false)
-	public LayerTypeRegistry layerTypeRegistry (final Collection<LayerType> layerTypes, final Collection<TypedTrait<?, ?>> traits) {
+	public LayerTypeRegistry layerTypeRegistry (final Collection<LayerType> layerTypes, final @Qualifier ("layerTypeTrait") Collection<TypedTrait<?, ?>> traits) {
 		final List<Traits<LayerType>> traitsLayerTypes = new ArrayList<> ();
 		
 		for (final LayerType lt: layerTypes) {
@@ -44,7 +45,8 @@ public class LayerTypeConfig {
 	}
 	
 	@Bean
-	public TypedTrait<A, A> dummyTrait () {
+	@Qualifier ("layerTypeTrait")
+	public TypedTrait<A, A> dummyLayerTrait () {
 		// Add a dymmy trait to make sure that the typedtraits collection always contains at least one trait.
 		return TypedTrait.create (A.class, new Trait<A> () {
 		});

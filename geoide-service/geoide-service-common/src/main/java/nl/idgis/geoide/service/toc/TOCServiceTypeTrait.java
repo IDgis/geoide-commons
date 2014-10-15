@@ -10,5 +10,5 @@ import nl.idgis.geoide.service.ServiceTypeTrait;
 
 
 public interface TOCServiceTypeTrait extends ServiceTypeTrait {
-	public List<Traits<TOCItem>> getTOC(ServiceType serviceType, ServiceLayer serviceLayer);
+	public List<Traits<TOCItem>> getTOC(Traits<ServiceType> serviceType, ServiceLayer serviceLayer);
 }

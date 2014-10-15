@@ -5,6 +5,7 @@ import java.util.List;
 
 import nl.idgis.geoide.commons.domain.Layer;
 import nl.idgis.geoide.commons.domain.ServiceLayer;
+import nl.idgis.geoide.commons.domain.toc.Symbol;
 import nl.idgis.geoide.commons.domain.toc.TOCItem;
 import nl.idgis.geoide.commons.domain.traits.Traits;
 import nl.idgis.geoide.commons.layer.LayerType;
@@ -20,21 +21,37 @@ public class TOCdefaultLayerTypeTrait implements TOCLayerTypeTrait {
 	}
 
 	@Override
-	public List<Traits<TOCItem>> getTOC(LayerType layerType, Layer layer) {
+	public List<Traits<TOCItem>> getTOC(Traits<LayerType> layerType, Layer layer) {
 		List<ServiceLayer>  serviceLayers = layer.getServiceLayers();
-		List<Traits<TOCItem>> tocItems = new ArrayList<>();
+		List<Traits<TOCItem>> tocChildItems = new ArrayList<>();
 		for( ServiceLayer serviceLayer: serviceLayers) {
 			String serviceTypeName = serviceLayer.getService().getIdentification().getServiceType();
 			Traits<ServiceType> serviceType = serviceTypeRegistry.getServiceType(serviceTypeName);
 			if (serviceType.has(TOCServiceTypeTrait.class)){
-				tocItems.addAll(serviceType.trait(TOCServiceTypeTrait.class).getTOC(serviceType,serviceLayer));
-			}
-			
+				tocChildItems.addAll(serviceType.trait(TOCServiceTypeTrait.class).getTOC(serviceType,serviceLayer));
+			}	
+		}
+		List<Layer> slayers = layer.getLayers();
+		for (Layer slayer: slayers) {
+			tocChildItems.addAll(getTOC(layerType, slayer));
 		}
 		
-		return null;
+		Traits<TOCItem> tocItem = Traits.create (TOCItem
+				.builder ()
+				.setItems (tocChildItems)
+				.setLabel (layer.getLabel ())
+				.setActivatable (true)
+				.setActive (false)
+				.setExpandable (true)
+				.setExpanded (false)
+				.setSymbol (new Symbol ())
+				.build ()
+			);
+		
+		List<Traits<TOCItem>> tocItems = new ArrayList<>();
+		tocItems.add(tocItem);
+		return tocItems;
 	}
-	
 	
 
 }

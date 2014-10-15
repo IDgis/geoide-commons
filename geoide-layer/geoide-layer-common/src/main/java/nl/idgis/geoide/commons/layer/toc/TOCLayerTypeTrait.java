@@ -10,6 +10,6 @@ import nl.idgis.geoide.commons.layer.LayerTypeTrait;
 
 public interface TOCLayerTypeTrait extends LayerTypeTrait {
 	
-	public abstract List<Traits<TOCItem>> getTOC(LayerType layerType, Layer layer);
+	public abstract List<Traits<TOCItem>> getTOC(Traits<LayerType> layerType, Layer layer);
 
 }

@@ -1,9 +1,47 @@
-@(mapId: String, versionOpenLayers: String)
+@(mapId: String, versionOpenLayers: String, tocItems:List[nl.idgis.geoide.commons.domain.traits.Traits[nl.idgis.geoide.commons.domain.toc.TOCItem]])
 
+@displayItem(item: nl.idgis.geoide.commons.domain.traits.Traits[nl.idgis.geoide.commons.domain.toc.TOCItem], level: Integer = 0) = {
+	
+	<li class="gi-toc-level-@level @if(item.get().isExpandable()){expandable} @if(item.get().isExpanded()){expanded}">
+			
+		<label>
+			@if(item.get().isExpandable()) {
+				<span class="expandable-icons">
+					<i class="fa fa-minus-square-o"></i>
+					<i class="fa fa-plus-square-o"></i>
+				</span>
+			}
+			@item.get().getLabel()
+		</label>
+		@if(!item.get().getItems().isEmpty()) {
+			<ul>
+		 		@for(child <- item.get().getItems()) {
+		 			@displayItem(child, level + 1)
+				}
+			</ul>
+		}
+	</li>
+}
+
+
+	
 @layout.html("Viewer", versionOpenLayers) {
+	
+
+	
 	Hello, World!
 	
 	<pre>@controllers.core.RequireJS.getDojoConfig</pre>
+
+
+
+	<ul class="gi-toc">
+	@for(tocItem <- tocItems) {
+		@displayItem(tocItem)
+	}
+	</ul>	
+
+	
 	
 	
 	<div id="viewer-container" class="js-geoide-viewer" data-geoide-map="@mapId"></div>

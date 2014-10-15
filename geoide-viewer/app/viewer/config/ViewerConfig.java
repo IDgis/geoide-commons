@@ -5,8 +5,17 @@ import geoide.config.ControllerConfig;
 import geoide.config.LayerTypeConfig;
 import geoide.config.ServiceTypeConfig;
 import nl.idgis.geoide.commons.domain.provider.MapProvider;
+import nl.idgis.geoide.commons.domain.traits.spring.TypedTrait;
+import nl.idgis.geoide.commons.layer.DefaultLayerType;
+import nl.idgis.geoide.commons.layer.LayerType;
+import nl.idgis.geoide.commons.layer.toc.TOCdefaultLayerTypeTrait;
+import nl.idgis.geoide.service.ServiceType;
+import nl.idgis.geoide.service.ServiceTypeRegistry;
+import nl.idgis.geoide.service.wms.WMSServiceType;
+import nl.idgis.geoide.service.wms.toc.TOCwmsTrait;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -29,5 +38,19 @@ public class ViewerConfig {
 	@Bean
 	public Viewer viewerController (MapProvider mapPovider, TOC toc) {
 		return new Viewer (mapPovider, toc);
+	}
+	
+	@Autowired
+	@Bean
+	@Qualifier ("layerTypeTrait")
+	public TypedTrait<LayerType, DefaultLayerType> tocDefaultLayerTypeTrait (ServiceTypeRegistry serviceTypeRegistry) {
+		return TypedTrait.create(DefaultLayerType.class, new TOCdefaultLayerTypeTrait(serviceTypeRegistry));	
+	}
+	
+	@Autowired
+	@Bean
+	@Qualifier ("serviceTypeTrait")
+	public TypedTrait<ServiceType, WMSServiceType> tocWmsTrait () {
+		return TypedTrait.create(WMSServiceType.class, new TOCwmsTrait());
 	}
 }

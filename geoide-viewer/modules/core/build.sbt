@@ -14,5 +14,6 @@ libraryDependencies ++= Seq(
   Common.Dependencies.webjarsPutSelector,
   Common.Dependencies.springContext,
   Common.Dependencies.springAop,
-  Common.Dependencies.springTest
+  Common.Dependencies.springTest,
+  Common.Dependencies.webjarsFontAwesome
 )

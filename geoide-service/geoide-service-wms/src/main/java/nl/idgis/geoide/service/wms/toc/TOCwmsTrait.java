@@ -14,13 +14,22 @@ import nl.idgis.geoide.service.toc.TOCServiceTypeTrait;
 
 public class TOCwmsTrait implements TOCServiceTypeTrait{
 	
+	public TOCwmsTrait () {
+		
+	}
+	
 	@Override
-	public List<Traits<TOCItem>>getTOC(final ServiceType serviceType, final ServiceLayer serviceLayer) {
+	public List<Traits<TOCItem>>getTOC(final Traits<ServiceType> serviceType, final ServiceLayer serviceLayer) {
 		
 		final List<Traits<TOCItem>> tocItems = new ArrayList<>();
-		List<Traits<TOCItem>> tocChildItems = Collections.emptyList();
-		Traits<TOCItem> t = Traits.create(new TOCItem(tocChildItems,serviceLayer.getLabel(),false,false,new Symbol()));
-		tocItems.add(t);
+		
+		tocItems.add(Traits.create (
+			TOCItem
+				.builder ()
+				.setLabel (serviceLayer.getLabel ())
+				.setSymbol (new Symbol ())
+				.build ()
+		));
 			
 		return Collections.unmodifiableList(tocItems);
 	}

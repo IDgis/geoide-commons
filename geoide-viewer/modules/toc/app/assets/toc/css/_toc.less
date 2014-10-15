@@ -1,0 +1,44 @@
+.gi-toc {
+
+	// Flatten lists:
+	&, ul, li, label {
+		display: block;
+		margin: 0;
+		padding: 0;
+	}
+	
+	// Expandable:
+	li > label > .expandable-icons > .fa-minus-square-o {
+		display: none;
+	}
+	ul {
+		display: none;
+	}
+	li.expanded  {
+		> ul {
+			display: block;
+		}
+		
+		> label > .expandable-icons > .fa-plus-square-o {
+			display: none;
+		}
+		
+		> label > .expandable-icons > .fa-minus-square-o {
+			display: inline-block;
+		}
+	}
+	
+	li.gi-toc-level-1 > label {	padding-left: 10px; }
+	li.gi-toc-level-2 > label {	padding-left: 20px; }
+	li.gi-toc-level-3 > label {	padding-left: 30px; }
+	li.gi-toc-level-4 > label {	padding-left: 40px; }
+	li.gi-toc-level-5 > label {	padding-left: 50px; }
+	li.gi-toc-level-6 > label {	padding-left: 60px; }
+	li.gi-toc-level-7 > label {	padding-left: 70px; }
+	li.gi-toc-level-8 > label {	padding-left: 80px; }
+	li.gi-toc-level-9 > label {	padding-left: 90px; }
+	
+	label:hover {
+		background-color: red;
+	}
+}
