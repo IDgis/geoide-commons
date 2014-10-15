@@ -39,13 +39,13 @@ require ([
 	});
 	
 	window.setLayerVisible = function (layerId, visible) {
-		viewers[0].getLayerView (layerId).setVisible (visible).then (function () {
+		viewers[0].setLayerState (layerId, 'visible', visible).then (function () {
 			console.log ('Visibility change in effect.');
 		});
 	};
 	
 	window.setLayerState = function (layerId, key, value) {
-		viewers[0].getLayerView (layerId).setState (key, value).then (function () {
+		viewers[0].setLayerState (layerId, key, value).then (function () {
 			console.log ('State change in effect.');
 		});
 	};

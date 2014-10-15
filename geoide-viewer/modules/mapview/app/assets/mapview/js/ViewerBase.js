@@ -16,7 +16,6 @@ define ([
 	'dojo/Evented',
 	
 	'geoide-core/map/registry',
-	'./LayerView',
 	'./Stateful',
 	'dojo/has!config-OpenLayers-3?./engine/engine-ol3:./engine/engine-ol2'
 ], function (
@@ -37,7 +36,6 @@ define ([
 	Evented,
 	
 	registry,
-	LayerView,
 	Stateful,
 	Engine
 ) {
@@ -226,43 +224,56 @@ define ([
 			}));
 		},
 		
-		getLayerView: function (layerId) {
-			return new LayerView (this, layerId);
-		},
-		
 		setLayerState: function (layerId, key, value) {
-			var previous;
+			var deferred = new Deferred (),
+				promises = [ ],
+				doUpdate = false,
+				values = { };
 			
 			if (typeof value === 'undefined') {
-				var doUpdate = false;
-				
-				for (var i in key) {
-					if (!key.hasOwnProperty (i)) {
-						continue;
-					}
-					
-					var val = key[i];
-					
-					previous = this._getLayerState (layerId, i);
-					
-					if (val !== previous) {
-						this._setLayerState (layerId, i, key[i]);
-						doUpdate = true;
-					}
-				}
-				
-				if (doUpdate) {
-					return this._scheduleUpdate ();
-				}
+				values = key;
 			} else {
-				previous = this._getLayerState (layerId, key);
-				if (value !== previous) {
-					this._setLayerState (layerId, key, value);
-					return this._scheduleUpdate ();
-				}
+				values[key] = value;
 			}
 			
-			return pure (this);
+			var setSingleValue = lang.hitch (this, function (key, value) {
+				var deferred = new Deferred ();
+				
+				when (this._getLayerState (layerId, key), lang.hitch (this, function (previous) {
+					if (value === previous) {
+						deferred.resolve ();
+						return;
+					}
+					
+					doUpdate = true;
+					
+					when (this._setLayerState (layerId, key, value), function () {
+						deferred.resolve ();
+					});
+				}));
+				
+				return deferred;
+			});
+			
+			for (var i in values) {
+				if (!values.hasOwnProperty (i)) {
+					continue;
+				}
+				
+				promises.push (setSingleValue (i, values[i]));
+			}
+
+			when (all (promises), lang.hitch (this, function (results) {
+				if (doUpdate) {
+					when (this._scheduleUpdate (), function () {
+						deferred.resolve ();
+					});
+				} else {
+					deferred.resolve ();
+				}
+			}));
+			
+			return deferred;
 		},
 		
 		getLayerState: function (layerId, key) {
@@ -385,19 +396,49 @@ define ([
 		},
 
 		_setLayerState: function (layerId, key, value) {
-			if (!(layerId in this.layerState)) {
-				this.layerState[layerId] = { };
-			}
+			var deferred = new Deferred ();
 			
-			this.layerState[layerId][key] = value;
+			when (this.map, function (map) {
+				var layer = map.get ('layerDictionary').get (layerId);
+				if (!layer) {
+					throw new Error ("Unknown layer: " + layerId);
+				}
+				
+				layer.get ('state').set (key, value);
+				
+				deferred.resolve ();
+			});
+			
+			return deferred;
 		},
 		
 		_getLayerState: function (layerId, key, defaultValue) {
-			if (!(layerId in this.layerState) || !(key in this.layerState[layerId])) {
-				return defaultValue;
-			}
 			
-			return this.layerState[layerId][key];
+			if (this.map.then) {
+				var deferred = new Deferred ();
+				
+				when (this.map, function (map) {
+					var layer = map.get ('layerDictionary').get (layerId);
+					if (!layer) {
+						throw new Error ("Unknown layer: " + layerId);
+					}
+					
+					var value = layer.get ('state').get (key);
+					
+					deferred.resolve (typeof value === 'undefined' ? defaultValue : value);
+				});
+				
+				return deferred;
+			} else {
+				var layer = this.map.get ('layerDictionary').get (layerId);
+				if (!layer) {
+					throw new Error ('Unknown layer: ' + layerId);
+				}
+
+				var value = layer.get ('state').get (key);
+				
+				return typeof value === 'undefined' ? defaultValue : value;
+			}
 		},
 		
 		_parse: function (config) {
