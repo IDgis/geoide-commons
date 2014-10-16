@@ -1,32 +1,37 @@
-
 define ([
 
-'dojo/_base/declare',
-
-'dojo/dom', 
-
-'dojo/Deferred',
-
-
-'dojo/domReady!'
+	'dojo/_base/declare',
+	
+	'dojo/query',
+	'dojo/dom', 
+	
+	'dojo/Deferred'
 ], 
 
 function(
-declare,
-
-dom,
- 
-Deferred) 
-{
-	declare("DOMBehaviour", null , {
-		constructor: function(node){
-			this.node = node;
+	declare,
+	
+	query,
+	dom,
+	 
+	Deferred
+) {
+	
+	return declare (null, {
+		node: null,
+		
+		constructor: function (nodeOrSelector){
+			console.log ('DomBehaviour');
+			this.node = query (nodeOrSelector)[0];
 		},
+		
 		startup: function () {
-			this.startUpPromise = new Deferred ();
+			var promise = new Deferred ();
 			
-			return startUpPromise;
+			promise.resolve ();
+			
+			return promise;
 		}
-	}		
+	});		
 	
 });

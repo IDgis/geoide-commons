@@ -196,7 +196,7 @@ define ([
 		_vectorLayer: null,
 		
 		startup: function () {
-			var domNode = this.viewer.domNode;
+			var domNode = this.viewer.node;
 
 			this.mapNode = put (domNode, 'div.geoide-map-ol2');
 			

@@ -48,7 +48,7 @@ public final class TOCItem implements Serializable {
 		 return this.label;
 	 }
 	 
-	 public Boolean getActivatable() {
+	 public Boolean isActivatable() {
 		 return this.activatable;
 	 }
 

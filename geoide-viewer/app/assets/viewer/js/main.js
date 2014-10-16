@@ -9,6 +9,7 @@ require ([
 	'geoide-core/Model',
 	'geoide-core/linkedCopy',
 	'geoide-core/map/Map',
+	'geoide-toc/DefaultTOC',
 	
 	'geoide-map/interaction/Navigation',
 	'geoide-map/interaction/KeyboardNavigation',
@@ -28,7 +29,7 @@ require ([
 	Model,
 	linkedCopy,
 	Map,
-	
+	TOC,
 	Navigation,
 	KeyboardNavigation,
 	DragZoom,
@@ -63,6 +64,14 @@ require ([
 		viewer.startup ();
 		
 		return viewer;
+	});
+	
+	var tocs = query('.gi-toc').map (function (tocNode) {
+		var toc = new TOC (tocNode);
+		
+		toc.startup();
+		
+		return toc;
 	});
 	
 	window.setLayerVisible = function (layerId, visible) {

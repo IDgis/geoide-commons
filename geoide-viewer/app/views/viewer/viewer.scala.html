@@ -2,7 +2,8 @@
 
 @displayItem(item: nl.idgis.geoide.commons.domain.traits.Traits[nl.idgis.geoide.commons.domain.toc.TOCItem], level: Integer = 0) = {
 	
-	<li class="gi-toc-level-@level @if(item.get().isExpandable()){expandable} @if(item.get().isExpanded()){expanded}">
+	<li class="gi-toc-level-@level @if(item.get().isExpandable()){expandable} @if(item.get().isExpanded()){expanded}
+								   @if(item.get().isActivatable()){activatable} @if(item.get().isActive()){active}">
 			
 		<label>
 			@if(item.get().isExpandable()) {
@@ -11,7 +12,9 @@
 					<i class="fa fa-plus-square-o"></i>
 				</span>
 			}
-			@item.get().getLabel()
+			<span class="gi-toc-title">
+				@item.get().getLabel()
+			</span>
 		</label>
 		@if(!item.get().getItems().isEmpty()) {
 			<ul>
@@ -35,7 +38,7 @@
 
 
 
-	<ul class="gi-toc">
+	<ul class="gi-toc" data-geoide-map="@mapId">
 	@for(tocItem <- tocItems) {
 		@displayItem(tocItem)
 	}
