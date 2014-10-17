@@ -3,7 +3,9 @@ define ([
 
 	'geoide-core/ExplandableBehaviour',
     'geoide-core/ActivatableBehaviour',
-    'geoide-core/map/MapBehaviour'
+    'geoide-core/map/MapBehaviour',
+    'geoide-core/LayerVisibleBehaviour'
+    
 ],
 
 function(
@@ -11,11 +13,12 @@ function(
 	
 	ExplandableBehaviour,
 	ActivatableBehaviour,
-	MapBehaviour
+	MapBehaviour,
+	LayerVisibleBehaviour
 	
 ){
 	
-	return declare([ExplandableBehaviour, ActivatableBehaviour, MapBehaviour], {
+	return declare([ExplandableBehaviour, MapBehaviour, ActivatableBehaviour, LayerVisibleBehaviour], {
 		
 		
 	});

@@ -31,9 +31,9 @@ public class TOCdefaultLayerTypeTrait implements TOCLayerTypeTrait {
 				tocChildItems.addAll(serviceType.trait(TOCServiceTypeTrait.class).getTOC(serviceType,serviceLayer));
 			}	
 		}
-		List<Layer> slayers = layer.getLayers();
-		for (Layer slayer: slayers) {
-			tocChildItems.addAll(getTOC(layerType, slayer));
+		List<Layer> sublayers = layer.getLayers();
+		for (Layer sublayer: sublayers) {
+			tocChildItems.addAll(getTOC(layerType, sublayer));
 		}
 		
 		Traits<TOCItem> tocItem = Traits.create (TOCItem
@@ -47,6 +47,9 @@ public class TOCdefaultLayerTypeTrait implements TOCLayerTypeTrait {
 				.setSymbol (new Symbol ())
 				.build ()
 			);
+		
+		tocItem = tocItem.with(new TOCItemLayerTrait(layer));
+		
 		
 		List<Traits<TOCItem>> tocItems = new ArrayList<>();
 		tocItems.add(tocItem);

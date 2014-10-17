@@ -33,6 +33,7 @@ function(
 			
 			promise.then (lang.hitch (this, function () {
 				// Startup ExpandableBehaviour
+				console.log("startup expandable behaviour");
 				on (this.node, '.expandable-icons:click', function (e) {
 					e.preventDefault ();
 					e.stopPropagation ();

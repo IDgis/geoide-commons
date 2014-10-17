@@ -6,6 +6,7 @@ import nl.idgis.geoide.commons.domain.MapDefinition;
 import nl.idgis.geoide.commons.domain.provider.MapProvider;
 import nl.idgis.geoide.commons.domain.toc.TOCItem;
 import nl.idgis.geoide.commons.domain.traits.Traits;
+import nl.idgis.geoide.commons.layer.toc.TOCItemLayerTrait;
 import play.Logger;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -31,9 +32,15 @@ public class Viewer extends Controller {
 		List<Traits<TOCItem>> tocItems = toc.getItems (mapDef);
 		
 		Logger.debug ("TOC items: " + tocItems.size ());
-		
+		/*for(Traits<TOCItem> tocItem : tocItems){
+			if(tocItem.has(TOCItemLayerTrait.class)) {
+				Logger.debug("TOC items tocItems " + tocItem.trait(TOCItemLayerTrait.class).getLayer().getId());
+			}
+		}*/
 		return ok (viewer.render (mapId, "2", tocItems));
 	}
+	
+	
 	
 	public Result viewerForMapOpenLayers3 (final String mapId) {
 		final MapDefinition mapDef = mapProvider.getMapDefinition(mapId);

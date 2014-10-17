@@ -40,6 +40,10 @@ function (
 						parent = parent.parentNode;
 					}
 					if (parent) {
+						var layerId = parent.dataset.layerId;
+						//if ('map' in this && this.map) {
+							console.log("Ik heb een layerId " + layerId);
+						//}
 						domClass.toggle (parent, 'active');
 					}
 					
