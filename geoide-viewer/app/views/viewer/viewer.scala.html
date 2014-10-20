@@ -19,7 +19,7 @@
 				</span>
 			}
 			<span>
-				<input type="checkbox" class="toc-checkbox">
+				<input type="checkbox" class="toc-checkbox" checked= @if(item.has(classOf[TOCItemLayerTrait])){@(((item.`trait`(classOf[TOCItemLayerTrait])).getLayer()).getInitialStateValue("visible"))}>
 			</span>
 			<span class="gi-toc-title">
 				@item.get().getLabel()

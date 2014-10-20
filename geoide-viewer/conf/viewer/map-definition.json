@@ -73,13 +73,22 @@
 					"id": "layer-1",
 					"layerType": "default",
 					"label": "BRT achtergrondkaart",
-					"serviceLayers": [ "test-service-1-brtachtergrondkaart", "test-service-1-natura2000" ]
+					"serviceLayers": [ "test-service-1-brtachtergrondkaart", "test-service-1-natura2000" ],
+					"initial-state": {
+						"visible" : false,
+						"showInLegend" : true
+					}
+					
 				},
 				{
 				"id": "layer-2",
 				"layerType": "default",
 				"label": "LPG",
-				"serviceLayers": [ "test-service-2-p_LPG" ]
+				"serviceLayers": [ "test-service-2-p_LPG" ],
+					"initial-state": {
+						"visible" : false,
+						"showInLegend" : true
+					}
 				}
 			]
 		}

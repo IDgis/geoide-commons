@@ -2,7 +2,9 @@ package nl.idgis.geoide.commons.domain;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import nl.idgis.geoide.util.Assert;
 
@@ -21,6 +23,7 @@ public class Layer extends Entity {
 	private final String label;
 	private final List<Layer> layers;
 	private final List<ServiceLayer> serviceLayers;
+	private final Map<String, String> initialState;
 	
 	@JsonCreator
 	public Layer (
@@ -28,7 +31,8 @@ public class Layer extends Entity {
 			final @JsonProperty("layerType") String layerType,
 			final @JsonProperty("label") String label,
 			final @JsonProperty("layers") List<Layer> layers,
-			final @JsonProperty("serviceLayers") List<ServiceLayer> serviceLayers) {
+			final @JsonProperty("serviceLayers") List<ServiceLayer> serviceLayers,
+			final @JsonProperty("initialState") Map <String,String> initialState ) {
 		super (id);
 		
 		Assert.notNull (label, "label");
@@ -38,6 +42,7 @@ public class Layer extends Entity {
 		this.label = label;
 		this.layers = layers == null ? Collections.<Layer>emptyList () : new ArrayList<> (layers);
 		this.serviceLayers = serviceLayers == null ? Collections.<ServiceLayer>emptyList () : new ArrayList<> (serviceLayers);
+		this.initialState = initialState == null ? Collections.<String, String>emptyMap() : new HashMap<String, String> (initialState); 
 	}
 	
 	@JsonValue
@@ -81,5 +86,10 @@ public class Layer extends Entity {
 
 	public List<ServiceLayer> getServiceLayers () {
 		return Collections.unmodifiableList (serviceLayers);
+	}
+	
+	public String getInitialStateValue (String stateProperty) {
+		System.out.println("get InitialState Value " + stateProperty + " = " + initialState.get(stateProperty));
+		return initialState.get(stateProperty);
 	}
 }

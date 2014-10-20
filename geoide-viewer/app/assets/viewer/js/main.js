@@ -86,6 +86,10 @@ require ([
 		});
 	};
 	
+	window.getLayerState = function (layerId, key) {
+		return viewers[0].getLayerState (layerId, key);
+	};
+	
 	window.setViewerAttribute = function (name, value) {
 		viewers[0].set (name, value);
 	};
