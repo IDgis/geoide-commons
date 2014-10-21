@@ -454,6 +454,38 @@ define ([
 			}
 		},
 		
+		/**
+		 * Interaction names:
+		 * - navigation
+		 */
+		enableInteraction: function (name, config) {
+			if (this.started === true) {
+				this.engine.enableInteraction (name, config);
+				return this;
+			} else {
+				var def = new Deferred ();
+				when (this.started, lang.hitch (this, function () {
+					this.engine.enableInteraction (name, config);
+					def.resolve (this);
+				}));
+				return def;
+			}
+		},
+		
+		disableInteraction: function (name) {
+			if (this.started === true) {
+				this.engine.disableInteraction (name);
+				return this;
+			} else {
+				var def = new Deferred ();
+				when (this.started, lang.hitch (this, function () {
+					this.engine.disableInteraction (name);
+					def.resolve (this);
+				}));
+				return def;
+			}
+		},
+		
 		// =====================================================================
 		// Attributes:
 		// =====================================================================
@@ -503,6 +535,14 @@ define ([
 		
 		_centerResolutionRotationSetter: function (value) {
 			return this._setEngineAttribute ('centerResolutionRotation', value);
+		},
+		
+		_interactionsGetter: function () {
+			return this._getEngineAttribute ('interactions');
+		},
+		
+		_interactionsSetter: function (value) {
+			return this._setEngineAttribute ('interactions', value);
 		},
 		
 		_getEngineAttribute: function (name) {

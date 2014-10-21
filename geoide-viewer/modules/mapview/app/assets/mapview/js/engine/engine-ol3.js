@@ -115,14 +115,110 @@ define ([
 			return deepCompare (existingLayer.parameters, serviceRequest.parameters);
 		}
 	});
+
+	var interactions = {
+		'navigation': [ 
+			new ol.interaction.DragRotate (), 
+			new ol.interaction.DoubleClickZoom (), 
+			new ol.interaction.DragPan ({
+				kinetic: new ol.Kinetic (-0.005, 0.05, 100)
+			}), 
+			new ol.interaction.PinchRotate (),
+			new ol.interaction.PinchZoom (),
+			new ol.interaction.MouseWheelZoom (),
+			new ol.interaction.DragZoom ()
+		],
+		'keyboardNavigation': [
+			new ol.interaction.KeyboardPan (),
+			new ol.interaction.KeyboardZoom ()
+		],
+		'dragZoom': [
+			new ol.interaction.DragZoom ({ condition: ol.events.condition.always })
+		],
+		'drawGeometry': [
+			function (config, self) {
+				var type = config.type || 'point',
+					format = config.format || 'geojson',
+					olType,
+					olFormat;
+				
+				switch (('' + type).toLowerCase ()) {
+				default:
+				case 'point':
+					olType = 'Point';
+					break;
+				case 'polygon':
+					olType = 'Polygon';
+					break;
+				case 'lineString':
+					olType = 'LineString';
+					break;
+				}
+				
+				switch (('' + format).toLowerCase ()) {
+				default:
+				case 'geojson':
+					olFormat = new ol.format.GeoJSON ();
+					break;
+				case 'wkt':
+					olFormat = new ol.format.WKT ();
+					break;
+				case 'gml':
+					olFormat = new ol.format.GML ();
+					break;
+				}
+				
+				var drawInteraction = new ol.interaction.Draw ({
+					source: self._vectorSource,
+					type: olType
+				});
+
+				drawInteraction.on ('drawstart', function (e) {
+					// Clear the vector source:
+					self._vectorSource.clear ();
+				});
+				
+				drawInteraction.on ('drawend', function (e) {
+					console.log ('drawend: ', olFormat.writeGeometry (e.feature.getGeometry ()));
+					// Raise the draw event:
+					
+				});
+				
+				return drawInteraction;
+			}
+		]
+	};
 	
 	return declare ([EngineBase], {
 		mapNode: null,
+		
+		_vectorSource: null,
+		_vectorLayer: null,
 		
 		startup: function () {
 			var domNode = this.viewer.domNode;
 
 			this.mapNode = put (domNode, 'div.geoide-map-ol2');
+			
+			this._vectorSource = new ol.source.Vector ();
+			this._vectorLayer = new ol.layer.Vector ({
+				source: this._vectorSource,
+				style: new ol.style.Style ({
+					fill: new ol.style.Fill ({
+						color: 'rgba(255, 255, 255, 0.2)'
+					}),
+					stroke: new ol.style.Stroke ({
+						color: '#ffcc33',
+						width: 2
+					}),
+					image: new ol.style.Circle ({
+						radius: 7,
+						fill: new ol.style.Fill ({
+							color: '#ffcc33'
+						})
+					})
+				})
+			});
 			
 			this.olMap = new ol.Map ({
 				layers: [ ],
@@ -134,12 +230,21 @@ define ([
 					projection: projection,
 					minResolution: this.get ('minResolution'),
 					maxResolution: this.get ('maxResolution')
-				})
+				}),
+				interactions: [ ]	// Map defaults to no interactions.
 			});
 			
 			this.olMap.on ('moveend', this._onMoveEnd, this);
 			
 			return this;
+		},
+		
+		setServiceRequests: function (serviceRequests) {
+			this.olMap.removeLayer (this._vectorLayer);
+			
+			this.inherited (arguments);
+			
+			this.olMap.addLayer (this._vectorLayer);
 		},
 		
 		setLayerVisibility: function (/*Object*/olLayer, /*Boolean*/visible) {
