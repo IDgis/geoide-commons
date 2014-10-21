@@ -41,7 +41,6 @@ function(
 				when (this.map, function(map) {
 					var layers = map.get('layerList');
 					layers.forEach (function (layer) {
-						
 						layer.get ('state').watch ('visible', function(property, oldValue, newValue) { 
 								thisObject.setCheckBox(layer, newValue);
 						});
@@ -92,7 +91,11 @@ function(
 				query ('*[data-layer-id="' + layer.get ('id') + '"]', this.node).forEach (function (layerNode) {
 					query ('> label .toc-checkbox', layerNode).forEach(function (checkBoxNode) {
 						console.log (checkBoxNode);
+						console.log (checkBoxNode.checked);
+						console.log ("maak " + visible);
 						checkBoxNode.checked = visible;
+						console.log (checkBoxNode.checked);
+						
 					});
 				});
 			}, 0);

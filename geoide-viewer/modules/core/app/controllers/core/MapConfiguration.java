@@ -35,6 +35,11 @@ public class MapConfiguration extends Controller {
 		result.put ("id", map.path ("id"));
 		result.put ("label", map.path ("label"));
 		
+		final JsonNode state = map.path ("state");
+		if (!state.isMissingNode ()) {
+			result.put ("state", map.path("state"));
+		}
+		
 		final JsonNode layers = map.path ("layers");
 		
 		if (!layers.isMissingNode ()) {

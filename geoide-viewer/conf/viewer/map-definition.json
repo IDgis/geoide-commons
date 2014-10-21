@@ -74,8 +74,8 @@
 					"layerType": "default",
 					"label": "BRT achtergrondkaart",
 					"serviceLayers": [ "test-service-1-brtachtergrondkaart", "test-service-1-natura2000" ],
-					"initial-state": {
-						"visible" : false,
+					"state": {
+						"visible" : true,
 						"showInLegend" : true
 					}
 					
@@ -85,7 +85,7 @@
 				"layerType": "default",
 				"label": "LPG",
 				"serviceLayers": [ "test-service-2-p_LPG" ],
-					"initial-state": {
+					"state": {
 						"visible" : false,
 						"showInLegend" : true
 					}

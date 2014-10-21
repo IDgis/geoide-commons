@@ -41,7 +41,8 @@ define ([
 						state: { }
 					}, value), self.map ());
 				} else if (self.isInstanceOf (Layer) && propertyName == 'state') {
-					return new LayerState (lang.mixin (lang.mixin ({}, defaultState), value), self.map ());  
+					return new LayerState (lang.mixin (lang.mixin ({}, defaultState), value), self.map ());				
+					
 				} else {
 					return new MapStatefulObject (value, self.map ());
 				}

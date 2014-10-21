@@ -50,7 +50,7 @@
 			"layerType": "default",
 			"label": "BRT achtergrondkaart",
 			"serviceLayers": [ "test-service-1-brtachtergrondkaart", "test-service-1-natura2000" ],
-			"initial-state": {
+			"state": {
 				"visible" : "true",
 				"showInLegend" : "true"
 			}

@@ -23,7 +23,7 @@ public class Layer extends Entity {
 	private final String label;
 	private final List<Layer> layers;
 	private final List<ServiceLayer> serviceLayers;
-	private final Map<String, String> initialState;
+	private final Map<String, JsonNode> state;
 	
 	@JsonCreator
 	public Layer (
@@ -32,7 +32,7 @@ public class Layer extends Entity {
 			final @JsonProperty("label") String label,
 			final @JsonProperty("layers") List<Layer> layers,
 			final @JsonProperty("serviceLayers") List<ServiceLayer> serviceLayers,
-			final @JsonProperty("initialState") Map <String,String> initialState ) {
+			final @JsonProperty("state") Map <String,JsonNode> state ) {
 		super (id);
 		
 		Assert.notNull (label, "label");
@@ -42,7 +42,7 @@ public class Layer extends Entity {
 		this.label = label;
 		this.layers = layers == null ? Collections.<Layer>emptyList () : new ArrayList<> (layers);
 		this.serviceLayers = serviceLayers == null ? Collections.<ServiceLayer>emptyList () : new ArrayList<> (serviceLayers);
-		this.initialState = initialState == null ? Collections.<String, String>emptyMap() : new HashMap<String, String> (initialState); 
+		this.state = state == null ? Collections.<String, JsonNode>emptyMap() : new HashMap<String, JsonNode> (state); 
 	}
 	
 	@JsonValue
@@ -61,6 +61,11 @@ public class Layer extends Entity {
 			}
 		}
 		
+		if (!state.isEmpty()) {
+			final ObjectNode stateNode = n.putObject("state");
+			stateNode.putAll(state);
+		}
+		
 		if (!getServiceLayers ().isEmpty ()) {
 			final ArrayNode serviceLayersNode = n.putArray ("serviceLayers");
 			
@@ -68,7 +73,7 @@ public class Layer extends Entity {
 				serviceLayersNode.add (serviceLayer.getId ());
 			}
 		}
-		
+		System.out.println(n);
 		return n;
 	}
 
@@ -89,7 +94,10 @@ public class Layer extends Entity {
 	}
 	
 	public String getInitialStateValue (String stateProperty) {
-		System.out.println("get InitialState Value " + stateProperty + " = " + initialState.get(stateProperty));
-		return initialState.get(stateProperty);
+		System.out.println("get InitialState Value " + stateProperty + " = " + state.get(stateProperty));
+		if(state.get(stateProperty)!=null){
+			return state.get(stateProperty).asText();
+		} 
+		return "";
 	}
 }

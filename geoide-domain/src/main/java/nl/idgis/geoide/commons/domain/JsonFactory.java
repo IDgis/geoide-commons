@@ -143,7 +143,9 @@ public class JsonFactory {
 		final JsonNode label = node.path ("label"); 
 		final JsonNode layers = node.path ("layers");
 		final JsonNode serviceLayers = node.path ("serviceLayers");
-		final JsonNode initialState = node.path("initial-state");
+		//state is initial state
+		final JsonNode state = node.path("state");
+		
 		
 		if (id.isMissingNode () || id.asText ().isEmpty ()) {
 			throw new IllegalArgumentException ("Missing property: id");
@@ -161,7 +163,7 @@ public class JsonFactory {
 		}
 		
 		final List<ServiceLayer> serviceLayerList = new ArrayList<> ();
-		final Map<String, String> initialStateMap = new HashMap<> ();  
+		final Map<String, JsonNode> initialStateMap = new HashMap<> ();  
 		
 		for (final JsonNode serviceLayerNode: serviceLayers) {
 			if (!serviceLayerMap.containsKey (serviceLayerNode.asText ())) {
@@ -170,10 +172,10 @@ public class JsonFactory {
 			serviceLayerList.add (serviceLayerMap.get (serviceLayerNode.asText ()));
 		}
 		
-		if (!initialState.isMissingNode()){	
-			for (Iterator<Entry<String,JsonNode>> iterator = initialState.fields(); iterator.hasNext();) {
+		if (!state.isMissingNode()){	
+			for (Iterator<Entry<String,JsonNode>> iterator = state.fields(); iterator.hasNext();) {
 				 Entry<String, JsonNode> item = iterator.next();   
-				 initialStateMap.put(item.getKey(), item.getValue().asText());
+				 initialStateMap.put(item.getKey(), item.getValue());
 			}
 		}
 		
