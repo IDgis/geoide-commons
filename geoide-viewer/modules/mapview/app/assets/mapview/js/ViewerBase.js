@@ -16,6 +16,8 @@ define ([
 	'dojo/Evented',
 	
 	'geoide-core/map/registry',
+	'geoide-core/DOMBehaviour',
+	'geoide-core/map/MapBehaviour',
 	'./Stateful',
 	'dojo/has!config-OpenLayers-3?./engine/engine-ol3:./engine/engine-ol2'
 ], function (
@@ -36,6 +38,8 @@ define ([
 	Evented,
 	
 	registry,
+	DOMBehaviour,
+	MapBehaviour,
 	Stateful,
 	Engine
 ) {
@@ -137,24 +141,19 @@ define ([
 		return def;
 	}
 	
-	return declare ([Evented, Stateful], {
+	return declare ([Evented, Stateful, DOMBehaviour, MapBehaviour], {
 		started: null,
 		
-		domNode: null,
-		mapId: null,
 		engine: null,
-		
-		map: null,
-		
+				
 		layerState: null,
 		
 		_engineAttributes: null,
 		_watchHandles: null,
 		
-		constructor: function (selector, config) {
-			this.domNode = query (selector)[0];
+		constructor: function (selector) {
+			console.log ('ViewerBase');
 			this.layerState = { };
-			this._engineAttributes = [ ];
 			this._watchHandles = [ ];
 			this.engine = new Engine (this, {
 				center: [150000, 450000],
@@ -162,7 +161,6 @@ define ([
 			});
 			this.started = new Deferred ();
 			
-			this._parse (config || { });
 			console.log ('Creating viewer with map: ', this.mapId);
 		},
 	
@@ -175,41 +173,41 @@ define ([
 		 * A promise that is resolved when the viewer is fully started.
 		 */
 		startup: function () {
-			if (this.started === true) {
-				throw new Error ("Already started");
-			}
-
-			if (!this.map) {
-				this.map = registry.map (this.mapId);
-			}
-
+			var promise = this.inherited(arguments);
 			var def = new Deferred ();
 			
-			whenAll (this.map, this.engine.startup (), lang.hitch (this, function (map, engine) {
-				this.map = map;
-				
-				this._watchLayerState ();
-				
-				// Update the viewer for the first time:
-				this._updateViewer ().then (lang.hitch (this, function () {
-					// Apply the engine attributes that have been set during startup:
-					for (var i = 0; i < this._engineAttributes.length; ++ i) {
-						var tuple = this._engineAttributes[i];
-						this._setEngineAttribute (tuple[0], tuple[1], true);
-					}
-					this._engineAttributes = [ ];
-
-					// Fire the "started" deferred and set the started flag to true:
-					var startedDeferred = this.started;
-					this.started = true;
-					startedDeferred.resolve (true);
+			promise.then ( lang.hitch (this, function(){
+				if (this.started === true) {
+					throw new Error ("Already started");
+				}
+	
+				whenAll (this.map, this.engine.startup (), lang.hitch (this, function (map, engine) {
 					
-					// Fulfill the promise:
-					def.resolve ();
+					this._watchLayerState ();
+					
+					// Update the viewer for the first time:
+					this._updateViewer ().then (lang.hitch (this, function () {
+						// Apply the engine attributes that have been set during startup:
+						for (var i = 0; i < this._engineAttributes.length; ++ i) {
+							var tuple = this._engineAttributes[i];
+							this._setEngineAttribute (tuple[0], tuple[1], true);
+						}
+						this._engineAttributes = [ ];
+	
+						// Fire the "started" deferred and set the started flag to true:
+						var startedDeferred = this.started;
+						this.started = true;
+						startedDeferred.resolve (true);
+						
+						// Fulfill the promise:
+						def.resolve ();
+					}));
+				}), lang.hitch (this, function (err) {
+					def.reject (err);
 				}));
-			}), lang.hitch (this, function (err) {
+			}), function (err) {
 				def.reject (err);
-			}));
+			});
 			
 			return def;
 		},
@@ -441,17 +439,18 @@ define ([
 			}
 		},
 		
-		_parse: function (config) {
-			this.map = config.map;
-			this.mapId = config.mapId || domAttr.get (this.domNode, 'data-geoide-map');
+		_parseConfig: function (config) {
+			config = this.inherited (arguments);
+			
+			console.log ('parseConfig: ', config);
+			
+			this._engineAttributes = [ ];
 			
 			for (var i in config) {
-				if (i == 'mapId') {
-					continue;
-				}
-				
 				this._setEngineAttribute (i, config[i]);
 			}
+			
+			return { };
 		},
 		
 		/**

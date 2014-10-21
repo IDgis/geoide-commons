@@ -3,8 +3,11 @@ package nl.idgis.geoide.commons.domain;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -140,6 +143,9 @@ public class JsonFactory {
 		final JsonNode label = node.path ("label"); 
 		final JsonNode layers = node.path ("layers");
 		final JsonNode serviceLayers = node.path ("serviceLayers");
+		//state is initial state
+		final JsonNode state = node.path("state");
+		
 		
 		if (id.isMissingNode () || id.asText ().isEmpty ()) {
 			throw new IllegalArgumentException ("Missing property: id");
@@ -157,6 +163,8 @@ public class JsonFactory {
 		}
 		
 		final List<ServiceLayer> serviceLayerList = new ArrayList<> ();
+		final Map<String, JsonNode> initialStateMap = new HashMap<> ();  
+		
 		for (final JsonNode serviceLayerNode: serviceLayers) {
 			if (!serviceLayerMap.containsKey (serviceLayerNode.asText ())) {
 				throw new IllegalArgumentException ("Undefined service layer: " + serviceLayerNode.asText ());
@@ -164,7 +172,15 @@ public class JsonFactory {
 			serviceLayerList.add (serviceLayerMap.get (serviceLayerNode.asText ()));
 		}
 		
-		return new Layer (id.asText (), layerType.asText (), label.asText (), layerList, serviceLayerList);
+		if (!state.isMissingNode()){	
+			for (Iterator<Entry<String,JsonNode>> iterator = state.fields(); iterator.hasNext();) {
+				 Entry<String, JsonNode> item = iterator.next();   
+				 initialStateMap.put(item.getKey(), item.getValue());
+			}
+		}
+		
+		
+		return new Layer (id.asText (), layerType.asText (), label.asText (), layerList, serviceLayerList, initialStateMap);
 	}
 	
 	public static JsonNode serialize (final MapDefinition mapDefinition) {

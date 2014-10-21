@@ -47,6 +47,7 @@ object Common {
   		val webjarsDojoBase = "org.webjars" % "dojo-base" % "1.10.0-SNAPSHOT"
   		val webjarsOpenLayers = "org.webjars" % "openlayers" % "2.13.1"
   		val webjarsPutSelector = "org.webjars" % "put-selector" % "0.3.5"
+  		val webjarsFontAwesome = "org.webjars" % "font-awesome" % "4.2.0"
   		
 		val springContext = "org.springframework" % "spring-context" % "4.0.3.RELEASE"
 		val springAop = "org.springframework" % "spring-aop" % "4.0.3.RELEASE"

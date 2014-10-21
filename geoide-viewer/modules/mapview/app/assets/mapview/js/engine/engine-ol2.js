@@ -149,7 +149,7 @@ define ([
 		 * map has started.
 		 */
 		startup: function () {
-			var domNode = this.viewer.domNode;
+			var domNode = this.viewer.node;
 
 			this.mapNode = put (domNode, 'div.geoide-map-ol2');
 			this.olMap = new OpenLayers.Map (this.mapNode, {

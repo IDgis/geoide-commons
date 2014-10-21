@@ -49,7 +49,12 @@
 			"id": "layer-1",
 			"layerType": "default",
 			"label": "BRT achtergrondkaart",
-			"serviceLayers": [ "test-service-1-brtachtergrondkaart", "test-service-1-natura2000" ]
+			"serviceLayers": [ "test-service-1-brtachtergrondkaart", "test-service-1-natura2000" ],
+			"state": {
+				"visible" : "true",
+				"showInLegend" : "true"
+			}
+			
 		},
 		{
 			"id": "layer-2",
