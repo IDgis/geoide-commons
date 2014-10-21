@@ -283,6 +283,51 @@ define ([
 		
 		zoomToExtent: function (extent, animate) {
 			throw new Error ("zoomToExtent not implemented for this engine");
+		},
+
+		// =====================================================================
+		// Interactions:
+		// =====================================================================
+		_interactionsGetter: function () {
+			return this._interactions || [ ];
+		},
+		
+		_interactionsSetter: function (interactions) {
+			var currentInteractions = this.get ('interactions'),
+				i;
+			
+			for (i = 0; i < currentInteractions.length; ++ i) {
+				this.disableInteraction (currentInteractions[i]);
+			}
+			
+			for (i = 0; i < interactions.length; ++ i) {
+				this.enableInteraction (interactions[i]);
+			}
+		},
+		
+		enableInteraction: function (interaction) {
+			if (!this._interactions) {
+				this._interactions = [ ];
+			}
+
+			this._interactions.push (interaction);
+			interaction._enable (this);
+		},
+		
+		disableInteraction: function (interaction) {
+			if (!this._interactions) {
+				return;
+			}
+			
+			for (var i = 0; i < this._interactions.length; ++ i) {
+				if (this._interactions[i] !== interaction) {
+					continue;
+				}
+				
+				interaction._disable (this);
+				this._interactions = this._interactions.splice (i, 1);
+				break;
+			}
 		}
 	});
 });
