@@ -11,6 +11,7 @@ import nl.idgis.geoide.commons.domain.JsonFactory;
 import nl.idgis.geoide.commons.domain.Layer;
 import nl.idgis.geoide.commons.domain.MapDefinition;
 import nl.idgis.geoide.commons.domain.Service;
+import nl.idgis.geoide.commons.domain.ServiceLayer;
 import nl.idgis.geoide.util.Assert;
 
 public class StaticMapProvider implements MapProvider {
@@ -75,5 +76,14 @@ public class StaticMapProvider implements MapProvider {
 		}
 		
 		return mapDefinition.getServices ().get (serviceId);
+	}
+	
+	@Override
+	public ServiceLayer getServiceLayer (final String serviceLayerId) {
+		if (serviceLayerId == null) {
+			return null;
+		}
+		
+		return mapDefinition.getServiceLayers ().get (serviceLayerId);
 	}
 }
