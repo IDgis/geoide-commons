@@ -13,6 +13,7 @@ import akka.actor.ActorRef;
 import controllers.core.MapConfiguration;
 import controllers.mapview.Query;
 import controllers.mapview.Services;
+import controllers.mapview.Symbol;
 import controllers.mapview.View;
 
 @Configuration
@@ -46,5 +47,11 @@ public class ControllerConfig {
 			final MapProvider mapProvider,
 			final @Qualifier("serviceManagerActor") ActorRef serviceManagerActor) {
 		return new Query (layerTypeRegistry, mapProvider, serviceManagerActor);
+	}
+	
+	@Bean
+	@Autowired
+	public Symbol symbolController (final MapProvider mapProvider, final ServiceTypeRegistry serviceTypeRegistry) {
+		return new Symbol (mapProvider, serviceTypeRegistry);
 	}
 }
