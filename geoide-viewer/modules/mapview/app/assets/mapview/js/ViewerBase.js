@@ -457,28 +457,28 @@ define ([
 		 * Interaction names:
 		 * - navigation
 		 */
-		enableInteraction: function (name, config) {
+		enableInteraction: function (interaction) {
 			if (this.started === true) {
-				this.engine.enableInteraction (name, config);
+				this.engine.enableInteraction (interaction);
 				return this;
 			} else {
 				var def = new Deferred ();
 				when (this.started, lang.hitch (this, function () {
-					this.engine.enableInteraction (name, config);
+					this.engine.enableInteraction (interaction);
 					def.resolve (this);
 				}));
 				return def;
 			}
 		},
 		
-		disableInteraction: function (name) {
+		disableInteraction: function (interaction) {
 			if (this.started === true) {
-				this.engine.disableInteraction (name);
+				this.engine.disableInteraction (interaction);
 				return this;
 			} else {
 				var def = new Deferred ();
 				when (this.started, lang.hitch (this, function () {
-					this.engine.disableInteraction (name);
+					this.engine.disableInteraction (interaction);
 					def.resolve (this);
 				}));
 				return def;

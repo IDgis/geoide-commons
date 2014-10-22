@@ -10,6 +10,10 @@ define ([
 	Engine
 ) {
 
+	/**
+	 * Events:
+	 * - click: invoked with an event object containing a single property: coordinate.
+	 */
 	return declare ([Interaction, Evented, Engine], {
 		
 	});
