@@ -6,7 +6,6 @@ import nl.idgis.geoide.commons.domain.MapDefinition;
 import nl.idgis.geoide.commons.domain.provider.MapProvider;
 import nl.idgis.geoide.commons.domain.toc.TOCItem;
 import nl.idgis.geoide.commons.domain.traits.Traits;
-import nl.idgis.geoide.commons.layer.toc.TOCItemLayerTrait;
 import play.Logger;
 import play.mvc.Controller;
 import play.mvc.Result;
