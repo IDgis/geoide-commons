@@ -133,6 +133,14 @@ define ([
 		
 		map: function () {
 			return this;
+		},
+		
+		
+		getLayerById : function (layerId) {
+			return this.get ('layerDictionary').get (layerId);
 		}
+		
 	});
+	
+	
 });
