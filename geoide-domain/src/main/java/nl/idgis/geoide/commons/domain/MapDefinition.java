@@ -20,16 +20,19 @@ public class MapDefinition extends Entity {
 	
 	private final List<Layer> rootLayers;
 	private final String label;
-	
+	private final String initialExtent;
 	private final Map<String, Service> services = new HashMap<> ();
 	private final Map<String, ServiceLayer> serviceLayers = new HashMap<> ();
 	private final Map<String, FeatureType> featureTypes = new HashMap<> ();
 	private final Map<String, Layer> layers = new HashMap<> ();
 	
-	public MapDefinition (final String id, final String label, final List<Layer> rootLayers) {
+	public MapDefinition (final String id, final String label, final String initialExtent, final List<Layer> rootLayers) {
 		super (id);
 		
 		this.label = label;
+
+		this.initialExtent = initialExtent;
+		
 		this.rootLayers = rootLayers == null ? Collections.<Layer>emptyList () : new ArrayList<> (rootLayers);
 		
 		// Scan the layers and fill the indices:
@@ -40,10 +43,12 @@ public class MapDefinition extends Entity {
 	public static MapDefinition parse (final JsonNode node) {
 		final JsonNode id = node.path ("id"); 
 		final JsonNode label = node.path ("label");
+		final JsonNode initialExtentNode = node.path("initial-extent");
 		final JsonNode services = node.path ("services");
 		final JsonNode serviceLayers = node.path ("serviceLayers");
 		final JsonNode featureTypes = node.path ("featureTypes");
 		final JsonNode layers = node.path ("layers");
+		final String initialExtent;
 		
 		if (id.isMissingNode () || id.asText ().isEmpty ()) {
 			throw new IllegalArgumentException ("Missing property: id");
@@ -51,7 +56,21 @@ public class MapDefinition extends Entity {
 		if (label.isMissingNode ()) {
 			throw new IllegalArgumentException ("Missing property: label");
 		}
-		
+		if(!initialExtentNode.isMissingNode ()) {
+			JsonNode minx = initialExtentNode.path("minx");
+			JsonNode miny = initialExtentNode.path("miny");
+			JsonNode maxx = initialExtentNode.path("maxx");
+			JsonNode maxy = initialExtentNode.path("maxy");
+			if(minx.isMissingNode() || miny.isMissingNode() || maxx.isMissingNode() || maxy.isMissingNode()){
+				//throw new IllegalArgumentException ("Missing property: initial-extent");
+				initialExtent = "";
+			} else {
+				initialExtent = minx.asText() + "," + miny.asText() + ","+ maxx.asText() + "," + maxy.asText(); 
+			}
+		} else {
+			initialExtent = "";
+		}
+
 		// Parse services:
 		final Map<String, Service> serviceMap = new HashMap<> ();
 		for (final JsonNode serviceNode: services) {
@@ -84,7 +103,7 @@ public class MapDefinition extends Entity {
 			layerList.add (layer);
 		}
 		
-		return new MapDefinition (id.asText (), label.asText (), layerList);
+		return new MapDefinition (id.asText (), label.asText (), initialExtent, layerList);
 	}
 	
 	@JsonValue
@@ -93,6 +112,7 @@ public class MapDefinition extends Entity {
 		
 		obj.put ("id", getId ());
 		obj.put ("label", getLabel ());
+		obj.put ("initial-extent", getInitialExtent());
 		
 		// Write services:
 		if (!getServices ().values ().isEmpty ()) {
@@ -139,6 +159,10 @@ public class MapDefinition extends Entity {
 
 	public String getLabel () {
 		return label;
+	}
+	
+	public String getInitialExtent () {
+		return initialExtent;
 	}
 
 	public Map<String, Service> getServices () {
