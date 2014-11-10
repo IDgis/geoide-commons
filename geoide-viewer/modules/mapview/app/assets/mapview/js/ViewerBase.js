@@ -411,12 +411,12 @@ define ([
 		},
 		
 		_getLayerState: function (layerId, key, defaultValue) {
-			
+			console.log("_getLayerState " + layerId + key + this.map);
 			if (this.map.then) {
 				var deferred = new Deferred ();
 				
 				when (this.map, function (map) {
-					var layer = map.get ('layerDictionary').get (layerId);
+					var layer = map.getLayerById (layerId);
 					if (!layer) {
 						throw new Error ("Unknown layer: " + layerId);
 					}
@@ -428,7 +428,7 @@ define ([
 				
 				return deferred;
 			} else {
-				var layer = this.map.get ('layerDictionary').get (layerId);
+				var layer = this.map.getLayerById(layerId);
 				if (!layer) {
 					throw new Error ('Unknown layer: ' + layerId);
 				}
@@ -561,7 +561,7 @@ define ([
 				this.engine.set (name, value);
 				return this;
 			} else {
-				console.log ('Storing engine attribute: ', name, value);
+				//console.log ('Storing engine attribute: ', name, value);
 				this._engineAttributes.push ([ name, value ]);
 				var def = new Deferred ();
 				when (this.started, lang.hitch (this, function () {

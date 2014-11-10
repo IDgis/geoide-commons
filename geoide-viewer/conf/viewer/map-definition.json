@@ -1,7 +1,13 @@
 {
 	"id": "test-map",
 	"label": "Test map",
-	
+	"test": "zomaar",
+	"initial-extent": {
+		"minx" : 150000,
+		"miny" : 450000,
+		"maxx" : 160000,
+		"maxy" : 460000
+	},
 	"services": [
 		{
 			"id": "test-service-1",
