@@ -38,10 +38,22 @@ public class TOC  {
 			}
 		}
 		
-		return Collections.unmodifiableList(tocItems);
+		List<Traits<TOCItem>> parentList = new ArrayList<>();
+		return Collections.unmodifiableList(revertItems(tocItems, parentList));
 		
 	}
 	
 
-	
+	private List<Traits<TOCItem>> revertItems (List<Traits<TOCItem>> tocItems, List<Traits<TOCItem>> parentList) {
+		for(int n = tocItems.size() - 1; n >= 0; n--){
+			Traits<TOCItem> tocItem = tocItems.get(n);
+			List<Traits<TOCItem>> tocChildItems = tocItem.get().getItems();
+			if(tocChildItems.size() > 0) {
+				
+				revertItems(tocChildItems,new ArrayList<Traits<TOCItem>>());
+			}
+			parentList.add(tocItem);	
+		}
+		return parentList;
+	}
 }
