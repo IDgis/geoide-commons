@@ -44,7 +44,6 @@ public class TOCdefaultLayerTypeTrait implements TOCLayerTypeTrait {
 				.setActive (false)
 				.setExpandable (true)
 				.setExpanded (false)
-				.setSymbol (new Symbol ())
 				.build ()
 			);
 		
