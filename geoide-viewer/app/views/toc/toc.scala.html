@@ -26,9 +26,13 @@
 					@if(((item.`trait`(classOf[TOCItemLayerTrait])).getLayer()).getInitialStateValue("visible") == ""){checked}>
 				</span>
 			}
+			<span>
+				@if(item.get().getSymbol()!=null&&item.get().getSymbol()!="") {<img src=@controllers.core.routes.Assets.at("/images/" + item.get().getSymbol().getId() +  ".png")/>} 
+			</span>
 			<span class="gi-toc-title activatable-setter">
 				@item.get().getLabel()
 			</span>
+			
 		</label>
 		@if(!item.get().getItems().isEmpty()) {
 			<ul>
