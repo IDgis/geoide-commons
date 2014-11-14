@@ -198,7 +198,7 @@ define ([
 		startup: function () {
 			var domNode = this.viewer.node;
 
-			this.mapNode = put (domNode, 'div.geoide-map-ol2');
+			this.mapNode = put (domNode, 'div.geoide-map-ol3');
 			
 			this._vectorSource = new ol.source.Vector ();
 			this._vectorLayer = new ol.layer.Vector ({
