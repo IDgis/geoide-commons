@@ -67,9 +67,11 @@ define ([
 		 */
 		query: function (options) {
 			var def = new Deferred ();
+			
+			console.log(options);
 
 			when (this.map, lang.hitch (this, function (map) {
-				// Build a query based on the current map and the given options:
+				// Build a query based on the current map and the given options:			
 				var q = this._buildQuery (map, options || { });
 				
 				// Execute the query:
@@ -105,20 +107,23 @@ define ([
 		},
 		
 		_buildQuery: function (/*Map*/map, /*Object*/options) {
+			
 			var layers = options.layers || [ ],
 				queryLayers = [ ],
 				queryVisible = ('queryVisible' in options) ? options.queryVisible : false,
 				l;
-			
+
 			if (lang.isArray (layers)) {
 				for (var i = 0; i < layers.length; ++ i) {
-					l = map.getLayerById (layers[i]);
+					l = map.getLayerById(layers[i]);
+					console.log("layer:");
+					console.log(l);
 					if (!l) {
 						continue;
 					}
 
 					// Add a query layer:
-					queryLayers.push (this._createQueryLayer (map, l));
+					queryLayers.push (this._createQueryLayer (map, l, options));
 				}
 			} else {
 				for (var j in layers) {
@@ -144,21 +149,33 @@ define ([
 			
 			return {
 				layers: queryLayers,
-				intersects: options.intersects || null
+				intersects: options.intersects || null,
+				query: options.query || null
 			};
 		},
 		
 		_createQueryLayer: function (map, layer, properties) {
+			console.log("createQueryLayer");
 			properties = properties || { };
+			console.log("layerState voor" + layer.get ('id'));
+			console.log(layer);
 			
-			var layerState = this.layerState[layer.id] || { };
+			//var layerState = this.layerState[layer.get ('id')] || { };
+			var layerState = { };
+			//tijdelijke hack om query over te zetten
+			var queryState = this.getLayerState(layer.get ('id'), 'query');
+			if(queryState) {
+				layerState = { "query": queryState};
+			}
 			
+			
+			console.log("layerState:");
+			console.log(layerState);
 			if (properties.state) {
 				layerState = lang.mixin (lang.mixin ({ }, layerState), properties.state);
 			}
-			
 			return {
-				id: layer.id,
+				id: layer.get ('id'),
 				query: properties.query || null,
 				state: layerState
 			};

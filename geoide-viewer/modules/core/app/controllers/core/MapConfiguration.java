@@ -25,15 +25,20 @@ public class MapConfiguration extends Controller {
 		}
 		
 		final JsonNode node = Json.toJson (mapDefinition);
-		
+
 		return ok (filterLayer (node));
 	}
 	
 	private static JsonNode filterLayer (final JsonNode map) {
 		final ObjectNode result = Json.newObject ();
-		
+
 		result.put ("id", map.path ("id"));
 		result.put ("label", map.path ("label"));
+		
+		final JsonNode initialExtent = map.path ("initial-extent");
+		if (!initialExtent.isMissingNode ()) {
+			result.put ("initial-extent", map.path ("initial-extent"));
+		}	
 		
 		final JsonNode state = map.path ("state");
 		if (!state.isMissingNode ()) {
@@ -41,10 +46,10 @@ public class MapConfiguration extends Controller {
 		}
 		
 		final JsonNode layers = map.path ("layers");
-		
 		if (!layers.isMissingNode ()) {
 			filterLayers (layers, result.putArray ("layers"));
 		}
+		
 		
 		return result;
 	}
@@ -54,4 +59,6 @@ public class MapConfiguration extends Controller {
 			result.add (filterLayer (layer));
 		}
 	}
+	
+
 }

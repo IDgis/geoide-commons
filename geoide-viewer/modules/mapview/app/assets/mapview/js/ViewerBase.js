@@ -227,7 +227,7 @@ define ([
 				promises = [ ],
 				doUpdate = false,
 				values = { };
-			
+				
 			if (typeof value === 'undefined') {
 				values = key;
 			} else {
@@ -411,12 +411,12 @@ define ([
 		},
 		
 		_getLayerState: function (layerId, key, defaultValue) {
-			
+			console.log("_getLayerState " + layerId + key + this.map);
 			if (this.map.then) {
 				var deferred = new Deferred ();
 				
 				when (this.map, function (map) {
-					var layer = map.get ('layerDictionary').get (layerId);
+					var layer = map.getLayerById (layerId);
 					if (!layer) {
 						throw new Error ("Unknown layer: " + layerId);
 					}
@@ -428,7 +428,7 @@ define ([
 				
 				return deferred;
 			} else {
-				var layer = this.map.get ('layerDictionary').get (layerId);
+				var layer = this.map.getLayerById(layerId);
 				if (!layer) {
 					throw new Error ('Unknown layer: ' + layerId);
 				}
@@ -471,6 +471,7 @@ define ([
 			}
 		},
 		
+			
 		disableInteraction: function (interaction) {
 			if (this.started === true) {
 				this.engine.disableInteraction (interaction);
@@ -485,6 +486,7 @@ define ([
 			}
 		},
 		
+				
 		// =====================================================================
 		// Attributes:
 		// =====================================================================
@@ -502,6 +504,14 @@ define ([
 		
 		_scaleSetter: function (value) {
 			return this._setEngineAttribute ('scale', value);
+		},
+		
+		_unitsPerPixelGetter: function () {
+			return this._getEngineAttribute ('unitsPerPixel');
+		},
+		
+		_unitsPerPixelSetter: function (value) {
+			return this._setEngineAttribute ('unitsPerPixel', value);
 		},
 		
 		_centerGetter: function () {
@@ -561,7 +571,7 @@ define ([
 				this.engine.set (name, value);
 				return this;
 			} else {
-				console.log ('Storing engine attribute: ', name, value);
+				//console.log ('Storing engine attribute: ', name, value);
 				this._engineAttributes.push ([ name, value ]);
 				var def = new Deferred ();
 				when (this.started, lang.hitch (this, function () {
@@ -591,6 +601,15 @@ define ([
 		 */
 		zoomToExtent: function (extent, animate) {
 			return this.engine.zoomToExtent (extent, animate);
+		},
+		
+		/**
+		 * @param extent	The extent to zoom to: [minx, miny, maxx, maxy]
+		 * @return			A scale
+		 */
+		getScaleForExtent: function (extent) {
+			return this.engine.getScaleForExtent (extent);
 		}
+		
 	});
 });

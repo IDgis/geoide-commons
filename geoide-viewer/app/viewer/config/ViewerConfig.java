@@ -31,7 +31,8 @@ import controllers.viewer.Viewer;
 	ActorConfig.class,
 	ServiceTypeConfig.class,
 	LayerTypeConfig.class,
-	TOCConfig.class
+	TOCConfig.class,
+	LayerTypeConfig.class
 })
 public class ViewerConfig {
 	@Autowired

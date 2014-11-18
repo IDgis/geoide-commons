@@ -25,7 +25,7 @@ define ([
 			}
 			
 			for (var i = 0; i < this._interactions.length; ++ i) {
-				engine.olMap.removeInteraction (this._intearctions[i]);
+				engine.olMap.removeInteraction (this._interactions[i]);
 			}
 			
 			this._interactions = null;
