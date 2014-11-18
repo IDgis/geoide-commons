@@ -227,7 +227,7 @@ define ([
 				promises = [ ],
 				doUpdate = false,
 				values = { };
-			
+				
 			if (typeof value === 'undefined') {
 				values = key;
 			} else {
@@ -471,6 +471,7 @@ define ([
 			}
 		},
 		
+			
 		disableInteraction: function (interaction) {
 			if (this.started === true) {
 				this.engine.disableInteraction (interaction);
@@ -485,6 +486,7 @@ define ([
 			}
 		},
 		
+				
 		// =====================================================================
 		// Attributes:
 		// =====================================================================
@@ -502,6 +504,14 @@ define ([
 		
 		_scaleSetter: function (value) {
 			return this._setEngineAttribute ('scale', value);
+		},
+		
+		_unitsPerPixelGetter: function () {
+			return this._getEngineAttribute ('unitsPerPixel');
+		},
+		
+		_unitsPerPixelSetter: function (value) {
+			return this._setEngineAttribute ('unitsPerPixel', value);
 		},
 		
 		_centerGetter: function () {
@@ -591,6 +601,15 @@ define ([
 		 */
 		zoomToExtent: function (extent, animate) {
 			return this.engine.zoomToExtent (extent, animate);
+		},
+		
+		/**
+		 * @param extent	The extent to zoom to: [minx, miny, maxx, maxy]
+		 * @return			A scale
+		 */
+		getScaleForExtent: function (extent) {
+			return this.engine.getScaleForExtent (extent);
 		}
+		
 	});
 });
