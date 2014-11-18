@@ -19,5 +19,10 @@
 			<artifactId>jackson-databind</artifactId>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.typesafe.play</groupId>
+			<artifactId>play_${scala.abi.version}</artifactId>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 </project>

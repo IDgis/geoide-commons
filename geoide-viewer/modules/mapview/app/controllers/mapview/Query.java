@@ -61,11 +61,14 @@ public class Query extends Controller {
 		Logger.debug ("Querying " + queryInfo.layerInfos.size () + " layers");
 		
 		// Create a list of feature types:
-		final List<ParameterizedFeatureType<?>> featureTypes = createFeatureTypes (queryInfo.layerInfos);
-		
-		Logger.debug ("Querying " + featureTypes.size () + " feature types");
+		return createFeatureTypes (queryInfo.layerInfos).flatMap (new Function<List<ParameterizedFeatureType<?>>, Promise<Result>> () {
+			@Override
+			public Promise<Result> apply (final List<ParameterizedFeatureType<?>> featureTypes) throws Throwable {
+				Logger.debug ("Querying " + featureTypes.size () + " feature types");
 
-		return queryFeatureTypes (queryInfo.query, featureTypes);
+				return queryFeatureTypes (queryInfo.query, featureTypes);
+			}
+		});
 	}
 	
 	private Promise<Result> queryFeatureTypes (final FeatureQuery query, final List<ParameterizedFeatureType<?>> featureTypes) {
@@ -121,16 +124,27 @@ public class Query extends Controller {
 		});
 	}
 	
-	private List<ParameterizedFeatureType<?>> createFeatureTypes (final List<LayerInfo> layerInfos) {
-		final List<ParameterizedFeatureType<?>> featureTypes = new ArrayList<> ();
+	private Promise<List<ParameterizedFeatureType<?>>> createFeatureTypes (final List<LayerInfo> layerInfos) {
+		final List<Promise<List<ParameterizedFeatureType<?>>>> featureTypePromises = new ArrayList<> ();
 		
 		for (final LayerInfo layerInfo: layerInfos) {
 			final Traits<LayerType> layerType = layerTypeRegistry.getLayerType (layerInfo.layer);
 			
-			featureTypes.addAll (layerType.get ().getFeatureTypes (layerInfo.layer, layerInfo.query, layerInfo.state));
+			featureTypePromises.add (layerType.get ().getFeatureTypes (layerInfo.layer, layerInfo.query, layerInfo.state));
 		}
 		
-		return featureTypes;
+		return Promise.sequence (featureTypePromises).map (new Function<List<List<ParameterizedFeatureType<?>>>, List<ParameterizedFeatureType<?>>> () {
+			@Override
+			public List<ParameterizedFeatureType<?>> apply(final List<List<ParameterizedFeatureType<?>>> featureTypeLists) throws Throwable {
+				final List<ParameterizedFeatureType<?>> featureTypes = new ArrayList<> ();
+				
+				for (final List<ParameterizedFeatureType<?>> featureTypeList: featureTypeLists) {
+					featureTypes.addAll (featureTypeList);
+				}
+				
+				return featureTypes;
+			}
+		});
 	}
 	
 	private QueryInfo parseQueryInfo (final JsonNode queryNode) {

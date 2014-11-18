@@ -16,6 +16,8 @@ import nl.idgis.geoide.service.ServiceRequestContext;
 import nl.idgis.geoide.service.ServiceType;
 import nl.idgis.geoide.service.ServiceTypeRegistry;
 import play.Logger;
+import play.libs.F.Function;
+import play.libs.F.Promise;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -35,7 +37,7 @@ public class View extends Controller {
 		this.mapProvider = mapProvider;
 	}
 	
-	public Result buildView () {
+	public Promise<Result> buildView () {
 		final JsonNode viewerState = request ().body ().asJson ();
 		
 		// Flatten the layer list in a depth-first fashion:
@@ -46,21 +48,24 @@ public class View extends Controller {
 			final ObjectNode result = Json.newObject ();
 			result.put ("result", "failed");
 			result.put ("message", e.getMessage ());
-			return badRequest (result);
+			return Promise.pure ((Result) badRequest (result));
 		}
 
 		// Turn the list of layers in a list of service layers:
-		final List<ParameterizedServiceLayer<?>> serviceLayers = createServiceLayerList (layers);
-
-		// Merge the service layer list into a list of concrete requests for the client to execute.
-		final List<ServiceRequest> serviceRequests = createServiceRequests (serviceLayers);
-		
-		// Build response:
-		final ObjectNode result = Json.newObject ();
-		result.put ("result", "ok");
-		result.put ("serviceRequests", Json.toJson (serviceRequests));
-		
-		return ok (result);
+		return createServiceLayerList (layers).map (new Function<List<ParameterizedServiceLayer<?>>, Result> () {
+			@Override
+			public Result apply (final List<ParameterizedServiceLayer<?>> serviceLayers)  throws Throwable {
+				// Merge the service layer list into a list of concrete requests for the client to execute.
+				final List<ServiceRequest> serviceRequests = createServiceRequests (serviceLayers);
+				
+				// Build response:
+				final ObjectNode result = Json.newObject ();
+				result.put ("result", "ok");
+				result.put ("serviceRequests", Json.toJson (serviceRequests));
+				
+				return ok (result);
+			}
+		});
 	}
 	
 	private List<ServiceRequest> createServiceRequests (final List<ParameterizedServiceLayer<?>> serviceLayers) {
@@ -102,18 +107,29 @@ public class View extends Controller {
 		return serviceRequests;
 	}
 	
-	private List<ParameterizedServiceLayer<?>> createServiceLayerList (final List<LayerWithState> layers) {
-		final List<ParameterizedServiceLayer<?>> serviceLayers = new ArrayList<> ();
+	private Promise<List<ParameterizedServiceLayer<?>>> createServiceLayerList (final List<LayerWithState> layers) {
+		final List<Promise<List<ParameterizedServiceLayer<?>>>> serviceLayerPromises = new ArrayList<> ();
 		
 		for (final LayerWithState l: layers) {
 			final Layer layer = l.layer ();
 			final JsonNode state = l.state ();
 			final Traits<LayerType> layerType = layerTypeRegistry.getLayerType (layer);
 			
-			serviceLayers.addAll (layerType.get ().getServiceLayers (layer, state));
+			serviceLayerPromises.add (layerType.get ().getServiceLayers (layer, state));
 		}
-		
-		return serviceLayers;
+
+		return Promise.sequence (serviceLayerPromises).map (new Function<List<List<ParameterizedServiceLayer<?>>>, List<ParameterizedServiceLayer<?>>> () {
+			@Override
+			public List<ParameterizedServiceLayer<?>> apply (final List<List<ParameterizedServiceLayer<?>>> layerLists) throws Throwable {
+				final List<ParameterizedServiceLayer<?>> serviceLayers = new ArrayList<> ();
+				
+				for (final List<ParameterizedServiceLayer<?>> layerList: layerLists) {
+					serviceLayers.addAll (layerList);
+				}
+				
+				return serviceLayers;
+			}
+		});
 	}
 
 	private List<LayerWithState> flattenLayerList (final JsonNode viewerState) {

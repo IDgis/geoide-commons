@@ -10,8 +10,8 @@ import nl.idgis.geoide.commons.domain.Layer;
 import nl.idgis.geoide.commons.domain.ParameterizedFeatureType;
 import nl.idgis.geoide.commons.domain.ParameterizedServiceLayer;
 import nl.idgis.geoide.commons.domain.ServiceLayer;
-import nl.idgis.geoide.commons.layer.LayerType;
 import nl.idgis.geoide.service.ServiceTypeRegistry;
+import play.libs.F.Promise;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -27,7 +27,7 @@ public final class DefaultLayerType extends LayerType {
 	}
 
 	@Override
-	public List<ParameterizedServiceLayer<?>> getServiceLayers (final Layer layer, final JsonNode state) {
+	public Promise<List<ParameterizedServiceLayer<?>>> getServiceLayers (final Layer layer, final JsonNode state) {
 		final List<ParameterizedServiceLayer<?>> result = new ArrayList<ParameterizedServiceLayer<?>> ();
 		
 		if (state.path ("visible").asBoolean ()) {
@@ -36,11 +36,11 @@ public final class DefaultLayerType extends LayerType {
 			}
 		}
 		
-		return Collections.unmodifiableList (result);
+		return Promise.pure (Collections.unmodifiableList (result));
 	}
 
 	@Override
-	public List<ParameterizedFeatureType<?>> getFeatureTypes (final Layer layer, final FeatureQuery query, final JsonNode state) {
+	public Promise<List<ParameterizedFeatureType<?>>> getFeatureTypes (final Layer layer, final FeatureQuery query, final JsonNode state) {
 		final List<ParameterizedFeatureType<?>> result = new ArrayList<> ();
 		
 		for (final ServiceLayer serviceLayer: layer.getServiceLayers ()) {
@@ -51,6 +51,6 @@ public final class DefaultLayerType extends LayerType {
 			result.add (new ParameterizedFeatureType<Serializable> (serviceLayer, serviceLayer.getFeatureType (), query, null));
 		}
 		
-		return Collections.unmodifiableList (result);
+		return Promise.pure (Collections.unmodifiableList (result));
 	}
 }

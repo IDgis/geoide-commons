@@ -138,6 +138,11 @@
 			
 			<dependency>
 				<groupId>com.typesafe.play</groupId>
+				<artifactId>play_${scala.abi.version}</artifactId>
+				<version>${play2.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.typesafe.play</groupId>
 				<artifactId>play-java-ws_${scala.abi.version}</artifactId>
 				<version>${play2.version}</version>
 			</dependency>

@@ -23,5 +23,10 @@
 			<groupId>nl.idgis.geoide</groupId>
 			<artifactId>geoide-service-common</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.typesafe.play</groupId>
+			<artifactId>play_${scala.abi.version}</artifactId>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 </project>
