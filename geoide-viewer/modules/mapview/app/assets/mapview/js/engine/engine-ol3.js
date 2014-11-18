@@ -349,6 +349,12 @@ define ([
 			view.fitExtent (extent, this.olMap.getSize ());
 			
 			return def;
+		},
+		
+		getScaleForExtent: function (extent) {
+			var resolution = this.olMap.getView ().getResolutionForExtent (extent, this.olMap.getSize ());
+			var scale = resolution / this.get ('unitsPerPixel');
+			return scale;
 		}
 	});
 });
