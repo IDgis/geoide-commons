@@ -29,7 +29,6 @@ function(
 		
 		
 		startup: function(){
-			console.log("startup LayerVisibleBehaviour met " + this.mapId);
 			
 			var promise = this.inherited(arguments),
 				deferred = new Deferred();

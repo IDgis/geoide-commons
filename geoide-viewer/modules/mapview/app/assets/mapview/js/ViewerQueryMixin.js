@@ -68,8 +68,6 @@ define ([
 		query: function (options) {
 			var def = new Deferred ();
 			
-			console.log(options);
-
 			when (this.map, lang.hitch (this, function (map) {
 				// Build a query based on the current map and the given options:			
 				var q = this._buildQuery (map, options || { });
@@ -116,8 +114,7 @@ define ([
 			if (lang.isArray (layers)) {
 				for (var i = 0; i < layers.length; ++ i) {
 					l = map.getLayerById(layers[i]);
-					console.log("layer:");
-					console.log(l);
+
 					if (!l) {
 						continue;
 					}
@@ -155,10 +152,9 @@ define ([
 		},
 		
 		_createQueryLayer: function (map, layer, properties) {
-			console.log("createQueryLayer");
+
 			properties = properties || { };
-			console.log("layerState voor" + layer.get ('id'));
-			console.log(layer);
+
 			
 			//var layerState = this.layerState[layer.get ('id')] || { };
 			var layerState = { };
@@ -167,10 +163,7 @@ define ([
 			if(queryState) {
 				layerState = { "query": queryState};
 			}
-			
-			
-			console.log("layerState:");
-			console.log(layerState);
+
 			if (properties.state) {
 				layerState = lang.mixin (lang.mixin ({ }, layerState), properties.state);
 			}
