@@ -24,7 +24,7 @@ object Common {
 		javacOptions in Compile ++= Seq("-source", "1.7", "-target", "1.7"),
 		
 		// Perform RequireJS compilation:
-		pipelineStages := Seq(rjs),
+		// pipelineStages := Seq(rjs),
 
 		// Compile less assets:
 		includeFilter in (Assets, LessKeys.less) := "*.less"
