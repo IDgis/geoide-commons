@@ -168,6 +168,11 @@
 				<artifactId>akka-slf4j_${scala.abi.version}</artifactId>
 				<version>${akka.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>com.typesafe.akka</groupId>
+				<artifactId>akka-testkit_${scala.abi.version}</artifactId>
+				<version>${akka.version}</version>
+			</dependency>
 			
 			<!-- deegree dependencies -->
 			<dependency>
