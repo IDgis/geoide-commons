@@ -152,7 +152,6 @@ define ([
 		_watchHandles: null,
 		
 		constructor: function (selector) {
-			console.log ('ViewerBase');
 			this.layerState = { };
 			this._watchHandles = [ ];
 			this.engine = new Engine (this, {
@@ -160,8 +159,7 @@ define ([
 				zoom: 8
 			});
 			this.started = new Deferred ();
-			
-			console.log ('Creating viewer with map: ', this.mapId);
+
 		},
 	
 		/**
@@ -360,7 +358,6 @@ define ([
 					},
 					data: json.stringify (viewerState)
 				}).then (lang.hitch (this, function (data) {
-					console.log ('Viewer state: ', data);
 					
 					when (this.engine.setServiceRequests (data.serviceRequests), function () {
 						def.resolve ();
@@ -411,7 +408,6 @@ define ([
 		},
 		
 		_getLayerState: function (layerId, key, defaultValue) {
-			console.log("_getLayerState " + layerId + key + this.map);
 			if (this.map.then) {
 				var deferred = new Deferred ();
 				
@@ -441,8 +437,7 @@ define ([
 		
 		_parseConfig: function (config) {
 			config = this.inherited (arguments);
-			
-			console.log ('parseConfig: ', config);
+
 			
 			this._engineAttributes = [ ];
 			

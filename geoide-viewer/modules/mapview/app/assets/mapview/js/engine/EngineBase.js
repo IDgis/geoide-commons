@@ -162,7 +162,6 @@ define ([
 			}
 			
 			// Set the new layers list:
-			console.log (this.layersMap, newLayersMap);
 			this.layersMap = newLayersMap;
 			this.layersList = newLayersList;
 			

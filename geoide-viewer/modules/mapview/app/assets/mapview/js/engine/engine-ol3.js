@@ -179,7 +179,7 @@ define ([
 				});
 				
 				drawInteraction.on ('drawend', function (e) {
-					console.log ('drawend: ', olFormat.writeGeometry (e.feature.getGeometry ()));
+
 					// Raise the draw event:
 					
 				});

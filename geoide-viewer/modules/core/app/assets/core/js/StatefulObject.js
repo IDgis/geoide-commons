@@ -1,6 +1,6 @@
 define (['dojo/_base/declare', './StatefulBase'], function (declare, StatefulBase) {
 	return declare ([StatefulBase], {
-		_content: content,
+		_content: null,
 		_watchHandles: null,
 		_globalWatchHandles: null,
 		

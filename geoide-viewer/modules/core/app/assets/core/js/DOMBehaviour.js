@@ -21,7 +21,6 @@ function(
 		node: null,
 		
 		constructor: function (nodeOrSelector){
-			console.log ('DomBehaviour');
 			this.node = query (nodeOrSelector)[0];
 		},
 		
