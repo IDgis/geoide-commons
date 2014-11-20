@@ -256,7 +256,10 @@ define ([
 		},
 		
 		setLayerIndex: function (/*Object*/olLayer, /*Number*/index) {
-			//throw new Error ("setLayerIndex not implemented for this engine");
+			var layers = this.olMap.getLayers ();
+			
+			layers.remove (olLayer);
+			layers.insertAt (index, olLayer);
 		},
 		
 		removeLayer: function (/*Object*/olLayer) {
