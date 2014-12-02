@@ -259,6 +259,12 @@ define ([
 			var resolution = this.olMap.getResolutionForZoom(zoom);
 			var scale = resolution / this.get ('unitsPerPixel');
 			return scale;
+		},
+	
+		updateSize: function () {
+			this.olMap.updateSize();
 		}
+		
+
 	});
 });
