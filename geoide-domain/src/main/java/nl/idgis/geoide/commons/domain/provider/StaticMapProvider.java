@@ -2,10 +2,11 @@ package nl.idgis.geoide.commons.domain.provider;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
-
-import com.fasterxml.jackson.databind.JsonNode;
+import java.util.Set;
 
 import nl.idgis.geoide.commons.domain.JsonFactory;
 import nl.idgis.geoide.commons.domain.Layer;
@@ -14,32 +15,62 @@ import nl.idgis.geoide.commons.domain.Service;
 import nl.idgis.geoide.commons.domain.ServiceLayer;
 import nl.idgis.geoide.util.Assert;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 public class StaticMapProvider implements MapProvider {
 
-	private final MapDefinition mapDefinition;
+	private final Set<MapDefinition> mapDefinitions;
+	
+	public StaticMapProvider (final Collection<MapDefinition> mapDefinitions) {
+		Assert.notNull (mapDefinitions, "mapDefinitions");
+		
+		this.mapDefinitions = new HashSet<> (mapDefinitions);
+	}
 	
 	public StaticMapProvider (final MapDefinition mapDefinition) {
-		Assert.notNull (mapDefinition, "mapDefinition");
-		
-		this.mapDefinition = mapDefinition;
+		this (wrap (mapDefinition));
 	}
 	
 	public StaticMapProvider (final String jsonData) {
 		this (JsonFactory.mapDefinition (jsonData));
 	}
 	
-	public StaticMapProvider (final InputStream inputStream) {
-		this (JsonFactory.mapDefinition (inputStream));
-	}
-	
 	public StaticMapProvider (final JsonNode json) {
 		this (JsonFactory.mapDefinition (json));
 	}
 	
+	public StaticMapProvider (final InputStream ... inputStreams) {
+		this (makeMapDefinitions (inputStreams));
+	}
+	
+	private static Collection<MapDefinition> makeMapDefinitions (final InputStream[] inputStreams) {
+		Assert.notNull (inputStreams, "inputStreams");
+		
+		final List<MapDefinition> mapDefinitions = new ArrayList<> ();
+		
+		for (final InputStream is: inputStreams) {
+			mapDefinitions.add (JsonFactory.mapDefinition (is));
+		}
+		
+		return mapDefinitions;
+	}
+	
+	private static <T> Collection<T> wrap (final T value) {
+		Assert.notNull (value, "value");
+		
+		final List<T> list = new ArrayList<> (1);
+		
+		list.add (value);
+		
+		return Collections.unmodifiableList (list);
+	}
+	
 	@Override
 	public MapDefinition getMapDefinition (final String mapId) {
-		if (mapDefinition.getId ().equals (mapId)) {
-			return mapDefinition;
+		for (final MapDefinition mapDefinition: mapDefinitions) {
+			if (mapDefinition.getId ().equals (mapId)) {
+				return mapDefinition;
+			}
 		}
 		
 		return null;
@@ -51,7 +82,15 @@ public class StaticMapProvider implements MapProvider {
 			return null;
 		}
 		
-		return mapDefinition.getLayers ().get (layerId);
+		for (final MapDefinition mapDefinition: mapDefinitions) {
+			final Layer layer = mapDefinition.getLayers ().get (layerId);
+			
+			if (layer != null) {
+				return layer;
+			}
+		}
+		
+		return null;
 	}
 
 	@Override
@@ -75,7 +114,15 @@ public class StaticMapProvider implements MapProvider {
 			return null;
 		}
 		
-		return mapDefinition.getServices ().get (serviceId);
+		for (final MapDefinition mapDefinition: mapDefinitions) {
+			final Service service = mapDefinition.getServices ().get (serviceId);
+			
+			if (service != null) {
+				return service;
+			}
+		}
+		
+		return null;
 	}
 	
 	@Override
@@ -84,6 +131,14 @@ public class StaticMapProvider implements MapProvider {
 			return null;
 		}
 		
-		return mapDefinition.getServiceLayers ().get (serviceLayerId);
+		for (final MapDefinition mapDefinition: mapDefinitions) {
+			final ServiceLayer serviceLayer = mapDefinition.getServiceLayers ().get (serviceLayerId);
+			
+			if (serviceLayer != null) {
+				return serviceLayer;
+			}
+		}
+		
+		return null; 
 	}
 }

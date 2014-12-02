@@ -4,6 +4,7 @@ define ([
 	
 	'dojo/on',
 	'dojo/query',
+	'dojo/dom-attr',
 	'dojo/dom', 
 	'dojo/dom-class',
 	
@@ -17,6 +18,7 @@ function (
 		
 		on,
 		query,
+		domAttr,
 		dom,
 		domClass,
 		 
@@ -52,7 +54,9 @@ function (
 						parent = parent.parentNode;
 					}
 					if (parent) {
-						var layerId = parent.dataset.layerId;
+						//not in IE < 11
+						//var layerId = parent.dataset.layerId;
+						var layerId = domAttr.get(parent, "data-layer-id");
 						domClass.toggle (parent, 'active');
 						
 					}
