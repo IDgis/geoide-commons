@@ -283,6 +283,10 @@ define ([
 		zoomToExtent: function (extent, animate) {
 			throw new Error ("zoomToExtent not implemented for this engine");
 		},
+		
+		updateSize: function () {
+			throw new Error ("updateSize not implemented for this engine");
+		},
 
 		// =====================================================================
 		// Interactions:

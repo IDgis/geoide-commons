@@ -604,7 +604,12 @@ define ([
 		 */
 		getScaleForExtent: function (extent) {
 			return this.engine.getScaleForExtent (extent);
-		}
+		},
+		
+		updateSize: function () {
+			return this.engine.updateSize ();
+		},
+		
 		
 	});
 });

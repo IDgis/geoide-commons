@@ -77,10 +77,10 @@ function(
 		getLayerId: function (node) {
 			var parent = node;
 			
-			while (parent && !parent.dataset.layerId) {
+			while (parent && !domAttr.get(parent, "data-layer-id")) {
 				parent = parent.parentNode;
 			}
-			var layerId = parent.dataset.layerId;
+			var layerId = domAttr.get(parent, "data-layer-id");
 			return layerId;
 			
 		},

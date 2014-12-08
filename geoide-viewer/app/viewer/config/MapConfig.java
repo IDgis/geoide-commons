@@ -13,6 +13,9 @@ public class MapConfig {
 	
 	@Bean
 	public MapProvider mapProvider () {
-		return new StaticMapProvider (Play.application().resourceAsStream ("viewer/map-definition.json"));
+		return new StaticMapProvider (
+				Play.application().resourceAsStream ("viewer/map-definition.json"),
+				Play.application().resourceAsStream ("viewer/map-definition-2.json")
+			);
 	}
 }

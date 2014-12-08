@@ -358,6 +358,11 @@ define ([
 			var resolution = this.olMap.getView ().getResolutionForExtent (extent, this.olMap.getSize ());
 			var scale = resolution / this.get ('unitsPerPixel');
 			return scale;
+		},
+		
+		updateSize: function () {
+			this.olMap.updateSize();
 		}
+
 	});
 });
