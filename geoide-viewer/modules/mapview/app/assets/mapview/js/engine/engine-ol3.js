@@ -105,14 +105,26 @@ define ([
 		},
 		
 		update: function (existingOlLayer, serviceRequest) {
+			existingOlLayer.getSource ().updateParams (serviceRequest.parameters);
 		},
 		
 		isReusable: function (existingLayer, serviceRequest) {
+			// Service ID's need to be equal:
 			if (existingLayer.serviceId != serviceRequest.serviceId) {
 				return false;
 			}
 			
-			return deepCompare (existingLayer.parameters, serviceRequest.parameters);
+			// The existing layer must have an OpenLayers layer:
+			if (!existingLayer.olLayer) {
+				return false;
+			}
+			
+			// The service endpoint must be equal:
+			if (serviceRequest.serviceIdentification.serviceEndpoint != existingLayer.olLayer.getSource ().getUrl ()) {
+				return false;
+			}
+			
+			return true;
 		}
 	});
 
