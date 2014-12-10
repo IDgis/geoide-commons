@@ -23,7 +23,7 @@
 			"label": "Risicokaart pub WMS",
 			"identification": {
 				"serviceType": "WMS",
-				"serviceEndpoint": "http://rk-pub.idgis.nl/rk_services_pub/services/WMS-risicokaart",
+				"serviceEndpoint": "http://servicespub.risicokaart.nl/rk_services_pub/services/WMS-risicokaart",
 				"serviceVersion": "1.1.1"
 			}
 		},
@@ -32,7 +32,7 @@
 			"label": "Risicokaart pub WFS",
 			"identification": {
 				"serviceType": "WFS",
-				"serviceEndpoint": "http://rk-pub.idgis.nl/rk_services_pub/services/WFS-risicokaart",
+				"serviceEndpoint": "http://servicespub.risicokaart.nl/rk_services_pub/services/WFS-risicokaart",
 				"serviceVersion": "1.1.0"
 			}
 		}
