@@ -43,7 +43,8 @@ libraryDependencies ++= Seq(
   Common.Dependencies.geoideServiceWfs,
   Common.Dependencies.geoideLayerCommon,
   Common.Dependencies.geoideLayerDefault,
-  Common.Dependencies.webjarsOpenLayers
+  Common.Dependencies.webjarsOpenLayers,
+  "it.innove" % "play2-pdf" % "1.1.1"
 )
 
 // Also deploy the assets:
