@@ -28,6 +28,10 @@ lazy val geoideConfig = (project in file("./modules/config"))
 lazy val geoideCore = (project in file("./modules/core"))
 	.enablePlugins(PlayJava)
 
+lazy val geoidePrintService = (project in file("./modules/print-service"))
+	.enablePlugins(PlayJava)
+	.dependsOn(geoideCore)
+	
 libraryDependencies ++= Seq(
   javaJdbc,
   javaEbean,
