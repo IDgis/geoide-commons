@@ -4,6 +4,7 @@
 
 -> /	core.Routes
 -> /	mapview.Routes
+-> /	printservice.Routes
 
 # Map viewer:
 GET		/map/:mapId										@controllers.viewer.Viewer.viewerForMap(mapId)

@@ -6,9 +6,10 @@ Common.settings
 
 lazy val viewer = (project in file("."))
 	.enablePlugins(PlayJava)
-	.aggregate(mapView, toc, geoideConfig, geoideCore)
+	.aggregate(mapView, toc, geoidePrintService, geoideConfig, geoideCore)
 	.dependsOn(mapView)
 	.dependsOn(toc)
+	.dependsOn(geoidePrintService)
 	.dependsOn(geoideConfig)
 	.dependsOn(geoideCore)
 
@@ -23,6 +24,7 @@ lazy val toc = (project in file("./modules/toc"))
 lazy val geoideConfig = (project in file("./modules/config"))
 	.enablePlugins(PlayJava)
 	.dependsOn(mapView)
+	.dependsOn(geoidePrintService)
 	.dependsOn(geoideCore)
 	
 lazy val geoideCore = (project in file("./modules/core"))

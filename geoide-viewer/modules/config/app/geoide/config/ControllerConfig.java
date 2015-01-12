@@ -15,6 +15,7 @@ import controllers.mapview.Query;
 import controllers.mapview.Services;
 import controllers.mapview.Symbol;
 import controllers.mapview.View;
+import controllers.printservice.Print;
 
 @Configuration
 public class ControllerConfig {
@@ -53,5 +54,11 @@ public class ControllerConfig {
 	@Autowired
 	public Symbol symbolController (final MapProvider mapProvider, final ServiceTypeRegistry serviceTypeRegistry) {
 		return new Symbol (mapProvider, serviceTypeRegistry);
+	}
+	
+	@Bean
+	@Autowired
+	public Print printServiceController () {
+		return new Print ();
 	}
 }
