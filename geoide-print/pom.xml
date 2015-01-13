@@ -49,6 +49,15 @@
 		    <artifactId>xalan</artifactId>
 		    <version>2.7.2</version>
 		</dependency>	
+		<dependency>
+			<groupId>com.typesafe.play</groupId>
+			<artifactId>play-java-ws_${scala.abi.version}</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>nl.idgis.commons</groupId>
+			<artifactId>commons-ogc-client</artifactId>
+		</dependency>
 	</dependencies>
 	
 </project>
