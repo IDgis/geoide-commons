@@ -17,6 +17,7 @@
 		<module>geoide-service</module>
 		<module>geoide-layer</module>
 		<module>geoide-print</module>
+		<module>geoide-document-cache</module>
 	</modules>
 	
 	<properties>
@@ -29,6 +30,7 @@
 		<fop.version>1.1</fop.version>
 		<flying.saucer.version>9.0.7</flying.saucer.version>
 		<jsoup.version>1.8.1</jsoup.version>
+		<mapdb.version>1.0.6</mapdb.version>
 	
 		<!-- These versions should match the versions that are in use by the Play framework: -->
 		<scala.version>2.11.1</scala.version>
@@ -167,6 +169,12 @@
 				<groupId>com.typesafe.akka</groupId>
 				<artifactId>akka-slf4j_${scala.abi.version}</artifactId>
 				<version>${akka.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.mapdb</groupId>
+				<artifactId>mapdb</artifactId>
+				<version>${mapdb.version}</version>
 			</dependency>
 			
 			<!-- deegree dependencies -->
