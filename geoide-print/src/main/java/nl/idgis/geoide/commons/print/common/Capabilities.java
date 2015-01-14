@@ -1,5 +1,6 @@
 package nl.idgis.geoide.commons.print.common;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -13,7 +14,9 @@ import nl.idgis.ogc.util.MimeContentType;
  * length. The queue length is an approximation of the length of the queue at the time the
  * capabilities were retrieved from the service and can be used for load-balancing. 
  */
-public final class Capabilities {
+public final class Capabilities implements Serializable {
+	
+	private static final long serialVersionUID = 5019570204375852715L;
 	
 	private final Set<InputFormat> inputFormats;
 	private final long queueLength;
@@ -76,7 +79,9 @@ public final class Capabilities {
 	 * input formats where this is relevant. A linked media can for example be an SVG
 	 * image which is linked from an HTML input.
 	 */
-	public final static class InputFormat {
+	public final static class InputFormat implements Serializable {
+		private static final long serialVersionUID = 1403347027993762777L;
+		
 		private final MimeContentType contentType;
 		private final Set<MimeContentType> supportedLinkedMedia;
 		private final Set<MimeContentType> outputFormats;

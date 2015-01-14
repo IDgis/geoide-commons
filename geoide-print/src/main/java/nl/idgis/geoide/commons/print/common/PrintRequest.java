@@ -1,12 +1,16 @@
 package nl.idgis.geoide.commons.print.common;
 
+import java.io.Serializable;
+
 import nl.idgis.ogc.util.MimeContentType;
 
 /**
  * Contains a request to convert an input document (e.g. HTML), optionally containing references to other
  * media such as SVG, JPEG, PNG to "printable" media (e.g. PDF, PostScript).
  */
-public final class PrintRequest {
+public final class PrintRequest implements Serializable {
+	
+	private static final long serialVersionUID = -7949604053058726181L;
 	
 	private final Document inputDocument;
 	private final MimeContentType outputFormat;

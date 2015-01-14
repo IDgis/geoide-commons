@@ -1,12 +1,16 @@
 package nl.idgis.geoide.commons.print.common;
 
+import java.io.Serializable;
+
 import nl.idgis.ogc.util.MimeContentType;
 
 /**
  * Describes a document for a print service.
  */
-public final class Document {
+public final class Document implements Serializable {
 
+	private static final long serialVersionUID = -5151232571097664742L;
+	
 	private final MimeContentType contentType;
 
 	/**
