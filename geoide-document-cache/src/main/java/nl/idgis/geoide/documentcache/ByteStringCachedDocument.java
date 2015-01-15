@@ -10,7 +10,7 @@ public final class ByteStringCachedDocument implements CachedDocument {
 	private static final long serialVersionUID = -7356469008686508656L;
 	
 	private final URI uri;
-	private final MimeContentType contentType;
+	private final String contentType;
 	private final ByteString data;
 	
 	public ByteStringCachedDocument (final URI uri, final MimeContentType contentType, final ByteString data) {
@@ -25,7 +25,7 @@ public final class ByteStringCachedDocument implements CachedDocument {
 		}
 		
 		this.uri = uri;
-		this.contentType = contentType;
+		this.contentType = contentType.original ();
 		this.data = data;
 	}
 
@@ -36,11 +36,15 @@ public final class ByteStringCachedDocument implements CachedDocument {
 
 	@Override
 	public MimeContentType getContentType () {
-		return contentType;
+		return new MimeContentType (contentType);
 	}
 	
 	@Override
 	public InputStream asInputStream () {
 		return data.iterator ().asInputStream ();
+	}
+	
+	public ByteString getData () {
+		return data;
 	}
 }

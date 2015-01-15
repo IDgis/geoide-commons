@@ -1,8 +1,10 @@
 package nl.idgis.geoide.documentcache.service;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,11 +34,12 @@ import akka.pattern.Patterns;
 import akka.util.ByteString;
 import akka.util.ByteString.ByteStrings;
 
-public class DefaultDocumentCache implements DocumentCache {
+public class DefaultDocumentCache implements DocumentCache, Closeable {
 
 	private final long ttlInSeconds;
 	private final DocumentStore readThroughStore;
 	private final ActorRef cacheActor;
+	private final ActorSystem actorSystem;
 
 	private DefaultDocumentCache (final ActorSystem actorSystem, final String cacheName, final long ttlInSeconds, final File file, final Double maxSizeInGigabytes, final DocumentStore readThroughStore) {
 		if (file == null && maxSizeInGigabytes == null) {
@@ -45,6 +48,7 @@ public class DefaultDocumentCache implements DocumentCache {
 		
 		this.ttlInSeconds = ttlInSeconds;
 		this.readThroughStore = readThroughStore;
+		this.actorSystem = actorSystem;
 		cacheActor = actorSystem.actorOf (CacheActor.props (ttlInSeconds, file, maxSizeInGigabytes, readThroughStore), String.format ("geoide-cache-%s", cacheName));
 	}
 	
@@ -76,11 +80,18 @@ public class DefaultDocumentCache implements DocumentCache {
 	}
 
 	private Promise<CachedDocument> store (final CachedDocument document) {
-		return askCache (document).map (new Function<Object, CachedDocument> () {
+		return askCache (new StoreDocument (document)).map (new Function<Object, CachedDocument> () {
 			@Override
 			public CachedDocument apply (final Object message) throws Throwable {
 				if (message instanceof DocumentStored) {
 					return ((DocumentStored) message).getDocument ();
+				} else if (message instanceof CacheMiss) {
+					final Throwable cause = ((CacheMiss) message).getCause ();
+					if (cause != null) {
+						throw cause;
+					} else {
+						throw new DocumentCacheException ("Unknown error while storing: " + ((CacheMiss) message).getUri ().toString ());
+					}
 				} else {
 					throw new IllegalArgumentException ("Unexpected response: " + message.getClass ().getCanonicalName ());
 				}
@@ -138,6 +149,8 @@ public class DefaultDocumentCache implements DocumentCache {
 			public CachedDocument apply (final Object message) throws Throwable {
 				if (message instanceof CachedDocument) {
 					return (CachedDocument) message;
+				} else if (message instanceof DocumentStored) {
+					return ((DocumentStored) message).getDocument ();
 				} else if (message instanceof CacheMiss) {
 					throw new DocumentCacheException.DocumentNotFoundException (uri, ((CacheMiss) message).getCause ());
 				} else {
@@ -154,6 +167,11 @@ public class DefaultDocumentCache implements DocumentCache {
 	
 	private Promise<Object> askCache (final Object message) {
 		return Promise.wrap (Patterns.ask (cacheActor, message, 15000));
+	}
+	
+	@Override
+	public void close() throws IOException {
+		actorSystem.stop (cacheActor);
 	}
 	
 	public static class CacheActor extends UntypedActor {
@@ -197,13 +215,14 @@ public class DefaultDocumentCache implements DocumentCache {
 					.sizeLimit (maxSizeInGigabytes)
 					.make ();
 			}
-			
+
 			// Create cache map:
 			cache = db
 				.createHashMap ("cache")
 				.expireAfterWrite (ttlInSeconds, TimeUnit.SECONDS)
 				.expireAfterAccess (ttlInSeconds, TimeUnit.SECONDS)
 				.<URI, CachedDocument>make ();
+
 		}
 		
 		@Override
@@ -250,13 +269,18 @@ public class DefaultDocumentCache implements DocumentCache {
 				final CachedDocument document = ((StoreDocument) message).getDocument ();
 
 				// Store the document in the cache:
-				cache.put (document.getUri (), document);
+				Object response = new DocumentStored (document);
+				try {
+					cache.put (document.getUri (), document);
+				} catch (Throwable e) {
+					response = new CacheMiss (document.getUri (), e);
+				}
 				
 				// Notify all waiters that the document has arrived in the cache:
-				notifyWaiters (document.getUri (), document, self ());
+				notifyWaiters (document.getUri (), response, self ());
 				
 				// Signal success:
-				sender ().tell (new DocumentStored (document), self ());
+				sender ().tell (response, self ());
 			} else {
 				unhandled (message);
 			}
@@ -295,6 +319,20 @@ public class DefaultDocumentCache implements DocumentCache {
 		}
 	}
 	
+	public final static class SerializableContentType implements Serializable {
+		private static final long serialVersionUID = -3936226269463354913L;
+		
+		private final String contentType;
+		
+		public SerializableContentType (final String contentType) {
+			this.contentType = contentType;
+		}
+		
+		public String getContentType () {
+			return contentType;
+		}
+	}
+
 	public final static class FetchDocument {
 		private final URI uri;
 		private final boolean forceUpdate;
