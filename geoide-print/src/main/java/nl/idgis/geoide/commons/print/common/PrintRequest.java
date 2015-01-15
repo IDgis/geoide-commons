@@ -1,6 +1,7 @@
 package nl.idgis.geoide.commons.print.common;
 
 import java.io.Serializable;
+import java.net.URI;
 
 import nl.idgis.ogc.util.MimeContentType;
 
@@ -12,8 +13,9 @@ public final class PrintRequest implements Serializable {
 	
 	private static final long serialVersionUID = -7949604053058726181L;
 	
-	private final Document inputDocument;
+	private final DocumentReference inputDocument;
 	private final MimeContentType outputFormat;
+	private final URI baseUri;
 	
 	/**
 	 * Constructs a new print request.
@@ -21,7 +23,7 @@ public final class PrintRequest implements Serializable {
 	 * @param inputDocument	The input document to convert using the print service. Cannot be null.
 	 * @param outputFormat	The requested output format, must be one of the supported formats of the service. Cannot be null.
 	 */
-	public PrintRequest (final Document inputDocument, final MimeContentType outputFormat) {
+	public PrintRequest (final DocumentReference inputDocument, final MimeContentType outputFormat, final URI baseUri) {
 		if (inputDocument == null) {
 			throw new NullPointerException ("inputDocument cannot be null");
 		}
@@ -31,6 +33,7 @@ public final class PrintRequest implements Serializable {
 		
 		this.inputDocument = inputDocument;
 		this.outputFormat = outputFormat;
+		this.baseUri = baseUri;
 	}
 
 	/**
@@ -38,7 +41,7 @@ public final class PrintRequest implements Serializable {
 	 * 
 	 * @return The (non-null) input document of the print request.
 	 */
-	public Document getInputDocument () {
+	public DocumentReference getInputDocument () {
 		return inputDocument;
 	}
 
@@ -49,5 +52,9 @@ public final class PrintRequest implements Serializable {
 	 */
 	public MimeContentType getOutputFormat () {
 		return outputFormat;
+	}
+	
+	public URI getBaseUri () {
+		return baseUri;
 	}
 }

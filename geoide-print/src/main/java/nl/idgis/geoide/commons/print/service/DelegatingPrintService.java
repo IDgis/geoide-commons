@@ -11,10 +11,10 @@ import java.util.Map;
 import java.util.Set;
 
 import nl.idgis.geoide.commons.print.common.Capabilities;
-import nl.idgis.geoide.commons.print.common.Document;
-import nl.idgis.geoide.commons.print.common.PrintRequest;
 import nl.idgis.geoide.commons.print.common.Capabilities.InputFormat;
+import nl.idgis.geoide.commons.print.common.PrintRequest;
 import nl.idgis.geoide.commons.print.service.PrintException.UnsupportedFormat;
+import nl.idgis.geoide.documentcache.CachedDocument;
 import nl.idgis.ogc.util.MimeContentType;
 import play.libs.F.Function;
 import play.libs.F.Promise;
@@ -62,10 +62,10 @@ public class DelegatingPrintService implements PrintService {
 	 * @see PrintService#print(PrintRequest)
 	 */
 	@Override
-	public Promise<Document> print (final PrintRequest printRequest) {
-		return getServiceCapabilities ().flatMap (new Function<List<ServiceCapabilities>, Promise<Document>> () {
+	public Promise<CachedDocument> print (final PrintRequest printRequest) {
+		return getServiceCapabilities ().flatMap (new Function<List<ServiceCapabilities>, Promise<CachedDocument>> () {
 			@Override
-			public Promise<Document> apply (final List<ServiceCapabilities> serviceCapabilities) throws Throwable {
+			public Promise<CachedDocument> apply (final List<ServiceCapabilities> serviceCapabilities) throws Throwable {
 				// Locate all candidate services:
 				ServiceCapabilities bestCapabilities = null;
 				

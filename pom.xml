@@ -124,6 +124,11 @@
 				<artifactId>geoide-layer-default</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>nl.idgis.geoide</groupId>
+				<artifactId>geoide-document-cache</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 		
 			<dependency>
 				<groupId>nl.idgis.commons</groupId>

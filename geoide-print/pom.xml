@@ -58,6 +58,20 @@
 			<groupId>nl.idgis.commons</groupId>
 			<artifactId>commons-ogc-client</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>nl.idgis.geoide</groupId>
+			<artifactId>geoide-document-cache</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.typesafe.akka</groupId>
+			<artifactId>akka-testkit_${scala.abi.version}</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	
 </project>
