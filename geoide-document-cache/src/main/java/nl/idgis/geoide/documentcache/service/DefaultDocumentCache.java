@@ -27,6 +27,7 @@ import play.libs.F.Callback;
 import play.libs.F.Function;
 import play.libs.F.Promise;
 import akka.actor.ActorRef;
+import akka.actor.ActorRefFactory;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.actor.UntypedActor;
@@ -39,17 +40,17 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 	private final long ttlInSeconds;
 	private final DocumentStore readThroughStore;
 	private final ActorRef cacheActor;
-	private final ActorSystem actorSystem;
+	private final ActorRefFactory actorRefFactory;
 
-	private DefaultDocumentCache (final ActorSystem actorSystem, final String cacheName, final long ttlInSeconds, final File file, final Double maxSizeInGigabytes, final DocumentStore readThroughStore) {
+	private DefaultDocumentCache (final ActorRefFactory actorRefFactory, final String cacheName, final long ttlInSeconds, final File file, final Double maxSizeInGigabytes, final DocumentStore readThroughStore) {
 		if (file == null && maxSizeInGigabytes == null) {
 			throw new IllegalArgumentException ("Either file or maxSizeInGigabytes must be given");
 		}
 		
 		this.ttlInSeconds = ttlInSeconds;
 		this.readThroughStore = readThroughStore;
-		this.actorSystem = actorSystem;
-		cacheActor = actorSystem.actorOf (CacheActor.props (ttlInSeconds, file, maxSizeInGigabytes, readThroughStore), String.format ("geoide-cache-%s", cacheName));
+		this.actorRefFactory = actorRefFactory;
+		cacheActor = actorRefFactory.actorOf (CacheActor.props (ttlInSeconds, file, maxSizeInGigabytes, readThroughStore), String.format ("geoide-cache-%s", cacheName));
 	}
 	
 	public static DefaultDocumentCache createInMemoryCache (final ActorSystem actorSystem, final String cacheName, final long ttlSeconds, final double maxSizeInGigabytes, final DocumentStore readThroughStore) {
@@ -171,7 +172,7 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 	
 	@Override
 	public void close() throws IOException {
-		actorSystem.stop (cacheActor);
+		actorRefFactory.stop (cacheActor);
 	}
 	
 	public static class CacheActor extends UntypedActor {
