@@ -3,6 +3,7 @@ package nl.idgis.geoide.commons.print.service;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -25,8 +26,10 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Document.OutputSettings;
 import org.jsoup.nodes.Document.OutputSettings.Syntax;
+import org.jsoup.nodes.Entities.EscapeMode;
 import org.jsoup.nodes.DocumentType;
 import org.jsoup.nodes.Node;
+import org.w3c.tidy.Tidy;
 import org.xhtmlrenderer.pdf.ITextOutputDevice;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 import org.xhtmlrenderer.pdf.ITextReplacedElementFactory;
@@ -86,11 +89,24 @@ public class HtmlPrintService implements PrintService, Closeable {
 					final String baseUrl = printRequest.getBaseUri () != null ? printRequest.getBaseUri ().toString () : cachedDocument.getUri ().toString ();
 					final String inputEncoding = printRequest.getInputDocument ().getContentType ().parameters ().get ("charset");
 					try (final InputStream htmlStream = cachedDocument.asInputStream ()) {
+						
+						final StringWriter writer = new StringWriter ();
+						
+						final Tidy tidy = new Tidy ();
+						tidy.setXHTML (true);
+						tidy.parse (htmlStream, writer);
+						
+						writer.close ();
+						
+						xmlDocument = writer.toString ();
+						
+						/*
 						final Document document = Jsoup.parse (htmlStream, inputEncoding != null ? inputEncoding : "UTF-8", baseUrl);
 						
 						final OutputSettings outputSettings = new OutputSettings ();
 						outputSettings.charset ("UTF-8");
 						outputSettings.syntax (Syntax.xml);
+						outputSettings.escapeMode(EscapeMode.xhtml);
 						document.outputSettings (outputSettings);
 					
 						// Remove existing doctype declaration (if any):
@@ -106,7 +122,10 @@ public class HtmlPrintService implements PrintService, Closeable {
 						document.childNode (0).before (docType);
 						
 						xmlDocument = document.toString ();
+						*/
 					}
+					
+					System.out.println (xmlDocument);
 					
 					// Generate PDF:
 					final ChainedReplacedElementFactory cef = new ChainedReplacedElementFactory ();

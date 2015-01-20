@@ -212,7 +212,7 @@ public class TestDefaultDocumentCache {
 			try {
 				if (uri.equals (new URI ("http://idgis.nl"))) {
 					++ count;
-					return Promise.pure ((CachedDocument) new ByteStringCachedDocument (uri, new MimeContentType ("text/plain"), ByteStrings.fromArray (testByteArray ("Hello, World!"))));
+					return Promise.pure ((CachedDocument) new ByteStringCachedDocument (uri, new MimeContentType ("text/plain"), ByteStrings.fromArray (testByteArray ("Hello, World!")).compact ()));
 				}
 				
 				return Promise.throwing (new DocumentCacheException.DocumentNotFoundException (uri));

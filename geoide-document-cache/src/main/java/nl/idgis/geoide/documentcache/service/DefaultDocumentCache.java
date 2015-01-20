@@ -23,6 +23,7 @@ import org.mapdb.DB;
 import org.mapdb.DBMaker;
 import org.mapdb.HTreeMap;
 
+import play.Logger;
 import play.libs.F.Callback;
 import play.libs.F.Function;
 import play.libs.F.Promise;
@@ -105,7 +106,7 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 		final CachedDocument document = new ByteStringCachedDocument (
 				uri, 
 				contentType, 
-				ByteStrings.fromArray (data)
+				ByteStrings.fromArray (data).compact ()
 			);
 
 		return store (document);
@@ -130,7 +131,7 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 			document = new ByteStringCachedDocument (
 				uri,
 				contentType,
-				byteString
+				byteString.compact ()
 			);
 		} catch (IOException e) {
 			return Promise.throwing (new DocumentCacheException.IOError (e));
@@ -238,6 +239,7 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 				
 				// Return from the cache:
 				if (!((FetchDocument) message).isForceUpdate () && cache.containsKey (uri)) {
+					Logger.debug ("Returning cached copy of: " + uri + " (" + cache.get (uri).getContentType ().original () + ")");
 					sender ().tell (cache.get (uri), self ());
 					return;
 				}
@@ -251,6 +253,7 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 				
 				// Send a cache miss if the document doesn't exist and can't be fetched:
 				if (readThroughStore == null) {
+					Logger.debug ("No readthrough store and no entry in cache for: " + uri.toString ());
 					sender ().tell (new CacheMiss (uri), self ());
 					return;
 				}
@@ -307,6 +310,7 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 			promise.onFailure (new Callback<Throwable> () {
 				@Override
 				public void invoke (final Throwable cause) throws Throwable {
+					Logger.debug ("Failed to fetch " + uri + " from readthrough store");
 					self.tell (new CacheMiss (uri, cause), self);
 				}
 			});

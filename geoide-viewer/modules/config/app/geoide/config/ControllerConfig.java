@@ -2,6 +2,8 @@ package geoide.config;
 
 import nl.idgis.geoide.commons.domain.provider.MapProvider;
 import nl.idgis.geoide.commons.layer.LayerTypeRegistry;
+import nl.idgis.geoide.commons.print.service.PrintService;
+import nl.idgis.geoide.documentcache.DocumentCache;
 import nl.idgis.geoide.service.ServiceTypeRegistry;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +60,7 @@ public class ControllerConfig {
 	
 	@Bean
 	@Autowired
-	public Print printServiceController () {
-		return new Print ();
+	public Print printServiceController (final PrintService printService, final @Qualifier ("printDocumentCache") DocumentCache documentCache) {
+		return new Print (printService, documentCache);
 	}
 }

@@ -58,7 +58,7 @@ public class TestHtmlPrintService {
 	
 	@Test
 	public void testPrint () throws Throwable {
-		store ("http://idgis.nl", "text/html", "<html><head></head><body><h1>Hello, World!</h1></html>");
+		store ("http://idgis.nl", "text/html", "<html><head></head><body><h1>Hello, World!</h1></body></html>");
 
 		final CachedDocument document = print ("http://idgis.nl");
 		
@@ -69,6 +69,15 @@ public class TestHtmlPrintService {
 	public void testPrintWithObject () throws Throwable {
 		store ("http://idgis.nl", "text/html", "<html><head></head><body><h1>Hello, World!</h1><object style=\"display: block; position: absolute; left: 0; top: 0; width: 100%; height: 100%;\" type=\"image/svg+xml\" data=\"http://idgis.nl/map.svg\"></object></html>");
 		store ("http://idgis.nl/map.svg", "image/svg+xml", "<svg></svg>");
+
+		final CachedDocument document = print ("http://idgis.nl");
+		
+		assertEquals (new MimeContentType ("application/pdf"), document.getContentType ());
+	}
+	
+	@Test
+	public void testPrintWithEscapedAttribute () throws Throwable {
+		store ("http://idgis.nl", "text/html", "<html><head></head><body><h1 data-attr=\"&lt;&amp;&gt;\">Hello, World!</h1></body></html>");
 
 		final CachedDocument document = print ("http://idgis.nl");
 		
@@ -88,6 +97,8 @@ public class TestHtmlPrintService {
 	private void store (final String uri, final String contentType, final String content) throws Throwable {
 		final ByteArrayOutputStream os = new ByteArrayOutputStream ();
 		final PrintWriter writer = new PrintWriter (os);
+		
+		writer.write (content);
 		
 		writer.close ();
 		os.close ();

@@ -4,16 +4,16 @@ import java.io.InputStream;
 import java.net.URI;
 
 import nl.idgis.ogc.util.MimeContentType;
-import akka.util.ByteString;
+import akka.util.CompactByteString;
 
 public final class ByteStringCachedDocument implements CachedDocument {
 	private static final long serialVersionUID = -7356469008686508656L;
 	
 	private final URI uri;
 	private final String contentType;
-	private final ByteString data;
+	private final CompactByteString data;
 	
-	public ByteStringCachedDocument (final URI uri, final MimeContentType contentType, final ByteString data) {
+	public ByteStringCachedDocument (final URI uri, final MimeContentType contentType, final CompactByteString data) {
 		if (uri == null) {
 			throw new NullPointerException ("uri cannot be null");
 		}
@@ -44,7 +44,7 @@ public final class ByteStringCachedDocument implements CachedDocument {
 		return data.iterator ().asInputStream ();
 	}
 	
-	public ByteString getData () {
+	public CompactByteString getData () {
 		return data;
 	}
 }

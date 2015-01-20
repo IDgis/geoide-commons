@@ -45,4 +45,29 @@ public class TestHttpDocumentStore {
 			}
 		});
 	}
+	
+	@Test
+	public void testFetchEscapedUri () throws Throwable {
+		stubFor (get (urlEqualTo ("/resource?a=%3CStyledLayerDescriptor"))
+				.willReturn (aResponse ()
+						.withStatus (200)
+						.withHeader ("Content-Type", "text/plain")
+						.withBody ("Hello, World!")));
+		
+		running (fakeApplication (), new Runnable () {
+			@Override
+			public void run () {
+				try {
+					final HttpDocumentStore store = new HttpDocumentStore ();
+					
+					final CachedDocument document = store.fetch (new URI ("http://localhost:8089/resource?a=%3CStyledLayerDescriptor")).get (1000);
+					
+					assertEquals (new MimeContentType ("text/plain"), document.getContentType ());
+					TestDefaultDocumentCache.assertContent ("Hello, World!", document);
+				} catch (Throwable e) {
+					throw new RuntimeException (e);
+				}
+			}
+		});
+	}
 }
