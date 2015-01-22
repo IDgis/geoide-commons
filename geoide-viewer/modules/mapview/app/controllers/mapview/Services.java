@@ -3,7 +3,7 @@ package controllers.mapview;
 import java.util.Map;
 
 import nl.idgis.geoide.commons.domain.Service;
-import nl.idgis.geoide.commons.domain.provider.MapProvider;
+import nl.idgis.geoide.commons.domain.provider.ServiceProvider;
 import nl.idgis.geoide.service.messages.ServiceError;
 import nl.idgis.geoide.service.messages.ServiceRequest;
 import nl.idgis.geoide.service.messages.ServiceResponse;
@@ -16,11 +16,11 @@ import akka.pattern.Patterns;
 
 public class Services extends Controller {
 
-	private final MapProvider mapProvider;
+	private final ServiceProvider serviceProvider;
 	private final ActorRef serviceManager;
 	
-	public Services (final MapProvider mapProvider, final ActorRef serviceManager) {
-		this.mapProvider = mapProvider;
+	public Services (final ServiceProvider serviceProvider, final ActorRef serviceManager) {
+		this.serviceProvider = serviceProvider;
 		this.serviceManager = serviceManager;
 	}
 	
@@ -29,7 +29,7 @@ public class Services extends Controller {
 	}
 	
 	public Promise<Result> serviceRequestWithLayer (final String serviceId, final String layerName, final String path) {
-		final Service service = mapProvider.getService (serviceId);
+		final Service service = serviceProvider.getService (serviceId);
 		if (service == null) {
 			return Promise.pure ((Result) notFound ("Service not found"));
 		}

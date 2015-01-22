@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import nl.idgis.geoide.commons.domain.FeatureType;
 import nl.idgis.geoide.commons.domain.JsonFactory;
 import nl.idgis.geoide.commons.domain.Layer;
 import nl.idgis.geoide.commons.domain.MapDefinition;
@@ -15,9 +16,11 @@ import nl.idgis.geoide.commons.domain.Service;
 import nl.idgis.geoide.commons.domain.ServiceLayer;
 import nl.idgis.geoide.util.Assert;
 
+
+
 import com.fasterxml.jackson.databind.JsonNode;
 
-public class StaticMapProvider implements MapProvider {
+public class StaticMapProvider implements MapProvider, ServiceProvider, ServiceLayerProvider, FeatureTypeProvider, LayerProvider {
 
 	private final Set<MapDefinition> mapDefinitions;
 	
@@ -39,21 +42,20 @@ public class StaticMapProvider implements MapProvider {
 		this (JsonFactory.mapDefinition (json));
 	}
 	
+	
 	public StaticMapProvider (final InputStream ... inputStreams) {
 		this (makeMapDefinitions (inputStreams));
 	}
+
 	
 	private static Collection<MapDefinition> makeMapDefinitions (final InputStream[] inputStreams) {
-		Assert.notNull (inputStreams, "inputStreams");
+		Assert.notNull (inputStreams, "inputStream");
 		
-		final List<MapDefinition> mapDefinitions = new ArrayList<> ();
-		
-		for (final InputStream is: inputStreams) {
-			mapDefinitions.add (JsonFactory.mapDefinition (is));
-		}
+		final List<MapDefinition> mapDefinitions = JsonFactory.mapDefinitions (inputStreams);
 		
 		return mapDefinitions;
 	}
+	
 	
 	private static <T> Collection<T> wrap (final T value) {
 		Assert.notNull (value, "value");
@@ -75,6 +77,23 @@ public class StaticMapProvider implements MapProvider {
 		
 		return null;
 	}
+	
+	@Override
+	public List<Layer> getLayers(String mapId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Layer> getRootLayers(String mapId) {
+		for (final MapDefinition mapDefinition: mapDefinitions) {
+			if (mapDefinition.getId ().equals (mapId)) {
+				return mapDefinition.getRootLayers();
+			}
+		}
+		return null;
+	}
+	
 
 	@Override
 	public Layer getLayer (final String layerId) {
@@ -141,4 +160,19 @@ public class StaticMapProvider implements MapProvider {
 		
 		return null; 
 	}
+
+
+	@Override
+	public List<ServiceLayer> getServiceLayers(List<String> serviceLayerId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public FeatureType getFeatureType(String serviceLayerId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
 }

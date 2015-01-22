@@ -2,7 +2,7 @@ package controllers.mapview;
 
 import nl.idgis.geoide.commons.domain.Service;
 import nl.idgis.geoide.commons.domain.ServiceLayer;
-import nl.idgis.geoide.commons.domain.provider.MapProvider;
+import nl.idgis.geoide.commons.domain.provider.ServiceLayerProvider;
 import nl.idgis.geoide.commons.domain.traits.Traits;
 import nl.idgis.geoide.service.ServiceType;
 import nl.idgis.geoide.service.ServiceTypeRegistry;
@@ -12,16 +12,16 @@ import play.mvc.Result;
 
 public class Symbol extends Controller {
 	
-	private final MapProvider mapProvider;
+	private final ServiceLayerProvider serviceLayerProvider;
 	private final ServiceTypeRegistry serviceTypeRegistry;
 	
-	public Symbol (final MapProvider mapProvider, final ServiceTypeRegistry serviceTypeRegistry) {
-		this.mapProvider = mapProvider;
+	public Symbol (final ServiceLayerProvider serviceLayerProvider, final ServiceTypeRegistry serviceTypeRegistry) {
+		this.serviceLayerProvider = serviceLayerProvider;
 		this.serviceTypeRegistry = serviceTypeRegistry;
 	}
 
 	public Promise<Result> legendSymbol (final String serviceLayerId) {
-		final ServiceLayer serviceLayer = mapProvider.getServiceLayer (serviceLayerId);
+		final ServiceLayer serviceLayer = serviceLayerProvider.getServiceLayer(serviceLayerId);
 		if (serviceLayer == null) {
 			return Promise.pure ((Result) notFound ("Layer " + serviceLayerId + " not found"));
 		}

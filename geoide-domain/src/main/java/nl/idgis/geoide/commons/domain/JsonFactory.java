@@ -12,6 +12,8 @@ import java.util.Map.Entry;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class JsonFactory {
 	
@@ -57,9 +59,157 @@ public class JsonFactory {
 		return mapDefinition (parse (inputStream));
 	}
 	
+	public static List<MapDefinition> mapDefinitions (final InputStream... inputStreams) {
+		
+		List<JsonNode> mapEntityNodes = new ArrayList<> ();
+		
+		for (final InputStream is: inputStreams) {
+			JsonNode node = parse(is);
+			mapEntityNodes.add(node);
+		}	
+		
+		return mapDefinitions (mapEntityNodes);
+	}
+	
+	public static List<MapDefinition> mapDefinitions (List<JsonNode> mapEntityNodes) {
+		JsonNode services = null; 
+		JsonNode featureTypes = null;
+		JsonNode serviceLayers = null;
+		JsonNode layers = null;
+		JsonNode maps = null;
+		for (final JsonNode mapEntityNode: mapEntityNodes) {
+			if (mapEntityNode.has("services")){
+				services = mapEntityNode.path("services");
+			}	
+			if (mapEntityNode.has("featureTypes")){
+				featureTypes =  mapEntityNode.path("featureTypes");	
+			}
+			if (mapEntityNode.has("serviceLayers")){
+				serviceLayers =  mapEntityNode.path("serviceLayers");			
+			}
+			if (mapEntityNode.has("layers")){ 
+				 layers =  mapEntityNode.path("layers");
+			}
+			if (mapEntityNode.has("maps")){ 
+				 maps =  mapEntityNode.path("maps");
+			}
+		}	
+		
+		final Map<String, Service> serviceMap = new HashMap<> ();
+		final Map<String, FeatureType> featureTypeMap = new HashMap<> ();
+		final Map<String, ServiceLayer> serviceLayerMap = new HashMap<> ();
+		// Parse services:
+		if (services != null) {
+			for (final JsonNode serviceNode: services) {
+				final Service service = JsonFactory.service (serviceNode);
+				serviceMap.put (service.getId (), service);
+			}
+		}
+		// Parse feature types:
+		if (featureTypes != null) {
+			for (final JsonNode featureTypeNode: featureTypes) {
+				final FeatureType featureType = JsonFactory.featureType (featureTypeNode, serviceMap);
+				featureTypeMap.put (featureType.getId (), featureType);
+			}
+		}
+		// Parse service layers:
+		if (serviceLayers != null) {
+			for (final JsonNode serviceLayerNode: serviceLayers) {
+				final ServiceLayer serviceLayer = JsonFactory.serviceLayer (serviceLayerNode, serviceMap, featureTypeMap);
+				serviceLayerMap.put (serviceLayer.getId (), serviceLayer);
+			}	
+		}
+		final List<MapDefinition> mapDefinitions = new ArrayList<MapDefinition>();
+		for (final JsonNode mapNode: maps) {
+			final JsonNode id = mapNode.path ("id"); 
+			final JsonNode label = mapNode.path ("label");
+			final String initialExtent;
+			final JsonNode initialExtentNode = mapNode.path("initial-extent");
+			if (!initialExtentNode.isMissingNode ()) {
+				JsonNode minx = initialExtentNode.path("minx");
+				JsonNode miny = initialExtentNode.path("miny");
+				JsonNode maxx = initialExtentNode.path("maxx");
+				JsonNode maxy = initialExtentNode.path("maxy");
+				if(minx.isMissingNode() || miny.isMissingNode() || maxx.isMissingNode() || maxy.isMissingNode()){
+					//throw new IllegalArgumentException ("Missing property: initial-extent");
+					initialExtent = "";
+				} else {
+					initialExtent = minx.asText() + "," + miny.asText() + ","+ maxx.asText() + "," + maxy.asText(); 
+				}
+			} else {
+				initialExtent = "";
+			}
+
+			if (mapNode.has("maplayers")) {
+				final List<Layer> layerList = new ArrayList<> ();
+				//Parse layers:
+				for ( final JsonNode mapLayer: mapNode.path("maplayers")) {
+					// merge maplayer and layer
+					mergeLayers(mapLayer, layers);
+					System.out.println("uittttttttttt " + mapLayer);
+					final Layer layer = JsonFactory.layer (mapLayer, serviceLayerMap);
+					layerList.add (layer);	
+				}
+				System.out.println("maak mepDefinition met  " + layerList.size() + " layers " + layerList.toString());
+				mapDefinitions.add (new MapDefinition (id.asText (), label.asText (), initialExtent, layerList));
+			} else {
+				throw new IllegalArgumentException ("Missing property: maplayers");
+			}
+			
+		}
+		return mapDefinitions;
+		
+	}
+	
+	// method to merge maplayer and layer
+	@SuppressWarnings("unchecked")
+	private static JsonNode mergeLayers (final JsonNode mapLayer, final JsonNode layers) {
+		final JsonNode layer = mapLayer.path ("layer");
+		if (layer.isMissingNode () || layer.asText ().isEmpty ()) {
+		
+			((ObjectNode) mapLayer).put("layerType", "default");
+			final JsonNode mapLayers = mapLayer.path ("maplayers");
+			if (mapLayers.isMissingNode ()) {
+				throw new IllegalArgumentException ("Missing property: layer or maplayers");
+			}
+			
+			for ( JsonNode childLayer: mapLayers ) {
+				childLayer = mergeLayers(childLayer, layers);					
+			}
+			((ObjectNode) mapLayer).put("layers", mapLayers);
+			((ObjectNode) mapLayer).remove("maplayers");
+			return mapLayer;
+			
+		}
+		
+		for (final JsonNode lyr: layers) {
+			if(lyr.path("id").asText().equals(layer.asText())) { 
+				final JsonNode layerType = lyr.path ("layerType");
+				final JsonNode serviceLyrs = lyr.path ("serviceLayers");
+				((ObjectNode) mapLayer).put("layerType", layerType);
+				((ObjectNode) mapLayer).put("serviceLayers", serviceLyrs);
+				//state is initial state
+				if (lyr.hasNonNull("state")) {
+					final JsonNode state = lyr.path("state");
+					if (mapLayer.hasNonNull("state")) {
+						((ObjectNode) state).setAll((ObjectNode) mapLayer.path("state"));
+					}
+					((ObjectNode)mapLayer).put("state", state );
+				} 	
+				
+			}
+		}
+		return mapLayer;
+	}
+		
 	public static MapDefinition mapDefinition (final JsonNode node) {
 		return parseObject (node, MapDefinition.class);
 	}
+	
+	
+	
+	
+	
 	
 	public static ServiceLayer serviceLayer (final String json, final Map<String, Service> services, final Map<String, FeatureType> featureTypes) {
 		return serviceLayer (parse (json), services, featureTypes);
@@ -91,7 +241,7 @@ public class JsonFactory {
 		final JsonNode name = node.path ("name");
 		final JsonNode label = node.path ("label");
 		final JsonNode featureType = node.path ("featureType");
-		
+
 		if (id.isMissingNode () || id.asText ().isEmpty ()) {
 			throw new IllegalArgumentException ("Missing property: id");
 		}
@@ -106,7 +256,7 @@ public class JsonFactory {
 		}
 		
 		final String serviceId = service.asText ();
-		
+
 		if (!services.containsKey (serviceId)) {
 			throw new IllegalArgumentException ("Service not defined: " + serviceId);
 		}
@@ -203,6 +353,8 @@ public class JsonFactory {
 		}
 	}
 	
+	
+	
 	private static <T> T parseObject (final JsonNode node, final Class<T> cls) {
 		try {
 			return mapper.treeToValue (node, cls);
@@ -210,6 +362,8 @@ public class JsonFactory {
 			throw new RuntimeException (e);
 		}
 	}
+	
+	
 	
 	private final static class ParseNamedServiceEntity {
 		private final String id;
@@ -246,4 +400,7 @@ public class JsonFactory {
 			return featureType;
 		}
 	}
+	
+	
+	
 }

@@ -1,0 +1,31 @@
+{
+	"services": [
+		{
+			"id": "test-service-1",
+			"label": "TMS nationaal georegister",
+			"identification": {
+				"serviceType": "TMS",
+				"serviceEndpoint": "http://geodata.nationaalgeoregister.nl/tms/1.0.0",
+				"serviceVersion": "1.0.0"
+			}
+		},
+		{
+			"id": "test-service-2",
+			"label": "Risicokaart pub WMS",
+			"identification": {
+				"serviceType": "WMS",
+				"serviceEndpoint": "http://servicespub.risicokaart.nl/rk_services_pub/services/WMS-risicokaart",
+				"serviceVersion": "1.1.1"
+			}
+		},
+		{
+			"id": "test-wfs",
+			"label": "Risicokaart pub WFS",
+			"identification": {
+				"serviceType": "WFS",
+				"serviceEndpoint": "http://servicespub.risicokaart.nl/rk_services_pub/services/WFS-risicokaart",
+				"serviceVersion": "1.1.0"
+			}
+		}
+	]
+}	
