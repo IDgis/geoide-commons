@@ -169,7 +169,7 @@ public class StaticMapProvider implements MapProvider, ServiceProvider, ServiceL
 	}
 
 	@Override
-	public FeatureType getFeatureType(String serviceLayerId) {
+	public FeatureType getFeatureType(String featureTypeId) {
 		// TODO Auto-generated method stub
 		return null;
 	}

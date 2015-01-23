@@ -328,7 +328,7 @@ define ([
 				}
 				
 				interaction._disable (this);
-				this._interactions = this._interactions.splice (i, 1);
+				this._interactions.splice (i, 1);
 				break;
 			}
 		}

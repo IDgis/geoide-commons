@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -34,10 +33,10 @@ public class MapDefinition extends Entity {
 	
 	@JsonValue
 	public JsonNode serialize () {
+		//not anymore possible to serialize because of simplification during creation
+		
 		final ObjectNode obj = JsonFactory.mapper ().createObjectNode ();
-		obj.put ("id", getId ());
-		obj.put ("label", getLabel ());
-		obj.put ("initial-extent", getInitialExtent());
+
 		// Write services:
 		if (!getServices ().values ().isEmpty ()) {
 			final ArrayNode servicesNode = obj.putArray ("services");
@@ -67,6 +66,21 @@ public class MapDefinition extends Entity {
 				layersNode.add (JsonFactory.mapper ().valueToTree (layer));
 			}
 		}
+		// Write maps
+		final ArrayNode mapsNode = obj.putArray ("maps");
+		final ObjectNode mapobj = JsonFactory.mapper ().createObjectNode ();
+		mapobj.put ("id", getId ());
+		mapobj.put ("label", getLabel ());
+		mapobj.put ("initial-extent", getInitialExtent());
+		final ArrayNode maplayersNode = mapobj.putArray ("maplayers");
+		// Write maplayers:
+		//if (!getRootLayers ().isEmpty ()) {
+			//final ArrayNode layersNode = obj.putArray ("layers");
+			//for (final Layer layer: getRootLayers ()) {
+				//layersNode.add (JsonFactory.mapper ().valueToTree (layer));
+			//}
+		//}
+		mapsNode.add(JsonFactory.mapper ().valueToTree (mapobj));
 		return obj;
 	}
 	

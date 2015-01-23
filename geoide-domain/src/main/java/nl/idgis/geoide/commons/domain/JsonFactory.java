@@ -12,7 +12,6 @@ import java.util.Map.Entry;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class JsonFactory {
@@ -52,11 +51,20 @@ public class JsonFactory {
 	}
 	
 	public static MapDefinition mapDefinition (final String json) {
-		return mapDefinition (parse (json));
+		List<JsonNode> mapEntityNodes = new ArrayList<> ();
+		mapEntityNodes.add(parse (json));
+		return mapDefinitions (mapEntityNodes).get(0);
 	}
 	
+	public static MapDefinition mapDefinition (final JsonNode json) {
+		List<JsonNode> mapEntityNodes = new ArrayList<> ();
+		mapEntityNodes.add(json);
+		return mapDefinitions (mapEntityNodes).get(0);
+	}
+	
+	
 	public static MapDefinition mapDefinition (final InputStream inputStream) {
-		return mapDefinition (parse (inputStream));
+		return mapDefinitions (inputStream).get(0);
 	}
 	
 	public static List<MapDefinition> mapDefinitions (final InputStream... inputStreams) {
@@ -146,11 +154,9 @@ public class JsonFactory {
 				for ( final JsonNode mapLayer: mapNode.path("maplayers")) {
 					// merge maplayer and layer
 					mergeLayers(mapLayer, layers);
-					System.out.println("uittttttttttt " + mapLayer);
 					final Layer layer = JsonFactory.layer (mapLayer, serviceLayerMap);
 					layerList.add (layer);	
 				}
-				System.out.println("maak mepDefinition met  " + layerList.size() + " layers " + layerList.toString());
 				mapDefinitions.add (new MapDefinition (id.asText (), label.asText (), initialExtent, layerList));
 			} else {
 				throw new IllegalArgumentException ("Missing property: maplayers");
@@ -162,7 +168,6 @@ public class JsonFactory {
 	}
 	
 	// method to merge maplayer and layer
-	@SuppressWarnings("unchecked")
 	private static JsonNode mergeLayers (final JsonNode mapLayer, final JsonNode layers) {
 		final JsonNode layer = mapLayer.path ("layer");
 		if (layer.isMissingNode () || layer.asText ().isEmpty ()) {
@@ -202,15 +207,6 @@ public class JsonFactory {
 		return mapLayer;
 	}
 		
-	public static MapDefinition mapDefinition (final JsonNode node) {
-		return parseObject (node, MapDefinition.class);
-	}
-	
-	
-	
-	
-	
-	
 	public static ServiceLayer serviceLayer (final String json, final Map<String, Service> services, final Map<String, FeatureType> featureTypes) {
 		return serviceLayer (parse (json), services, featureTypes);
 	}
