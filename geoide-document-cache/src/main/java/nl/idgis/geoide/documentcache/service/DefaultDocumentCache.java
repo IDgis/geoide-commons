@@ -12,20 +12,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import nl.idgis.geoide.documentcache.ByteStringCachedDocument;
 import nl.idgis.geoide.documentcache.CachedDocument;
 import nl.idgis.geoide.documentcache.DocumentCache;
 import nl.idgis.geoide.documentcache.DocumentCacheException;
 import nl.idgis.geoide.documentcache.DocumentStore;
+import nl.idgis.geoide.util.streams.StreamProcessor;
 import nl.idgis.ogc.util.MimeContentType;
 
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
 import org.mapdb.HTreeMap;
+import org.reactivestreams.Publisher;
 
 import play.Logger;
 import play.libs.F.Callback;
 import play.libs.F.Function;
+import play.libs.F.Function2;
 import play.libs.F.Promise;
 import akka.actor.ActorRef;
 import akka.actor.ActorRefFactory;
@@ -34,6 +36,7 @@ import akka.actor.Props;
 import akka.actor.UntypedActor;
 import akka.pattern.Patterns;
 import akka.util.ByteString;
+import akka.util.CompactByteString;
 import akka.util.ByteString.ByteStrings;
 
 public class DefaultDocumentCache implements DocumentCache, Closeable {
@@ -42,32 +45,37 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 	private final DocumentStore readThroughStore;
 	private final ActorRef cacheActor;
 	private final ActorRefFactory actorRefFactory;
+	private final StreamProcessor streamProcessor;
 
-	private DefaultDocumentCache (final ActorRefFactory actorRefFactory, final String cacheName, final long ttlInSeconds, final File file, final Double maxSizeInGigabytes, final DocumentStore readThroughStore) {
+	private DefaultDocumentCache (final ActorRefFactory actorRefFactory, final StreamProcessor streamProcessor, final String cacheName, final long ttlInSeconds, final File file, final Double maxSizeInGigabytes, final DocumentStore readThroughStore) {
 		if (file == null && maxSizeInGigabytes == null) {
 			throw new IllegalArgumentException ("Either file or maxSizeInGigabytes must be given");
+		}
+		if (streamProcessor == null) {
+			throw new NullPointerException ("streamProcessor cannot be null");
 		}
 		
 		this.ttlInSeconds = ttlInSeconds;
 		this.readThroughStore = readThroughStore;
 		this.actorRefFactory = actorRefFactory;
-		cacheActor = actorRefFactory.actorOf (CacheActor.props (ttlInSeconds, file, maxSizeInGigabytes, readThroughStore), String.format ("geoide-cache-%s", cacheName));
+		cacheActor = actorRefFactory.actorOf (CacheActor.props (ttlInSeconds, file, maxSizeInGigabytes, readThroughStore, streamProcessor), String.format ("geoide-cache-%s", cacheName));
+		this.streamProcessor = streamProcessor;
 	}
 	
-	public static DefaultDocumentCache createInMemoryCache (final ActorSystem actorSystem, final String cacheName, final long ttlSeconds, final double maxSizeInGigabytes, final DocumentStore readThroughStore) {
-		return new DefaultDocumentCache (actorSystem, cacheName, ttlSeconds, null, maxSizeInGigabytes, readThroughStore);
+	public static DefaultDocumentCache createInMemoryCache (final ActorSystem actorSystem, final StreamProcessor streamProcessor, final String cacheName, final long ttlSeconds, final double maxSizeInGigabytes, final DocumentStore readThroughStore) {
+		return new DefaultDocumentCache (actorSystem, streamProcessor, cacheName, ttlSeconds, null, maxSizeInGigabytes, readThroughStore);
 	}
 	
-	public static DefaultDocumentCache createTempFileCache (final ActorSystem actorSystem, final String cacheName, final long ttlSeconds, final DocumentStore readThroughStore) throws IOException {
+	public static DefaultDocumentCache createTempFileCache (final ActorSystem actorSystem, final StreamProcessor streamProcessor, final String cacheName, final long ttlSeconds, final DocumentStore readThroughStore) throws IOException {
 		final File file = File.createTempFile ("geoide-cache-", ".tmp.db");
 		
 		file.deleteOnExit ();
 		
-		return createFileCache (actorSystem, cacheName, ttlSeconds, file, readThroughStore);
+		return createFileCache (actorSystem, streamProcessor, cacheName, ttlSeconds, file, readThroughStore);
 	}
 	
-	public static DefaultDocumentCache createFileCache (final ActorSystem actorSystem, final String cacheName, final long ttlSeconds, final File file, final DocumentStore readThroughStore) {
-		return new DefaultDocumentCache (actorSystem, cacheName, ttlSeconds, file, null, readThroughStore);
+	public static DefaultDocumentCache createFileCache (final ActorSystem actorSystem, final StreamProcessor streamProcessor, final String cacheName, final long ttlSeconds, final File file, final DocumentStore readThroughStore) {
+		return new DefaultDocumentCache (actorSystem, streamProcessor, cacheName, ttlSeconds, file, null, readThroughStore);
 	}
 	
 	@Override
@@ -102,42 +110,43 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 	}
 	
 	@Override
+	public Promise<CachedDocument> store (final URI uri, final MimeContentType contentType, final Publisher<ByteString> body) {
+		if (uri == null) {
+			throw new NullPointerException ("uri cannot be null");
+		}
+		if (contentType == null) {
+			throw new NullPointerException ("contentType cannot be null");
+		}
+		if (body == null) {
+			throw new NullPointerException ("body cannot be null");
+		}
+		
+		return store (new CachedDocument () {
+			@Override
+			public URI getUri () {
+				return uri;
+			}
+			
+			@Override
+			public MimeContentType getContentType () {
+				return contentType;
+			}
+			
+			@Override
+			public Publisher<ByteString> getBody () {
+				return body;
+			}
+		});
+	}
+	
+	@Override
 	public Promise<CachedDocument> store (final URI uri, final MimeContentType contentType, final byte[] data) {
-		final CachedDocument document = new ByteStringCachedDocument (
-				uri, 
-				contentType, 
-				ByteStrings.fromArray (data).compact ()
-			);
-
-		return store (document);
+		return store (uri, contentType, streamProcessor.<ByteString>publishSinglevalue (ByteStrings.fromArray (data)));
 	}
 
 	@Override
 	public Promise<CachedDocument> store (final URI uri, final MimeContentType contentType, final InputStream inputStream) {
-		final CachedDocument document;
-		
-		try {
-			ByteString byteString = ByteStrings.empty ();
-			
-			byte[] data = new byte[4096];
-			int nRead;
-			
-			while ((nRead = inputStream.read (data, 0, data.length)) != -1) {
-				byteString = byteString.concat (ByteStrings.fromArray (data, 0, nRead));
-			}
-			
-			inputStream.close ();
-			
-			document = new ByteStringCachedDocument (
-				uri,
-				contentType,
-				byteString.compact ()
-			);
-		} catch (IOException e) {
-			return Promise.throwing (new DocumentCacheException.IOError (e));
-		}
-		
-		return store (document);
+		return store (uri, contentType, streamProcessor.publishInputStream (inputStream, 1024, 30000));
 	}
 
 	@Override
@@ -179,15 +188,16 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 	public static class CacheActor extends UntypedActor {
 		
 		private final DocumentStore readThroughStore;
+		private final StreamProcessor streamProcessor;
 		private final long ttlInSeconds;
 		private final File file;
 		private final Double maxSizeInGigabytes;
 		private final Map<URI, List<ActorRef>> waitLists = new HashMap<> ();
 		
 		private DB db;
-		private HTreeMap<URI, CachedDocument> cache;
+		private HTreeMap<URI, ByteStringCachedDocument> cache;
 		
-		public CacheActor (final long ttlInSeconds, final File file, final Double maxSizeInGigabytes, final DocumentStore readThroughStore) {
+		public CacheActor (final long ttlInSeconds, final File file, final Double maxSizeInGigabytes, final DocumentStore readThroughStore, final StreamProcessor streamProcessor) {
 			if (file == null && maxSizeInGigabytes == null) {
 				throw new IllegalArgumentException ("Either file or maxSizeInGigabytes must be given");
 			}
@@ -196,10 +206,11 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 			this.file = file;
 			this.maxSizeInGigabytes = maxSizeInGigabytes;
 			this.readThroughStore = readThroughStore;
+			this.streamProcessor = streamProcessor;
 		}
 		
-		public static Props props (final long ttl, final File file, final Double maxSizeInGigabytes, final DocumentStore readThroughStore) { 
-			return Props.create (CacheActor.class, ttl, file, maxSizeInGigabytes, readThroughStore);
+		public static Props props (final long ttl, final File file, final Double maxSizeInGigabytes, final DocumentStore readThroughStore, final StreamProcessor streamProcessor) { 
+			return Props.create (CacheActor.class, ttl, file, maxSizeInGigabytes, readThroughStore, streamProcessor);
 		}
 		
 		@Override
@@ -223,7 +234,7 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 				.createHashMap ("cache")
 				.expireAfterWrite (ttlInSeconds, TimeUnit.SECONDS)
 				.expireAfterAccess (ttlInSeconds, TimeUnit.SECONDS)
-				.<URI, CachedDocument>make ();
+				.<URI, ByteStringCachedDocument>make ();
 
 		}
 		
@@ -239,8 +250,8 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 				
 				// Return from the cache:
 				if (!((FetchDocument) message).isForceUpdate () && cache.containsKey (uri)) {
-					Logger.debug ("Returning cached copy of: " + uri + " (" + cache.get (uri).getContentType ().original () + ")");
-					sender ().tell (cache.get (uri), self ());
+					Logger.debug ("Returning cached copy of: " + uri + " (" + cache.get (uri).getContentType () + ")");
+					sender ().tell (createDocument (cache.get (uri)), self ());
 					return;
 				}
 				
@@ -273,21 +284,77 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 				final CachedDocument document = ((StoreDocument) message).getDocument ();
 
 				// Store the document in the cache:
-				Object response = new DocumentStored (document);
-				try {
-					cache.put (document.getUri (), document);
-				} catch (Throwable e) {
-					response = new CacheMiss (document.getUri (), e);
+				storeDocument (document);
+			} else if (message instanceof StoreAndNotify) {
+				final StoreAndNotify san = (StoreAndNotify) message;
+				final Object response;
+				
+				if (san.getDocument () != null) {
+					cache.put (san.getDocument ().getUri (), san.getDocument ());
+					response = new DocumentStored (createDocument (san.getDocument ()));
+				} else {
+					response = san.getMessage ();
 				}
 				
 				// Notify all waiters that the document has arrived in the cache:
-				notifyWaiters (document.getUri (), response, self ());
+				notifyWaiters (san.getDocument ().getUri (), response, self ());
 				
-				// Signal success:
-				sender ().tell (response, self ());
+				// Signal the original sender:
+				san.getSender ().tell (response, self ());
 			} else {
 				unhandled (message);
 			}
+		}
+		
+		private CachedDocument createDocument (final ByteStringCachedDocument cachedDocument) {
+			return new CachedDocument () {
+				@Override
+				public URI getUri () {
+					return cachedDocument.getUri ();
+				}
+				
+				@Override
+				public MimeContentType getContentType () {
+					return new MimeContentType (cachedDocument.getContentType ());
+				}
+				
+				@Override
+				public Publisher<ByteString> getBody () {
+					return streamProcessor.<ByteString>publishSinglevalue (cachedDocument.getBody ());
+				}
+			};
+		}
+		
+		private void storeDocument (final CachedDocument document) {
+			
+			final ActorRef self = self ();
+			final ActorRef sender = sender ();
+			
+			// Reduce the document to a single value in memory:
+			final Promise<ByteString> promise = streamProcessor.reduce (document.getBody (), ByteStrings.empty (), new Function2<ByteString, ByteString, ByteString> () {
+				@Override
+				public ByteString apply (final ByteString a, final ByteString b) throws Throwable {
+					return a.concat (b);
+				}
+			});
+			
+			promise.onRedeem (new Callback<ByteString> () {
+				@Override
+				public void invoke (final ByteString body) throws Throwable {
+					self.tell (new StoreAndNotify (
+							sender,
+							null,
+							new ByteStringCachedDocument (document.getUri (), document.getContentType ().original (), body.compact ())
+						), self);
+				}
+			});
+			
+			promise.onFailure (new Callback<Throwable> () {
+				@Override
+				public void invoke (final Throwable e) throws Throwable {
+					self.tell (new StoreAndNotify (sender, new CacheMiss (document.getUri (), e), null), self);
+				}
+			});
 		}
 		
 		private void notifyWaiters (final URI uri, final Object message, final ActorRef sender) {
@@ -338,6 +405,30 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 		}
 	}
 
+	public final static class StoreAndNotify {
+		private final ActorRef sender;
+		private final Object message;
+		private final ByteStringCachedDocument document;
+		
+		public StoreAndNotify (final ActorRef sender, final Object message, final ByteStringCachedDocument document) {
+			this.sender = sender;
+			this.message = message;
+			this.document = document;
+		}
+
+		public ActorRef getSender() {
+			return sender;
+		}
+
+		public Object getMessage() {
+			return message;
+		}
+		
+		public ByteStringCachedDocument getDocument () {
+			return document;
+		}
+	}
+	
 	public final static class FetchDocument {
 		private final URI uri;
 		private final boolean forceUpdate;
@@ -403,6 +494,32 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 		
 		public CachedDocument getDocument () {
 			return document;
+		}
+	}
+	
+	private final static class ByteStringCachedDocument implements Serializable {
+		private static final long serialVersionUID = -4357319155686482230L;
+		
+		private final URI uri;
+		private final String contentType;
+		private final CompactByteString body;
+		
+		public ByteStringCachedDocument (final URI uri, final String contentType, final CompactByteString body) {
+			this.uri = uri;
+			this.contentType = contentType;
+			this.body = body;
+		}
+		
+		public URI getUri () {
+			return uri;
+		}
+
+		public String getContentType () {
+			return contentType;
+		}
+
+		public CompactByteString getBody () {
+			return body;
 		}
 	}
 }

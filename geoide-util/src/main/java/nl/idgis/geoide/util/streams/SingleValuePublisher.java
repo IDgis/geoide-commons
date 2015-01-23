@@ -45,14 +45,14 @@ public class SingleValuePublisher<T> implements Publisher<T> {
 			}
 			
 			if (!dataSent && n > 0) {
-				subscriber.onNext (value);
 				dataSent = true;
 				-- n;
+				subscriber.onNext (value);
 			}
 
 			if (n > 0) {
-				subscriber.onComplete ();
 				cancelled = true;
+				subscriber.onComplete ();
 			}
 		}
 	}

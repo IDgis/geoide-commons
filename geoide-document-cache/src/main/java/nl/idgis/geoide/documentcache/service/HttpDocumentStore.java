@@ -1,34 +1,40 @@
 package nl.idgis.geoide.documentcache.service;
 
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
 
-import nl.idgis.geoide.documentcache.ByteStringCachedDocument;
+import nl.idgis.geoide.commons.http.client.HttpClient;
+import nl.idgis.geoide.commons.http.client.HttpRequestBuilder;
+import nl.idgis.geoide.commons.http.client.HttpResponse;
 import nl.idgis.geoide.documentcache.CachedDocument;
 import nl.idgis.geoide.documentcache.DocumentCacheException;
 import nl.idgis.geoide.documentcache.DocumentStore;
 import nl.idgis.ogc.util.MimeContentType;
+
+import org.reactivestreams.Publisher;
+
 import play.Logger;
 import play.libs.F.Function;
 import play.libs.F.Promise;
-import play.libs.ws.WS;
-import play.libs.ws.WSRequestHolder;
-import play.libs.ws.WSResponse;
 import akka.util.ByteString;
-import akka.util.ByteString.ByteStrings;
 
 public class HttpDocumentStore implements DocumentStore {
 
+	private final HttpClient httpClient;
 	private final long timeoutInMillis;
 	
-	public HttpDocumentStore () {
-		this (20000);
+	public HttpDocumentStore (final HttpClient httpClient) {
+		this (httpClient, 60000);
 	}
 	
-	public HttpDocumentStore (final long timeoutInMillis) {
+	public HttpDocumentStore (final HttpClient httpClient, final long timeoutInMillis) {
+		if (httpClient == null) {
+			throw new NullPointerException ("httpClient cannot be null");
+		}
+		
+		this.httpClient = httpClient;
 		this.timeoutInMillis = timeoutInMillis;
 	}
 	
@@ -45,10 +51,10 @@ public class HttpDocumentStore implements DocumentStore {
 		} catch (URISyntaxException e) {
 			return Promise.throwing (e);
 		}
-		WSRequestHolder holder = WS
+		HttpRequestBuilder builder = httpClient
 			.url (shortUri.toString ())
 			.setFollowRedirects (true)
-			.setTimeout ((int) timeoutInMillis);
+			.setTimeoutInMillis (timeoutInMillis);
 		
 		final String rawQuery = uri.getRawQuery ();
 		if (rawQuery != null) {
@@ -64,37 +70,39 @@ public class HttpDocumentStore implements DocumentStore {
 					return Promise.throwing (e);
 				}
 				
-				holder = holder.setQueryParameter (key, value);
+				builder = builder.setParameter (key, value);
 			}
 		}
 
-		return holder
+		return builder
 			.get ()
-			.map (new Function<WSResponse, CachedDocument> () {
+			.map (new Function<HttpResponse, CachedDocument> () {
 				@Override
-				public CachedDocument apply (final WSResponse response) throws Throwable {
+				public CachedDocument apply (final HttpResponse response) throws Throwable {
 					if (response.getStatus () < 200 || response.getStatus () >= 300) {
 						Logger.debug ("Document not found: " + response.getStatus () + " " + response.getStatusText ());
 						throw new DocumentCacheException.DocumentNotFoundException (uri);
 					}
 
-					ByteString byteString = ByteStrings.empty ();
-					final InputStream inputStream = response.getBodyAsStream ();
+					final MimeContentType contentType = new MimeContentType (response.getHeader ("Content-Type"));
+					final Publisher<ByteString> body = response.getBody ();
 					
-					byte[] data = new byte[4096];
-					int nRead;
-					
-					while ((nRead = inputStream.read (data, 0, data.length)) != -1) {
-						byteString = byteString.concat (ByteStrings.fromArray (data, 0, nRead));
-					}
-					
-					inputStream.close ();
-					
-					return new ByteStringCachedDocument (
-							uri, 
-							new MimeContentType (response.getHeader ("Content-Type")), 
-							byteString.compact ()
-						);
+					return new CachedDocument () {
+						@Override
+						public URI getUri () {
+							return uri;
+						}
+						
+						@Override
+						public MimeContentType getContentType () {
+							return contentType;
+						}
+						
+						@Override
+						public Publisher<ByteString> getBody () {
+							return body;
+						}
+					};
 				}
 			});
 	}

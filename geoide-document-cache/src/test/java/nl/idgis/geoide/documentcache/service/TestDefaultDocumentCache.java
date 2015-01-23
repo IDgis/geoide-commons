@@ -1,19 +1,22 @@
 package nl.idgis.geoide.documentcache.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URI;
 import java.util.Arrays;
 
-import nl.idgis.geoide.documentcache.ByteStringCachedDocument;
 import nl.idgis.geoide.documentcache.CachedDocument;
 import nl.idgis.geoide.documentcache.DocumentCacheException;
-import nl.idgis.geoide.documentcache.DocumentStore;
 import nl.idgis.geoide.documentcache.DocumentCacheException.DocumentNotFoundException;
+import nl.idgis.geoide.documentcache.DocumentStore;
+import nl.idgis.geoide.util.streams.AkkaStreamProcessor;
+import nl.idgis.geoide.util.streams.StreamProcessor;
 import nl.idgis.ogc.util.MimeContentType;
 
 import org.junit.After;
@@ -21,10 +24,12 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.reactivestreams.Publisher;
 
 import play.libs.F.Promise;
 import akka.actor.ActorSystem;
 import akka.testkit.JavaTestKit;
+import akka.util.ByteString;
 import akka.util.ByteString.ByteStrings;
 
 public class TestDefaultDocumentCache {
@@ -35,6 +40,7 @@ public class TestDefaultDocumentCache {
 	private TestDocumentStore store;
 	private DefaultDocumentCache cache;
 	private DefaultDocumentCache cacheReadThrough;
+	private StreamProcessor streamProcessor;
 	
 	@BeforeClass
 	public static void setup () {
@@ -49,15 +55,17 @@ public class TestDefaultDocumentCache {
 	
 	@Before
 	public void createCache () throws Throwable {
+		streamProcessor = new AkkaStreamProcessor (actorSystem);
 		store = new TestDocumentStore ();
-		cache = DefaultDocumentCache.createInMemoryCache (actorSystem, "test-cache-" + (++ count), 1, 0.5, null);
-		cacheReadThrough = DefaultDocumentCache.createInMemoryCache (actorSystem, "test-cache-" + (++ count), 1, 0.5, store);
+		cache = DefaultDocumentCache.createInMemoryCache (actorSystem, streamProcessor, "test-cache-" + (++ count), 1, 0.5, null);
+		cacheReadThrough = DefaultDocumentCache.createInMemoryCache (actorSystem, streamProcessor, "test-cache-" + (++ count), 1, 0.5, store);
 	}
 	
 	@After
 	public void destroyCache () throws Throwable {
 		cache.close ();
 		store = null;
+		streamProcessor = null;
 	}
 	
 	@Test
@@ -79,7 +87,7 @@ public class TestDefaultDocumentCache {
 		final CachedDocument document = cacheReadThrough.fetch (new URI ("http://idgis.nl")).get (1000);
 		
 		assertEquals (new MimeContentType ("text/plain"), document.getContentType());
-		assertContent ("Hello, World!", document);
+		assertContent ("Hello, World!", document, streamProcessor);
 		assertEquals (1, store.count);
 	}
 	
@@ -115,7 +123,7 @@ public class TestDefaultDocumentCache {
 		final CachedDocument document = cache.store (new URI ("http://idgis.nl"), new MimeContentType ("text/plain"), testStream ("Hello, World!")).get (1000);
 		
 		assertEquals (new MimeContentType ("text/plain"), document.getContentType());
-		assertContent ("Hello, World!", document);
+		assertContent ("Hello, World!", document, streamProcessor);
 	}
 	
 	@Test
@@ -123,7 +131,7 @@ public class TestDefaultDocumentCache {
 		final CachedDocument document = cache.store (new URI ("http://idgis.nl"), new MimeContentType ("text/plain"), testByteArray ("Hello, World!")).get (1000);
 		
 		assertEquals (new MimeContentType ("text/plain"), document.getContentType());
-		assertContent ("Hello, World!", document);
+		assertContent ("Hello, World!", document, streamProcessor);
 	}
 	
 	@Test
@@ -133,7 +141,7 @@ public class TestDefaultDocumentCache {
 		final CachedDocument document = cache.fetch (new URI ("http://idgis.nl")).get (1000);
 		
 		assertEquals (new MimeContentType ("text/plain"), document.getContentType());
-		assertContent ("Hello, World!", document);
+		assertContent ("Hello, World!", document, streamProcessor);
 	}
 	
 	@Test
@@ -145,7 +153,7 @@ public class TestDefaultDocumentCache {
 		final CachedDocument document = cacheReadThrough.fetch (new URI ("http://idgis.nl")).get (1000);
 		
 		assertEquals (new MimeContentType ("text/plain"), document.getContentType());
-		assertContent ("Hello, World!", document);
+		assertContent ("Hello, World!", document, streamProcessor);
 	}
 	
 	@Test (expected = DocumentNotFoundException.class)
@@ -157,7 +165,7 @@ public class TestDefaultDocumentCache {
 		final CachedDocument document =  cache.fetch (new URI ("http://idgis.nl")).get (1000);
 		
 		assertEquals (new MimeContentType ("text/plain"), document.getContentType());
-		assertContent ("Hello, World!", document);
+		assertContent ("Hello, World!", document, streamProcessor);
 	}
 	
 	@Test
@@ -171,19 +179,24 @@ public class TestDefaultDocumentCache {
 		final CachedDocument document =  cacheReadThrough.fetch (new URI ("http://idgis.nl")).get (1000);
 		
 		assertEquals (new MimeContentType ("text/plain"), document.getContentType());
-		assertContent ("Hello, World!", document);
+		assertContent ("Hello, World!", document, streamProcessor);
 		assertEquals (2, store.count);
 	}
 	
-	public static void assertContent (final String expected, final CachedDocument document) throws Throwable {
-		final InputStream inputStream = document.asInputStream ();
-		final byte[] data = new byte[4096];
-		final int nRead = inputStream.read (data, 0, data.length);
+	public static void assertContent (final String expected, final CachedDocument document, final StreamProcessor streamProcessor) throws IOException {
+		final InputStream inputStream = streamProcessor.asInputStream (document.getBody (), 5000);
+		
+		final byte[] buffer = new byte[4096];
+		ByteString data = ByteStrings.empty ();
+		int nRead;
+		while ((nRead = inputStream.read (buffer, 0, buffer.length)) >= 0) {
+			data = data.concat (ByteStrings.fromArray (buffer, 0, nRead));
+		}
 		inputStream.close ();
 		
-		assertTrue (nRead > 0);
+		assertTrue (data.length () > 0);
 		
-		final String content = new String (Arrays.copyOf (data, nRead));
+		final String content = new String (data.toArray ());
 		
 		assertEquals (expected, content);
 	}
@@ -204,7 +217,7 @@ public class TestDefaultDocumentCache {
 		return new ByteArrayInputStream (testByteArray (content));
 	}
 	
-	private static class TestDocumentStore implements DocumentStore {
+	private class TestDocumentStore implements DocumentStore {
 		public int count = 0;
 		
 		@Override
@@ -212,7 +225,28 @@ public class TestDefaultDocumentCache {
 			try {
 				if (uri.equals (new URI ("http://idgis.nl"))) {
 					++ count;
-					return Promise.pure ((CachedDocument) new ByteStringCachedDocument (uri, new MimeContentType ("text/plain"), ByteStrings.fromArray (testByteArray ("Hello, World!")).compact ()));
+					final CachedDocument document = new CachedDocument () {
+						@Override
+						public URI getUri () {
+							return uri;
+						}
+						
+						@Override
+						public MimeContentType getContentType () {
+							return new MimeContentType ("text/plain");
+						}
+						
+						@Override
+						public Publisher<ByteString> getBody () {
+							try {
+								return streamProcessor.<ByteString>publishSinglevalue (ByteStrings.fromArray (testByteArray ("Hello, World!")).compact ());
+							} catch (Throwable e) {
+								throw new RuntimeException (e);
+							}
+						}
+					};
+					
+					return Promise.pure (document);
 				}
 				
 				return Promise.throwing (new DocumentCacheException.DocumentNotFoundException (uri));

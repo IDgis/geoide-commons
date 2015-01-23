@@ -133,6 +133,11 @@
 				<artifactId>geoide-document-cache</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>nl.idgis.geoide</groupId>
+				<artifactId>geoide-http-client</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 		
 			<dependency>
 				<groupId>nl.idgis.commons</groupId>

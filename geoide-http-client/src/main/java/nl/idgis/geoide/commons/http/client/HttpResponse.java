@@ -12,4 +12,5 @@ public interface HttpResponse {
 	String getStatusText ();
 	Map<String, List<String>> getHeaders ();
 	Publisher<ByteString> getBody ();
+	String getHeader (String name);
 }

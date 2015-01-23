@@ -49,4 +49,28 @@ public class DefaultHttpResponse implements HttpResponse {
 	public Publisher<ByteString> getBody () {
 		return body;
 	}
+	
+	@Override
+	public String getHeader (final String name) {
+		if (name == null) {
+			return null;
+		}
+		
+		final String lcName = name.toLowerCase ();
+		
+		for (final Map.Entry<String, List<String>> entry: getHeaders ().entrySet ()) {
+			if (!lcName.equals (entry.getKey ().toLowerCase ())) {
+				continue;
+			}
+			
+			final List<String> value = entry.getValue ();
+			if (value == null || value.isEmpty ()) {
+				continue;
+			}
+			
+			return value.get (0);
+		}
+		
+		return null;
+	}
 }

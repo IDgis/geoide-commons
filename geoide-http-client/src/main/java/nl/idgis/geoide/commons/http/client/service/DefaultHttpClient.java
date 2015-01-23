@@ -5,6 +5,7 @@ import java.util.Map;
 
 import nl.idgis.geoide.commons.http.client.HttpClient;
 import nl.idgis.geoide.commons.http.client.HttpRequest;
+import nl.idgis.geoide.commons.http.client.HttpRequestBuilder;
 import nl.idgis.geoide.commons.http.client.HttpResponse;
 import nl.idgis.geoide.util.streams.StreamProcessor;
 import play.libs.F.Function;
@@ -30,6 +31,16 @@ public class DefaultHttpClient implements HttpClient {
 		this.streamProcessor = streamProcessor;
 		this.streamBlockSizeInBytes = streamBlockSizeInBytes;
 		this.streamTimeoutInMillis = streamTimeoutInMillis;
+	}
+	
+	@Override
+	public HttpRequestBuilder request () {
+		return new DefaultHttpRequestBuilder (this);
+	}
+	
+	@Override
+	public HttpRequestBuilder url (final String url) {
+		return request ().setUrl (url);
 	}
 	
 	@Override
