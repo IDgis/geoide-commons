@@ -2,7 +2,7 @@ package nl.idgis.geoide.commons.print.service;
 
 import nl.idgis.geoide.commons.print.common.Capabilities;
 import nl.idgis.geoide.commons.print.common.PrintRequest;
-import nl.idgis.geoide.documentcache.CachedDocument;
+import nl.idgis.geoide.documentcache.Document;
 import play.libs.F.Promise;
 
 /**
@@ -11,7 +11,7 @@ import play.libs.F.Promise;
 public class RemotePrintService implements PrintService {
 
 	@Override
-	public Promise<CachedDocument> print (final PrintRequest printRequest) {
+	public Promise<Document> print (final PrintRequest printRequest) {
 		// TODO Auto-generated method stub
 		return null;
 	}

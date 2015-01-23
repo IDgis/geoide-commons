@@ -5,5 +5,5 @@ import java.net.URI;
 import play.libs.F.Promise;
 
 public interface DocumentStore {
-	Promise<CachedDocument> fetch (final URI uri);
+	Promise<Document> fetch (final URI uri);
 }

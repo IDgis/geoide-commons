@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import nl.idgis.geoide.documentcache.CachedDocument;
+import nl.idgis.geoide.documentcache.Document;
 import nl.idgis.geoide.documentcache.DocumentCache;
 import nl.idgis.geoide.documentcache.DocumentCacheException;
 import nl.idgis.geoide.documentcache.DocumentStore;
@@ -79,7 +79,7 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 	}
 	
 	@Override
-	public Promise<CachedDocument> store (final URI uri) {
+	public Promise<Document> store (final URI uri) {
 		if (readThroughStore == null) {
 			// Without a readThrough store, the document can never be fetched:
 			return Promise.throwing (new DocumentCacheException.DocumentNotFoundException (uri));
@@ -89,10 +89,10 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 		return fetch (uri, true);
 	}
 
-	private Promise<CachedDocument> store (final CachedDocument document) {
-		return askCache (new StoreDocument (document)).map (new Function<Object, CachedDocument> () {
+	private Promise<Document> store (final Document document) {
+		return askCache (new StoreDocument (document)).map (new Function<Object, Document> () {
 			@Override
-			public CachedDocument apply (final Object message) throws Throwable {
+			public Document apply (final Object message) throws Throwable {
 				if (message instanceof DocumentStored) {
 					return ((DocumentStored) message).getDocument ();
 				} else if (message instanceof CacheMiss) {
@@ -110,7 +110,7 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 	}
 	
 	@Override
-	public Promise<CachedDocument> store (final URI uri, final MimeContentType contentType, final Publisher<ByteString> body) {
+	public Promise<Document> store (final URI uri, final MimeContentType contentType, final Publisher<ByteString> body) {
 		if (uri == null) {
 			throw new NullPointerException ("uri cannot be null");
 		}
@@ -121,7 +121,7 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 			throw new NullPointerException ("body cannot be null");
 		}
 		
-		return store (new CachedDocument () {
+		return store (new Document () {
 			@Override
 			public URI getUri () {
 				return uri;
@@ -140,26 +140,26 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 	}
 	
 	@Override
-	public Promise<CachedDocument> store (final URI uri, final MimeContentType contentType, final byte[] data) {
+	public Promise<Document> store (final URI uri, final MimeContentType contentType, final byte[] data) {
 		return store (uri, contentType, streamProcessor.<ByteString>publishSinglevalue (ByteStrings.fromArray (data)));
 	}
 
 	@Override
-	public Promise<CachedDocument> store (final URI uri, final MimeContentType contentType, final InputStream inputStream) {
+	public Promise<Document> store (final URI uri, final MimeContentType contentType, final InputStream inputStream) {
 		return store (uri, contentType, streamProcessor.publishInputStream (inputStream, 1024, 30000));
 	}
 
 	@Override
-	public Promise<CachedDocument> fetch (final URI uri) {
+	public Promise<Document> fetch (final URI uri) {
 		return fetch (uri, false);
 	}
 	
-	private Promise<CachedDocument> fetch (final URI uri, final boolean forceUpdate) {
-		return askCache (new FetchDocument (uri, forceUpdate)).map (new Function<Object, CachedDocument> () {
+	private Promise<Document> fetch (final URI uri, final boolean forceUpdate) {
+		return askCache (new FetchDocument (uri, forceUpdate)).map (new Function<Object, Document> () {
 			@Override
-			public CachedDocument apply (final Object message) throws Throwable {
-				if (message instanceof CachedDocument) {
-					return (CachedDocument) message;
+			public Document apply (final Object message) throws Throwable {
+				if (message instanceof Document) {
+					return (Document) message;
 				} else if (message instanceof DocumentStored) {
 					return ((DocumentStored) message).getDocument ();
 				} else if (message instanceof CacheMiss) {
@@ -281,7 +281,7 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 				// Notify all waiters of the failure:
 				notifyWaiters (uri, message, self ());
 			} else if (message instanceof StoreDocument) {
-				final CachedDocument document = ((StoreDocument) message).getDocument ();
+				final Document document = ((StoreDocument) message).getDocument ();
 
 				// Store the document in the cache:
 				storeDocument (document);
@@ -306,8 +306,8 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 			}
 		}
 		
-		private CachedDocument createDocument (final ByteStringCachedDocument cachedDocument) {
-			return new CachedDocument () {
+		private Document createDocument (final ByteStringCachedDocument cachedDocument) {
+			return new Document () {
 				@Override
 				public URI getUri () {
 					return cachedDocument.getUri ();
@@ -325,7 +325,7 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 			};
 		}
 		
-		private void storeDocument (final CachedDocument document) {
+		private void storeDocument (final Document document) {
 			
 			final ActorRef self = self ();
 			final ActorRef sender = sender ();
@@ -371,7 +371,7 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 		}
 		
 		private void fetchRemote (final URI uri) {
-			final Promise<CachedDocument> promise = readThroughStore.fetch (uri);
+			final Promise<Document> promise = readThroughStore.fetch (uri);
 			final ActorRef self = self ();
 			
 			promise.onFailure (new Callback<Throwable> () {
@@ -382,9 +382,9 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 				}
 			});
 			
-			promise.onRedeem (new Callback<CachedDocument> () {
+			promise.onRedeem (new Callback<Document> () {
 				@Override
-				public void invoke (final CachedDocument document) throws Throwable {
+				public void invoke (final Document document) throws Throwable {
 					self.tell (new StoreDocument (document), self);
 				}
 			});
@@ -448,13 +448,13 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 	}
 	
 	public final static class StoreDocument {
-		private final CachedDocument document;
+		private final Document document;
 		
-		public StoreDocument (final CachedDocument document) {
+		public StoreDocument (final Document document) {
 			this.document = document;
 		}
 		
-		public CachedDocument getDocument () {
+		public Document getDocument () {
 			return document;
 		}
 	}
@@ -486,13 +486,13 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 	}
 	
 	public final static class DocumentStored {
-		private final CachedDocument document;
+		private final Document document;
 		
-		public DocumentStored (final CachedDocument document) {
+		public DocumentStored (final Document document) {
 			this.document = document;
 		}
 		
-		public CachedDocument getDocument () {
+		public Document getDocument () {
 			return document;
 		}
 	}

@@ -8,7 +8,7 @@ import org.reactivestreams.Publisher;
 
 import akka.util.ByteString;
 
-public interface CachedDocument {
+public interface Document {
 	URI getUri ();
 	MimeContentType getContentType ();
 	Publisher<ByteString> getBody ();

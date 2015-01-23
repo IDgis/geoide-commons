@@ -2,7 +2,7 @@ package nl.idgis.geoide.commons.print.service;
 
 import nl.idgis.geoide.commons.print.common.Capabilities;
 import nl.idgis.geoide.commons.print.common.PrintRequest;
-import nl.idgis.geoide.documentcache.CachedDocument;
+import nl.idgis.geoide.documentcache.Document;
 import play.libs.F.Promise;
 
 /**
@@ -20,7 +20,7 @@ public interface PrintService {
 	 * @param printRequest The print request to execute.
 	 * @return A promise that will resolve to the resulting document, or raise a {@link PrintException}.
 	 */
-	Promise<CachedDocument> print (PrintRequest printRequest);
+	Promise<Document> print (PrintRequest printRequest);
 	
 	/**
 	 * Returns the capabilities of the print service.

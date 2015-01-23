@@ -14,7 +14,7 @@ import java.net.URISyntaxException;
 
 import nl.idgis.geoide.commons.http.client.HttpClient;
 import nl.idgis.geoide.commons.http.client.service.DefaultHttpClient;
-import nl.idgis.geoide.documentcache.CachedDocument;
+import nl.idgis.geoide.documentcache.Document;
 import nl.idgis.geoide.util.streams.AkkaStreamProcessor;
 import nl.idgis.geoide.util.streams.StreamProcessor;
 import nl.idgis.ogc.util.MimeContentType;
@@ -66,7 +66,7 @@ public class TestHttpDocumentStore {
 			public void run () {
 				final HttpDocumentStore store = new HttpDocumentStore (httpClient);
 				
-				final CachedDocument document;
+				final Document document;
 				try {
 					document = store.fetch (new URI ("http://localhost:8089/resource")).get (1000);
 				} catch (URISyntaxException e) {
@@ -96,7 +96,7 @@ public class TestHttpDocumentStore {
 			public void run () {
 				final HttpDocumentStore store = new HttpDocumentStore (httpClient);
 				
-				final CachedDocument document;
+				final Document document;
 				try {
 					document = store.fetch (new URI ("http://localhost:8089/resource?a=%3CStyledLayerDescriptor")).get (1000);
 				} catch (URISyntaxException e) {
