@@ -34,7 +34,8 @@
 		<mapdb.version>1.0.6</mapdb.version>
 		<wiremock.version>1.53</wiremock.version>
 		<reactive-streams.version>1.0.0.RC1</reactive-streams.version>
-	
+		<httpcomponents-asyncclient.version>4.0.2</httpcomponents-asyncclient.version>
+		
 		<!-- These versions should match the versions that are in use by the Play framework: -->
 		<scala.version>2.11.1</scala.version>
 		<play2.version>2.3.2</play2.version>
@@ -385,6 +386,11 @@
 				<groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpclient</artifactId>
 				<version>${httpcomponents.version}</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.apache.httpcomponents</groupId>
+			    <artifactId>httpasyncclient</artifactId>
+			    <version>${httpcomponents-asyncclient.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
