@@ -11,6 +11,11 @@ import org.reactivestreams.Publisher;
 
 import akka.util.ByteString;
 
+/**
+ * Implementation of {@link HttpRequest} for use by {@link DefaultHttpClient}
+ * @author erik
+ *
+ */
 public class DefaultHttpRequest implements HttpRequest {
 	
 	private final DefaultHttpClient client;
@@ -42,41 +47,67 @@ public class DefaultHttpRequest implements HttpRequest {
 		this.headers = new LinkedHashMap<> (headers == null ? Collections.<String, List<String>>emptyMap () : headers);
 		this.body = body;
 	}
-	
+
+	/**
+	 * Returns the client for which this request is created.
+	 * 
+	 * @return the client for which this request is created.
+	 */
 	public DefaultHttpClient getClient () {
 		return client;
 	}
 
+	/**
+	 * @see HttpRequest#getMethod()
+	 */
 	@Override
 	public Method getMethod () {
 		return method;
 	}
 
+	/**
+	 * @see HttpRequest#getUrl()
+	 */
 	@Override
 	public String getUrl () {
 		return url;
 	}
 
+	/**
+	 * @see HttpRequest#getTimeoutInMillis()
+	 */
 	@Override
 	public long getTimeoutInMillis () {
 		return timeoutInMillis;
 	}
 
+	/**
+	 * @see HttpRequest#isFollowRedirects()
+	 */
 	@Override
 	public boolean isFollowRedirects () {
 		return followRedirects;
 	}
 
+	/**
+	 * @see HttpRequest#getParameters()
+	 */
 	@Override
 	public Map<String, List<String>> getParameters () {
 		return parameters;
 	}
 
+	/**
+	 * @see HttpRequest#getHeaders()
+	 */
 	@Override
 	public Map<String, List<String>> getHeaders () {
 		return headers;
 	}
 
+	/**
+	 * @see HttpRequest#getBody()
+	 */
 	@Override
 	public Publisher<ByteString> getBody () {
 		return body;

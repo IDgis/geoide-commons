@@ -17,12 +17,24 @@ import play.libs.ws.WSResponse;
 import akka.util.ByteString;
 import akka.util.ByteString.ByteStrings;
 
+/**
+ * Implementation of {@link HttpClient} that uses Play WS to perform the requests (which in turn
+ * uses async-http-client). Note that responses produced by this HTTP client are not processed
+ * asynchronously. The implementation blocks on read operations on the response input stream.
+ */
 public class DefaultHttpClient implements HttpClient {
 
 	private final int streamBlockSizeInBytes;
 	private final long streamTimeoutInMillis;
 	private final StreamProcessor streamProcessor;
-	
+
+	/**
+	 * Creates a DefaultHttpClient by providing references to components on which it depends.
+	 * 
+	 * @param streamProcessor The stream processor to use for creating reactive streams.
+	 * @param streamBlockSizeInBytes The block size to use when reading the HTTP response. Controls the length of blocking read operations on the response.
+	 * @param streamTimeoutInMillis The timeout value to use on the response streams (only measures inactivity on the stream). The underlying HTTP response is closed after this timeout expires, even if the consumer didn't read the entire stream.
+	 */
 	public DefaultHttpClient (final StreamProcessor streamProcessor, final int streamBlockSizeInBytes, final long streamTimeoutInMillis) {
 		if (streamProcessor == null) {
 			throw new NullPointerException ("streamProcessor cannot be null");
@@ -32,17 +44,26 @@ public class DefaultHttpClient implements HttpClient {
 		this.streamBlockSizeInBytes = streamBlockSizeInBytes;
 		this.streamTimeoutInMillis = streamTimeoutInMillis;
 	}
-	
+
+	/**
+	 * @see HttpClient#request()
+	 */
 	@Override
 	public HttpRequestBuilder request () {
 		return new DefaultHttpRequestBuilder (this);
 	}
 	
+	/**
+	 * @see HttpClient#url(String)
+	 */
 	@Override
 	public HttpRequestBuilder url (final String url) {
 		return request ().setUrl (url);
 	}
 	
+	/**
+	 * @see HttpClient#request(HttpRequest)
+	 */
 	@Override
 	public Promise<HttpResponse> request (final HttpRequest request) {
 		if (request == null) {
