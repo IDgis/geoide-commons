@@ -5,6 +5,7 @@ import nl.idgis.geoide.commons.layer.LayerTypeRegistry;
 import nl.idgis.geoide.commons.print.service.PrintService;
 import nl.idgis.geoide.documentcache.DocumentCache;
 import nl.idgis.geoide.service.ServiceTypeRegistry;
+import nl.idgis.geoide.util.streams.StreamProcessor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -60,7 +61,10 @@ public class ControllerConfig {
 	
 	@Bean
 	@Autowired
-	public Print printServiceController (final PrintService printService, final @Qualifier ("printDocumentCache") DocumentCache documentCache) {
-		return new Print (printService, documentCache);
+	public Print printServiceController (
+			final PrintService printService, 
+			final @Qualifier ("printDocumentCache") DocumentCache documentCache,
+			final StreamProcessor streamProcessor) {
+		return new Print (printService, documentCache, streamProcessor);
 	}
 }

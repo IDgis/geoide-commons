@@ -11,6 +11,7 @@ libraryDependencies ++= Seq(
   Common.Dependencies.geoideDomainTest,
   Common.Dependencies.geoideUtil,
   Common.Dependencies.geoidePrint,
+  Common.Dependencies.geoideHttpClient,
   Common.Dependencies.springAop,
   Common.Dependencies.springTest
 )

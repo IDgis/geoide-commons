@@ -9,8 +9,9 @@ import java.util.UUID;
 import nl.idgis.geoide.commons.print.common.DocumentReference;
 import nl.idgis.geoide.commons.print.common.PrintRequest;
 import nl.idgis.geoide.commons.print.service.PrintService;
-import nl.idgis.geoide.documentcache.CachedDocument;
+import nl.idgis.geoide.documentcache.Document;
 import nl.idgis.geoide.documentcache.DocumentCache;
+import nl.idgis.geoide.util.streams.StreamProcessor;
 import nl.idgis.ogc.util.MimeContentType;
 import play.Logger;
 import play.libs.F.Function;
@@ -25,17 +26,22 @@ public class Print extends Controller {
 
 	private final PrintService printService;
 	private final DocumentCache documentCache;
+	private final StreamProcessor streamProcessor;
 	
-	public Print (final PrintService printService, final DocumentCache documentCache) {
+	public Print (final PrintService printService, final DocumentCache documentCache, final StreamProcessor streamProcessor) {
 		if (printService == null) {
 			throw new NullPointerException ("printService cannot be null");
 		}
 		if (documentCache == null) {
 			throw new NullPointerException ("documentCache cannot be null");
 		}
+		if (streamProcessor == null) {
+			throw new NullPointerException ("streamProcessor cannot be null");
+		}
 		
 		this.printService = printService;
 		this.documentCache = documentCache;
+		this.streamProcessor = streamProcessor;
 	}
 	
 	public Promise<Result> printGet (final String u) throws Throwable {
@@ -68,9 +74,9 @@ public class Print extends Controller {
 		
 		return documentCache
 			.store (documentUri, new MimeContentType ("text/html"), new FileInputStream (file))
-			.flatMap (new Function<CachedDocument, Promise<Result>> () {
+			.flatMap (new Function<Document, Promise<Result>> () {
 				@Override
-				public Promise<Result> apply (final CachedDocument a) throws Throwable {
+				public Promise<Result> apply (final Document a) throws Throwable {
 					return doPrint (documentUri, uri);
 				}
 			});
@@ -78,16 +84,16 @@ public class Print extends Controller {
 	
 	private Promise<Result> doPrint (final URI documentUri, final URI sourceUri) throws Throwable {
 		
-		final Promise<CachedDocument> documentPromise = printService.print (new PrintRequest (
+		final Promise<Document> documentPromise = printService.print (new PrintRequest (
 				new DocumentReference (new MimeContentType ("text/html"), documentUri), 
 				new MimeContentType ("application/pdf"), 
 				getBaseUri (sourceUri)
 			));
 
-		return documentPromise.map (new Function<CachedDocument, Result> () {
+		return documentPromise.map (new Function<Document, Result> () {
 			@Override
-			public Result apply (final CachedDocument document) throws Throwable {
-				return ok (document.asInputStream ()).as (document.getContentType ().original ());
+			public Result apply (final Document document) throws Throwable {
+				return ok (streamProcessor.asInputStream (document.getBody (), 1024)).as (document.getContentType ().original ());
 			}
 		});
 	}
