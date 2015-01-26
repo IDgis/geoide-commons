@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -12,6 +13,11 @@ import java.util.UUID;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 
 import nl.idgis.geoide.commons.print.common.Capabilities;
 import nl.idgis.geoide.commons.print.common.PrintRequest;
@@ -23,7 +29,12 @@ import nl.idgis.geoide.documentcache.DocumentCacheException;
 import nl.idgis.geoide.util.streams.StreamProcessor;
 import nl.idgis.ogc.util.MimeContentType;
 
-import org.w3c.tidy.Tidy;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Attribute;
+import org.jsoup.nodes.DataNode;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import org.jsoup.nodes.TextNode;
 import org.xhtmlrenderer.pdf.ITextOutputDevice;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 import org.xhtmlrenderer.pdf.ITextReplacedElementFactory;
@@ -86,15 +97,14 @@ public class HtmlPrintService implements PrintService, Closeable {
 					// Load the HTML and convert to an XML document:
 					final String xmlDocument;
 					final String baseUrl = printRequest.getBaseUri () != null ? printRequest.getBaseUri ().toString () : cachedDocument.getUri ().toString ();
+					final String charset = printRequest.getInputDocument ().getContentType ().parameters ().containsKey ("charset") ? printRequest.getInputDocument ().getContentType ().parameters ().get ("charset") : "UTF-8"; 
 					try (final InputStream htmlStream = streamProcessor.asInputStream (cachedDocument.getBody (), cacheTimeoutMillis)) {
+						final org.jsoup.nodes.Document document = Jsoup.parse (htmlStream, charset, baseUrl);
 						
 						final StringWriter writer = new StringWriter ();
 						
-						final Tidy tidy = new Tidy ();
-						tidy.setXHTML (true);
-						tidy.parse (htmlStream, writer);
+						writeDocument (document, writer);
 						
-						writer.close ();
 						
 						xmlDocument = writer.toString ();
 					}
@@ -161,6 +171,46 @@ public class HtmlPrintService implements PrintService, Closeable {
 				workQueue.size ()
 			));
 	}
+	
+	private void writeDocument (final org.jsoup.nodes.Document document, final Writer writer) throws XMLStreamException, FactoryConfigurationError {
+		final XMLStreamWriter streamWriter = XMLOutputFactory.newFactory().createXMLStreamWriter (writer);
+		try {
+			writeNode (document, streamWriter);
+		} finally {
+			streamWriter.close ();
+		}
+	}
+	
+	private void writeNode (final Node node, final XMLStreamWriter writer) throws XMLStreamException {
+		if (node instanceof org.jsoup.nodes.Document) {
+			for (final Node childNode: node.childNodes ()) {
+				writeNode (childNode, writer);
+			}
+		} else if (node instanceof Element) {
+			final Element element = (Element) node;
+			
+			// Write the element name:
+			writer.writeStartElement (element.nodeName ());
+			
+			// Write attributes:
+			for (final Attribute attribute: element.attributes ()) {
+				writer.writeAttribute (attribute.getKey (), attribute.getValue ());
+			}
+			
+			// Write children:
+			for (final Node childNode: element.childNodes ()) {
+				writeNode (childNode, writer);
+			}
+			
+			// End the element:
+			writer.writeEndElement ();
+		} else if (node instanceof TextNode) {
+			writer.writeCharacters (((TextNode) node).text ());
+		} else if (node instanceof DataNode) {
+			writer.writeCData (((DataNode) node).getWholeData ());
+		}
+	}
+	
 	
 	 private static class ResourceLoaderUserAgent extends ITextUserAgent {
 		 private final DocumentCache cache;

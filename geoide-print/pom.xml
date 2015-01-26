@@ -76,11 +76,6 @@
 			<groupId>xalan</groupId>
 			<artifactId>xalan</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>net.sf.jtidy</groupId>
-			<artifactId>jtidy</artifactId>
-			<version>r938</version>
-		</dependency>
 	</dependencies>
 	
 </project>
