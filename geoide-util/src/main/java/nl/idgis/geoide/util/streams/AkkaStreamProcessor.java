@@ -20,10 +20,19 @@ import akka.pattern.Patterns;
 import akka.util.ByteString;
 import akka.util.ByteString.ByteStrings;
 
+/**
+ * An {@link StreamProcessor} implementation that uses an Akka actor system for scheduling.
+ */
 public class AkkaStreamProcessor implements StreamProcessor {
 
 	private final ActorRefFactory actorRefFactory;
-	
+
+	/**
+	 * Creates a new AkkaStreamProcessor by providing an ActorRefFectory on which
+	 * new actor references can be created for scheduling purposes.
+	 * 
+	 * @param actorRefFactory The ActorRefFactory to use by this StreamProcessor.
+	 */
 	public AkkaStreamProcessor (final ActorRefFactory actorRefFactory) {
 		if (actorRefFactory == null) {
 			throw new NullPointerException ("actorRefFactory is null");
@@ -32,15 +41,30 @@ public class AkkaStreamProcessor implements StreamProcessor {
 		this.actorRefFactory = actorRefFactory;
 	}
 	
+	/**
+	 * Returns the ActorRefFactory used by this stream processor, set using the constructor.
+	 * 
+	 * @return The ActorRefFactory of this stream processor.
+	 */
 	public ActorRefFactory getActorRefFactory () {
 		return actorRefFactory;
 	}
 
+	/**
+	 * Uses {@link SingleValuePublisher} to create a publisher that produces a single value.
+	 * 
+	 * @see StreamProcessor#publishSinglevalue(Object)
+	 */
 	@Override
 	public <T> Publisher<T> publishSinglevalue (final T value) {
 		return new SingleValuePublisher<T> (value);
 	}
 
+	/**
+	 * Doesn't use the scheduler, reduces elements in the stream when they arrive.
+	 * 
+	 * @see StreamProcessor#reduce(Publisher, Object, Function2)
+	 */
 	@Override
 	public <T> Promise<T> reduce (final Publisher<T> publisher, final T initialValue, final Function2<T, T, T> reducer) {
         final scala.concurrent.Promise<T> scalaPromise = scala.concurrent.Promise$.MODULE$.<T>apply ();
@@ -93,6 +117,11 @@ public class AkkaStreamProcessor implements StreamProcessor {
         return Promise.wrap (scalaPromise.future ());
 	}
 
+	/**
+	 * Uses a temporary Akka actor for scheduling.
+	 * 
+	 * @see StreamProcessor#publishInputStream(InputStream, int, long)
+	 */
 	@Override
 	public Publisher<ByteString> publishInputStream (final InputStream inputStream, final int maxBlockSize, final long timeoutInMillis) {
 		if (inputStream == null) {
@@ -104,6 +133,11 @@ public class AkkaStreamProcessor implements StreamProcessor {
 		return new InputStreamPublisher (actor);
 	}
 
+	/**
+	 * Uses a temporary Akk actor for scheduling.
+	 * 
+	 * @see StreamProcessor#asInputStream(Publisher, long)
+	 */
 	@Override
 	public InputStream asInputStream (final Publisher<ByteString> publisher, final long timeoutInMillis) {
 		if (publisher == null) {
@@ -115,6 +149,10 @@ public class AkkaStreamProcessor implements StreamProcessor {
 		return new ByteStringInputStream (actor, timeoutInMillis);
 	}
 	
+	/**
+	 * An InputStream implementation that reads from an Akka actor that in turn wraps a reactive
+	 * streams publisher.
+	 */
 	private final static class ByteStringInputStream extends InputStream {
 		private final ActorRef actor;
 		private final long timeout;
@@ -177,6 +215,10 @@ public class AkkaStreamProcessor implements StreamProcessor {
 		}
 	}
 	
+	/**
+	 * An actor that consumes bytes from a publisher of type ByteString and sends the bytes to the caller.
+	 * This actor takes care of scheduling and reactive pull on the publisher.
+	 */
 	public final static class ConsumeByteStringsActor extends UntypedActor {
 
 		private final long timeout;
@@ -330,6 +372,9 @@ public class AkkaStreamProcessor implements StreamProcessor {
 		}
 	}
 	
+	/**
+	 * Reactive streams publisher for input streams. Uses an Akka actor that wraps the input stream.
+	 */
 	private final static class InputStreamPublisher implements Publisher<ByteString> {
 		private final ActorRef actor;
 		
@@ -342,7 +387,10 @@ public class AkkaStreamProcessor implements StreamProcessor {
 			actor.tell (subscriber, actor);
 		}
 	}
-	
+
+	/**
+	 * Reactive streams subscription for input streams. Uses an Akka actor that wraps the input stream.
+	 */
 	public final static class InputStreamSubscription implements Subscription {
 		private final ActorRef self;
 		
@@ -361,6 +409,9 @@ public class AkkaStreamProcessor implements StreamProcessor {
 		}
 	}
 	
+	/**
+	 * An Akka actor that publishes an InputStream as a stream of ByteStrings of configurable length.
+	 */
 	public final static class InputStreamPublishActor extends UntypedActor {
 		private final long timeoutInMillis;
 		private final int blockSize;
