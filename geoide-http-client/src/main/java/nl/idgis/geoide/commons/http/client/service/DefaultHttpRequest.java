@@ -13,8 +13,6 @@ import akka.util.ByteString;
 
 /**
  * Implementation of {@link HttpRequest} for use by {@link DefaultHttpClient}
- * @author erik
- *
  */
 public class DefaultHttpRequest implements HttpRequest {
 	

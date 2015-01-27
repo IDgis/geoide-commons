@@ -29,6 +29,11 @@ import akka.util.ByteString.ByteStrings;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
+/**
+ * Abstract base class for testing HTTP clients. Deals with the boilerplate of setting
+ * up a mock webserver (WireMock), a scheduler and a stream processor. Also provides
+ * several standard tests each HTTP client should pass.
+ */
 public abstract class AbstractTestHttpClient {
 
 	private final static int BODY_SIZE = 1000;
@@ -36,26 +41,48 @@ public abstract class AbstractTestHttpClient {
 	private ActorSystem actorSystem;
 	private StreamProcessor streamProcessor;
 	private HttpClient client;
-	
+
+	/**
+	 * This rule provides a mocked web server: WireMock. On port 8089.
+	 */
 	@Rule
 	public WireMockRule wireMockRule = new WireMockRule (8089);
-	
+
+	/**
+	 * Creates the scheduler, stream processor and the HTTP client.
+	 */
 	@Before
 	public void createClient () {
 		actorSystem = ActorSystem.create ();
 		streamProcessor = new AkkaStreamProcessor (actorSystem);
 		client = createHttpClient (actorSystem, streamProcessor); new DefaultHttpClient (streamProcessor, 10, 1000);
 	}
-	
+
+	/**
+	 * Destroys the client and the scheduler.
+	 */
 	@After
 	public void destroyClient () {
 		client = null;
 		streamProcessor = null;
 		JavaTestKit.shutdownActorSystem (actorSystem);
 	}
-	
+
+	/**
+	 * Implementors should override this method to instantiate a specific instance of HttpClient that is subject to testing
+	 * by this class.
+	 * 
+	 * @param actorSystem The Akka actor system created by this class, used for scheduling.
+	 * @param streamProcessor The stream processor created by this class, used for processing requests and responses.
+	 * @return Should return a non-null instance of HttpClient that is the subject of testing.
+	 */
 	protected abstract HttpClient createHttpClient (ActorRefFactory actorSystem, StreamProcessor streamProcessor);
 	
+	/**
+	 * Performs a simple GET request using the client, without parameters. Tests whether the response body has the expected content.
+	 * 
+	 * @throws Throwable
+	 */
 	@Test
 	public void testGet () throws Throwable {
 		final byte[] bytes = generateBytes (BODY_SIZE);

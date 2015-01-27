@@ -22,6 +22,15 @@ import org.apache.http.protocol.HttpContext;
 
 import play.libs.F.Promise;
 
+/**
+ * EXPERIMENTAL
+ * 
+ * Experimental {@link HttpClient} implementation using Apache HttpAsyncClient. This is
+ * a work in progress and currently shouldn't be used.
+ * 
+ * The goal is to provide a HTTP client that is completely reactive: both request and
+ * response bodies stream with backpressure using reactive pull.
+ */
 public class StreamingHttpClient implements HttpClient, Closeable {
 
 	private final CloseableHttpAsyncClient client;
