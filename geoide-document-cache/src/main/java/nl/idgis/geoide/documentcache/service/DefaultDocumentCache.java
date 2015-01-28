@@ -31,14 +31,17 @@ import play.libs.F.Function2;
 import play.libs.F.Promise;
 import akka.actor.ActorRef;
 import akka.actor.ActorRefFactory;
-import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.actor.UntypedActor;
 import akka.pattern.Patterns;
 import akka.util.ByteString;
-import akka.util.CompactByteString;
 import akka.util.ByteString.ByteStrings;
+import akka.util.CompactByteString;
 
+/**
+ * {@link DefaultDocumentCache} is an implementation of DocumentCache that temporarily stores documents in
+ * a store provided by MapDB and using an Akka actor system for scheduling.
+ */
 public class DefaultDocumentCache implements DocumentCache, Closeable {
 
 	private final long ttlInSeconds;
@@ -61,23 +64,58 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 		cacheActor = actorRefFactory.actorOf (CacheActor.props (ttlInSeconds, file, maxSizeInGigabytes, readThroughStore, streamProcessor), String.format ("geoide-cache-%s", cacheName));
 		this.streamProcessor = streamProcessor;
 	}
-	
-	public static DefaultDocumentCache createInMemoryCache (final ActorSystem actorSystem, final StreamProcessor streamProcessor, final String cacheName, final long ttlSeconds, final double maxSizeInGigabytes, final DocumentStore readThroughStore) {
-		return new DefaultDocumentCache (actorSystem, streamProcessor, cacheName, ttlSeconds, null, maxSizeInGigabytes, readThroughStore);
+
+	/**
+	 * Creates an in-memory cache with an optional read-through store.
+	 * 
+	 * @param actorRefFactory		The factory used to create actors for scheduling. 
+	 * @param streamProcessor		The stream processor used to process streams that are consumed and produced by this cache.
+	 * @param cacheName				The name of the cache. The cache name is reflected in the names of the scheduling actors and the name of the MapDB store. 
+	 * @param ttlSeconds			The number of seconds documents should (at least) be retained in the cache.
+	 * @param maxSizeInGigabytes	The maximum size in gigabytes of the in-memory cache. When this size is exceeded, storing new documents will fail with an exception.
+	 * @param readThroughStore		An optional read-through store that is accessed when fetching documents from the cache that have no entry. 
+	 * @return						The created DefaultDocumentCache instance.
+	 */
+	public static DefaultDocumentCache createInMemoryCache (final ActorRefFactory actorRefFactory, final StreamProcessor streamProcessor, final String cacheName, final long ttlSeconds, final double maxSizeInGigabytes, final DocumentStore readThroughStore) {
+		return new DefaultDocumentCache (actorRefFactory, streamProcessor, cacheName, ttlSeconds, null, maxSizeInGigabytes, readThroughStore);
 	}
 	
-	public static DefaultDocumentCache createTempFileCache (final ActorSystem actorSystem, final StreamProcessor streamProcessor, final String cacheName, final long ttlSeconds, final DocumentStore readThroughStore) throws IOException {
+	/**
+	 * Creates a cache of arbitrary size in a temporary file. The location of the temporary file is platform dependent.
+	 *  
+	 * @param actorRefFactory		The factory used to create actors for scheduling. 
+	 * @param streamProcessor		The stream processor used to process streams that are consumed and produced by this cache.
+	 * @param cacheName				The name of the cache. The cache name is reflected in the names of the scheduling actors and the name of the MapDB store. 
+	 * @param ttlSeconds			The number of seconds documents should (at least) be retained in the cache.
+	 * @param readThroughStore		An optional read-through store that is accessed when fetching documents from the cache that have no entry. 
+	 * @return						The created DefaultDocumentCache instance.
+	 * @throws IOException			Thrown when the temporary file could not be created.
+	 */
+	public static DefaultDocumentCache createTempFileCache (final ActorRefFactory actorRefFactory, final StreamProcessor streamProcessor, final String cacheName, final long ttlSeconds, final DocumentStore readThroughStore) throws IOException {
 		final File file = File.createTempFile ("geoide-cache-", ".tmp.db");
 		
 		file.deleteOnExit ();
 		
-		return createFileCache (actorSystem, streamProcessor, cacheName, ttlSeconds, file, readThroughStore);
+		return createFileCache (actorRefFactory, streamProcessor, cacheName, ttlSeconds, file, readThroughStore);
 	}
 	
-	public static DefaultDocumentCache createFileCache (final ActorSystem actorSystem, final StreamProcessor streamProcessor, final String cacheName, final long ttlSeconds, final File file, final DocumentStore readThroughStore) {
-		return new DefaultDocumentCache (actorSystem, streamProcessor, cacheName, ttlSeconds, file, null, readThroughStore);
+	/**
+	 * 
+	 * @param actorRefFactory		The factory used to create actors for scheduling. 
+	 * @param streamProcessor		The stream processor used to process streams that are consumed and produced by this cache.
+	 * @param cacheName				The name of the cache. The cache name is reflected in the names of the scheduling actors and the name of the MapDB store. 
+	 * @param ttlSeconds			The number of seconds documents should (at least) be retained in the cache.
+	 * @param file					The file to create a database in.
+	 * @param readThroughStore		An optional read-through store that is accessed when fetching documents from the cache that have no entry. 
+	 * @return						The created DefaultDocumentCache instance.
+	 */
+	public static DefaultDocumentCache createFileCache (final ActorRefFactory actorRefFactory, final StreamProcessor streamProcessor, final String cacheName, final long ttlSeconds, final File file, final DocumentStore readThroughStore) {
+		return new DefaultDocumentCache (actorRefFactory, streamProcessor, cacheName, ttlSeconds, file, null, readThroughStore);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Promise<Document> store (final URI uri) {
 		if (readThroughStore == null) {
@@ -109,6 +147,9 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 		});
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Promise<Document> store (final URI uri, final MimeContentType contentType, final Publisher<ByteString> body) {
 		if (uri == null) {
@@ -139,16 +180,25 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 		});
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Promise<Document> store (final URI uri, final MimeContentType contentType, final byte[] data) {
 		return store (uri, contentType, streamProcessor.<ByteString>publishSinglevalue (ByteStrings.fromArray (data)));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Promise<Document> store (final URI uri, final MimeContentType contentType, final InputStream inputStream) {
 		return store (uri, contentType, streamProcessor.publishInputStream (inputStream, 1024, 30000));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Promise<Document> fetch (final URI uri) {
 		return fetch (uri, false);
@@ -171,6 +221,9 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 		});
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Promise<Long> getTtl () {
 		return Promise.pure (ttlInSeconds);
@@ -180,11 +233,17 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 		return Promise.wrap (Patterns.ask (cacheActor, message, 15000));
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void close() throws IOException {
 		actorRefFactory.stop (cacheActor);
 	}
 	
+	/**
+	 * 
+	 */
 	public static class CacheActor extends UntypedActor {
 		
 		private final DocumentStore readThroughStore;

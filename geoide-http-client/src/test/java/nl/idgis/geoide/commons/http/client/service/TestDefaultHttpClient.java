@@ -10,7 +10,7 @@ import akka.actor.ActorRefFactory;
 public class TestDefaultHttpClient extends AbstractTestHttpClient {
 
 	/**
-	 * Returns an instance of {@link DefaultHttpClient}.
+	 * Returns an instance of DefaultHttpClient.
 	 * 
 	 * {@inheritDoc}
 	 */

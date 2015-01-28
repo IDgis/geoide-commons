@@ -14,7 +14,7 @@ import akka.util.ByteString;
 /**
  * Implementation of {@link HttpResponse} for use with {@link DefaultHttpClient}.
  * 
- * @inheritDoc
+ * {@inheritDoc}
  */
 public class DefaultHttpResponse implements HttpResponse {
 	private final DefaultHttpClient client;

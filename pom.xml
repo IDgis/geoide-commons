@@ -12,7 +12,7 @@
 	<modules>
 		<module>geoide-domain</module>
 		<module>geoide-util</module>
-		<module>geoide-ol3</module>
+		<!-- <module>geoide-ol3</module> -->
 		<module>geoide-domain-test</module>
 		<module>geoide-service</module>
 		<module>geoide-layer</module>
@@ -20,7 +20,11 @@
 		<module>geoide-document-cache</module>
 		<module>geoide-http-client</module>
 	</modules>
-	
+
+	<scm>
+		<url>https://github.com/IDgis/geoide-commons.git</url>
+	</scm>
+		
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		
@@ -433,12 +437,18 @@
 						<encoding>utf-8</encoding>
 					</configuration>
 				</plugin>
+				<plugin>
+					<groupId>com.github.github</groupId>
+					<artifactId>site-maven-plugin</artifactId>
+					<version>0.11</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		
 		<plugins>
 			<plugin>
 				<artifactId>maven-source-plugin</artifactId>
+				<version>2.4</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -467,7 +477,79 @@
 					</execution>
 				</executions>
 			</plugin>
+			<!--
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>3.4</version>
+			</plugin>
+			-->
+			<plugin>
+				<groupId>pl.project13.maven</groupId>
+				<artifactId>git-commit-id-plugin</artifactId>
+				<version>2.1.12</version>
+				
+				<executions>
+					<execution>
+						<goals>
+							<goal>revision</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>com.github.github</groupId>
+				<artifactId>site-maven-plugin</artifactId>
+				
+				<configuration>
+					<message>Creating site for ${project.version}</message>
+					<force>true</force>
+					<server>github</server>
+					<repositoryName>geoide-commons</repositoryName>
+					<repositoryOwner>IDgis</repositoryOwner>
+					<path>site/${git.commit.id.describe-short}/geoide-commons</path>
+					<merge>true</merge>
+				</configuration>
+
+				<executions>				
+					<execution>
+						<id>default</id>
+						<goals>
+							<goal>site</goal>
+						</goals>
+						<phase>site</phase>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 		
 	</build>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9.1</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>index</report>
+							<report>license</report>
+							<report>scm</report>
+							<report>modules</report>
+							<report>summary</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+				
+			</plugin>
+		</plugins>
+	</reporting>
+
 </project>
