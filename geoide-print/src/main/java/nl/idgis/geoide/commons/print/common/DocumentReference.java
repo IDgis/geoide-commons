@@ -32,10 +32,20 @@ public final class DocumentReference implements Serializable {
 		this.uri = uri;
 	}
 	
+	/**
+	 * Returns the content type of the document.
+	 * 
+	 * @return The content type of the document.
+	 */
 	public MimeContentType getContentType () {
 		return contentType;
 	}
 
+	/**
+	 * Returns the URI of the document.
+	 * 
+	 * @return The URI of the document.
+	 */
 	public URI getUri () {
 		return uri;
 	}

@@ -7,6 +7,8 @@ import play.libs.F.Promise;
 
 /**
  * A print service that delegates print and capabilities requests to a remote service.
+ * 
+ * This class is experimental and currently shouldn't be used.
  */
 public class RemotePrintService implements PrintService {
 

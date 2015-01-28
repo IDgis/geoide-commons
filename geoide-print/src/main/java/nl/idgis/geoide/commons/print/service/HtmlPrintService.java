@@ -44,7 +44,14 @@ import play.libs.F.Promise;
 
 /**
  * Print service implementation that converts HTML + several linked media to
- * PDF.
+ * PDF. HTML documents and all related media are fetched from a cache, with
+ * optional read through store. The cache can be pre-seeded with generated content,
+ * or the content can be fetched from a remote location (or a combination).
+ * 
+ * The print service uses a private thread pool for performing print jobs. The
+ * number of threads in the pool determines the number of simultaneous jobs, jobs
+ * are queued until a worker thread becomes available. All print jobs are performed
+ * asynchronously from the calling thread.
  */
 public class HtmlPrintService implements PrintService, Closeable {
 
@@ -54,6 +61,16 @@ public class HtmlPrintService implements PrintService, Closeable {
 	private final ThreadPoolExecutor executor;
 	private final LinkedBlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<> ();
 
+	/**
+	 * Constructs a new HtmlPrintService by providing the related components (document cache and stream processor) and
+	 * required configuration.
+	 *  
+	 * @param documentCache			The cache to retrieve content from.
+	 * @param streamProcessor		The stream processor to use when consuming streams (document body's).
+	 * @param maxThreads			The maximum number of threads to use. Should be >= 1. This determines the number of simultaneous 
+	 * 								print requests that can be processed.  
+	 * @param cacheTimeoutMillis	The timeout in milliseconds to use when the cache or its readthrough store is accessed.
+	 */
 	public HtmlPrintService (final DocumentCache documentCache, final StreamProcessor streamProcessor, final int maxThreads, final long cacheTimeoutMillis) {
 		if (documentCache == null) {
 			throw new NullPointerException ("documentCache cannot be null");
@@ -71,11 +88,21 @@ public class HtmlPrintService implements PrintService, Closeable {
 		this.executor = new ThreadPoolExecutor (1, maxThreads, 10, TimeUnit.SECONDS, workQueue);
 	}
 
+	/**
+	 * Stops the executor and cancels any pending print jobs. Scheduling new print jobs after closing the print
+	 * service will result in an exception being thrown (RejectedExecutionException).
+	 */
 	@Override
 	public void close () {
 		executor.shutdownNow ();
 	}
 	
+	/**
+	 * Performs a print request on this service. The request is scheduled on the thread pool and is executed when a worker thread
+	 * is available and the request is at the front of the queue.
+	 * 
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Promise<Document> print (final PrintRequest printRequest) {
 		if (!"text".equals (printRequest.getInputDocument().getContentType ().type ()) 
@@ -146,6 +173,12 @@ public class HtmlPrintService implements PrintService, Closeable {
 		return Promise.wrap (scalaPromise.future ());
 	}
 
+	/**
+	 * The capabilities of the HtmlPrintService are static: it can only convert HTML to PDF and handle
+	 * the following linked content types: jpeg, png, gif and svg.
+	 * 
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Promise<Capabilities> getCapabilities () {
 		final List<MimeContentType> supportedLinkedMedia = new ArrayList<> ();

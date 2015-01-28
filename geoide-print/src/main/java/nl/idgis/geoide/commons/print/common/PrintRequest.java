@@ -54,6 +54,12 @@ public final class PrintRequest implements Serializable {
 		return outputFormat;
 	}
 	
+	/**
+	 * Returns the base URI to use when printing. The base URI is used when the print service needs to resolve
+	 * a relative URI that points to related content (such as an image in HTML).
+	 * 
+	 * @return The base URI of the print request.
+	 */
 	public URI getBaseUri () {
 		return baseUri;
 	}
