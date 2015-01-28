@@ -1,8 +1,0 @@
-nl.idgis.geoide.commons.domain
-nl.idgis.geoide.commons.domain.feature
-nl.idgis.geoide.commons.domain.geometry
-nl.idgis.geoide.commons.domain.geometry.wkb
-nl.idgis.geoide.commons.domain.provider
-nl.idgis.geoide.commons.domain.toc
-nl.idgis.geoide.commons.domain.traits
-nl.idgis.geoide.commons.domain.traits.spring
