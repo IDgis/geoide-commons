@@ -1,1 +1,6 @@
+nl.idgis.geoide.commons.domain
+nl.idgis.geoide.commons.domain.traits
 nl.idgis.geoide.commons.http.client.service
+nl.idgis.geoide.commons.print.service
+nl.idgis.geoide.documentcache.service
+nl.idgis.geoide.util.streams
