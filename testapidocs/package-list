@@ -1,1 +1,2 @@
-nl.idgis.geoide.util.streams
+nl.idgis.geoide.commons.domain
+nl.idgis.geoide.commons.domain.traits
