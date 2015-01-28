@@ -9,6 +9,7 @@ import nl.idgis.geoide.commons.http.client.HttpClient;
 import nl.idgis.geoide.commons.http.client.HttpRequestBuilder;
 import nl.idgis.geoide.commons.http.client.HttpResponse;
 import nl.idgis.geoide.documentcache.Document;
+import nl.idgis.geoide.documentcache.DocumentCache;
 import nl.idgis.geoide.documentcache.DocumentCacheException;
 import nl.idgis.geoide.documentcache.DocumentStore;
 import nl.idgis.ogc.util.MimeContentType;
@@ -20,15 +21,35 @@ import play.libs.F.Function;
 import play.libs.F.Promise;
 import akka.util.ByteString;
 
+/**
+ * An implementation of {@link DocumentStore} that uses a {@link HttpClient} to retrieve documents
+ * by turning the URI into a request URL.
+ * 
+ * Uses a reference to an existing HttpClient and is configured with a timeout value that is used for all
+ * requests initiated by this store. The store doesn't perform caching, but it can be used as a readthrough
+ * store for a {@link DocumentCache}.
+ */
 public class HttpDocumentStore implements DocumentStore {
 
 	private final HttpClient httpClient;
 	private final long timeoutInMillis;
 	
+	/**
+	 * Creates a new document store for the given {@link HttpClient} with a default timeout
+	 * value of 60 seconds.
+	 * 
+	 * @param httpClient The HTTP client to be used by this component for all outbound HTTP traffic.
+	 */
 	public HttpDocumentStore (final HttpClient httpClient) {
 		this (httpClient, 60000);
 	}
-	
+
+	/**
+	 * Creates a new document store by providing a {@link HttpClient} and a timeout value.
+	 * 
+	 * @param httpClient		The HTTP client to be used by this component for all outbound HTTP traffic.
+	 * @param timeoutInMillis	The timeout in milliseconds to use for each HTTP request.
+	 */
 	public HttpDocumentStore (final HttpClient httpClient, final long timeoutInMillis) {
 		if (httpClient == null) {
 			throw new NullPointerException ("httpClient cannot be null");
@@ -37,7 +58,10 @@ public class HttpDocumentStore implements DocumentStore {
 		this.httpClient = httpClient;
 		this.timeoutInMillis = timeoutInMillis;
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Promise<Document> fetch (final URI uri) {
 		if (!"http".equals (uri.getScheme ()) && !"https".equals (uri.getScheme ())) {

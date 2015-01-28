@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URI;
-import java.util.Arrays;
 
 import nl.idgis.geoide.documentcache.Document;
 import nl.idgis.geoide.documentcache.DocumentCacheException;
@@ -32,6 +31,9 @@ import akka.testkit.JavaTestKit;
 import akka.util.ByteString;
 import akka.util.ByteString.ByteStrings;
 
+/**
+ * Tests the default document cache.
+ */
 public class TestDefaultDocumentCache {
 
 	private static ActorSystem actorSystem;
@@ -41,18 +43,29 @@ public class TestDefaultDocumentCache {
 	private DefaultDocumentCache cache;
 	private DefaultDocumentCache cacheReadThrough;
 	private StreamProcessor streamProcessor;
-	
+
+	/**
+	 * Creates an actor system to use during the tests as a scheduler.
+	 */
 	@BeforeClass
 	public static void setup () {
 		actorSystem = ActorSystem.create ();
 	}
-	
+
+	/**
+	 * Destroys the Akka actor system used during testing.
+	 */
 	@AfterClass
 	public static void teardown () {
 		JavaTestKit.shutdownActorSystem (actorSystem);
 		actorSystem = null;
 	}
-	
+
+	/**
+	 * Creates an in-memory cache instance for use during testing.
+	 * 
+	 * @throws Throwable
+	 */
 	@Before
 	public void createCache () throws Throwable {
 		streamProcessor = new AkkaStreamProcessor (actorSystem);
@@ -61,13 +74,21 @@ public class TestDefaultDocumentCache {
 		cacheReadThrough = DefaultDocumentCache.createInMemoryCache (actorSystem, streamProcessor, "test-cache-" + (++ count), 1, 0.5, store);
 	}
 	
+	/**
+	 * Destroys the cache after testing and cleans up resources.
+	 * 
+	 * @throws Throwable
+	 */
 	@After
 	public void destroyCache () throws Throwable {
 		cache.close ();
 		store = null;
 		streamProcessor = null;
 	}
-	
+
+	/**
+	 * The cache should return its TTL value.
+	 */
 	@Test
 	public void testGetTtl () {
 		assertEquals (Long.valueOf (1), cache.getTtl ().get (1000));
@@ -81,7 +102,11 @@ public class TestDefaultDocumentCache {
 	public void testFetchNotFound () throws Throwable {
 		cache.fetch (new URI ("http://idgis.nl/favicon.ico")).get (1000);
 	}
-	
+
+	/**
+	 * Fetching a document that can't be retrieved should access the readthrough store.
+	 * @throws Throwable
+	 */
 	@Test
 	public void testFetchReadThrough () throws Throwable {
 		final Document document = cacheReadThrough.fetch (new URI ("http://idgis.nl")).get (1000);
@@ -90,7 +115,13 @@ public class TestDefaultDocumentCache {
 		assertContent ("Hello, World!", document, streamProcessor);
 		assertEquals (1, store.count);
 	}
-	
+
+	/**
+	 * Fetching a document that can't be retrieved and that doesn't exist in the readthrough store
+	 * should raise a DocumentNotFoundException.
+	 * 
+	 * @throws Throwable
+	 */
 	@Test (expected = DocumentNotFoundException.class)
 	public void testFetchReadThroughNotFound () throws Throwable {
 		cacheReadThrough.fetch (new URI ("http://idgis.nl/a")).get (1000);
@@ -106,18 +137,35 @@ public class TestDefaultDocumentCache {
 		cache.store (new URI ("http://idgis.nl/favicon.icon")).get (1000);
 	}
 
+	/**
+	 * Storing a document by providing only an URI should fetch the document from the readthrough store
+	 * and store it in the cache.
+	 * 
+	 * @throws Throwable
+	 */
 	@Test
 	public void testStoreDocumentReadThrough () throws Throwable {
 		cacheReadThrough.store (new URI ("http://idgis.nl")).get (1000);
 		assertEquals (1, store.count);
 	}
 
+	/**
+	 * Storing a document by providing only an URI should raise a DocumentNotFoundException if
+	 * the document doesn't exist in the readthrough store.
+	 * 
+	 * @throws Throwable
+	 */
 	@Test (expected = DocumentNotFoundException.class)
 	public void testStoreDocumentReadThroughNotFound () throws Throwable {
 		cacheReadThrough.store (new URI ("http://idgis.nl/a")).get (1000);
 		assertEquals (0, store.count);
 	}
 	
+	/**
+	 * Test whether a document can be stored by providing an input stream.
+	 * 
+	 * @throws Throwable
+	 */
 	@Test
 	public void testStoreInputStream () throws Throwable {
 		final Document document = cache.store (new URI ("http://idgis.nl"), new MimeContentType ("text/plain"), testStream ("Hello, World!")).get (1000);
@@ -126,6 +174,10 @@ public class TestDefaultDocumentCache {
 		assertContent ("Hello, World!", document, streamProcessor);
 	}
 	
+	/**
+	 * Test whether a document can be stored by providing a byte array.
+	 * @throws Throwable
+	 */
 	@Test
 	public void testStoreByteArray () throws Throwable {
 		final Document document = cache.store (new URI ("http://idgis.nl"), new MimeContentType ("text/plain"), testByteArray ("Hello, World!")).get (1000);
@@ -133,7 +185,13 @@ public class TestDefaultDocumentCache {
 		assertEquals (new MimeContentType ("text/plain"), document.getContentType());
 		assertContent ("Hello, World!", document, streamProcessor);
 	}
-	
+
+	/**
+	 * Test whether a document that has previously been stored in the cache can later be fetched
+	 * by providing the same URI as input.
+	 * 
+	 * @throws Throwable
+	 */
 	@Test
 	public void testStoreAndFetch () throws Throwable {
 		cache.store (new URI ("http://idgis.nl"), new MimeContentType ("text/plain"), testStream ("Hello, World!")).get (1000);
@@ -144,6 +202,12 @@ public class TestDefaultDocumentCache {
 		assertContent ("Hello, World!", document, streamProcessor);
 	}
 	
+	/**
+	 * Test whether a document that has previously been fetched and stored from the readthrough store
+	 * can later be fetched directly from the cache by providing the same URI as input.
+	 * 
+	 * @throws Throwable
+	 */
 	@Test
 	public void testStoreAndFetchReadThrough () throws Throwable {
 		cacheReadThrough.store (new URI ("http://idgis.nl")).get (1000);
@@ -155,7 +219,13 @@ public class TestDefaultDocumentCache {
 		assertEquals (new MimeContentType ("text/plain"), document.getContentType());
 		assertContent ("Hello, World!", document, streamProcessor);
 	}
-	
+
+	/**
+	 * Test whether a document that can be fetched directly after being stored raises a DocumentNotFoundException
+	 * when it is fetched after the TTL expires.
+	 * 
+	 * @throws Throwable
+	 */
 	@Test (expected = DocumentNotFoundException.class)
 	public void testStoreAndFetchEvicted () throws Throwable {
 		cache.store (new URI ("http://idgis.nl"), new MimeContentType ("text/plain"), testStream ("Hello, World!")).get (1000);
@@ -168,6 +238,12 @@ public class TestDefaultDocumentCache {
 		assertContent ("Hello, World!", document, streamProcessor);
 	}
 	
+	/**
+	 * Test whether a document that is fetched and cached from the readthrough store is fetched again
+	 * when the TTL expires.
+	 *  
+	 * @throws Throwable
+	 */
 	@Test
 	public void testStoreAndFetchReadThroughEvicted () throws Throwable {
 		cacheReadThrough.store (new URI ("http://idgis.nl")).get (1000);
@@ -182,7 +258,15 @@ public class TestDefaultDocumentCache {
 		assertContent ("Hello, World!", document, streamProcessor);
 		assertEquals (2, store.count);
 	}
-	
+
+	/**
+	 * Asserts that the content of a document has a certain value.
+	 * 
+	 * @param expected			The expected value of the document body.
+	 * @param document			The document to test.
+	 * @param streamProcessor	The stream processor to use when consuming the stream.
+	 * @throws IOException
+	 */
 	public static void assertContent (final String expected, final Document document, final StreamProcessor streamProcessor) throws IOException {
 		final InputStream inputStream = streamProcessor.asInputStream (document.getBody (), 5000);
 		

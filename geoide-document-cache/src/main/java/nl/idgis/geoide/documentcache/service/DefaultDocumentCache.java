@@ -242,7 +242,7 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 	}
 	
 	/**
-	 * 
+	 * Akka actor to manage the cache. 
 	 */
 	public static class CacheActor extends UntypedActor {
 		
@@ -450,15 +450,29 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 		}
 	}
 	
+	/**
+	 * Serializable variant of the MimeContentType class, which by itself is not
+	 * serializable. Stores the content type as a string.
+	 */
 	public final static class SerializableContentType implements Serializable {
 		private static final long serialVersionUID = -3936226269463354913L;
 		
 		private final String contentType;
-		
+
+		/**
+		 * Constructs a new ContentType.
+		 * 
+		 * @param contentType	The content type as a string value.
+		 */
 		public SerializableContentType (final String contentType) {
 			this.contentType = contentType;
 		}
 		
+		/**
+		 * Returns the content type as a string value.
+		 * 
+		 * @return The content type.
+		 */
 		public String getContentType () {
 			return contentType;
 		}

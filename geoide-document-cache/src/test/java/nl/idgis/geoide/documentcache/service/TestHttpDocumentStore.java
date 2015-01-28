@@ -29,7 +29,9 @@ import akka.testkit.JavaTestKit;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
-
+/**
+ * Tests the HttpDocumentStore by performing a GET request.
+ */
 public class TestHttpDocumentStore {
 
 	@Rule
@@ -39,6 +41,9 @@ public class TestHttpDocumentStore {
 	private StreamProcessor streamProcessor;
 	private HttpClient httpClient;
 	
+	/**
+	 * Creates a HttpClient and streamProcessor.
+	 */
 	@Before
 	public void createHttpClient () {
 		actorSystem = ActorSystem.create ();
@@ -46,13 +51,21 @@ public class TestHttpDocumentStore {
 		httpClient = new DefaultHttpClient (streamProcessor, 10, 500);
 	}
 	
+	/**
+	 * Destroys the HttpClient and stream processor.
+	 */
 	@After
 	public void destroyHttpClient () {
 		httpClient = null;
 		streamProcessor = null;
 		JavaTestKit.shutdownActorSystem (actorSystem);
 	}
-	
+
+	/**
+	 * Performs a fetch operation on the document store and validates the result.
+	 * 
+	 * @throws Throwable
+	 */
 	@Test
 	public void testFetch () throws Throwable {
 		stubFor (get (urlEqualTo ("/resource"))
@@ -83,6 +96,11 @@ public class TestHttpDocumentStore {
 		});
 	}
 	
+	/**
+	 * Peforms a fetch operation with an URI that contains characters that must be escaped.
+	 * 
+	 * @throws Throwable
+	 */
 	@Test
 	public void testFetchEscapedUri () throws Throwable {
 		stubFor (get (urlEqualTo ("/resource?a=%3CStyledLayerDescriptor"))
