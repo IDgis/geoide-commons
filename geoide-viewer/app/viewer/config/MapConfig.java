@@ -14,10 +14,10 @@ public class MapConfig {
 	@Bean
 	public MapProvider mapProvider () {
 		return new StaticMapProvider (Play.application().resourceAsStream ("viewer/maps.json"),
-						Play.application().resourceAsStream ("viewer/services.json"),
-						Play.application().resourceAsStream ("viewer/featuretypes.json"),
-						Play.application().resourceAsStream ("viewer/servicelayers.json"),
-						Play.application().resourceAsStream ("viewer/layers.json"));
+					Play.application().resourceAsStream ("viewer/services.json"),
+					Play.application().resourceAsStream ("viewer/featuretypes.json"),
+					Play.application().resourceAsStream ("viewer/servicelayers.json"),
+					Play.application().resourceAsStream ("viewer/layers.json"));
 		
 		//return new StaticMapProvider (Play.application().resourceAsStream ("viewer/map-definition.json"));
 	}
