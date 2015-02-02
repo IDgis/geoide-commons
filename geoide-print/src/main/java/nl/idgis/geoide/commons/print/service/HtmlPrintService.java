@@ -127,6 +127,8 @@ public class HtmlPrintService implements PrintService, Closeable {
 					final String charset = printRequest.getInputDocument ().getContentType ().parameters ().containsKey ("charset") ? printRequest.getInputDocument ().getContentType ().parameters ().get ("charset") : "UTF-8"; 
 					try (final InputStream htmlStream = streamProcessor.asInputStream (cachedDocument.getBody (), cacheTimeoutMillis)) {
 						final org.jsoup.nodes.Document document = Jsoup.parse (htmlStream, charset, baseUrl);
+
+						cleanup (document);
 						
 						final StringWriter writer = new StringWriter ();
 						
@@ -244,6 +246,14 @@ public class HtmlPrintService implements PrintService, Closeable {
 		}
 	}
 	
+	/**
+	 * Peforms cleanup on the the given document. Delegates to {@link HtmlCleanup#cleanup(org.jsoup.nodes.Document)}
+	 * 
+	 * @param document The document to clean up. The document is modified in place.
+	 */
+	private void cleanup (final org.jsoup.nodes.Document document) {
+		HtmlCleanup.cleanup (document);
+	}
 	
 	 private static class ResourceLoaderUserAgent extends ITextUserAgent {
 		 private final DocumentCache cache;
