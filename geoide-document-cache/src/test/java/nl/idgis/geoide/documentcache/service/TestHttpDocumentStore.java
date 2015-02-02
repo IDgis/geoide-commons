@@ -1,9 +1,6 @@
 package nl.idgis.geoide.documentcache.service;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.Assert.assertEquals;
 import static play.test.Helpers.fakeApplication;
 import static play.test.Helpers.running;
@@ -117,6 +114,45 @@ public class TestHttpDocumentStore {
 				final Document document;
 				try {
 					document = store.fetch (new URI ("http://localhost:8089/resource?a=%3CStyledLayerDescriptor")).get (1000);
+				} catch (URISyntaxException e) {
+					throw new RuntimeException (e);
+				}
+				
+				assertEquals (new MimeContentType ("text/plain"), document.getContentType ());
+				try {
+					TestDefaultDocumentCache.assertContent ("Hello, World!", document, streamProcessor);
+				} catch (IOException e) {
+					throw new RuntimeException (e);
+				}
+			}
+		});
+	}
+	
+	/**
+	 * Tests wheter a document can be retrieved from the document cache by following a redirect (http 3xx status).
+	 * 
+	 * @throws Throwable
+	 */
+	@Test
+	public void testFetchWithRedirect () throws Throwable {
+		stubFor (get (urlEqualTo ("/resource"))
+				.willReturn (aResponse ()
+						.withStatus (302)
+						.withHeader ("Location", "/resource2")));
+		stubFor (get (urlEqualTo ("/resource2"))
+				.willReturn (aResponse ()
+						.withStatus (200)
+						.withHeader ("Content-Type", "text/plain")
+						.withBody ("Hello, World!")));
+				
+		running (fakeApplication (), new Runnable () {
+			@Override
+			public void run () {
+				final HttpDocumentStore store = new HttpDocumentStore (httpClient);
+				
+				final Document document;
+				try {
+					document = store.fetch (new URI ("http://localhost:8089/resource")).get (1000);
 				} catch (URISyntaxException e) {
 					throw new RuntimeException (e);
 				}

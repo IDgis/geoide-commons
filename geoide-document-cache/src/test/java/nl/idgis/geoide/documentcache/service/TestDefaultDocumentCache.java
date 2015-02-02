@@ -19,9 +19,7 @@ import nl.idgis.geoide.util.streams.StreamProcessor;
 import nl.idgis.ogc.util.MimeContentType;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.reactivestreams.Publisher;
 
@@ -36,30 +34,13 @@ import akka.util.ByteString.ByteStrings;
  */
 public class TestDefaultDocumentCache {
 
-	private static ActorSystem actorSystem;
-	private static int count = 0;
+	private ActorSystem actorSystem;
+	private int count = 0;
 
 	private TestDocumentStore store;
 	private DefaultDocumentCache cache;
 	private DefaultDocumentCache cacheReadThrough;
 	private StreamProcessor streamProcessor;
-
-	/**
-	 * Creates an actor system to use during the tests as a scheduler.
-	 */
-	@BeforeClass
-	public static void setup () {
-		actorSystem = ActorSystem.create ();
-	}
-
-	/**
-	 * Destroys the Akka actor system used during testing.
-	 */
-	@AfterClass
-	public static void teardown () {
-		JavaTestKit.shutdownActorSystem (actorSystem);
-		actorSystem = null;
-	}
 
 	/**
 	 * Creates an in-memory cache instance for use during testing.
@@ -68,6 +49,7 @@ public class TestDefaultDocumentCache {
 	 */
 	@Before
 	public void createCache () throws Throwable {
+		actorSystem = ActorSystem.create ();
 		streamProcessor = new AkkaStreamProcessor (actorSystem);
 		store = new TestDocumentStore ();
 		cache = DefaultDocumentCache.createInMemoryCache (actorSystem, streamProcessor, "test-cache-" + (++ count), 1, 0.5, null);
@@ -84,6 +66,8 @@ public class TestDefaultDocumentCache {
 		cache.close ();
 		store = null;
 		streamProcessor = null;
+		JavaTestKit.shutdownActorSystem (actorSystem);
+		actorSystem = null;
 	}
 
 	/**
