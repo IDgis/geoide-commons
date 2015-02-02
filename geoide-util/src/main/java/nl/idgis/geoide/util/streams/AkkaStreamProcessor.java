@@ -19,6 +19,8 @@ import akka.actor.ActorRefFactory;
 import akka.actor.Cancellable;
 import akka.actor.Props;
 import akka.actor.UntypedActor;
+import akka.event.Logging;
+import akka.event.LoggingAdapter;
 import akka.pattern.Patterns;
 import akka.util.ByteString;
 import akka.util.ByteString.ByteStrings;
@@ -477,6 +479,8 @@ public class AkkaStreamProcessor implements StreamProcessor, Closeable {
 	 * An Akka actor that publishes an InputStream as a stream of ByteStrings of configurable length.
 	 */
 	public final static class InputStreamPublishActor extends UntypedActor {
+		private LoggingAdapter log = Logging.getLogger (context ().system (), this);
+		
 		private final long timeoutInMillis;
 		private final int blockSize;
 		private final InputStream inputStream;
@@ -564,7 +568,7 @@ public class AkkaStreamProcessor implements StreamProcessor, Closeable {
 				context ().stop (self ());
 				completed = true;
 			} else if ("timeout".equals (message)) {
-				System.err.println ("Timeout on actor: " + self ().toString ());
+				log.debug ("Timeout on actor: " + self ().toString ());
 				if (subscriber != null && !completed) {
 					subscriber.onError (new IOException ("The IO operation has timed out after: " + timeoutInMillis + " ms"));
 				}

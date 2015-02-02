@@ -1,5 +1,7 @@
 package nl.idgis.geoide.commons.print.svg;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.xhtmlrenderer.extend.ReplacedElement;
 import org.xhtmlrenderer.extend.ReplacedElementFactory;
@@ -9,21 +11,23 @@ import org.xhtmlrenderer.render.BlockBox;
 import org.xhtmlrenderer.simple.extend.FormSubmissionListener;
 
 public class SVGReplacedElementFactory implements ReplacedElementFactory {
+	private final static Logger log = LoggerFactory.getLogger (SVGReplacedElementFactory.class);
+	
     @Override
     public ReplacedElement createReplacedElement(LayoutContext c, BlockBox box, 
             UserAgentCallback uac, int cssWidth, int cssHeight) {
         Element element = box.getElement();
-        System.out.println (element.getLocalName ());
+        log.trace (element.getLocalName ());
         
         if (isSVGElement (element)) {
-        	System.out.println ("Before getXMLResource");
+        	log.trace ("Before getXMLResource");
         	final byte[] bytes = uac.getBinaryResource (element.getAttribute ("data"));
-        	System.out.println ("After getXMLResource");
+        	log.trace ("After getXMLResource");
         	
         	return new SVGReplacedElement (bytes, cssWidth, cssHeight);
         } /*else if("svg".equals(element.getLocalName ())) {
 
-        	System.out.println ("Replacing SVG box");
+        	log.trace ("Replacing SVG box");
         	
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder;

@@ -35,6 +35,8 @@ import org.jsoup.nodes.DataNode;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xhtmlrenderer.pdf.ITextOutputDevice;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 import org.xhtmlrenderer.pdf.ITextReplacedElementFactory;
@@ -55,6 +57,8 @@ import play.libs.F.Promise;
  */
 public class HtmlPrintService implements PrintService, Closeable {
 
+	private static Logger log = LoggerFactory.getLogger (HtmlPrintService.class);
+	
 	private final DocumentCache documentCache;
 	private final StreamProcessor streamProcessor;
 	private final long cacheTimeoutMillis;
@@ -118,6 +122,8 @@ public class HtmlPrintService implements PrintService, Closeable {
 			@Override
 			public void run () {
 				try {
+					log.debug ("Printing document: " + printRequest.getInputDocument ().getUri ().toString ());
+					
 					// Load the input document:
 					final Document cachedDocument = documentCache.fetch (printRequest.getInputDocument ().getUri ()).get (cacheTimeoutMillis);
 					
@@ -138,7 +144,7 @@ public class HtmlPrintService implements PrintService, Closeable {
 						xmlDocument = writer.toString ();
 					}
 					
-					System.out.println (xmlDocument);
+					log.trace ("XML document after cleanup");
 					
 					// Generate PDF:
 					final ChainedReplacedElementFactory cef = new ChainedReplacedElementFactory ();
@@ -163,7 +169,9 @@ public class HtmlPrintService implements PrintService, Closeable {
 					
 					// Store the document in the cache:
 					os.close ();
-					final Document resultDocument = documentCache.store (new URI ("generated://" + UUID.randomUUID ().toString () + ".pdf"), new MimeContentType ("application/pdf"), os.toByteArray ()).get (cacheTimeoutMillis);
+					final URI resultUri = new URI ("generated://" + UUID.randomUUID ().toString () + ".pdf");
+					log.debug ("Storing result for " + printRequest.getInputDocument ().getUri ().toString () + " as " + resultUri.toString ());
+					final Document resultDocument = documentCache.store (resultUri, new MimeContentType ("application/pdf"), os.toByteArray ()).get (cacheTimeoutMillis);
 					
 					scalaPromise.success (resultDocument);
 				} catch (Throwable t) {
@@ -269,7 +277,7 @@ public class HtmlPrintService implements PrintService, Closeable {
 		 }
 		 
 		 protected InputStream resolveAndOpenStream (final String uri) {
-			 System.out.println("IN resolveAndOpenStream() " + uri);
+			 log.debug ("IN resolveAndOpenStream: " + uri.toString ());
 
 			 // Serve resources from the classpath:
 			 /*
@@ -284,6 +292,7 @@ public class HtmlPrintService implements PrintService, Closeable {
 				 return streamProcessor.asInputStream (document.getBody (), timeout);
 			 } catch (URISyntaxException | DocumentCacheException e) {
 				 // Fall back to the default user agent for other requests:
+				 log.warn ("Unable to resolve related document " + uri.toString () + ", falling back to default implementation");
 				 return super.resolveAndOpenStream (uri);
 			 }
 		 }
