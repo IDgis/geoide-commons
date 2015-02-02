@@ -6,9 +6,10 @@ Common.settings
 
 lazy val viewer = (project in file("."))
 	.enablePlugins(PlayJava)
-	.aggregate(mapView, toc, geoideConfig, geoideCore)
+	.aggregate(mapView, toc, geoidePrintService, geoideConfig, geoideCore)
 	.dependsOn(mapView)
 	.dependsOn(toc)
+	.dependsOn(geoidePrintService)
 	.dependsOn(geoideConfig)
 	.dependsOn(geoideCore)
 
@@ -23,11 +24,16 @@ lazy val toc = (project in file("./modules/toc"))
 lazy val geoideConfig = (project in file("./modules/config"))
 	.enablePlugins(PlayJava)
 	.dependsOn(mapView)
+	.dependsOn(geoidePrintService)
 	.dependsOn(geoideCore)
 	
 lazy val geoideCore = (project in file("./modules/core"))
 	.enablePlugins(PlayJava)
 
+lazy val geoidePrintService = (project in file("./modules/print-service"))
+	.enablePlugins(PlayJava)
+	.dependsOn(geoideCore)
+	
 libraryDependencies ++= Seq(
   javaJdbc,
   javaEbean,
@@ -43,7 +49,8 @@ libraryDependencies ++= Seq(
   Common.Dependencies.geoideServiceWfs,
   Common.Dependencies.geoideLayerCommon,
   Common.Dependencies.geoideLayerDefault,
-  Common.Dependencies.webjarsOpenLayers
+  Common.Dependencies.webjarsOpenLayers,
+  "it.innove" % "play2-pdf" % "1.1.1"
 )
 
 // Also deploy the assets:

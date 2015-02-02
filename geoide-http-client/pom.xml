@@ -1,0 +1,73 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>nl.idgis.geoide</groupId>
+		<artifactId>geoide-commons</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>geoide-http-client</artifactId>
+	<name>Geoide - HTTP client</name>
+	
+	<dependencies>
+		<dependency>
+			<groupId>org.reactivestreams</groupId>
+			<artifactId>reactive-streams</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.typesafe.play</groupId>
+			<artifactId>play-java-ws_${scala.abi.version}</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.typesafe.akka</groupId>
+			<artifactId>akka-actor_${scala.abi.version}</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>nl.idgis.geoide</groupId>
+			<artifactId>geoide-util</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.httpcomponents</groupId>
+		    <artifactId>httpasyncclient</artifactId>
+		</dependency>
+		
+		<!-- Test dependencies: -->		
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.typesafe.akka</groupId>
+			<artifactId>akka-testkit_${scala.abi.version}</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.github.tomakehurst</groupId>
+			<artifactId>wiremock</artifactId>
+			<classifier>standalone</classifier>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.typesafe.play</groupId>
+			<artifactId>play-test_${scala.abi.version}</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.github.github</groupId>
+				<artifactId>site-maven-plugin</artifactId>
+				
+				<configuration>
+					<path>site/${git.commit.id.describe-short}/geoide-commons/geoide-http-client</path>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	
+</project>

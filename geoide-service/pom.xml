@@ -15,4 +15,18 @@
 		<module>geoide-service-tms</module>
 		<module>geoide-service-wfs</module>
 	</modules>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.github.github</groupId>
+				<artifactId>site-maven-plugin</artifactId>
+				
+				<configuration>
+					<path>site/${git.commit.id.describe-short}/geoide-commons/geoide-service</path>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	
 </project>

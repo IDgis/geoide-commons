@@ -17,6 +17,8 @@ libraryDependencies ++= Seq(
   Common.Dependencies.geoideServiceWfs,
   Common.Dependencies.geoideLayerCommon,
   Common.Dependencies.geoideLayerDefault,
+  Common.Dependencies.geoidePrint,
+  Common.Dependencies.geoideHttpClient,
   Common.Dependencies.webjarsPlay,
   Common.Dependencies.webjarsBootstrap,
   Common.Dependencies.webjarsDojoBase,

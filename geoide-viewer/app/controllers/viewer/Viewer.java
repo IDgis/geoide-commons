@@ -1,5 +1,9 @@
 package controllers.viewer;
 
+import it.innove.play.pdf.PdfGenerator;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import nl.idgis.geoide.commons.domain.MapDefinition;
@@ -10,6 +14,7 @@ import play.Logger;
 import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.viewer.viewer;
+import views.html.viewer.pdf;
 import controllers.toc.TOC;
 
 public class Viewer extends Controller {
@@ -45,5 +50,9 @@ public class Viewer extends Controller {
 		final MapDefinition mapDef = mapProvider.getMapDefinition(mapId);
 		List<Traits<TOCItem>> tocItems = toc.getItems (mapDef);
 		return ok (viewer.render (mapId, "3", tocItems));
+	}
+	
+	public Result testPDF () {
+		return PdfGenerator.ok (pdf.render (), "http://localhost", Collections.<String>emptyList ());
 	}
 }

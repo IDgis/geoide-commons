@@ -4,11 +4,14 @@
 
 -> /	core.Routes
 -> /	mapview.Routes
+-> /	printservice.Routes
 
 # Map viewer:
 GET		/map/:mapId										@controllers.viewer.Viewer.viewerForMap(mapId)
 GET		/map/:mapId/ol2									@controllers.viewer.Viewer.viewerForMapOpenLayers2(mapId)
 GET		/map/:mapId/ol3									@controllers.viewer.Viewer.viewerForMapOpenLayers3(mapId)
+
+GET		/test.pdf										@controllers.viewer.Viewer.testPDF()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               					controllers.viewer.Assets.at(path="/public", file)

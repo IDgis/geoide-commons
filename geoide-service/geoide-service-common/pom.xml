@@ -42,4 +42,18 @@
 			<type>jar</type>
 		</dependency>
 	</dependencies>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.github.github</groupId>
+				<artifactId>site-maven-plugin</artifactId>
+				
+				<configuration>
+					<path>site/${git.commit.id.describe-short}/geoide-commons/geoide-service-common</path>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	
 </project>

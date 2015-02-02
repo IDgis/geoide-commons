@@ -20,4 +20,18 @@
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.github.github</groupId>
+				<artifactId>site-maven-plugin</artifactId>
+				
+				<configuration>
+					<path>site/${git.commit.id.describe-short}/geoide-commons/geoide-layer/geoide-layer-default</path>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	
 </project>

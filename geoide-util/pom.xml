@@ -11,4 +11,52 @@
 	<artifactId>geoide-util</artifactId>
 	<name>Geoide - Util</name>
 	
+	<dependencies>
+		<!-- Reactive streams API: -->
+		<dependency>
+			<groupId>org.reactivestreams</groupId>
+			<artifactId>reactive-streams</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.typesafe.akka</groupId>
+			<artifactId>akka-actor_${scala.abi.version}</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.typesafe.play</groupId>
+			<artifactId>play-java-ws_${scala.abi.version}</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		
+		<!-- Test dependencies: -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.typesafe.akka</groupId>
+			<artifactId>akka-testkit_${scala.abi.version}</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.reactivestreams</groupId>
+			<artifactId>reactive-streams-tck</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.github.github</groupId>
+				<artifactId>site-maven-plugin</artifactId>
+				
+				<configuration>
+					<path>site/${git.commit.id.describe-short}/geoide-commons/geoide-util</path>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	
 </project>
