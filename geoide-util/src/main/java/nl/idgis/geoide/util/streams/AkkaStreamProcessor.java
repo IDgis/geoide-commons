@@ -1,5 +1,6 @@
 package nl.idgis.geoide.util.streams;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
@@ -8,6 +9,8 @@ import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
+import play.libs.F.Callback;
+import play.libs.F.Function;
 import play.libs.F.Function2;
 import play.libs.F.Promise;
 import scala.concurrent.duration.Duration;
@@ -23,9 +26,11 @@ import akka.util.ByteString.ByteStrings;
 /**
  * An {@link StreamProcessor} implementation that uses an Akka actor system for scheduling.
  */
-public class AkkaStreamProcessor implements StreamProcessor {
+public class AkkaStreamProcessor implements StreamProcessor, Closeable {
 
 	private final ActorRefFactory actorRefFactory;
+	private final ActorRef publishInputStreamContainer;
+	private final ActorRef asInputStreamContainer;
 
 	/**
 	 * Creates a new AkkaStreamProcessor by providing an ActorRefFectory on which
@@ -39,6 +44,17 @@ public class AkkaStreamProcessor implements StreamProcessor {
 		}
 		
 		this.actorRefFactory = actorRefFactory;
+		this.publishInputStreamContainer = actorRefFactory.actorOf (ContainerActor.props (), "stream-processor-publish-input-stream");
+		this.asInputStreamContainer = actorRefFactory.actorOf (ContainerActor.props (), "stream-processor-as-input-stream");
+	}
+	
+	/**
+	 * Destroys actors for this stream processor.
+	 */
+	@Override
+	public void close () {
+		actorRefFactory.stop (publishInputStreamContainer);
+		actorRefFactory.stop (asInputStreamContainer);
 	}
 	
 	/**
@@ -128,9 +144,19 @@ public class AkkaStreamProcessor implements StreamProcessor {
 			throw new NullPointerException ("inputStream cannot be null");
 		}
 		
-		final ActorRef actor = actorRefFactory.actorOf (InputStreamPublishActor.props (inputStream, timeoutInMillis, maxBlockSize));
+		// Ask the container actor to create a new actor to process this stream:
 		
-		return new InputStreamPublisher (actor);
+		final Promise<ActorRef> actorPromise = createActor (
+			publishInputStreamContainer, 
+			InputStreamPublishActor.props (
+				inputStream, 
+				timeoutInMillis, 
+				maxBlockSize
+			),
+			timeoutInMillis
+		);
+		
+		return new InputStreamPublisher (actorPromise);
 	}
 
 	/**
@@ -144,9 +170,36 @@ public class AkkaStreamProcessor implements StreamProcessor {
 			throw new NullPointerException ("publisher cannot be null");
 		}
 		
-		final ActorRef actor = actorRefFactory.actorOf (ConsumeByteStringsActor.props (publisher, timeoutInMillis));
+		// Ask the container actor to create an actor to process this stream:
+		final Promise<ActorRef> actorPromise = createActor (
+			asInputStreamContainer, 
+			ConsumeByteStringsActor.props (
+				publisher, 
+				timeoutInMillis
+			), 
+			timeoutInMillis
+		);
 		
-		return new ByteStringInputStream (actor, timeoutInMillis);
+		return new ByteStringInputStream (actorPromise, timeoutInMillis);
+	}
+	
+	private static Promise<ActorRef> createActor (final ActorRef containerActor, final Props props, final long timeoutInMillis) {
+		return Promise.wrap (
+			Patterns.ask (
+				containerActor,
+				props,
+				timeoutInMillis
+			)
+		).map (new Function<Object, ActorRef> () {
+			@Override
+			public ActorRef apply (final Object response) throws Throwable {
+				if (response instanceof ActorRef) {
+					return (ActorRef) response;
+				}
+
+				throw new IllegalArgumentException ("Unknown response type: " + response.getClass ().getCanonicalName ());
+			}
+		});
 	}
 	
 	/**
@@ -157,8 +210,8 @@ public class AkkaStreamProcessor implements StreamProcessor {
 		private final ActorRef actor;
 		private final long timeout;
 		
-		public ByteStringInputStream (final ActorRef actor, final long timeout) {
-			this.actor = actor;
+		public ByteStringInputStream (final Promise<ActorRef> actorPromise, final long timeout) {
+			this.actor = actorPromise.get (timeout);
 			this.timeout = timeout;
 		}
 
@@ -376,15 +429,26 @@ public class AkkaStreamProcessor implements StreamProcessor {
 	 * Reactive streams publisher for input streams. Uses an Akka actor that wraps the input stream.
 	 */
 	private final static class InputStreamPublisher implements Publisher<ByteString> {
-		private final ActorRef actor;
+		private final Promise<ActorRef> actorPromise;
 		
-		public InputStreamPublisher (final ActorRef actor) {
-			this.actor = actor;
+		public InputStreamPublisher (final Promise<ActorRef> actorPromise) {
+			this.actorPromise = actorPromise;
 		}
 
 		@Override
 		public void subscribe (final Subscriber<? super ByteString> subscriber) {
-			actor.tell (subscriber, actor);
+			actorPromise.onRedeem (new Callback<ActorRef> () {
+				@Override
+				public void invoke (final ActorRef actor) throws Throwable {
+					actor.tell (subscriber, actor);
+				}
+			});
+			actorPromise.onFailure (new Callback<Throwable> () {
+				@Override
+				public void invoke (final Throwable a) throws Throwable {
+					subscriber.onError (a);
+				}
+			});
 		}
 	}
 
@@ -482,6 +546,7 @@ public class AkkaStreamProcessor implements StreamProcessor {
 						if (nread < 0) {
 							subscriber.onComplete ();
 							completed = true;
+							self ().tell ("stop", self ());
 							break;
 						}
 						
@@ -500,7 +565,7 @@ public class AkkaStreamProcessor implements StreamProcessor {
 				completed = true;
 			} else if ("timeout".equals (message)) {
 				System.err.println ("Timeout on actor: " + self ().toString ());
-				if (subscriber != null) {
+				if (subscriber != null && !completed) {
 					subscriber.onError (new IOException ("The IO operation has timed out after: " + timeoutInMillis + " ms"));
 				}
 				completed = true;
@@ -523,6 +588,23 @@ public class AkkaStreamProcessor implements StreamProcessor {
 					context ().dispatcher (),
 					self ()
 				);
+		}
+	}
+	
+	public final static class ContainerActor extends UntypedActor {
+		private long id = 1;
+		
+		public static Props props () {
+			return Props.create (ContainerActor.class);
+		}
+		
+		@Override
+		public void onReceive (final Object message) throws Exception {
+			if (message instanceof Props) {
+				sender ().tell (context ().actorOf ((Props) message, "actor-" + (id ++)), self ());
+			} else {
+				unhandled (message);
+			}
 		}
 	}
 }
