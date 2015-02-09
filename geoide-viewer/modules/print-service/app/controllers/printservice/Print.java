@@ -56,7 +56,7 @@ public class Print extends Controller {
 		return doPrint (uri, uri);
 	}
 	
-	@BodyParser.Of (BodyParser.Raw.class)
+	@BodyParser.Of (value = BodyParser.Raw.class, maxLength = 10 * 1024 * 1024)
 	public Promise<Result> printPost (final String u) throws Throwable {
 		Logger.debug ("Printing from POST: " + u);
 		
