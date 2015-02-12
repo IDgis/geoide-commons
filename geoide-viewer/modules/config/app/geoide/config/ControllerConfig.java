@@ -3,6 +3,7 @@ package geoide.config;
 import nl.idgis.geoide.commons.domain.provider.MapProvider;
 import nl.idgis.geoide.commons.layer.LayerTypeRegistry;
 import nl.idgis.geoide.commons.print.service.PrintService;
+import nl.idgis.geoide.commons.report.ReportComposer;
 import nl.idgis.geoide.documentcache.DocumentCache;
 import nl.idgis.geoide.service.ServiceTypeRegistry;
 import nl.idgis.geoide.util.streams.StreamProcessor;
@@ -19,6 +20,9 @@ import controllers.mapview.Services;
 import controllers.mapview.Symbol;
 import controllers.mapview.View;
 import controllers.printservice.Print;
+import controllers.printservice.Report;
+
+
 
 @Configuration
 public class ControllerConfig {
@@ -67,4 +71,13 @@ public class ControllerConfig {
 			final StreamProcessor streamProcessor) {
 		return new Print (printService, documentCache, streamProcessor);
 	}
+	
+	@Bean
+	@Autowired
+	public Report reportController (
+			final  @Qualifier ("reportComposer") ReportComposer composer
+			) {
+		return new Report (composer);
+	}
+	
 }

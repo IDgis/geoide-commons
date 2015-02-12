@@ -1,2 +1,4 @@
 GET		/print		@controllers.printservice.Print.printGet(u: String)
 POST	/print		@controllers.printservice.Print.printPost(u: String)
+
+POST   /report  @controllers.printservice.Report.report()
