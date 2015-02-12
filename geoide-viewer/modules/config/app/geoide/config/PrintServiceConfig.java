@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import nl.idgis.geoide.commons.http.client.HttpClient;
 import nl.idgis.geoide.commons.print.service.HtmlPrintService;
+import nl.idgis.geoide.commons.report.ReportComposer;
+import nl.idgis.geoide.commons.report.ReportPostProcessor;
 import nl.idgis.geoide.documentcache.DocumentCache;
 import nl.idgis.geoide.documentcache.DocumentStore;
 import nl.idgis.geoide.documentcache.service.DefaultDocumentCache;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 
 import play.Play;
 import play.libs.Akka;
@@ -51,4 +54,24 @@ public class PrintServiceConfig {
 				Play.application ().configuration ().getLong ("geoide.services.print.cacheTimeoutInMillis", 30000l).longValue ()
 			);
 	}
+	
+	
+	@Bean
+	@Qualifier ("reportPostProcessor")
+	@Autowired
+	public ReportPostProcessor reportPostProcessor () {
+		return new ReportPostProcessor (				
+			
+				);
+	}
+	@Bean
+	@Qualifier ("reportComposer")
+	@Autowired
+	public ReportComposer reportComposer (final @Qualifier ("reportPostProcessor") ReportPostProcessor reportPostProcessor) {
+		return new ReportComposer (
+				reportPostProcessor
+			);
+	}
+	
+
 }
