@@ -75,9 +75,10 @@ public class ControllerConfig {
 	@Bean
 	@Autowired
 	public Report reportController (
-			final  @Qualifier ("reportComposer") ReportComposer composer
+			final  @Qualifier ("reportComposer") ReportComposer composer,
+			final StreamProcessor streamProcessor
 			) {
-		return new Report (composer);
+		return new Report (composer, streamProcessor);
 	}
 	
 }

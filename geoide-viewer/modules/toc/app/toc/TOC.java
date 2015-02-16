@@ -1,4 +1,4 @@
-package controllers.toc;
+package toc;
 
 import java.util.ArrayList;
 import java.util.Collections;

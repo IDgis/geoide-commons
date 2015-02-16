@@ -2,9 +2,10 @@ package controllers.viewer;
 
 import it.innove.play.pdf.PdfGenerator;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+
 
 import nl.idgis.geoide.commons.domain.MapDefinition;
 import nl.idgis.geoide.commons.domain.provider.MapProvider;
@@ -13,9 +14,9 @@ import nl.idgis.geoide.commons.domain.traits.Traits;
 import play.Logger;
 import play.mvc.Controller;
 import play.mvc.Result;
+import toc.TOC;
 import views.html.viewer.viewer;
 import views.html.viewer.pdf;
-import controllers.toc.TOC;
 
 public class Viewer extends Controller {
 	private final TOC toc;
@@ -55,4 +56,7 @@ public class Viewer extends Controller {
 	public Result testPDF () {
 		return PdfGenerator.ok (pdf.render (), "http://localhost", Collections.<String>emptyList ());
 	}
+	
+	
+	
 }
