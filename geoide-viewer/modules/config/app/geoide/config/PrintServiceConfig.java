@@ -6,6 +6,8 @@ import nl.idgis.geoide.commons.http.client.HttpClient;
 import nl.idgis.geoide.commons.print.service.HtmlPrintService;
 import nl.idgis.geoide.commons.report.ReportComposer;
 import nl.idgis.geoide.commons.report.ReportPostProcessor;
+import nl.idgis.geoide.commons.report.template.TemplateDocumentProvider;
+import nl.idgis.geoide.commons.report.template.HtmlTemplateDocumentProvider;
 import nl.idgis.geoide.documentcache.DocumentCache;
 import nl.idgis.geoide.documentcache.DocumentStore;
 import nl.idgis.geoide.documentcache.service.DefaultDocumentCache;
@@ -16,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 
 
 import play.Play;
@@ -59,17 +62,27 @@ public class PrintServiceConfig {
 	@Bean
 	@Qualifier ("reportPostProcessor")
 	@Autowired
-	public ReportPostProcessor reportPostProcessor () {
-		return new ReportPostProcessor (				
-			
-				);
+	public ReportPostProcessor reportPostProcessor (HtmlPrintService htmlPrintService, final @Qualifier ("printDocumentCache") DocumentCache documentCache ) {
+		return new ReportPostProcessor (
+				htmlPrintService,
+				documentCache
+		);
 	}
+	
+	@Bean
+	@Autowired
+	public TemplateDocumentProvider templateProvider() {
+		return new HtmlTemplateDocumentProvider();
+	}
+	
+	
 	@Bean
 	@Qualifier ("reportComposer")
 	@Autowired
-	public ReportComposer reportComposer (final @Qualifier ("reportPostProcessor") ReportPostProcessor reportPostProcessor) {
+	public ReportComposer reportComposer (final @Qualifier ("reportPostProcessor") ReportPostProcessor reportPostProcessor, TemplateDocumentProvider templateProvider) {
 		return new ReportComposer (
-				reportPostProcessor
+				reportPostProcessor,
+				templateProvider
 			);
 	}
 	
