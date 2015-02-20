@@ -7,6 +7,8 @@ import java.util.List;
 
 
 
+
+import controllers.toc.TOC;
 import nl.idgis.geoide.commons.domain.MapDefinition;
 import nl.idgis.geoide.commons.domain.provider.MapProvider;
 import nl.idgis.geoide.commons.domain.toc.TOCItem;
@@ -14,7 +16,6 @@ import nl.idgis.geoide.commons.domain.traits.Traits;
 import play.Logger;
 import play.mvc.Controller;
 import play.mvc.Result;
-import toc.TOC;
 import views.html.viewer.viewer;
 import views.html.viewer.pdf;
 

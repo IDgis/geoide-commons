@@ -1,12 +1,9 @@
 package controllers.mapview;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import nl.idgis.geoide.commons.domain.Layer;
-import nl.idgis.geoide.commons.domain.ParameterizedServiceLayer;
-import nl.idgis.geoide.commons.domain.Service;
 import nl.idgis.geoide.commons.domain.ServiceRequest;
+<<<<<<< Upstream, based on master
 import nl.idgis.geoide.commons.domain.provider.LayerProvider;
 import nl.idgis.geoide.commons.domain.traits.Traits;
 import nl.idgis.geoide.commons.layer.LayerType;
@@ -16,6 +13,10 @@ import nl.idgis.geoide.service.ServiceRequestContext;
 import nl.idgis.geoide.service.ServiceType;
 import nl.idgis.geoide.service.ServiceTypeRegistry;
 import play.Logger;
+=======
+import nl.idgis.geoide.map.MapView;
+import nl.idgis.geoide.map.MapView.LayerWithState;
+>>>>>>> f934e84 work in progress reporting
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -24,7 +25,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class View extends Controller {
+	private final MapView mapView;
 	
+<<<<<<< Upstream, based on master
 	private final LayerTypeRegistry layerTypeRegistry;
 	private final ServiceTypeRegistry serviceTypeRegistry;
 	private final LayerProvider layerProvider;
@@ -33,27 +36,27 @@ public class View extends Controller {
 		this.layerTypeRegistry = layerTypeRegistry;
 		this.serviceTypeRegistry = serviceTypeRegistry;
 		this.layerProvider = layerProvider;
+=======
+	public View (final MapView mapView) {
+		this.mapView = mapView;
+>>>>>>> f934e84 work in progress reporting
 	}
 	
 	public Result buildView () {
 		final JsonNode viewerState = request ().body ().asJson ();
-		
 		// Flatten the layer list in a depth-first fashion:
 		final List<LayerWithState> layers;
 		try {
-			layers = flattenLayerList (viewerState);
+			layers = mapView.flattenLayerList (viewerState);
 		} catch (IllegalArgumentException e) {
 			final ObjectNode result = Json.newObject ();
 			result.put ("result", "failed");
 			result.put ("message", e.getMessage ());
 			return badRequest (result);
 		}
-
-		// Turn the list of layers in a list of service layers:
-		final List<ParameterizedServiceLayer<?>> serviceLayers = createServiceLayerList (layers);
-
+		
 		// Merge the service layer list into a list of concrete requests for the client to execute.
-		final List<ServiceRequest> serviceRequests = createServiceRequests (serviceLayers);
+		final List<ServiceRequest> serviceRequests = mapView.getServiceRequests (layers);
 		
 		// Build response:
 		final ObjectNode result = Json.newObject ();
@@ -63,45 +66,8 @@ public class View extends Controller {
 		return ok (result);
 	}
 	
-	private List<ServiceRequest> createServiceRequests (final List<ParameterizedServiceLayer<?>> serviceLayers) {
-		final List<ServiceRequest> serviceRequests = new ArrayList<> ();
-		final List<ParameterizedServiceLayer<?>> serviceLayerBatch = new ArrayList<> ();
-		final ServiceRequestContext context = new ServiceRequestContext ();
-		Service currentService = null;
-		
-		Logger.debug ("Creating service requests for " + serviceLayers.size () + " service layers");
-		
-		for (final ParameterizedServiceLayer<?> l: serviceLayers) {
-			final Service service = l.getServiceLayer ().getService ();
-			
-			if (currentService != null && !service.equals (currentService) && !serviceLayerBatch.isEmpty ()) {
-				final Traits<ServiceType> serviceType = serviceTypeRegistry.getServiceType (currentService.getIdentification ().getServiceType ());
-				
-				if (!(serviceType.get () instanceof LayerServiceType)) {
-					throw new IllegalStateException ("Service type must be a LayerServiceType");
-				}
-				
-				serviceRequests.addAll (((LayerServiceType) serviceType.get ()).getServiceRequests (currentService, serviceLayerBatch, context));
-				serviceLayerBatch.clear ();
-			}
-			
-			currentService = service;
-			serviceLayerBatch.add (l);
-		}
-		
-		if (currentService != null && !serviceLayerBatch.isEmpty ()) {
-			final Traits<ServiceType> serviceType = serviceTypeRegistry.getServiceType (currentService.getIdentification ().getServiceType ());
-			
-			if (!(serviceType.get () instanceof LayerServiceType)) {
-				throw new IllegalStateException ("Service type must be a LayerServiceType");
-			}
-			
-			serviceRequests.addAll (((LayerServiceType) serviceType.get ()).getServiceRequests (currentService, serviceLayerBatch, context));
-		}
-
-		return serviceRequests;
-	}
 	
+<<<<<<< Upstream, based on master
 	private List<ParameterizedServiceLayer<?>> createServiceLayerList (final List<LayerWithState> layers) {
 		final List<ParameterizedServiceLayer<?>> serviceLayers = new ArrayList<> ();
 		
@@ -165,4 +131,6 @@ public class View extends Controller {
 			return this.state;
 		}
 	}
+=======
+>>>>>>> f934e84 work in progress reporting
 }

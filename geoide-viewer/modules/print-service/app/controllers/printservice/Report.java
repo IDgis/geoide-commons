@@ -1,20 +1,15 @@
 package controllers.printservice;
 
 
-import java.net.URI;
-
-import com.fasterxml.jackson.databind.JsonNode;
-
+import nl.idgis.geoide.commons.report.ReportComposer;
+import nl.idgis.geoide.documentcache.Document;
+import nl.idgis.geoide.util.streams.StreamProcessor;
 import play.libs.F.Function;
 import play.libs.F.Promise;
 import play.mvc.Controller;
 import play.mvc.Result;
-import nl.idgis.geoide.commons.print.common.DocumentReference;
-import nl.idgis.geoide.commons.print.common.PrintRequest;
-import nl.idgis.geoide.commons.report.ReportComposer;
-import nl.idgis.geoide.documentcache.Document;
-import nl.idgis.geoide.util.streams.StreamProcessor;
-import nl.idgis.ogc.util.MimeContentType;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 
 

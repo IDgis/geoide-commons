@@ -1,5 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	
 	<modelVersion>4.0.0</modelVersion>
 	
@@ -19,7 +19,8 @@
 		<module>geoide-print</module>
 		<module>geoide-document-cache</module>
 		<module>geoide-http-client</module>
-	</modules>
+    	<module>geoide-map</module>
+  </modules>
 
 	<scm>
 		<url>https://github.com/IDgis/geoide-commons.git</url>
@@ -144,12 +145,23 @@
 				<artifactId>geoide-http-client</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>nl.idgis.geoide</groupId>
+				<artifactId>geoide-map</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 		
 			<dependency>
 				<groupId>nl.idgis.commons</groupId>
 				<artifactId>commons-ogc-client</artifactId>
 				<version>${idgis-commons.version}</version>
-			</dependency>
+				<exclusions>
+					<exclusion>
+						<artifactId>jsr173_api</artifactId>
+						<groupId>javax.xml.bind</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>	
 			
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
@@ -463,7 +475,7 @@
 				<version>1.2</version>
 				<configuration>
 					<rules>
-						<DependencyConvergence />
+						<DependencyConvergence/>
 					</rules>
 					<fail>true</fail>
 				</configuration>

@@ -1,10 +1,10 @@
 package geoide.config;
 
-import nl.idgis.geoide.commons.domain.provider.MapProvider;
 import nl.idgis.geoide.commons.domain.provider.LayerProvider;
 import nl.idgis.geoide.commons.domain.provider.ServiceLayerProvider;
 import nl.idgis.geoide.commons.domain.provider.ServiceProvider;
 import nl.idgis.geoide.commons.layer.LayerTypeRegistry;
+import nl.idgis.geoide.map.MapView;
 import nl.idgis.geoide.commons.print.service.PrintService;
 import nl.idgis.geoide.commons.report.ReportComposer;
 import nl.idgis.geoide.documentcache.DocumentCache;
@@ -39,10 +39,8 @@ public class ControllerConfig {
 	@Bean
 	@Autowired
 	public View viewController (
-			final LayerTypeRegistry layerTypeRegistry, 
-			final ServiceTypeRegistry serviceTypeRegistry, 
-			final LayerProvider layerProvider) {
-		return new View (layerTypeRegistry, serviceTypeRegistry, layerProvider);
+		final MapView mapView) {
+		return new View (mapView);
 	}
 	
 	@Bean
@@ -79,9 +77,10 @@ public class ControllerConfig {
 	@Autowired
 	public Report reportController (
 			final  @Qualifier ("reportComposer") ReportComposer composer,
-			final StreamProcessor streamProcessor
+			final StreamProcessor streamProcessor,
+			final @Qualifier ("printDocumentCache") DocumentCache documentCache
 			) {
-		return new Report (composer, streamProcessor);
+		return new Report (composer, streamProcessor, documentCache);
 	}
 	
 }
