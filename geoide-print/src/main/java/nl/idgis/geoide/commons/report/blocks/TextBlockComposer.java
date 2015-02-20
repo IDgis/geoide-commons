@@ -1,6 +1,10 @@
 package nl.idgis.geoide.commons.report.blocks;
 
 
+import java.net.URI;
+
+import nl.idgis.geoide.commons.report.ReportData;
+
 import org.jsoup.nodes.Element;
 
 import play.libs.F.Promise;
@@ -28,15 +32,21 @@ public class TextBlockComposer implements BlockComposer {
 	 **/
 	
 	@Override
-	public Promise<Element> compose(JsonNode blockInfo, Element block) {
-		//tekst en tag uit blockInfo
-		String reportText = "<h2>Dit is geen titel</h2>";
-		if (block.hasClass("title")) {
-			reportText = "<h1>Dit is een titel</h1>";
-		} 
+	public Promise<Element> compose(JsonNode blockInfo, Element block, ReportData reportData) {
+		//parse blockInfo
+		final JsonNode blockText = blockInfo.path("text");	
+		final JsonNode blockTag = blockInfo.path("tag");	
+		
+		String reportText = "<" + blockTag.textValue() + ">" + blockText.textValue() + "</" + blockTag.textValue() + ">";
 		block.append(reportText);
 		return Promise.pure(block);
 
+	}
+
+
+	@Override
+	public URI getBlockCssUri() {
+		return null;
 	}
 	
 	

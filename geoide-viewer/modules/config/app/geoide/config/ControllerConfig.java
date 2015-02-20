@@ -2,6 +2,7 @@ package geoide.config;
 
 import nl.idgis.geoide.commons.domain.provider.MapProvider;
 import nl.idgis.geoide.commons.layer.LayerTypeRegistry;
+import nl.idgis.geoide.map.MapView;
 import nl.idgis.geoide.commons.print.service.PrintService;
 import nl.idgis.geoide.commons.report.ReportComposer;
 import nl.idgis.geoide.documentcache.DocumentCache;
@@ -36,10 +37,9 @@ public class ControllerConfig {
 	@Bean
 	@Autowired
 	public View viewController (
-			final LayerTypeRegistry layerTypeRegistry, 
-			final ServiceTypeRegistry serviceTypeRegistry, 
-			final MapProvider mapProvider) {
-		return new View (layerTypeRegistry, serviceTypeRegistry, mapProvider);
+			final MapView mapView
+			) {
+		return new View (mapView);
 	}
 	
 	@Bean
