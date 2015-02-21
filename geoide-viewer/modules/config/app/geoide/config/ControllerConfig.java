@@ -76,9 +76,10 @@ public class ControllerConfig {
 	@Autowired
 	public Report reportController (
 			final  @Qualifier ("reportComposer") ReportComposer composer,
-			final StreamProcessor streamProcessor
+			final StreamProcessor streamProcessor,
+			final @Qualifier ("printDocumentCache") DocumentCache documentCache
 			) {
-		return new Report (composer, streamProcessor);
+		return new Report (composer, streamProcessor, documentCache);
 	}
 	
 }

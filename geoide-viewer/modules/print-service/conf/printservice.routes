@@ -3,5 +3,7 @@ POST	/print					@controllers.printservice.Print.printPost(u: String)
 
 POST   /report  				@controllers.printservice.Report.report()
 
+GET   /fetchReport  			@controllers.printservice.Report.fetchReport(u: String)
+
 # JavaScript routes:
 GET		/report/routes			controllers.printservice.JavaScript.javascriptRoutes()
