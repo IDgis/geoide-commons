@@ -37,7 +37,6 @@ import controllers.viewer.Viewer;
 	ServiceTypeConfig.class,
 	LayerTypeConfig.class,
 	TOCConfig.class,
-	LayerTypeConfig.class,
 	PrintServiceConfig.class,
 	StreamConfig.class,
 	HttpClientConfig.class,

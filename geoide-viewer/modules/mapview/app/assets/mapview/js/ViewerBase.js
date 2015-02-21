@@ -277,7 +277,7 @@ define ([
 		},
 		
 		getViewerState: function () {
-			return { id:'main', mapid:map.get(id) , extent: this.getCurrentExtent , scale: this.getScale(), layers: this._buildViewerState (map.get ('layers')) };
+			return { id:'main', mapid:this.mapId , extent: this.getCurrentExtent() , scale: this.get('scale'), layers: this._buildViewerState (this.map.get ('layers')) };
 		},
 			
 		/**
@@ -615,7 +615,7 @@ define ([
 		 */
 		
 		getCurrentExtent: function () {
-			return this.engine.getCurrentExtent ();
+			return { minx:this.engine.getCurrentExtent ()[0], miny: this.engine.getCurrentExtent ()[1], maxx: this.engine.getCurrentExtent ()[2], maxy: this.engine.getCurrentExtent ()[3]};
 		},
 		
 		updateSize: function () {
@@ -627,26 +627,20 @@ define ([
 			var def = new Deferred ();
 			
 			when (this.map, lang.hitch (this, function (map) {
-				var printJson = this.getViewerState();
 				
 				var viewerState = this.getViewerState();
 				
 				var reportInfo = {viewerstate: [ viewerState ] , template: templateInfo};
-				
+
 				// Post the viewer state:
 				xhr.post (geoideReportRoutes.controllers.printservice.Report.report ().url, {
 					handleAs: 'json',
 					headers: {
 						'Content-Type': 'application/json'
 					},
-					data: json.stringify (viewerState)
+					data: json.stringify (reportInfo)
 				}).then (lang.hitch (this, function (data) {
-					
-					when (this.engine.setServiceRequests (data.serviceRequests), function () {
-						def.resolve ();
-					}, function (err) {
-						def.reject (err);
-					});
+					def.resolve (data);
 				}));
 			}));
 			
