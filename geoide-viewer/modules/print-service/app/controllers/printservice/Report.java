@@ -69,9 +69,7 @@ public class Report extends Controller {
 				final ObjectNode result = Json.newObject ();
 				result.put ("result", "ok");
 				result.put("reportUrl", document.getUri().toString());
-
 				return ok (result);
-	
 				//return ok (streamProcessor.asInputStream (document.getBody (), 1024)).as (document.getContentType ().original ());
 			}
 		});

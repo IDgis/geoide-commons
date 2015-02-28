@@ -34,11 +34,9 @@ public class TextBlockComposer implements BlockComposer {
 	@Override
 	public Promise<Element> compose(JsonNode blockInfo, Element block, ReportData reportData) {
 		//parse blockInfo
-		final JsonNode blockText = blockInfo.path("text");	
-		final JsonNode blockTag = blockInfo.path("tag");	
+		Element textElement = block.appendElement(blockInfo.path("tag").asText());
+		textElement.append(blockInfo.path("text").asText()); 
 		
-		String reportText = "<" + blockTag.textValue() + ">" + blockText.textValue() + "</" + blockTag.textValue() + ">";
-		block.append(reportText);
 		return Promise.pure(block);
 
 	}

@@ -39,20 +39,35 @@ public class MapView {
 
 		// Merge the service layer list into a list of concrete requests for the client to execute.
 		return createServiceRequests (serviceLayers);
-}
-
-
-private List<ServiceRequest> createServiceRequests (final List<ParameterizedServiceLayer<?>> serviceLayers) {
-	final List<ServiceRequest> serviceRequests = new ArrayList<> ();
-	final List<ParameterizedServiceLayer<?>> serviceLayerBatch = new ArrayList<> ();
-	final ServiceRequestContext context = new ServiceRequestContext ();
-	Service currentService = null;
-
-
-	for (final ParameterizedServiceLayer<?> l: serviceLayers) {
-		final Service service = l.getServiceLayer ().getService ();
-		
-		if (currentService != null && !service.equals (currentService) && !serviceLayerBatch.isEmpty ()) {
+	}
+	
+	
+	private List<ServiceRequest> createServiceRequests (final List<ParameterizedServiceLayer<?>> serviceLayers) {
+		final List<ServiceRequest> serviceRequests = new ArrayList<> ();
+		final List<ParameterizedServiceLayer<?>> serviceLayerBatch = new ArrayList<> ();
+		final ServiceRequestContext context = new ServiceRequestContext ();
+		Service currentService = null;
+	
+	
+		for (final ParameterizedServiceLayer<?> l: serviceLayers) {
+			final Service service = l.getServiceLayer ().getService ();
+			
+			if (currentService != null && !service.equals (currentService) && !serviceLayerBatch.isEmpty ()) {
+				final Traits<ServiceType> serviceType = serviceTypeRegistry.getServiceType (currentService.getIdentification ().getServiceType ());
+				
+				if (!(serviceType.get () instanceof LayerServiceType)) {
+					throw new IllegalStateException ("Service type must be a LayerServiceType");
+				}
+				
+				serviceRequests.addAll (((LayerServiceType) serviceType.get ()).getServiceRequests (currentService, serviceLayerBatch, context));
+				serviceLayerBatch.clear ();
+			}
+			
+			currentService = service;
+			serviceLayerBatch.add (l);
+		}
+	
+		if (currentService != null && !serviceLayerBatch.isEmpty ()) {
 			final Traits<ServiceType> serviceType = serviceTypeRegistry.getServiceType (currentService.getIdentification ().getServiceType ());
 			
 			if (!(serviceType.get () instanceof LayerServiceType)) {
@@ -60,80 +75,65 @@ private List<ServiceRequest> createServiceRequests (final List<ParameterizedServ
 			}
 			
 			serviceRequests.addAll (((LayerServiceType) serviceType.get ()).getServiceRequests (currentService, serviceLayerBatch, context));
-			serviceLayerBatch.clear ();
 		}
-		
-		currentService = service;
-		serviceLayerBatch.add (l);
-	}
-
-	if (currentService != null && !serviceLayerBatch.isEmpty ()) {
-		final Traits<ServiceType> serviceType = serviceTypeRegistry.getServiceType (currentService.getIdentification ().getServiceType ());
-		
-		if (!(serviceType.get () instanceof LayerServiceType)) {
-			throw new IllegalStateException ("Service type must be a LayerServiceType");
-		}
-		
-		serviceRequests.addAll (((LayerServiceType) serviceType.get ()).getServiceRequests (currentService, serviceLayerBatch, context));
-	}
-
-	return serviceRequests;
-}
-
-private List<ParameterizedServiceLayer<?>> createServiceLayerList (final List<LayerWithState> layers) {
-	final List<ParameterizedServiceLayer<?>> serviceLayers = new ArrayList<> ();
-
-	for (final LayerWithState l: layers) {
-		final Layer layer = l.layer ();
-		final JsonNode state = l.state ();
-		final Traits<LayerType> layerType = layerTypeRegistry.getLayerType (layer);
-		
-		serviceLayers.addAll (layerType.get ().getServiceLayers (layer, state));
+	
+		return serviceRequests;
 	}
 	
-	return serviceLayers;
-}
-
-public List<LayerWithState> flattenLayerList (final JsonNode viewerState) {
-	final List<LayerWithState> layers = new ArrayList<> ();
-	final JsonNode layersNode = viewerState.path ("layers");
+	private List<ParameterizedServiceLayer<?>> createServiceLayerList (final List<LayerWithState> layers) {
+		final List<ParameterizedServiceLayer<?>> serviceLayers = new ArrayList<> ();
 	
-	System.out.println(viewerState.toString());
-	if (layersNode.isMissingNode ()) {
+		for (final LayerWithState l: layers) {
+			final Layer layer = l.layer ();
+			final JsonNode state = l.state ();
+			final Traits<LayerType> layerType = layerTypeRegistry.getLayerType (layer);
+			
+			serviceLayers.addAll (layerType.get ().getServiceLayers (layer, state));
+		}
+		
+		return serviceLayers;
+	}
+	
+	public List<LayerWithState> flattenLayerList (final JsonNode viewerState) {
+		final List<LayerWithState> layers = new ArrayList<> ();
+		final JsonNode layersNode = viewerState.path ("layers");
+		
+		System.out.println(viewerState.toString());
+		if (layersNode.isMissingNode ()) {
+			return layers;
+		}
+		
+		for (final JsonNode layerNode: layersNode) {
+			// Add the layer:
+			layers.add (new LayerWithState (getLayer (layerNode.path ("id")), layerNode.path ("state")));
+			
+			// Add all sub-layers of this layer:
+			layers.addAll (flattenLayerList (layerNode));
+		}
+		
 		return layers;
 	}
 	
-	for (final JsonNode layerNode: layersNode) {
-		// Add the layer:
-		layers.add (new LayerWithState (getLayer (layerNode.path ("id")), layerNode.path ("state")));
+	private Layer getLayer (final JsonNode id) {
+		if (id == null) {
+			throw new IllegalArgumentException ("Missing layer ID");
+		}
 		
-		// Add all sub-layers of this layer:
-		layers.addAll (flattenLayerList (layerNode));
+		final Layer layer = mapProvider.getLayer (id.asText ());
+		if (layer == null) {
+			throw new IllegalArgumentException ("No layer found with ID " + id.asText ());
+		}
+		
+		return layer;
 	}
-	
-	return layers;
-}
 
-private Layer getLayer (final JsonNode id) {
-	if (id == null) {
-		throw new IllegalArgumentException ("Missing layer ID");
-	}
-	
-	final Layer layer = mapProvider.getLayer (id.asText ());
-	if (layer == null) {
-		throw new IllegalArgumentException ("No layer found with ID " + id.asText ());
-	}
-	
-	return layer;
-}
-
-public final static class LayerWithState {
-	private final Layer layer;
-	private final JsonNode state;
-	
-	public LayerWithState (final Layer layer, final JsonNode state) {
-			this.layer = layer;
-			this.state = state;
+	public final static class LayerWithState {
+		private final Layer layer;
+		private final JsonNode state;
+		
+		public LayerWithState (final Layer layer, final JsonNode state) {
+				this.layer = layer;
+				this.state = state;
 		}
 		
 		public Layer layer () {
@@ -143,6 +143,11 @@ public final static class LayerWithState {
 		public JsonNode state () {
 			return this.state;
 		}
+	}
+
+	public ServiceType getServiceType(Service currentService) {	
+		final ServiceType serviceType = serviceTypeRegistry.getServiceType (currentService.getIdentification ().getServiceType ()).get();
+		return serviceType;
 	}
 	
 }

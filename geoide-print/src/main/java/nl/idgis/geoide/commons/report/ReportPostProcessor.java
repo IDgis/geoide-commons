@@ -37,7 +37,7 @@ public class ReportPostProcessor {
 	
 	public Promise<Document> process (TemplateDocument template) throws Throwable {
 		
-
+		System.out.println("++++++++ filled template: " + template.asString());
 		final URI documentUri = new URI (template.getStoreUri());
 
 		return documentCache
