@@ -277,7 +277,7 @@ define ([
 		},
 		
 		getViewerState: function () {
-			return { id:'main', mapid:this.mapId , extent: this.getCurrentExtent() , scale: this.get('scale'), layers: this._buildViewerState (this.map.get ('layers')) };
+			return { id:'main', mapid:this.mapId , extent: this.getCurrentExtent() , scale: this.get('scale'), resolution: this.get('resolution'), layers: this._buildViewerState (this.map.get ('layers')) };
 		},
 			
 		/**
@@ -630,7 +630,7 @@ define ([
 				
 				var viewerState = this.getViewerState();
 				
-				var reportInfo = {viewerstate: [ viewerState ] , template: templateInfo};
+				var reportInfo = {viewerstates: [ viewerState ] , template: templateInfo};
 
 				// Post the viewer state:
 				xhr.post (geoideReportRoutes.controllers.printservice.Report.report ().url, {
@@ -640,6 +640,7 @@ define ([
 					},
 					data: json.stringify (reportInfo)
 				}).then (lang.hitch (this, function (data) {
+					console.log(data);
 					def.resolve (data);
 				}));
 			}));

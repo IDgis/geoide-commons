@@ -2,6 +2,9 @@ package nl.idgis.geoide.commons.report;
 
 
 import java.net.URI;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -82,34 +85,60 @@ public class ReportComposer {
 												Integer.parseInt(template.select("html").attr("data-right-margin")));
 
 		
-		for (final JsonNode blockNode: blocks) {
-			final JsonNode blockId = blockNode.path("id");
-			final JsonNode blockType = blockNode.path("type");
-			Element blockElement = template.select("#" + blockId.textValue()).first();
-			
-			if (blockElement==null) {
-				template.body().append("<div class='error'>Er is een fout opgetreden: block " + blockId + " komt niet voor in template " + templateId + "</div>");  
-				continue;
-			}
-			
-			if(	blockType.textValue().equals("text")) {
+		ObjectMapper mapper = new ObjectMapper();
+		
+		Elements blockElements = template.body().select(".block");
+
+		
+		for (Element blockElement : blockElements) {
+			//special block date
+			if(blockElement.id().equals("date")) {
+				DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+				Date date = new Date();
+				ObjectNode blockNode = mapper.createObjectNode();
+				blockNode.put ("tag", "p");
+				blockNode.put ("text", dateFormat.format(date));
 				textBlockComposer.compose(blockNode, blockElement, reportData);
 			}
-			if(	blockType.textValue().equals("map")) {
-				final JsonNode stateId = blockNode.path("viewerstate");
-				ObjectMapper mapper = new ObjectMapper();
-				ObjectNode node = mapper.createObjectNode();
-				node.set("info", blockNode);
-				node.put("viewerstate", viewerStateNodes.get(stateId.textValue()));
-				
-				mapBlockComposer.compose(node, blockElement, reportData);
-				URI blockUri = 	mapBlockComposer.getBlockCssUri();
-				template.head().append("<link rel='stylesheet' href='" + blockUri + "'>" );
-				
+			
+			//specialblock scale
+			if(blockElement.id().equals("scale")) {
+				String viewerStateId = blockElement.attr("data-viewerstate-id");
+				ObjectNode blockNode = mapper.createObjectNode();
+				blockNode.put ("tag", "p");
+				blockNode.put ("text", "1 : " + viewerStateNodes.get(viewerStateId).get("scale"));
+				textBlockComposer.compose(blockNode, blockElement, reportData);
 			}
-		}; 
+			
+			for (final JsonNode blockNode: blocks) {
+				final String blockId = blockNode.path("id").asText().toLowerCase();
+				if(blockElement.id().equals(blockId)){
+					final JsonNode blockType = blockNode.path("type");
+					if(	blockType.textValue().equals("text")) {
+						textBlockComposer.compose(blockNode, blockElement, reportData);
+					}
+					if(	blockType.textValue().equals("map")) {
+						final JsonNode stateId = blockNode.path("viewerstate");
+						
+						ObjectNode node = mapper.createObjectNode();
+						node.set("info", blockNode);
+						node.put("viewerstate", viewerStateNodes.get(stateId.textValue()));
+						
+						mapBlockComposer.compose(node, blockElement, reportData);
+						URI blockUri = 	mapBlockComposer.getBlockCssUri();
+						
+						Element linkElement = template.head().appendElement("link"); 
+						linkElement.attr("rel", "stylesheet");
+						linkElement.attr("href", blockUri.toString());
+						
+					}
+					
+				};
+				
+			}	
+			
+		}
 		
-
 		return processor.process(template);
 		
 	}
