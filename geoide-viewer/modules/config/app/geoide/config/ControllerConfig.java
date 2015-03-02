@@ -1,6 +1,9 @@
 package geoide.config;
 
 import nl.idgis.geoide.commons.domain.provider.MapProvider;
+import nl.idgis.geoide.commons.domain.provider.LayerProvider;
+import nl.idgis.geoide.commons.domain.provider.ServiceLayerProvider;
+import nl.idgis.geoide.commons.domain.provider.ServiceProvider;
 import nl.idgis.geoide.commons.layer.LayerTypeRegistry;
 import nl.idgis.geoide.commons.print.service.PrintService;
 import nl.idgis.geoide.documentcache.DocumentCache;
@@ -34,29 +37,29 @@ public class ControllerConfig {
 	public View viewController (
 			final LayerTypeRegistry layerTypeRegistry, 
 			final ServiceTypeRegistry serviceTypeRegistry, 
-			final MapProvider mapProvider) {
-		return new View (layerTypeRegistry, serviceTypeRegistry, mapProvider);
+			final LayerProvider layerProvider) {
+		return new View (layerTypeRegistry, serviceTypeRegistry, layerProvider);
 	}
 	
 	@Bean
 	@Autowired
-	public Services serviceController (final MapProvider mapProvider, final @Qualifier("serviceManagerActor") ActorRef serviceManagerActor) {
-		return new Services (mapProvider, serviceManagerActor);
+	public Services serviceController (final ServiceProvider serviceProvider, final @Qualifier("serviceManagerActor") ActorRef serviceManagerActor) {
+		return new Services (serviceProvider, serviceManagerActor);
 	}
 	
 	@Bean
 	@Autowired
 	public Query queryController (
 			final LayerTypeRegistry layerTypeRegistry, 
-			final MapProvider mapProvider,
+			final LayerProvider layerProvider,
 			final @Qualifier("serviceManagerActor") ActorRef serviceManagerActor) {
-		return new Query (layerTypeRegistry, mapProvider, serviceManagerActor);
+		return new Query (layerTypeRegistry, layerProvider, serviceManagerActor);
 	}
 	
 	@Bean
 	@Autowired
-	public Symbol symbolController (final MapProvider mapProvider, final ServiceTypeRegistry serviceTypeRegistry) {
-		return new Symbol (mapProvider, serviceTypeRegistry);
+	public Symbol symbolController (final ServiceLayerProvider serviceLayerProvider, final ServiceTypeRegistry serviceTypeRegistry) {
+		return new Symbol (serviceLayerProvider, serviceTypeRegistry);
 	}
 	
 	@Bean

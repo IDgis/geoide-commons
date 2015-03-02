@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import nl.idgis.geoide.commons.domain.provider.LayerProvider;
 import nl.idgis.geoide.commons.domain.FeatureQuery;
 import nl.idgis.geoide.commons.domain.FeatureType;
 import nl.idgis.geoide.commons.domain.Layer;
@@ -16,7 +17,6 @@ import nl.idgis.geoide.commons.domain.ParameterizedServiceLayer;
 import nl.idgis.geoide.commons.domain.feature.Feature;
 import nl.idgis.geoide.commons.domain.geometry.Envelope;
 import nl.idgis.geoide.commons.domain.geometry.Geometry;
-import nl.idgis.geoide.commons.domain.provider.MapProvider;
 import nl.idgis.geoide.commons.domain.traits.Traits;
 import nl.idgis.geoide.commons.layer.LayerType;
 import nl.idgis.geoide.commons.layer.LayerTypeRegistry;
@@ -46,12 +46,12 @@ public class Query extends Controller {
 	private final static long queryFeaturesTimeout = 20000;
 	
 	private final LayerTypeRegistry layerTypeRegistry;
-	private final MapProvider mapProvider;
+	private final LayerProvider layerProvider;
 	private final ActorRef serviceManager;
 	
-	public Query (final LayerTypeRegistry layerTypeRegistry, final MapProvider mapProvider, final ActorRef serviceManager) {
+	public Query (final LayerTypeRegistry layerTypeRegistry, final LayerProvider layerProvider, final ActorRef serviceManager) {
 		this.layerTypeRegistry = layerTypeRegistry;
-		this.mapProvider = mapProvider;
+		this.layerProvider = layerProvider;
 		this.serviceManager = serviceManager;
 	}
 	
@@ -168,7 +168,7 @@ public class Query extends Controller {
 			throw new IllegalArgumentException ("Missing layer ID");
 		}
 		
-		final Layer layer = mapProvider.getLayer (id.asText ());
+		final Layer layer = layerProvider.getLayer (id.asText ());
 		if (layer == null) {
 			throw new IllegalArgumentException ("No layer found with ID " + id.asText ());
 		}
