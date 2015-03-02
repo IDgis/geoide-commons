@@ -51,8 +51,7 @@ public class ReportComposer {
 		this.processor =  processor;
 		this.templateProvider = templateProvider;
 		this.textBlockComposer = new TextBlockComposer();
-		this.mapBlockComposer = new MapBlockComposer(mapView, documentCache);
-		
+		this.mapBlockComposer = new MapBlockComposer(mapView, documentCache);	
 	}
 	
 	/**
@@ -65,9 +64,10 @@ public class ReportComposer {
 		//parse templateInfo
 		final JsonNode viewerStates = reportInfo.findPath("viewerstates");
 		final JsonNode templateInfo = reportInfo.findPath("template");
-		final JsonNode templateId = templateInfo.path ("id"); 
 		final JsonNode blocks = templateInfo.path("blocks");
-		
+		//TODO get template path from configuration 
+		final String templatePath = "templates/";
+		final String templateUrl = templatePath + templateInfo.path ("id").asText() + ".html";
 		
 		
 		final Map<String, JsonNode> viewerStateNodes = new HashMap<> ();
@@ -76,8 +76,6 @@ public class ReportComposer {
 			viewerStateNodes.put(stateId.textValue(), stateNode);
 		}
 
-		String templateUrl = "templates/template-test.html";
-		
 		
 		TemplateDocument template = templateProvider.getTemplateDocument(templateUrl);
 		PaperFormat format = PaperFormat.valueOf(template.select("html").attr("data-pageformat") + template.select("html").attr("data-page-orientation"));
