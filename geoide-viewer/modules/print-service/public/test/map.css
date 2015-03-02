@@ -1,0 +1,21 @@
+.map_row {
+    border: 1px solid red;
+    height: 500px;
+	width: 500px;
+    margin: 0;
+    position: relative;
+}
+
+.map_layer1 {
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    top: 0;
+}
+
+.map_layer2 {
+    position: absolute;
+    z-index: 2;
+    left: 0;
+    top: 0;
+}

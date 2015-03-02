@@ -372,6 +372,10 @@ define ([
 			return scale;
 		},
 		
+		getCurrentExtent: function () {
+			return this.olMap.getView ().calculateExtent(this.olMap.getSize());
+		},
+		
 		updateSize: function () {
 			this.olMap.updateSize();
 		}

@@ -7,6 +7,7 @@ import geoide.config.LayerTypeConfig;
 import geoide.config.PrintServiceConfig;
 import geoide.config.ServiceTypeConfig;
 import geoide.config.StreamConfig;
+import geoide.config.MapViewConfig;
 import nl.idgis.geoide.commons.domain.provider.MapProvider;
 import nl.idgis.geoide.commons.domain.traits.spring.TypedTrait;
 import nl.idgis.geoide.commons.layer.DefaultLayerType;
@@ -27,6 +28,7 @@ import toc.config.TOCConfig;
 import controllers.toc.TOC;
 import controllers.viewer.Viewer;
 
+
 @Configuration
 @Import ({
 	MapConfig.class,
@@ -35,10 +37,10 @@ import controllers.viewer.Viewer;
 	ServiceTypeConfig.class,
 	LayerTypeConfig.class,
 	TOCConfig.class,
-	LayerTypeConfig.class,
 	PrintServiceConfig.class,
 	StreamConfig.class,
-	HttpClientConfig.class
+	HttpClientConfig.class,
+	MapViewConfig.class
 })
 public class ViewerConfig {
 	@Autowired

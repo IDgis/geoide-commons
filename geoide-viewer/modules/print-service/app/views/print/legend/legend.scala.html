@@ -1,0 +1,35 @@
+@(mapId: String, tocItems:List[nl.idgis.geoide.commons.domain.traits.Traits[nl.idgis.geoide.commons.domain.toc.TOCItem]])
+
+
+
+@displayItem(item: nl.idgis.geoide.commons.domain.traits.Traits[nl.idgis.geoide.commons.domain.toc.TOCItem], level: Integer = 0) = {
+	
+	<li class="gi-toc-level-@level">
+								
+		<label>			
+
+			<span>
+				@if(item.get().getSymbol()!=null&&item.get().getSymbol()!="") {<img src=@controllers.core.routes.Assets.at("images/" + item.get().getSymbol().getId() +  ".png")>}
+			</span>
+			<span class="gi-toc-title activatable-setter">
+				@item.get().getLabel()
+			</span>
+			
+			
+		</label>
+		@if(!item.get().getItems().isEmpty()) {
+			<ul>
+		 		@for(child <- item.get().getItems()) {
+		 			@displayItem(child, level + 1)
+				}
+			</ul>
+		}
+	</li>
+}
+
+
+<ul class="gi-toc" data-geoide-map="@mapId">
+	@for(tocItem <- tocItems) {
+		@displayItem(tocItem)
+	}
+</ul>	

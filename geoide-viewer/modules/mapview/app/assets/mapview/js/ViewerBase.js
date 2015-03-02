@@ -276,6 +276,10 @@ define ([
 			return this._getLayerState (layerId, key);
 		},
 		
+		getViewerState: function () {
+			return { id:'main', mapid:this.mapId , extent: this.getCurrentExtent() , scale: this.get('scale'), resolution: this.get('resolution'), layers: this._buildViewerState (this.map.get ('layers')) };
+		},
+			
 		/**
 		 * Schedules an update of the viewer at the next browser frame (setTimeout (..., 0)). The update
 		 * is scheduled so that multiple changes to the viewer state are posted simultaneously.
@@ -606,9 +610,44 @@ define ([
 			return this.engine.getScaleForExtent (extent);
 		},
 		
+		/**
+		 * @return			The current extent  [minx, miny, maxx, maxy]
+		 */
+		
+		getCurrentExtent: function () {
+			return { minx:this.engine.getCurrentExtent ()[0], miny: this.engine.getCurrentExtent ()[1], maxx: this.engine.getCurrentExtent ()[2], maxy: this.engine.getCurrentExtent ()[3]};
+		},
+		
 		updateSize: function () {
 			return this.engine.updateSize ();
 		},
+		
+		
+		report: function (templateInfo) {
+			var def = new Deferred ();
+			
+			when (this.map, lang.hitch (this, function (map) {
+				
+				var viewerState = this.getViewerState();
+				
+				var reportInfo = {viewerstates: [ viewerState ] , template: templateInfo};
+
+				// Post the viewer state:
+				xhr.post (geoideReportRoutes.controllers.printservice.Report.report ().url, {
+					handleAs: 'json',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					data: json.stringify (reportInfo)
+				}).then (lang.hitch (this, function (data) {
+					console.log(data);
+					def.resolve (data);
+				}));
+			}));
+			
+			return def;
+		},
+		
 		
 		
 	});

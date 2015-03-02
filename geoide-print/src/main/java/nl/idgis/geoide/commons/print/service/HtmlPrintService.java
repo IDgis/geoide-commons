@@ -216,7 +216,7 @@ public class HtmlPrintService implements PrintService, Closeable {
 	}
 	
 	private void writeDocument (final org.jsoup.nodes.Document document, final Writer writer) throws XMLStreamException, FactoryConfigurationError {
-		final XMLStreamWriter streamWriter = XMLOutputFactory.newFactory().createXMLStreamWriter (writer);
+		final XMLStreamWriter streamWriter = XMLOutputFactory.newInstance().createXMLStreamWriter (writer);
 		try {
 			writeNode (document, streamWriter);
 		} finally {

@@ -3,7 +3,12 @@ package geoide.config;
 import java.io.IOException;
 
 import nl.idgis.geoide.commons.http.client.HttpClient;
+import nl.idgis.geoide.map.MapView;
 import nl.idgis.geoide.commons.print.service.HtmlPrintService;
+import nl.idgis.geoide.commons.report.ReportComposer;
+import nl.idgis.geoide.commons.report.ReportPostProcessor;
+import nl.idgis.geoide.commons.report.template.HtmlTemplateDocumentProvider;
+import nl.idgis.geoide.commons.report.template.TemplateDocumentProvider;
 import nl.idgis.geoide.documentcache.DocumentCache;
 import nl.idgis.geoide.documentcache.DocumentStore;
 import nl.idgis.geoide.documentcache.service.DefaultDocumentCache;
@@ -51,4 +56,36 @@ public class PrintServiceConfig {
 				Play.application ().configuration ().getLong ("geoide.services.print.cacheTimeoutInMillis", 30000l).longValue ()
 			);
 	}
+	
+	
+	@Bean
+	@Qualifier ("reportPostProcessor")
+	@Autowired
+	public ReportPostProcessor reportPostProcessor (HtmlPrintService htmlPrintService, final @Qualifier ("printDocumentCache") DocumentCache documentCache ) {
+		return new ReportPostProcessor (
+				htmlPrintService,
+				documentCache
+		);
+	}
+	
+	@Bean
+	@Autowired
+	public TemplateDocumentProvider templateProvider() {
+		return new HtmlTemplateDocumentProvider();
+	}
+	
+	
+	@Bean
+	@Qualifier ("reportComposer")
+	@Autowired
+	public ReportComposer reportComposer (final @Qualifier ("reportPostProcessor") ReportPostProcessor reportPostProcessor, TemplateDocumentProvider templateProvider, MapView mapView, final @Qualifier ("printDocumentCache") DocumentCache documentCache) {
+		return new ReportComposer (
+				reportPostProcessor,
+				templateProvider, 
+				mapView,
+				documentCache
+			);
+	}
+	
+
 }

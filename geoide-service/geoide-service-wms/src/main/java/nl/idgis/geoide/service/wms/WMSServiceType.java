@@ -1,5 +1,6 @@
 package nl.idgis.geoide.service.wms;
 
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,6 +23,9 @@ import akka.actor.Props;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class WMSServiceType extends ServiceType implements LayerServiceType {
 	private final static Set<String> versions;
@@ -110,6 +114,44 @@ public class WMSServiceType extends ServiceType implements LayerServiceType {
 		
 		return serviceRequests;
 	}
+	
+	
+	@Override
+	public List<JsonNode> getLayerRequestUrls (ServiceRequest serviceRequest, JsonNode mapExtent, double resolution, int outputWidth, int outputHeight ) {
+		
+		String serviceEndPoint = serviceRequest.getService().getIdentification().getServiceEndpoint();
+		String serviceVersion = serviceRequest.getService().getIdentification().getServiceVersion();
+		
+		WMSRequestParameters parameters = (WMSRequestParameters) serviceRequest.getParameters();		
+		String vendorParamString = "&";
+	
+		Map<String, String> vendorParameters = parameters.getVendorParameters();
+		if(!vendorParameters.isEmpty()){
+			for (Map.Entry<String, String> vParam : vendorParameters.entrySet()){
+				vendorParamString += vParam.getKey() + "=" + vParam.getValue();
+			}
+		}
+		//TODO outputformat
+		
+		String bbox = mapExtent.path("minx") + "," +  mapExtent.path("miny") + "," +
+						mapExtent.path("maxx") + "," +  mapExtent.path("maxy");
+		
+		String requestUrl = serviceEndPoint + "?SERVICE=WMS&VERSION=" + serviceVersion +  "&REQUEST=GetMap&FORMAT=image%2Fsvg%2Bxml" +
+			"&layers="  + parameters.getLayers() + "&transparent=" + parameters.getTransparent() + "&CRS=EPSG%3A28992&STYLES=" +
+			"&BBOX=" + bbox + "&WIDTH=" + outputWidth + "&HEIGHT=" + outputHeight + vendorParamString.replaceAll(" ", "%20");
+		
+		ObjectMapper mapper = new ObjectMapper();
+		List<JsonNode> requests = new ArrayList<JsonNode>();
+		ObjectNode request = mapper.createObjectNode();
+		request.put("uri", requestUrl);
+		request.put("posX", 0);
+		request.put("posY", 0);
+		
+		requests.add(request);
+		
+		return requests;
+	}
+	
 	
 	@Override
 	public Props createServiceActorProps (final ActorRef serviceManager, final ServiceIdentification identification) {

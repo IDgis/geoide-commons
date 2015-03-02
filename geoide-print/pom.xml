@@ -63,6 +63,10 @@
 			<artifactId>geoide-document-cache</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>nl.idgis.geoide</groupId>
+			<artifactId>geoide-map</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
