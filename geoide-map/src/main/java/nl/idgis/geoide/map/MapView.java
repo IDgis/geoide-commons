@@ -7,7 +7,7 @@ import nl.idgis.geoide.commons.domain.Layer;
 import nl.idgis.geoide.commons.domain.ParameterizedServiceLayer;
 import nl.idgis.geoide.commons.domain.Service;
 import nl.idgis.geoide.commons.domain.ServiceRequest;
-import nl.idgis.geoide.commons.domain.provider.MapProvider;
+import nl.idgis.geoide.commons.domain.provider.LayerProvider;
 import nl.idgis.geoide.commons.domain.traits.Traits;
 import nl.idgis.geoide.commons.layer.LayerType;
 import nl.idgis.geoide.commons.layer.LayerTypeRegistry;
@@ -24,12 +24,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 public class MapView {
 	private final LayerTypeRegistry layerTypeRegistry;
 	private final ServiceTypeRegistry serviceTypeRegistry;
-	private final MapProvider mapProvider;
+	private final LayerProvider layerProvider;
 	
-	public MapView (final LayerTypeRegistry layerTypeRegistry, final ServiceTypeRegistry serviceTypeRegistry, final MapProvider mapProvider) {
+	public MapView (final LayerTypeRegistry layerTypeRegistry, final ServiceTypeRegistry serviceTypeRegistry, final LayerProvider layerProvider) {
 		this.layerTypeRegistry = layerTypeRegistry;
 		this.serviceTypeRegistry = serviceTypeRegistry;
-		this.mapProvider = mapProvider;
+		this.layerProvider = layerProvider;
 	}
 
 	public List<ServiceRequest> getServiceRequests (List<LayerWithState> layers) {
@@ -119,7 +119,7 @@ public class MapView {
 			throw new IllegalArgumentException ("Missing layer ID");
 		}
 		
-		final Layer layer = mapProvider.getLayer (id.asText ());
+		final Layer layer = layerProvider.getLayer (id.asText ());
 		if (layer == null) {
 			throw new IllegalArgumentException ("No layer found with ID " + id.asText ());
 		}

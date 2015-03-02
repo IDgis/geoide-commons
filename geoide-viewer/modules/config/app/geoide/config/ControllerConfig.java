@@ -1,13 +1,14 @@
 package geoide.config;
 
 import nl.idgis.geoide.commons.domain.provider.LayerProvider;
+import nl.idgis.geoide.commons.domain.provider.MapProvider;
 import nl.idgis.geoide.commons.domain.provider.ServiceLayerProvider;
 import nl.idgis.geoide.commons.domain.provider.ServiceProvider;
 import nl.idgis.geoide.commons.layer.LayerTypeRegistry;
-import nl.idgis.geoide.map.MapView;
 import nl.idgis.geoide.commons.print.service.PrintService;
 import nl.idgis.geoide.commons.report.ReportComposer;
 import nl.idgis.geoide.documentcache.DocumentCache;
+import nl.idgis.geoide.map.MapView;
 import nl.idgis.geoide.service.ServiceTypeRegistry;
 import nl.idgis.geoide.util.streams.StreamProcessor;
 

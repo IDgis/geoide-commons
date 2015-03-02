@@ -1,6 +1,6 @@
 package geoide.config;
 
-import nl.idgis.geoide.commons.domain.provider.MapProvider;
+import nl.idgis.geoide.commons.domain.provider.LayerProvider;
 import nl.idgis.geoide.commons.layer.LayerTypeRegistry;
 import nl.idgis.geoide.map.MapView;
 import nl.idgis.geoide.service.ServiceTypeRegistry;
@@ -15,11 +15,11 @@ public class MapViewConfig {
 
 	@Bean
 	@Autowired
-	public MapView mapView (LayerTypeRegistry layerTypeRegistry, ServiceTypeRegistry serviceTypeRegistry, MapProvider mapProvider) {
+	public MapView mapView (LayerTypeRegistry layerTypeRegistry, ServiceTypeRegistry serviceTypeRegistry, LayerProvider layerProvider) {
 		return new MapView  (
 				layerTypeRegistry,
 				serviceTypeRegistry,
-				mapProvider
+				layerProvider
 			);
 	}
 	
