@@ -28,6 +28,53 @@ public class HtmlTemplateDocument extends Document implements TemplateDocument {
 		return this.child(0).html();
 	}; 
 
+	@Override
+	public double getRightMargin() {
+		if(this.select("html").attr("data-right-margin") != "") {
+			return  Double.parseDouble(this.select("html").attr("data-right-margin"));
+		} else { 
+			return 20;	
+		}
+	}
+
+	@Override
+	public double getLeftMargin() {
+		if(this.select("html").attr("data-left-margin") != "") {
+			return  Double.parseDouble(this.select("html").attr("data-left-margin"));
+		} else {
+			return 20;
+		}
+	}
+	
+	@Override
+	public double getTopMargin() {
+		if(this.select("html").attr("data-top-margin") != "")	{
+			return  Double.parseDouble(this.select("html").attr("data-top-margin"));
+		} else {
+			return 20;
+		}
+	}
+	
+	@Override
+	public double getBottomMargin() {
+		if(this.select("html").attr("data-bottom-margin") != "") {
+			return  Double.parseDouble(this.select("html").attr("data-bottom-margin"));
+		} else {
+			return 20;
+		}
+	}
+	
+	@Override
+	public String getPageFormat() {
+		 return this.select("html").attr("data-pageformat"); 
+		 
+	}
+	
+	@Override
+	public String getPageOrientation() {
+		 return this.select("html").attr("data-page-orientation");
+	}
+	
 	
 	public Elements select(String query) {
 		return super.select(query);

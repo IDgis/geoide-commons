@@ -78,9 +78,8 @@ public class ReportComposer {
 
 		
 		TemplateDocument template = templateProvider.getTemplateDocument(templateUrl);
-		PaperFormat format = PaperFormat.valueOf(template.select("html").attr("data-pageformat") + template.select("html").attr("data-page-orientation"));
-		ReportData reportData = new ReportData(format,Integer.parseInt(template.select("html").attr(("data-left-margin"))),
-												Integer.parseInt(template.select("html").attr("data-right-margin")));
+		PaperFormat format = PaperFormat.valueOf(template.getPageFormat() + template.getPageOrientation());
+		ReportData reportData = new ReportData(format, template.getLeftMargin() ,template.getRightMargin(), template.getTopMargin(), template.getBottomMargin() );
 
 		
 		ObjectMapper mapper = new ObjectMapper();
