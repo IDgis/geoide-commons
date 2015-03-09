@@ -13,4 +13,10 @@ public interface TemplateDocument  {
 		public Element head();
 		public Element child(int childNumber);
 		public String attr (String attributeKey);
+		double getRightMargin();
+		double getLeftMargin();
+		double getTopMargin();
+		double getBottomMargin();
+		String getPageFormat();
+		String getPageOrientation();
 }

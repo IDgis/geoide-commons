@@ -6,25 +6,20 @@ import java.util.List;
 
 import nl.idgis.geoide.commons.domain.Layer;
 import nl.idgis.geoide.commons.domain.MapDefinition;
-import nl.idgis.geoide.commons.domain.provider.MapProvider;
 import nl.idgis.geoide.commons.domain.toc.TOCItem;
 import nl.idgis.geoide.commons.domain.traits.Traits;
 import nl.idgis.geoide.commons.layer.LayerType;
 import nl.idgis.geoide.commons.layer.LayerTypeRegistry;
 import nl.idgis.geoide.commons.layer.toc.TOCLayerTypeTrait;
-import nl.idgis.geoide.service.ServiceTypeRegistry;
-
 
 public class TOC  {
 
-	private final MapProvider mapProvider;
+
 	private final LayerTypeRegistry layerTypeRegistry;
-	private final ServiceTypeRegistry serviceTypeRegistry;
+
 	
-	public TOC (final MapProvider mapProvider, final LayerTypeRegistry layerTypeRegistry, final ServiceTypeRegistry serviceTypeRegistry) {
-		this.mapProvider = mapProvider;
+	public TOC (final LayerTypeRegistry layerTypeRegistry) {
 		this.layerTypeRegistry = layerTypeRegistry;
-		this.serviceTypeRegistry = serviceTypeRegistry;
 	}
 	
 	

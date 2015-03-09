@@ -1,13 +1,10 @@
 package nl.idgis.geoide.commons.report.blocks;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
 import nl.idgis.geoide.commons.domain.ServiceRequest;
-import nl.idgis.geoide.commons.domain.traits.Traits;
 import nl.idgis.geoide.commons.report.ReportData;
 import nl.idgis.geoide.documentcache.DocumentCache;
 import nl.idgis.geoide.map.MapView;
@@ -16,7 +13,7 @@ import nl.idgis.geoide.service.LayerServiceType;
 import nl.idgis.geoide.service.ServiceType;
 import nl.idgis.ogc.util.MimeContentType;
 
-import org.jsoup.nodes.Attribute;
+import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import play.libs.F.Promise;
@@ -27,6 +24,7 @@ public class MapBlockComposer implements BlockComposer {
 	final MapView mapView;
 	final DocumentCache documentCache;
 	private URI mapCssUri;
+
 	
 	
 	/**
@@ -60,64 +58,78 @@ public class MapBlockComposer implements BlockComposer {
 		final List<LayerWithState> layers = mapView.flattenLayerList (viewerstate);
 		final List<ServiceRequest> serviceRequests = mapView.getServiceRequests (layers);
 		
+		
 		Element mapRow = block.appendElement("div");
 		mapRow.attr("class", "map_row");
 		
 		String mapCss = ".map_row {" +
-			    "height: " +(int) blockHeightpx + "px;" + 
-				"width: " + (int) blockWidthpx + "px;" +
-			    "position: relative;" +
-				"border: 1px solid gray;" + 
-			"}";
+			    	"height: " +(int) blockHeightpx + "px;" + 
+			    	"width: " + (int) blockWidthpx + "px;" +
+			    	"position: relative;" +
+			    	"border: 1px solid gray;" + 
+			    	"overflow: hidden;" + 
+				"}" +
+				".pos-abs {" +
+					"position: absolute;" +
+				"}";
 		
 		int layernr = 1;
-		//loop over serviceRequest en bouw urls
-		for (final ServiceRequest request: serviceRequests) {
-			Element mapLayer = mapRow.appendElement("div");
-			mapLayer.attr("id", "map_layer" + layernr);
-			mapCss += getLayerCss(layernr, blockHeightpx, blockWidthpx);
-			
-			
+		
+		
+		for (final ServiceRequest request: serviceRequests) {			
 			ServiceType serviceType = mapView.getServiceType(request.getService());
 			
 			if (serviceType instanceof LayerServiceType ) {
-				int reqnr = 1;
+				
+				Element mapLayer = mapRow.appendElement("div");
+				mapLayer.attr("id", "map_layer" + layernr);
+				mapCss += getLayerCss(layernr, blockHeightpx, blockWidthpx);
+				Element layerObject = mapLayer.appendElement("object");
+				layerObject.attr("type", "image/svg+xml");
+				layerObject.attr("style", "left:0px; top:0px; width:" + (int) blockWidthpx + "px; height:" + (int) blockHeightpx + "px;");
 				
 				
 				LayerServiceType layerServiceType = (LayerServiceType) serviceType;
 				List<JsonNode>  requestUrls = layerServiceType.getLayerRequestUrls(request, viewerstate.path("extent"), resolution,(int) blockWidthpx, (int) blockHeightpx);
-				for (JsonNode requestUrl:requestUrls) {
-					Element reqElem; 
-					String referenceY = "top";
-					String reqId = "map_layer" + layernr + "_" + reqnr;
-					if (request.getService().getIdentification().getServiceType().equals("TMS")){
-						reqElem = mapLayer.appendElement("img");
-						reqElem.attr("src", requestUrl.path("uri").asText());
-						referenceY = "bottom";
-					} else {
-						reqElem = mapLayer.appendElement("object");
-						reqElem.attr("type", "image/svg+xml");
-						reqElem.attr("data", requestUrl.path("uri").asText());
-					}	
-					reqElem.attr("id", reqId);
-					
-					
-					int cssWidth;
-					int cssHeight;
-					if (request.getService().getIdentification().getServiceType().equals("TMS")){
-						cssWidth = (int) (resizeFactor * 256);
-						cssHeight = cssWidth;
-					} else {
-						cssWidth = (int) blockWidthpx;
-						cssHeight = (int) blockHeightpx;
+				
+				if (request.getService().getIdentification().getServiceType().equals("TMS")){
+					URI layerSvgUri = new URI ("stored://" + UUID.randomUUID ().toString ());
+					//create svg document
+					Document layerSvg = new Document(layerSvgUri.toString());
+					Element svgNode = layerSvg.appendElement("svg"); 
+					svgNode.attr("width", blockWidthpx + "px");
+					svgNode.attr("height", blockHeightpx + "px");
+					svgNode.attr("version", "1.1");
+					svgNode.attr("xmlns","http://www.w3.org/2000/svg");
+					svgNode.attr("xmlns:xlink", "http://www.w3.org/1999/xlink");
+					for (JsonNode requestUrl:requestUrls) {
+						//write to svg
+						Element svgImage = svgNode.appendElement("image");
+						svgImage.attr("xlink:href", requestUrl.path("uri").asText());
+						svgImage.attr("x", String.valueOf( requestUrl.path("left").asDouble() * resizeFactor));
+						svgImage.attr("y", String.valueOf( requestUrl.path("bottom").asDouble() * resizeFactor));
+						svgImage.attr("width",  String.valueOf((requestUrl.path("right").asDouble() * resizeFactor) - (requestUrl.path("left").asDouble() * resizeFactor)));
+						svgImage.attr("height",  String.valueOf(((requestUrl.path("bottom").asDouble() * resizeFactor)- requestUrl.path("top").asDouble() * resizeFactor)));
+						//<image xlink:href="http://geodata.nationaalgeoregister.nl/tms/1.0.0/brtachtergrondkaart/1.0.0/9/280/219.png" x="-100" y="0px" height="150" width="150"/>	
 					}
 					
-					mapCss += getReqCss (reqId, cssWidth, cssHeight,  (int) (requestUrl.path("posX").asInt() * resizeFactor), (int) (requestUrl.path("posY").asInt()*resizeFactor), referenceY, (int) blockWidthpx, (int) blockHeightpx  );
-					reqnr += 1;
+					documentCache.store(layerSvgUri, new MimeContentType ("image/svg+xml"), layerSvg.toString().getBytes());
+					//write object tag in html
+					layerObject.attr("data", layerSvgUri.toString());	
+					
+					System.out.println("*****" + layerSvg.toString());
+					
+					
+				} else {
+					//write directly to html
+					layerObject.attr("data", requestUrls.get(0).path("uri").asText());	
 				}	
+				
+				layernr += 1;
+				
 			}
+
 			
-			layernr += 1;
 		}
 				
 		
@@ -143,36 +155,6 @@ public class MapBlockComposer implements BlockComposer {
 			    "height: " +(int) blockHeightpx + "px;" + 
 				"width: " + (int) blockWidthpx + "px;" +
 			"}";
-	}
-	private String getReqCss(String id, int width, int height, int posx, int posy, String referenceY, int blockWidth, int blockHeight ) {
-		
-		//default clip properties
-		int t = 0;
-		int r = width;
-		int b = height;
-		int l = 0;
-		
-		if (posx < 0) {
-			l = Math.abs(posx);
-		}
-		if (posy < 0) {
-			b = height - Math.abs(posy);
-		}
-		if (posx + width >  blockWidth) {
-			r = blockWidth - posx;
-		}
-		if (posy + height > blockHeight) {
-			t = height- (blockHeight - posy);
-		}
-		
-		return "#" + id + " {" +
-			    "width:" + width + "px;" +
-		 		"height:" + height + "px;" +
-		 		"position: absolute;" +
-		 		"left: " + posx + "px;" +
-		 		referenceY + ":" + posy + "px;" +
-		 		"clip: rect(" + t + "px," + r + "px," + b + "px," + l + "px);" + 
-		 		"}";
 	}
 	
 

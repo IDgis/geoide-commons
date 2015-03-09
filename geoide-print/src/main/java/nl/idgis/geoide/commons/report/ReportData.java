@@ -4,17 +4,20 @@ package nl.idgis.geoide.commons.report;
  * 
  */
 
-
 	
 	public class ReportData {
 		PaperFormat format;
-	    int leftMargin;
-	    int rightMargin;
+	    private final double leftMargin;
+	    private final double rightMargin;
+	    private final double topMargin;
+	    private final double bottomMargin;
 		
-	    public ReportData (PaperFormat format, int leftMargin, int rightMargin) {
+	    public ReportData (PaperFormat format, double leftMargin, double rightMargin, double topMargin, double bottomMargin) {
 	        this.format = format;
 	        this.leftMargin = leftMargin;
 	        this.rightMargin = rightMargin;
+	        this.topMargin = topMargin;
+	        this.bottomMargin = bottomMargin;
 	    }
 	    
 	    /**
@@ -23,19 +26,12 @@ package nl.idgis.geoide.commons.report;
 	     * @return report width in mm 
 	     */
 	    
-	    public int getReportWidth() {
-	        switch (format) {
-	            case A4landscape:
-	                return 297 - leftMargin - rightMargin;
-	            case A4portrait:
-	                return 210 - leftMargin - rightMargin;
-	            case A3landscape:
-	                return 420 - leftMargin - rightMargin;
-	            case A3portrait:
-	            	return 297 - leftMargin - rightMargin;                
-	            default:
-	            	return 210 - leftMargin - rightMargin;
-	            }
+	    public double getReportWidth() {
+	        return format.getWidth() - leftMargin - rightMargin;
+	    }
+	    
+	    public double getReportHeight() {
+	        return format.getHeight() - topMargin - bottomMargin;
 	    }
 
 }

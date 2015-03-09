@@ -144,8 +144,10 @@ public class WMSServiceType extends ServiceType implements LayerServiceType {
 		List<JsonNode> requests = new ArrayList<JsonNode>();
 		ObjectNode request = mapper.createObjectNode();
 		request.put("uri", requestUrl);
-		request.put("posX", 0);
-		request.put("posY", 0);
+		request.put("left", 0);
+		request.put("right", outputWidth);
+		request.put("top", 0);
+		request.put("bottom", outputHeight);
 		
 		requests.add(request);
 		

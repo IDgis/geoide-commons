@@ -101,40 +101,47 @@ public class TMSServiceType extends ServiceType implements LayerServiceType {
 	
 	
 	private List<JsonNode> getTileCoördinates (TilingProperties props, JsonNode mapExtent, double resolution, String baseUrl) {
+		final int  tileWidth = props.getTileWidth();
+		final int  tileHeight = props.getTileHeight();
 		final double llXExtent = mapExtent.path("minx").asDouble();
-		final double llYExtent = mapExtent.path("miny").asDouble();
-		int lltileX = (int) Math.floor (((llXExtent-props.getLowerLeftX())/resolution)/256);
-		int llTileY = (int) Math.floor (((llYExtent-props.getLowerLeftY())/resolution)/256);
-		double lltileXm  =  props.getLowerLeftX() + lltileX * 256 *resolution;
-		double lltileYm  =  props.getLowerLeftY() + llTileY * 256 *resolution;
-		int llposX = (int) (Math.floor ((lltileXm - llXExtent) / resolution));
-		int llPosY = (int) (Math.floor ((lltileYm - llYExtent) / resolution));
+		final double ulYExtent = mapExtent.path("maxy").asDouble();
+		
+		//final double llYExtent = mapExtent.path("miny").asDouble();
+		int tileNrX = (int) Math.floor ((llXExtent-props.getLowerLeftX())/(resolution*tileWidth));
+		int tileNrY = (int) Math.floor ((ulYExtent-props.getLowerLeftY() )/(resolution*tileHeight));
+		//int llTileY = (int) Math.floor (((llYExtent-props.getLowerLeftY())/resolution)/tileHeight);
+		double startTileXm  =  props.getLowerLeftX() + tileNrX * tileWidth * resolution;
+		double startTileYm  =  props.getLowerLeftY() + tileNrY * tileHeight * resolution;
+		int llposX = (int) ((startTileXm - llXExtent) / resolution);
+		int ulPosY = (int) ((ulYExtent - startTileYm) / resolution) - tileHeight ;
 		ObjectMapper mapper = new ObjectMapper();
 		List<JsonNode> tileRequests = new ArrayList<JsonNode>();
-		double tileXm = lltileXm;
-		int tileX = lltileX; 
+		double tileXm = startTileXm;
+		int tileX = tileNrX; 
 		int posX = llposX;
 		while( tileXm  <  mapExtent.path("maxx").asDouble() ) {
-			double tileYm = lltileYm;
-			int tileY = llTileY; 
-			int posY = llPosY;
-			while( tileYm <  mapExtent.path("maxy").asDouble() ) {
+			double tileYm = startTileYm;
+			int tileY = tileNrY; 
+			int posY = ulPosY;
+			while( tileYm + (resolution * tileHeight) >  mapExtent.path("miny").asDouble()) {
 				ObjectNode tileRequest = mapper.createObjectNode();
 				tileRequest.put("uri", baseUrl + "/" + tileX + "/" + tileY + ".png");
-				tileRequest.put("posX", posX);
-				tileRequest.put("posY", posY);
+				tileRequest.put("left", posX);
+				tileRequest.put("right", posX + tileWidth);
+				tileRequest.put("top", posY - tileHeight);
+				tileRequest.put("bottom", posY);
 				tileRequests.add(tileRequest);
-				tileY += 1;
-				posY += 256;
-				tileYm += 256 * resolution;
+				tileY -= 1;
+				posY += tileHeight;
+				tileYm -= tileHeight * resolution;
 				if(tileRequests.size() > 15*15) {
 					//TODO throw error
 				}
 			}
 			
 			tileX += 1;
-			posX += 256;
-			tileXm += 256 *resolution;
+			posX += tileWidth;
+			tileXm += tileWidth *resolution;
 		}
 		
 		return tileRequests;
@@ -212,7 +219,7 @@ public class TMSServiceType extends ServiceType implements LayerServiceType {
 			return tileWidth;
 		}
 		
-		public double getTileHeight(){
+		public int getTileHeight(){
 			return tileHeight;
 		}
 	}
