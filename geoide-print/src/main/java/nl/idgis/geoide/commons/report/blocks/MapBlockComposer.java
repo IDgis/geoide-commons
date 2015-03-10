@@ -19,6 +19,8 @@ import org.jsoup.nodes.Element;
 import play.libs.F.Promise;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class MapBlockComposer implements BlockComposer {
 	final MapView mapView;
@@ -43,17 +45,48 @@ public class MapBlockComposer implements BlockComposer {
 		
 		final JsonNode viewerstate = blockInfo.get("viewerstate");
 		final double resolution = viewerstate.path("resolution").asDouble();
+		final JsonNode viewerExtent = viewerstate.path("extent");
+		final int viewerScale = viewerstate.path("scale").asInt();	
 		
-		double gridWidth= Integer.parseInt(block.attr("data-grid-width"));
-		double blockWidthmm = reportData.getReportWidth() * gridWidth/12; 
+		int gridWidth;
+		try {
+			gridWidth = Integer.parseInt(block.attr("data-grid-width"));
+		} catch (NumberFormatException e) {
+			gridWidth = 12;
+		}
+		int gridHeight;
+		try {
+			gridHeight = Integer.parseInt(block.attr("data-grid-height"));
+		} catch (NumberFormatException e) {
+			gridHeight = 12;
+		}
+		final boolean scaleFixed = Boolean.getBoolean(block.attr("data-scale-fixed"));
 		
+		
+		final double blockWidthmm = reportData.getReportWidth() * gridWidth/12; 
+		final double blockHeightmm = reportData.getReportHeight() * gridHeight/12; 
+		
+		CenterScale centerScale = new CenterScale (scaleFixed, viewerScale, viewerExtent, blockWidthmm, blockHeightmm );
+		
+		
+			
 		//van mm naar px
 		double blockWidthpx  = blockWidthmm / 0.28;
-		double mapWidthm = getMapWidthm(viewerstate);
-		double mapHeigthm = getMapHeightm(viewerstate);
+		double mapWidthm = (blockWidthmm * centerScale.getScale())/1000;
+		double mapHeightm = (blockHeightmm * centerScale.getScale())/1000;
+		
 		double resizeFactor = resolution/(mapWidthm/blockWidthpx);
-		double blockHeightpx = (blockWidthpx/mapWidthm * mapHeigthm); 
-
+		double blockHeightpx = blockHeightmm / 0.28;
+		if( blockHeightpx == 0 ){
+			blockHeightpx = (blockWidthpx/mapWidthm * mapHeightm); 
+		}
+		final ObjectMapper mapper = new ObjectMapper();
+		final ObjectNode reportExtent = mapper.createObjectNode();
+		reportExtent.put ("minx", centerScale.getCenterX() - mapWidthm/2);
+		reportExtent.put ("maxx", centerScale.getCenterX() + mapWidthm/2);
+		reportExtent.put ("miny", centerScale.getCenterY() - mapHeightm/2);
+		reportExtent.put ("maxy", centerScale.getCenterY() + mapHeightm/2);
+		
 		
 		final List<LayerWithState> layers = mapView.flattenLayerList (viewerstate);
 		final List<ServiceRequest> serviceRequests = mapView.getServiceRequests (layers);
@@ -90,7 +123,7 @@ public class MapBlockComposer implements BlockComposer {
 				
 				
 				LayerServiceType layerServiceType = (LayerServiceType) serviceType;
-				List<JsonNode>  requestUrls = layerServiceType.getLayerRequestUrls(request, viewerstate.path("extent"), resolution,(int) blockWidthpx, (int) blockHeightpx);
+				List<JsonNode>  requestUrls = layerServiceType.getLayerRequestUrls(request, reportExtent, resolution,(int) blockWidthpx, (int) blockHeightpx);
 				
 				if (request.getService().getIdentification().getServiceType().equals("TMS")){
 					URI layerSvgUri = new URI ("stored://" + UUID.randomUUID ().toString ());
@@ -158,38 +191,12 @@ public class MapBlockComposer implements BlockComposer {
 	}
 	
 
-	private int getMapHeightm(JsonNode viewerstate) {
-		JsonNode extentNode = viewerstate.path("extent");
-		if(extentNode!=null){
-			 return (extentNode.path("maxy")).intValue() - (extentNode.path("miny")).intValue();
-		}
-		JsonNode scaleNode = viewerstate.path("scale");
-		if(scaleNode!=null){
-			//TODO
-		}
-		
-		//TODO throw Error
-		return 0;
-	}
-
-	private int getMapWidthm(JsonNode blockInfo) {
-		JsonNode extentNode = blockInfo.path("extent");
-		if(extentNode!=null){
-			 return (extentNode.path("maxx")).intValue() - (extentNode.path("minx")).intValue();
-		}
-		JsonNode scaleNode = blockInfo.path("scale");
-		if(scaleNode!=null){
-			//TODO
-		}
-		
-		//TODO throw Error
-		return 0;
-	}
-
 	public URI getBlockCssUri() {
 		return mapCssUri;
 	}
 
+	
+	
 
 	
 

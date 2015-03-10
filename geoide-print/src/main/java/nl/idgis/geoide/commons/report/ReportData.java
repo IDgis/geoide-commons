@@ -33,5 +33,6 @@ package nl.idgis.geoide.commons.report;
 	    public double getReportHeight() {
 	        return format.getHeight() - topMargin - bottomMargin;
 	    }
+	    
 
 }

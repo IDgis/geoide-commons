@@ -104,6 +104,7 @@ public class ReportComposer {
 				ObjectNode blockNode = mapper.createObjectNode();
 				blockNode.put ("tag", "p");
 				blockNode.put ("text", "1 : " + viewerStateNodes.get(viewerStateId).get("scale"));
+				
 				textBlockComposer.compose(blockNode, blockElement, reportData);
 			}
 			
