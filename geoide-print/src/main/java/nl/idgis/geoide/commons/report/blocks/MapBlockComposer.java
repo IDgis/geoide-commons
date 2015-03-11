@@ -22,17 +22,23 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+
+/**
+ * A specialized composer component that composes a mapBlock with information from the client (viewerstate)
+ * and a (part of) a report template
+ **/ 
 public class MapBlockComposer implements BlockComposer {
 	final MapView mapView;
 	final DocumentCache documentCache;
 	private URI mapCssUri;
-
 	
 	
 	/**
-	 * A specialized composer component that composes a mapBlock with information from the client 
-	 * and a (part of) a report template
-	 **/ 
+	 * Constructs a mapblockcomposer object.
+	 * 
+	 * @param mapview		the current mapview object 
+	 * @param documentCache	a documentCache object to (tempory) store the css and svg files.
+	 */
 	
 	public MapBlockComposer(MapView mapView, DocumentCache documentCache) {
 		super();
@@ -40,8 +46,18 @@ public class MapBlockComposer implements BlockComposer {
 		this.documentCache= documentCache;
 	}
 
+	/**
+	 * Composes a mapBlock, i.e. a html snippet with related files (css and svg) stored in the documentcache, resulting
+	 * in a map in a report.
+	 * 
+	 * @param blockInfo		client information related to this (map)block 
+	 * @param block 		the html template for the map block
+	 * @param reportData 	object containing some general reportdata such as width and height of a report page 
+	 * @return				a promise (block object0 containing  a "filled" html snippet (map block) and a related css, 
+	 */
+	
 	@Override
-	public Promise<Element> compose(JsonNode blockInfo, Element block, ReportData reportData) throws Throwable {
+	public Promise<Block> compose(JsonNode blockInfo, Element block, ReportData reportData) throws Throwable {
 		
 		final JsonNode viewerstate = blockInfo.get("viewerstate");
 		final double resolution = viewerstate.path("resolution").asDouble();
@@ -174,11 +190,21 @@ public class MapBlockComposer implements BlockComposer {
 		mapCssUri = new URI ("stored://" + UUID.randomUUID ().toString ());
 		documentCache.store(mapCssUri, new MimeContentType ("text/css"), mapCss.getBytes());
 		
-		return Promise.pure(block);
+		Block mapBlock = new Block(block, mapCssUri);
+		return Promise.pure(mapBlock);
 
 
 	};
 
+	
+	/**
+	 * method that composes a css-snippet for a map layer 
+	 * 
+	 * @param layernr			a unique number for a layer (defines the z-index in the report)
+	 * @param blockHeightpx	 	the height of the (map)block in the template in pixels		
+	 * @param blockWidthpx 		the width of the (map)block in the template in pixels
+	 * @return					a css snippet (String)
+	 */
 	private String getLayerCss(int layernr, double blockHeightpx, double blockWidthpx) {
 		 return "#map_layer"+ layernr + " {" +
 			    "position: absolute;" +
@@ -189,15 +215,6 @@ public class MapBlockComposer implements BlockComposer {
 				"width: " + (int) blockWidthpx + "px;" +
 			"}";
 	}
-	
-
-	public URI getBlockCssUri() {
-		return mapCssUri;
-	}
-
-	
-	
-
-	
+		
 
 }

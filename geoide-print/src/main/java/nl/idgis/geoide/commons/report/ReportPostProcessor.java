@@ -35,9 +35,16 @@ public class ReportPostProcessor {
 	
 
 	
+	/**
+	 * start the post-processing of the report document, writes the resulting pdf to the documentstore
+	 * 
+	 * @param template		the report to print ( a "filled" template document)
+	 * @return 				a pdf Document
+	 */
 	public Promise<Document> process (TemplateDocument template) throws Throwable {
 		
 		System.out.println("++++++++ filled template: " + template.asString());
+
 		final URI documentUri = new URI (template.getStoreUri());
 
 		return documentCache

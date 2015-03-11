@@ -27,9 +27,6 @@ public interface BlockComposer {
 	 * @return A promise that will resolve to the resulting element.
 	 * @throws Throwable 
 	**/
-	Promise<Element> compose(JsonNode blockInfo, Element block, ReportData reportData) throws Throwable;
-	
-	URI getBlockCssUri();
-
+	Promise<Block> compose(JsonNode blockInfo, Element block, ReportData reportData) throws Throwable;
 
 }

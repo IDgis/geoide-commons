@@ -1,13 +1,13 @@
 package nl.idgis.geoide.commons.report;
 
 
-import java.net.URI;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import nl.idgis.geoide.commons.report.blocks.Block;
 import nl.idgis.geoide.commons.report.blocks.MapBlockComposer;
 import nl.idgis.geoide.commons.report.blocks.TextBlockComposer;
 import nl.idgis.geoide.commons.report.template.TemplateDocument;
@@ -58,6 +58,7 @@ public class ReportComposer {
 	 * Composes a report for printing and sends the composed report to the postprocessor.
 	 * 
 	 * @param reportInfo 	client information in the form of a Json Node. 
+	 * @return a promise of a report document (html)
 	 */
 	public Promise<Document> compose (JsonNode reportInfo) throws Throwable {
 		
@@ -95,7 +96,7 @@ public class ReportComposer {
 				ObjectNode blockNode = mapper.createObjectNode();
 				blockNode.put ("tag", "p");
 				blockNode.put ("text", dateFormat.format(date));
-				textBlockComposer.compose(blockNode, blockElement, reportData);
+				Promise<Block> textBlock = textBlockComposer.compose(blockNode, blockElement, reportData);
 			}
 			
 			//specialblock scale
@@ -105,7 +106,7 @@ public class ReportComposer {
 				blockNode.put ("tag", "p");
 				blockNode.put ("text", "1 : " + viewerStateNodes.get(viewerStateId).get("scale"));
 				
-				textBlockComposer.compose(blockNode, blockElement, reportData);
+				Promise<Block> textBlock = textBlockComposer.compose(blockNode, blockElement, reportData);
 			}
 			
 			for (final JsonNode blockNode: blocks) {
@@ -113,7 +114,7 @@ public class ReportComposer {
 				if(blockElement.id().equals(blockId)){
 					final JsonNode blockType = blockNode.path("type");
 					if(	blockType.textValue().equals("text")) {
-						textBlockComposer.compose(blockNode, blockElement, reportData);
+						Promise<Block> textBlock =textBlockComposer.compose(blockNode, blockElement, reportData);
 					}
 					if(	blockType.textValue().equals("map")) {
 						final JsonNode stateId = blockNode.path("viewerstate");
@@ -122,12 +123,13 @@ public class ReportComposer {
 						node.set("info", blockNode);
 						node.put("viewerstate", viewerStateNodes.get(stateId.textValue()));
 						
+						//Promise<Block> mapBlock = mapBlockComposer.compose(node, blockElement, reportData);
+						
 						mapBlockComposer.compose(node, blockElement, reportData);
-						URI blockUri = 	mapBlockComposer.getBlockCssUri();
 						
 						Element linkElement = template.head().appendElement("link"); 
 						linkElement.attr("rel", "stylesheet");
-						linkElement.attr("href", blockUri.toString());
+						//linkElement.attr("href", ..);
 						
 					}
 					
