@@ -82,7 +82,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.webjars</groupId>
-			<artifactId>less</artifactId>
+			<artifactId>less-node</artifactId>
 		</dependency>
 	</dependencies>
 	
