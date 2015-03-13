@@ -1,15 +1,11 @@
 package nl.idgis.geoide.commons.report.blocks;
 
 
-import java.net.URI;
-
-import nl.idgis.geoide.commons.report.ReportData;
+import nl.idgis.geoide.documentcache.DocumentCache;
 
 import org.jsoup.nodes.Element;
 
 import play.libs.F.Promise;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 public class TextBlockComposer implements BlockComposer {
 
@@ -28,25 +24,16 @@ public class TextBlockComposer implements BlockComposer {
 	 * 
 	 * @param blockInfo		a Json node with information from the client.
 	 * @param block			(part of) a template to be filled with client info
-	 * @return A promise that will resolve to the resulting element.
+	 * @param reportData 	object containing some general reportdata such as width and height of a report page 
+	 * @return A promise (block object) that will resolve to the resulting element and a related css.
 	 **/
 	
 	@Override
-	public Promise<Element> compose(JsonNode blockInfo, Element block, ReportData reportData) {
-		//parse blockInfo
-		Element textElement = block.appendElement(blockInfo.path("tag").asText());
-		textElement.append(blockInfo.path("text").asText()); 
-		
-		return Promise.pure(block);
-
+	public Promise<Block> compose (Element blockElement, BlockInfo info, DocumentCache documentCache) throws Throwable {
+		blockElement.appendElement (((TextBlockInfo) info).getTag()).append (((TextBlockInfo) info).getText());
+		Block textBlock = new Block(blockElement, null);
+		return Promise.pure(textBlock);
 	}
 
-
-	@Override
-	public URI getBlockCssUri() {
-		return null;
-	}
-	
-	
 
 }

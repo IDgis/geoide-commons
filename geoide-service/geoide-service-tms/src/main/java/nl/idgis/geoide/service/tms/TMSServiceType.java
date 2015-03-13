@@ -128,8 +128,8 @@ public class TMSServiceType extends ServiceType implements LayerServiceType {
 				tileRequest.put("uri", baseUrl + "/" + tileX + "/" + tileY + ".png");
 				tileRequest.put("left", posX);
 				tileRequest.put("right", posX + tileWidth);
-				tileRequest.put("top", posY - tileHeight);
-				tileRequest.put("bottom", posY);
+				tileRequest.put("top", posY);
+				tileRequest.put("bottom", posY + tileHeight);
 				tileRequests.add(tileRequest);
 				tileY -= 1;
 				posY += tileHeight;

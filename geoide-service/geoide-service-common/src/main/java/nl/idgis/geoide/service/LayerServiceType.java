@@ -12,6 +12,6 @@ public interface LayerServiceType {
 
 	List<ServiceRequest> getServiceRequests (Service service, List<ParameterizedServiceLayer<?>> serviceLayers, ServiceRequestContext context);
 	
-	List<JsonNode> getLayerRequestUrls (ServiceRequest serviceRequest, JsonNode mapExtent, double resolution, int outputWidth, int outputHeight );
+	List<JsonNode> getLayerRequestUrls(ServiceRequest serviceRequest, JsonNode mapExtent, double resolution, int outputWidth, int outputHeight);
 
 }
