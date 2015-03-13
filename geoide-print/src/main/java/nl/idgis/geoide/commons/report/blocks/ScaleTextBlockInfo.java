@@ -1,6 +1,5 @@
 package nl.idgis.geoide.commons.report.blocks;
 
-import java.util.Map;
 
 import org.jsoup.nodes.Attributes;
 

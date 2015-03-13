@@ -1,6 +1,8 @@
 package nl.idgis.geoide.service.wms;
 
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -117,28 +119,32 @@ public class WMSServiceType extends ServiceType implements LayerServiceType {
 	
 	
 	@Override
-	public List<JsonNode> getLayerRequestUrls (ServiceRequest serviceRequest, JsonNode mapExtent, double resolution, int outputWidth, int outputHeight ) {
+	public List<JsonNode> getLayerRequestUrls (ServiceRequest serviceRequest, JsonNode mapExtent, double resolution, int outputWidth, int outputHeight )  {
 		
 		String serviceEndPoint = serviceRequest.getService().getIdentification().getServiceEndpoint();
 		String serviceVersion = serviceRequest.getService().getIdentification().getServiceVersion();
 		
 		WMSRequestParameters parameters = (WMSRequestParameters) serviceRequest.getParameters();		
-		String vendorParamString = "&";
+		String vendorParamString = "";
 	
 		Map<String, String> vendorParameters = parameters.getVendorParameters();
 		if(!vendorParameters.isEmpty()){
 			for (Map.Entry<String, String> vParam : vendorParameters.entrySet()){
-				vendorParamString += vParam.getKey() + "=" + vParam.getValue();
+				try {
+					vendorParamString += vParam.getKey() + "=" + URLEncoder.encode(vParam.getValue(), "UTF8");
+				} catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+				}
 			}
 		}
-		//TODO outputformat
+		//TODO check if svg outputformat is supported
 		
 		String bbox = mapExtent.path("minx") + "," +  mapExtent.path("miny") + "," +
-						mapExtent.path("maxx") + "," +  mapExtent.path("maxy");
+					 mapExtent.path("maxx") + "," +  mapExtent.path("maxy");
 		
 		String requestUrl = serviceEndPoint + "?SERVICE=WMS&VERSION=" + serviceVersion +  "&REQUEST=GetMap&FORMAT=image%2Fsvg%2Bxml" +
-			"&layers="  + parameters.getLayers() + "&transparent=" + parameters.getTransparent() + "&CRS=EPSG%3A28992&STYLES=" +
-			"&BBOX=" + bbox + "&WIDTH=" + outputWidth + "&HEIGHT=" + outputHeight + vendorParamString.replaceAll(" ", "%20");
+				"&layers="  + parameters.getLayers() + "&transparent=" + parameters.getTransparent() + "&CRS=EPSG%3A28992&STYLES=" +
+				"&BBOX=" + bbox + "&WIDTH=" + outputWidth + "&HEIGHT=" + outputHeight + "&" +  vendorParamString;
 		
 		ObjectMapper mapper = new ObjectMapper();
 		List<JsonNode> requests = new ArrayList<JsonNode>();
