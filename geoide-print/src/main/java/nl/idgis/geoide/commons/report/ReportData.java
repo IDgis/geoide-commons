@@ -1,7 +1,7 @@
 package nl.idgis.geoide.commons.report;
 
 /**
- * 
+ * An object to store reportData wich are not reportBlock specific
  */
 
 	

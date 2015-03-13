@@ -1,13 +1,11 @@
 package nl.idgis.geoide.commons.report.blocks;
 
 
-import nl.idgis.geoide.commons.report.ReportData;
+import nl.idgis.geoide.documentcache.DocumentCache;
 
 import org.jsoup.nodes.Element;
 
 import play.libs.F.Promise;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 public class TextBlockComposer implements BlockComposer {
 
@@ -31,16 +29,11 @@ public class TextBlockComposer implements BlockComposer {
 	 **/
 	
 	@Override
-	public Promise<Block> compose(JsonNode blockInfo, Element block, ReportData reportData) {
-		//parse blockInfo
-		Element textElement = block.appendElement(blockInfo.path("tag").asText());
-		textElement.append(blockInfo.path("text").asText()); 
-		Block textBlock = new Block(block, null);
-		
+	public Promise<Block> compose (Element blockElement, BlockInfo info, DocumentCache documentCache) throws Throwable {
+		blockElement.appendElement (((TextBlockInfo) info).getTag()).append (((TextBlockInfo) info).getText());
+		Block textBlock = new Block(blockElement, null);
 		return Promise.pure(textBlock);
-
 	}
 
-	
 
 }
