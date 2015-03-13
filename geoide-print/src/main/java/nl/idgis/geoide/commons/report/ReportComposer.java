@@ -26,7 +26,6 @@ import org.jsoup.select.Elements;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import play.libs.F.Function;
 import play.libs.F.Promise;
