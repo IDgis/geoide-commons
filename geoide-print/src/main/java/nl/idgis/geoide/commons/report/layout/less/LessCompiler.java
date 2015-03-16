@@ -6,21 +6,24 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
-import javax.script.Bindings;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import javax.script.SimpleBindings;
 import javax.xml.bind.DatatypeConverter;
 
 public class LessCompiler {
 
-	private final static String LESS_PATH = "META-INF/resources/webjars/less-node/%s/lib/less";
-	
+	private final static String LESS_PATH = "META-INF/resources/webjars/less-node/%s/lib/";
+
+	private final String lessPath;
 	private final ScriptEngineManager scriptEngineManager;
 	private final ScriptEngine scriptEngine;
+	
+	private final Map<String, Object> requireJsCache = new HashMap<> ();
 	
 	public LessCompiler (final String lessVersion) {
 		// Create a JavaScript engine:
@@ -28,17 +31,16 @@ public class LessCompiler {
 		
 		scriptEngine = scriptEngineManager.getEngineByName ("JavaScript");
 		
+		lessPath = String.format (LESS_PATH, lessVersion);
+		
 		// Compile the main script:
 		try  {
 			scriptEngine.put ("req", this);
 			scriptEngine.put ("env", new Environment ());
 			scriptEngine.put ("fs", new Filesystem ());
 			
-			scriptEngine.eval ("var Promise = function () { }; Promise.prototype.resolve = function (a) { print ('Resolve: ', a); }; Promise.prototype.reject = function (a) { print ('Reject: ', a); };");
-			scriptEngine.eval ("var window = this;");
-			scriptEngine.eval ("var require = function (a) { return req.require (a); };");
-			
-			scriptEngine.eval ("var less = require ('" + String.format (LESS_PATH, lessVersion) + "')(/*null, [fs]*/);");
+			scriptEngine.getBindings (ScriptContext.ENGINE_SCOPE).put (ScriptEngine.FILENAME, "less-compiler.js");
+			scriptEngine.eval (new InputStreamReader (LessCompiler.class.getClassLoader ().getResourceAsStream ("nl/idgis/geoide/commons/report/layout/less/less-compiler.js")));
 			
 			// scriptEngine.eval ("print (new less.Parser ().parser ('a { }'));");
 			scriptEngine.eval ("less.render (\"\\na {\\n }\\n\", { processImports: false }, function (a, b) { print (a); print (b); });");
@@ -85,6 +87,10 @@ public class LessCompiler {
 			absolutePath = path;
 		}
 		
+		if (requireJsCache.containsKey (absolutePath)) {
+			return requireJsCache.get (absolutePath);
+		}
+		
 		final String finalPath;
 		
 		final InputStream is;
@@ -123,7 +129,11 @@ public class LessCompiler {
 		
 				scriptEngine.getBindings (ScriptContext.ENGINE_SCOPE).put (ScriptEngine.FILENAME, finalPath + ".js");
 				
-				return scriptEngine.eval ("(function () { var module = { }; var require = function (a) { return req.require (a, '" + finalPath + "'); }; " + content + "\nreturn module.exports; }) ();");
+				final Object value = scriptEngine.eval ("(function () { var module = { }; var require = function (a) { return req.require (a, '" + finalPath + "'); }; " + content + "\nreturn module.exports; }) ();");
+
+				requireJsCache.put (absolutePath, value);
+				
+				return value;
 			}
 		} catch (IOException e) {
 			throw new RuntimeException (e);
@@ -133,7 +143,7 @@ public class LessCompiler {
 	}
 	
 	private InputStream tryOpen (final String path) {
-		return LessCompiler.class.getClassLoader ().getResourceAsStream (path + ".js");
+		return LessCompiler.class.getClassLoader ().getResourceAsStream (lessPath + path + ".js");
 	}
 	
 	// Must implement the api specified in environment-api.js:
