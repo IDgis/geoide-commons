@@ -70,31 +70,59 @@ function Promise () {
 }
 
 Promise.prototype.resolve = function (a) { 
-	print ('Resolve: ', a); 
 }; 
 
 Promise.prototype.reject = function (a) { 
-	print ('Reject: ', a); 
 };			
 
 // Utility for printing errors:
 function printError (error) {
 	print (error.filename + ":" + error.line + ":" + error.column + ": " + error.message + " (" + error.type + "): ");
 	print (error.stack);
+	for (var i in error) {
+		print (i + ": " + error[i]);
+	}
 }
 
 // Require the less compiler:
 var less = require ('less')(/*null, [fs]*/);
 
+function toArray (list) {
+	var StringArray = Java.type ("java.lang.String[]");
+	
+	if (!list) {
+		return new StringArray (0);
+	}
+	
+	var array = new StringArray (list.length);
+	
+	for (var i = 0; i < list.length; ++ i) {
+		array[i] = list[i];
+	}
+	
+	return array;
+}
+
 // Entrypoint to be called from the Java code:
-function lessCompile (input) {
+function lessCompile (input, variables) {
 	var compileError, compileResult;
+	
+	var options = {
+		processImports: false,
+		compress: true
+	};
+	
+	if (variables) {
+		var vars = { };
+		for (var i in variables) {
+			vars[i] = variables[i];
+		}
+		options.globalVars = vars;
+	}
 	
 	less.render (
 		input, 
-		{ 
-			processImports: false 
-		}, 
+		options, 
 		function (error, result) {
 			if (error) {
 				printError (error);
@@ -107,10 +135,14 @@ function lessCompile (input) {
 	);
 	
 	if (compileError) {
-		throw compileError;
+		return new (Java.type ('nl.idgis.geoide.commons.report.layout.less.LessCompilationException')) (
+			compileError.messge,
+			compileError.filename,
+			compileError.line === null ? -1 : compileError.line,
+			compileError.column === null ? -1 : compileError.column,
+			toArray (compileError.extract)
+		);
 	}
 	
 	return compileResult.css;
 }
-
-print (lessCompile (".a { display: block; }"))

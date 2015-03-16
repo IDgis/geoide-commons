@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.Map;
 
 import javax.script.Invocable;
 import javax.script.ScriptContext;
@@ -39,12 +40,21 @@ public class LessCompiler {
 			throw new RuntimeException (e);
 		}
 	}
+
+	public String compile (final String input) throws LessCompilationException {
+		return compile (input, null);
+	}
 	
-	public String compile (final String input) {
+	public String compile (final String input, final Map<String, String> variables) throws LessCompilationException {
 		try {
-			final Object result = ((Invocable) scriptEngine).invokeFunction ("lessCompile", input);
+			final Object result = ((Invocable) scriptEngine).invokeFunction ("lessCompile", input, variables);
+			if (result instanceof LessCompilationException) {
+				throw (LessCompilationException) result;
+			}
 			return result == null ? null : result.toString ();
-		} catch (ScriptException | NoSuchMethodException e) {
+		} catch (ScriptException e) {
+			throw new RuntimeException (e);
+		} catch (NoSuchMethodException e) {
 			throw new RuntimeException (e);
 		}
 	}
