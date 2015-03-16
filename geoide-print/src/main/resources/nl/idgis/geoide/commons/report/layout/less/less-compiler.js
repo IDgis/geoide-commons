@@ -77,11 +77,6 @@ Promise.prototype.reject = function (a) {
 
 // Utility for printing errors:
 function printError (error) {
-	print (error.filename + ":" + error.line + ":" + error.column + ": " + error.message + " (" + error.type + "): ");
-	print (error.stack);
-	for (var i in error) {
-		print (i + ": " + error[i]);
-	}
 }
 
 // Require the less compiler:
