@@ -11,7 +11,7 @@ import org.jsoup.nodes.Element;
 
 public class Block {
 	private final Element block;
-	private final URI css;
+	private final URI cssUri;
 	
 	/**
 	* constructs a report block object
@@ -19,9 +19,9 @@ public class Block {
 	* @param css  	the URI to the related block css in the document store
 	* 
 	**/ 
-	public Block(Element block, URI css) {
+	public Block(Element block, URI cssUri) {
 		this.block = block;
-		this.css = css;
+		this.cssUri = cssUri;
 				
 	}
 
@@ -29,8 +29,8 @@ public class Block {
 		return block;
 	}
 
-	public URI getCss() {
-		return css;
+	public URI getCssUri() {
+		return cssUri;
 	}
 	
 	

@@ -167,7 +167,7 @@ public class ReportComposer {
 					for (final Tuple<Element, Block> tuple: blocks) {
 						final Element sourceElement = tuple._1;
 						final Block block = tuple._2;
-						final URI cssUri = block.getCss ();
+						final URI cssUri = block.getCssUri ();
 						
 						sourceElement.replaceWith (block.getBlock ());
 						
