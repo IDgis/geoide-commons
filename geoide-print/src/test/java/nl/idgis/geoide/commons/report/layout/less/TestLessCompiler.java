@@ -9,5 +9,7 @@ public class TestLessCompiler {
 	@Test
 	public void testCreateCompiler () {
 		final LessCompiler compiler = new LessCompiler ("2.3.1");
+		
+		compiler.compile ("a { display: block; }");
 	}
 }

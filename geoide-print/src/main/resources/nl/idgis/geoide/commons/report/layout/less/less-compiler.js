@@ -40,7 +40,7 @@ function doRequire (dep, base) {
 	}
 	
 	// Load the dependency:
-	var result = req.load (dep),
+	var result = loader.load (dep),
 		finalPath = result[0],
 		content = result[1];
 	
@@ -84,20 +84,6 @@ function printError (error) {
 }
 
 // Require the less compiler:
-require ('less/tree/element');
-
-var old = req.requireJsCache['less/tree/element'];
-req.requireJsCache['less/tree/element'] = function (c, value) {
-	print ("Element: " + c + ", " + value + ", " + (c instanceof require ('less/tree/combinator')));
-	for (var i in c) {
-		print (i + ": " + c[i]);
-	}
-	
-	old.apply (this, arguments);
-	
-	print ("End element");
-};
-
 var less = require ('less')(/*null, [fs]*/);
 
 // Entrypoint to be called from the Java code:
