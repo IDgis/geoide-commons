@@ -7,6 +7,7 @@ import java.io.Reader;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.script.Invocable;
 import javax.script.ScriptContext;
@@ -22,7 +23,22 @@ public class LessCompiler {
 	private final ScriptEngineManager scriptEngineManager;
 	private final ScriptEngine scriptEngine;
 	
-	public LessCompiler (final String lessVersion) {
+	public LessCompiler () {
+		final String lessVersion;
+		
+		// Determine the less version:
+		final Properties properties = new Properties ();
+		try (final InputStream propertiesStream = LessCompiler.class.getClassLoader ().getResourceAsStream ("META-INF/maven/org.webjars/less-node/pom.properties")) {
+			properties.load (propertiesStream);
+			
+			lessVersion = properties.getProperty ("version");
+			if (lessVersion == null) {
+				throw new IllegalStateException ("Unable to determine the less version. Is the less-node webjar on the classpath?");
+			}
+		} catch (IOException e) {
+			throw new RuntimeException (e);
+		}
+		
 		// Create a JavaScript engine:
 		scriptEngineManager = new ScriptEngineManager ();
 		
