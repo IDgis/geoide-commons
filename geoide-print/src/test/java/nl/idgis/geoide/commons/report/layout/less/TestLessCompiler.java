@@ -8,20 +8,33 @@ import java.util.Map;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+/**
+ * Test cases for {@link LessCompiler}.
+ */
 public class TestLessCompiler {
 
 	private static LessCompiler compiler;
-	
+
+	/**
+	 * Creates a new {@link LessCompiler}.
+	 */
 	@BeforeClass
 	public static void createCompiler () {
 		compiler = new LessCompiler ();
 	}
-	
+
+	/**
+	 * Verifies that a well-formed less document can be translated to CSS by the compiler.
+	 */
 	@Test
 	public void testCompile () throws Throwable {
 		assertEquals ("a{display:block}", compiler.compile ("a { display: block; }"));
 	}
-	
+
+	/**
+	 * Verifies that a well-formed less document with a variable reference is compiled
+	 * when the value of the variable is passed to the compiler in a Java map.
+	 */
 	@Test
 	public void testVariable () throws Throwable {
 		final Map<String, String> variables = new HashMap<> ();
@@ -30,7 +43,10 @@ public class TestLessCompiler {
 		
 		assertEquals ("a{color:#012}", compiler.compile ("a { color: @test-color; }", variables));
 	}
-	
+
+	/**
+	 * Verifies that the compiler throws an exception if a variable is referenced that is not defined.
+	 */
 	@Test (expected = LessCompilationException.class)
 	public void testVariableNotFound () throws Throwable {
 		final Map<String, String> variables = new HashMap<> ();
@@ -39,7 +55,10 @@ public class TestLessCompiler {
 		
 		compiler.compile ("a { color: @test-color2; }", variables);
 	}
-	
+
+	/**
+	 * Verifies that compiler exceptions provide a source location.
+	 */
 	@Test
 	public void testCompilationException () {
 		try {
@@ -58,6 +77,9 @@ public class TestLessCompiler {
 		fail ("Expected exception");
 	}
 	
+	/**
+	 * Verifies that imports are not processed by this compiler.
+	 */
 	@Test (expected = LessCompilationException.class)
 	public void testImport () throws Throwable {
 		compiler.compile ("@import \"test.less\";");

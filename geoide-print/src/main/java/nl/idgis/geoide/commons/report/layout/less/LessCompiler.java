@@ -15,6 +15,14 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
+/**
+ * Provides a Java interface to the less CSS compiler (http://lesscss.org). Uses the Nashorn JavaScript
+ * engine in combination with the less-node WebJar.
+ * 
+ * The less compiler has no support for imports.
+ * 
+ * Usage of a Less compiler is not thread safe.
+ */
 public class LessCompiler {
 
 	private final static String LESS_PATH = "META-INF/resources/webjars/less-node/%s/lib/";
@@ -23,6 +31,10 @@ public class LessCompiler {
 	private final ScriptEngineManager scriptEngineManager;
 	private final ScriptEngine scriptEngine;
 	
+	/**
+	 * Creates a new less compiler. The constructor looks for the less-node webjar and precompiles all
+	 * JavaScript dependencies. Due to the precompilation, a less compiler should be reused as much as possible.
+	 */
 	public LessCompiler () {
 		final String lessVersion;
 		
@@ -57,10 +69,28 @@ public class LessCompiler {
 		}
 	}
 
+	/**
+	 * Compiles the given less input to a corresponding CSS document.
+	 * 
+	 * @param input	The less input.
+	 * @return The CSS output after compilation.
+	 * @throws LessCompilationException Thrown when an error is encountered during less compilation. Contains detailed
+	 * 			information about the cause of the error and the location in the input.
+	 */
 	public String compile (final String input) throws LessCompilationException {
 		return compile (input, null);
 	}
-	
+
+	/**
+	 * Compiles the given less input to a corresponding CSS document. Global variables can be passed to the less
+	 * document.
+	 * 
+	 * @param input The less input.
+	 * @param variables A map containging optional variables that are used during less compilation.
+	 * @return The CSS output after compilation.
+	 * @throws LessCompilationException Thrown when an error is encountered during less compilation. Contains detailed
+	 * 			information about the cause of the error and the location in the input.
+	 */
 	public String compile (final String input, final Map<String, String> variables) throws LessCompilationException {
 		try {
 			final Object result = ((Invocable) scriptEngine).invokeFunction ("lessCompile", input, variables);
@@ -75,6 +105,9 @@ public class LessCompiler {
 		}
 	}
 	
+	/**
+	 * Resource loader, used internally by the LESS compiler.
+	 */
 	public class Loader {
 		
 		public String[] load (final String path) {
