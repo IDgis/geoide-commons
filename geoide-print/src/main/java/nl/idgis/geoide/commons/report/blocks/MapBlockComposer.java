@@ -144,7 +144,7 @@ public class MapBlockComposer implements BlockComposer {
 	private Document createTileSvg (URI tileSvgUri, JsonNode requestUrl, MapBlockInfo info) {	
 		Document tileSvg = new Document(tileSvgUri.toString());
 		Element svgNode = tileSvg.appendElement("svg"); 
-		double factor = info.getResizeFactor();
+		double factor = info.getResizeFactor(requestUrl.path("resolution").asDouble());
 		
 		svgNode	.attr ("viewBox", "0 0 " + info.getWidthpx() + " " + info.getHeightpx() + "")
 				.attr ("width", info.getWidthpx() + "px")

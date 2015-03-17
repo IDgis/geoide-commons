@@ -46,7 +46,7 @@ public class MapBlockInfo implements BlockInfo {
 		} catch (NumberFormatException e) {
 			gridHeight = 12;
 		}
-		final boolean scaleFixed = Boolean.getBoolean(blockDataSet.get("scale-fixed"));
+		final boolean scaleFixed = Boolean.parseBoolean("" + blockDataSet.get("scale-fixed") + "");
 		
 		blockWidthmm = reportData.getReportWidth() * gridWidth/12; 
 		blockHeightmm = reportData.getReportHeight() * gridHeight/12; 
@@ -120,9 +120,9 @@ public class MapBlockInfo implements BlockInfo {
 		return mapExtent;
 	}
 	
-	public double getResizeFactor() {
+	public double getResizeFactor(double tileResolution) {
 		double mapWidthm = (centerX + ((scale/1000) * blockWidthmm)/2) - (centerX - ((scale/1000) * blockWidthmm)/2);
-		return resolution/(mapWidthm/(blockWidthmm / 0.28));
+		return tileResolution/(mapWidthm/(blockWidthmm / 0.28));
 	}
 	
 }
