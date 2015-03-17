@@ -12,7 +12,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -170,6 +172,12 @@ public class HtmlPrintService implements PrintService, Closeable {
 					// Load the input document:
 					final Document cachedDocument = documentCache.fetch (printRequest.getInputDocument ().getUri ()).get (cacheTimeoutMillis);
 					
+					// Create the parameters map for less:
+					final Map<String, String> lessParameters = new HashMap<> ();
+					for (final Map.Entry<String, Object> entry: printRequest.getLayoutParameters ().entrySet ()) {
+						lessParameters.put (entry.getKey (), entry.getValue () == null ? "" : entry.getValue ().toString ());
+					}
+							
 					// Load the HTML and convert to an XML document:
 					final String xmlDocument;
 					final String baseUrl = printRequest.getBaseUri () != null ? printRequest.getBaseUri ().toString () : cachedDocument.getUri ().toString ();
@@ -177,7 +185,12 @@ public class HtmlPrintService implements PrintService, Closeable {
 					try (final InputStream htmlStream = streamProcessor.asInputStream (cachedDocument.getBody (), cacheTimeoutMillis)) {
 						final org.jsoup.nodes.Document document = Jsoup.parse (htmlStream, charset, baseUrl);
 
-						replaceLess (document, printRequest.getBaseUri () != null ? printRequest.getBaseUri () : makeBaseUri (cachedDocument.getUri ()));
+						replaceLess (
+								document, 
+								printRequest.getBaseUri () != null ? printRequest.getBaseUri () : makeBaseUri (cachedDocument.getUri ()),
+								lessParameters
+							);
+						
 						cleanup (document);
 						
 						final StringWriter writer = new StringWriter ();
@@ -342,7 +355,7 @@ public class HtmlPrintService implements PrintService, Closeable {
 	 * @param document
 	 * @throws URISyntaxException 
 	 */
-	private void replaceLess (final org.jsoup.nodes.Document document, final URI baseUri) throws LessCompilationException, URISyntaxException {
+	private void replaceLess (final org.jsoup.nodes.Document document, final URI baseUri, final Map<String, String> lessParameters) throws LessCompilationException, URISyntaxException {
 		log.error ("Replacing less scripts");
 		LessCompiler lessCompiler = null;
 		
@@ -368,15 +381,18 @@ public class HtmlPrintService implements PrintService, Closeable {
 			
 			log.error ("Less compiling: " + lessUri);
 			
-			final String lessSource = lessCompiler.compile (String.format ("@import \"%s\";", lessUri.toString ()), (filename, directory) -> {
-				log.error (filename);
-				try {
-					final Document lessDocument = documentCache.fetch (new URI (filename)).get (cacheTimeoutMillis);
-					return Optional.of (readInputStream (streamProcessor.asInputStream (lessDocument.getBody (), cacheTimeoutMillis)));
-				} catch (DocumentCacheException | URISyntaxException e) {
-					return Optional.<String>empty ();
-				}
-			});
+			final String lessSource = lessCompiler.compile (
+				String.format ("@import \"%s\";", lessUri.toString ()), 
+				lessParameters, 
+				(filename, directory) -> {
+					log.error (filename);
+					try {
+						final Document lessDocument = documentCache.fetch (new URI (filename)).get (cacheTimeoutMillis);
+						return Optional.of (readInputStream (streamProcessor.asInputStream (lessDocument.getBody (), cacheTimeoutMillis)));
+					} catch (DocumentCacheException | URISyntaxException e) {
+						return Optional.<String>empty ();
+					}
+				});
 
 			final Element replacedElement = document
 					.createElement ("style")

@@ -8,6 +8,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 
@@ -148,12 +150,45 @@ public class TestHtmlPrintService {
 		
 		print ("http://idgis.nl");
 	}
+
+	/**
+	 * Verify that less compilation fails when a less script referencing a missing variable is used.
+	 */
+	@Test (expected = LessCompilationException.class)
+	public void testPrintWithMissingVariable () throws Throwable {
+		store ("http://idgis.nl", "text/html", "<html><head><link rel=\"stylesheet/less\" type=\"text/css\" href=\"test.less\"></head><body></body>");
+		store ("http://idgis.nl/test.less", "text/css+less", "h1 { .a { color: @test-color; } }");
+		
+		print ("http://idgis.nl");
+	}
+	
+	/**
+	 * Verify that less compilation succeeds when a variable is used whose value is provided in the request.
+	 */
+	@Test
+	public void testPrintWithVariable () throws Throwable {
+		store ("http://idgis.nl", "text/html", "<html><head><link rel=\"stylesheet/less\" type=\"text/css\" href=\"test.less\"></head><body></body>");
+		store ("http://idgis.nl/test.less", "text/css+less", "h1 { .a { color: @test-color; } }");
+		
+		print ("http://idgis.nl", "test-color", "#012");
+	}
 	
 	private Document print (final String uri) throws Throwable {
+		return print (uri, null, null);
+	}
+	
+	private Document print (final String uri, final String parameterName, final String parameterValue) throws Throwable {
+		final Map<String, Object> parameters = new HashMap<> ();
+		
+		if (parameterName != null) {
+			parameters.put (parameterName, parameterValue);
+		}
+		
 		final PrintRequest printRequest = new PrintRequest (
 				new DocumentReference (new MimeContentType ("text/html"), new URI (uri)), 
 				new MimeContentType ("application/pdf"), 
-				new URI ("http://idgis.nl")
+				new URI ("http://idgis.nl"),
+				parameters
 			);
 		
 		return service.print (printRequest).get (30000);
