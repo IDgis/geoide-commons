@@ -21,7 +21,7 @@ object Common {
 		scalaVersion := "2.11.1",
 		
 		// Set the Java version:
-		javacOptions in Compile ++= Seq("-source", "1.7", "-target", "1.7"),
+		javacOptions in Compile ++= Seq("-source", "1.8", "-target", "1.8"),
 		
 		// Perform RequireJS compilation:
 		// pipelineStages := Seq(rjs),
