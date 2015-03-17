@@ -133,7 +133,7 @@ public class TestHtmlPrintService {
 	@Test
 	public void testPrintWithLessWrongRel () throws Throwable {
 		store ("http://idgis.nl", "text/html", "<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"test.less\"></head><body></body>");
-		store ("http://idgis.nl/test.less", "text/css+less", "h1 { .a { display: block; } }");
+		store ("http://idgis.nl/test.less", "text/css", "@param: #123; h1 { .a { display: block; } }");
 		
 		final Document document = print ("http://idgis.nl");
 		
