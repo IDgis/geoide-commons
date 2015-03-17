@@ -13,6 +13,7 @@ import javax.imageio.ImageIO;
 
 import nl.idgis.geoide.commons.print.common.DocumentReference;
 import nl.idgis.geoide.commons.print.common.PrintRequest;
+import nl.idgis.geoide.commons.report.layout.less.LessCompilationException;
 import nl.idgis.geoide.documentcache.Document;
 import nl.idgis.geoide.documentcache.DocumentCache;
 import nl.idgis.geoide.documentcache.service.DefaultDocumentCache;
@@ -99,6 +100,53 @@ public class TestHtmlPrintService {
 		final Document document = print ("http://idgis.nl");
 		
 		assertEquals (new MimeContentType ("application/pdf"), document.getContentType ());
+	}
+	
+	/**
+	 * Verifies that link tags that reference a less file are parsed and included in the HTML. 
+	 */
+	@Test
+	public void testPrintWithLessScript () throws Throwable {
+		store ("http://idgis.nl", "text/html", "<html><head><link rel=\"stylesheet/less\" type=\"text/css\" href=\"test.less\"></head><body></body>");
+		store ("http://idgis.nl/test.less", "text/css+less", "h1 { .a { display: block; } }");
+		
+		final Document document = print ("http://idgis.nl");
+		
+		assertEquals (new MimeContentType ("application/pdf"), document.getContentType ());
+	}
+
+	/**
+	 * Verify that less compilation fails when the less script can't be found.
+	 */
+	@Test (expected = LessCompilationException.class)
+	public void testPrintWithLessScriptNotFound () throws Throwable {
+		store ("http://idgis.nl", "text/html", "<html><head><link rel=\"stylesheet/less\" type=\"text/css\" href=\"test.less\"></head><body></body>");
+		
+		print ("http://idgis.nl");
+	}
+	
+	/**
+	 * Verify that less compilation is not performed when rel="stylesheet/less" is not used on a link.
+	 */
+	@Test
+	public void testPrintWithLessWrongRel () throws Throwable {
+		store ("http://idgis.nl", "text/html", "<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"test.less\"></head><body></body>");
+		store ("http://idgis.nl/test.less", "text/css+less", "h1 { .a { display: block; } }");
+		
+		final Document document = print ("http://idgis.nl");
+		
+		assertEquals (new MimeContentType ("application/pdf"), document.getContentType ());
+	}
+	
+	/**
+	 * Verify that less compilation fails when an incorrect less script is provided.
+	 */
+	@Test (expected = LessCompilationException.class)
+	public void testPrintWithIncorrectLess () throws Throwable {
+		store ("http://idgis.nl", "text/html", "<html><head><link rel=\"stylesheet/less\" type=\"text/css\" href=\"test.less\"></head><body></body>");
+		store ("http://idgis.nl/test.less", "text/css+less", "h1 { .a { display: } }");
+		
+		print ("http://idgis.nl");
 	}
 	
 	private Document print (final String uri) throws Throwable {
