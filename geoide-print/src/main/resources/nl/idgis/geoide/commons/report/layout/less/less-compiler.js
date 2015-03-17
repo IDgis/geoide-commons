@@ -45,15 +45,23 @@ function doRequire (dep, base) {
 		content = result[1];
 	
 	var exports = (function () {
+		
+		var code = '(function () { var require = function (dep) { return doRequire (dep, "' 
+			+ finalPath 
+			+ '"); }; var module = { }; '
+			+ content
+			+ '\nreturn module.exports; })();';
+			
 		var require = function (dep) {
 			return doRequire (dep, finalPath);
 		};
 		
-		var module = { };
+		// var module = { };
 		
-		eval (content);
+		return load ({ script: code, name: finalPath + '.js' });
+		//eval (content);
 
-		return module.exports;
+		// return module.exports;
 	}) ();
 	
 	requireJsCache[dep] = exports;
@@ -77,6 +85,7 @@ Promise.prototype.reject = function (a) {
 
 // Utility for printing errors:
 function printError (error) {
+	print (error.stack);
 }
 
 // Require the less compiler:

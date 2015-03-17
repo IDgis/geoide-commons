@@ -146,7 +146,7 @@ public class LessCompiler {
 						}
 					}
 			
-					return new String[] { finalPath, "//# sourceUrl=" + finalPath + ".js\n" + content.toString () };
+					return new String[] { finalPath, content.toString () };
 				}
 			} catch (IOException e) {
 				throw new RuntimeException (e);
