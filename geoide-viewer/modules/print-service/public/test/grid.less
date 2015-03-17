@@ -40,6 +40,7 @@
 		margin: @grid-margin-top @grid-margin-right @grid-margin-bottom @grid-margin-left;
 		padding: 0;
 		position: relative;
+		z-index: 0;
 	}
 	
 //
@@ -105,12 +106,25 @@
 		margin-left: (2 * @grid-gutter-h) + ((@n * @grid-column-width) + ((@n - 1) * @grid-gutter-h));
 	}
 	
+	.col-row-span-n(@n) {
+		height: ((@n * @grid-row-height) + ((@n - 1) * @grid-gutter-v));
+	}
+	
 	.grid-col {
 		margin-left: @grid-gutter-h;
 
 		height: 100%;
 		float: left;
+		position: relative;
+		z-index: 2;
 				
+		// Contain all floats inside the cell:
+		&:after {
+			content: "";
+			display: block;
+			clear: both;
+		}
+		
 		.generate-span(@n, @i: 1) when (@i =< @n) {
 			&.span-@{i} {
 				.col-span-n (@i);
@@ -127,10 +141,20 @@
 			.generate-skip (@n, (@i + 1));
 		}
 		
+		.generate-row-span(@n, @i: 1) when (@i =< @n) {
+			&.row-span-@{i} {
+				.col-row-span-n (@i);
+			}
+			
+			.generate-row-span (@n, (@i + 1));
+		}
+		
 		.generate-span (@grid-column-count);
 		.generate-skip (@grid-column-count - 1);
+		.generate-row-span (@grid-row-count);
 			
 		.debug-block (green);
+		outline: dotted 1px black;
 	}
 	
 	
