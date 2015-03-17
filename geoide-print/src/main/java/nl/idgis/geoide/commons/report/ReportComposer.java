@@ -118,6 +118,7 @@ public class ReportComposer {
 			if(blockElement.hasClass("map")) {
 				String viewerStateId = blockElement.attributes().get("data-viewerstate-id");
 				if(viewerStateId!=null){
+					
 					blockInfo = new MapBlockInfo (viewerStateNodes.get(viewerStateId),blockElement.attributes(), reportData);
 					mapBlockInfoMap.put(viewerStateId, (MapBlockInfo) blockInfo);
 				} else {
