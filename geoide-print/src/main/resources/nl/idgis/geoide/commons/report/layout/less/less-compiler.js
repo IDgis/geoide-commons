@@ -150,11 +150,24 @@ Filesystem.prototype.loadFile = function(filename, currentDirectory, options, en
 };
 
 Filesystem.prototype.loadFileSync = function(filename, currentDirectory, options, environment) {
-	return {
-		error: null,
-		filename: filename,
-		contents: 'a { display: block; }'
-	};
+	if (fileLoader) {
+		var content = fileLoader.loadFile (filename, currentDirectory);
+
+		if (content.isPresent ()) {
+			return {
+				filename: filename,
+				contents: content.get ()
+			};
+		} else {
+			return {
+				error: new Error ('File not found: ' + filename)
+			};
+		}
+	} else {
+		return {
+			error: new Error ('Imports not supported: no file loader present (' + filename + ')')
+		};
+	}
 };
 
 // Require the less compiler:

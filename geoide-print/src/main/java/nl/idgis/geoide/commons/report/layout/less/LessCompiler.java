@@ -19,7 +19,7 @@ import javax.script.ScriptException;
  * Provides a Java interface to the less CSS compiler (http://lesscss.org). Uses the Nashorn JavaScript
  * engine in combination with the less-node WebJar.
  * 
- * The less compiler has no support for imports.
+ * The less compiler supports imports through the LessFileLoader interface.
  * 
  * Usage of a Less compiler is not thread safe.
  */
@@ -73,12 +73,13 @@ public class LessCompiler {
 	 * Compiles the given less input to a corresponding CSS document.
 	 * 
 	 * @param input	The less input.
+	 * @param loader Loader to invoke when processing imports.
 	 * @return The CSS output after compilation.
 	 * @throws LessCompilationException Thrown when an error is encountered during less compilation. Contains detailed
 	 * 			information about the cause of the error and the location in the input.
 	 */
-	public String compile (final String input) throws LessCompilationException {
-		return compile (input, null);
+	public String compile (final String input, final LessFileLoader loader) throws LessCompilationException {
+		return compile (input, null, loader);
 	}
 
 	/**
@@ -87,12 +88,15 @@ public class LessCompiler {
 	 * 
 	 * @param input The less input.
 	 * @param variables A map containging optional variables that are used during less compilation.
+	 * @param loader Loader to invoke when processing imports.
 	 * @return The CSS output after compilation.
 	 * @throws LessCompilationException Thrown when an error is encountered during less compilation. Contains detailed
 	 * 			information about the cause of the error and the location in the input.
 	 */
-	public String compile (final String input, final Map<String, String> variables) throws LessCompilationException {
+	public String compile (final String input, final Map<String, String> variables, final LessFileLoader loader) throws LessCompilationException {
 		try {
+			scriptEngine.put ("fileLoader", loader);
+			
 			final Object result = ((Invocable) scriptEngine).invokeFunction ("lessCompile", input, variables);
 			if (result instanceof LessCompilationException) {
 				throw (LessCompilationException) result;

@@ -1,9 +1,11 @@
 package nl.idgis.geoide.commons.report.layout.less;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -14,6 +16,12 @@ import org.junit.Test;
 public class TestLessCompiler {
 
 	private static LessCompiler compiler;
+	private static LessFileLoader loader = new LessFileLoader () {
+		@Override
+		public Optional<String> loadFile (final String filename, final String currentDirectory) {
+			return Optional.of ("a { display: block; }");
+		}
+	};
 
 	/**
 	 * Creates a new {@link LessCompiler}.
@@ -28,7 +36,7 @@ public class TestLessCompiler {
 	 */
 	@Test
 	public void testCompile () throws Throwable {
-		assertEquals ("a{display:block}", compiler.compile ("a { display: block; }"));
+		assertEquals ("a{display:block}", compiler.compile ("a { display: block; }", loader));
 	}
 
 	/**
@@ -41,7 +49,7 @@ public class TestLessCompiler {
 		
 		variables.put ("test-color", "#012");
 		
-		assertEquals ("a{color:#012}", compiler.compile ("a { color: @test-color; }", variables));
+		assertEquals ("a{color:#012}", compiler.compile ("a { color: @test-color; }", variables, loader));
 	}
 
 	/**
@@ -53,7 +61,7 @@ public class TestLessCompiler {
 		
 		variables.put ("test-color", "#012");
 		
-		compiler.compile ("a { color: @test-color2; }", variables);
+		compiler.compile ("a { color: @test-color2; }", variables, loader);
 	}
 
 	/**
@@ -62,7 +70,7 @@ public class TestLessCompiler {
 	@Test
 	public void testCompilationException () {
 		try {
-			compiler.compile ("a {\ndisplay:\n}\n");
+			compiler.compile ("a {\ndisplay:\n}\n", loader);
 		} catch (LessCompilationException e) {
 			assertEquals (3, e.getLine ());
 			assertEquals (0, e.getColumn ());
@@ -78,10 +86,37 @@ public class TestLessCompiler {
 	}
 	
 	/**
-	 * Verifies that imports are not processed by this compiler.
+	 * Verifies that imports are processed by the compiler.
 	 */
 	@Test
 	public void testImport () throws Throwable {
-		assertEquals ("a{display:block}", compiler.compile ("@import \"test.less\";"));
+		assertEquals ("a{display:block}", compiler.compile ("@import \"test.less\";", loader));
+	}
+	
+	/**
+	 * Verifies that non-existing imports result in an error.
+	 */
+	@Test (expected = LessCompilationException.class)
+	public void testImportNotFound () throws Throwable {
+		compiler.compile ("@import \"test.less\";", (filename, directory) -> Optional.empty ());
+	}
+	
+	/**
+	 * Verifies that imports with syntax errors result in a compilation error.
+	 */
+	@Test
+	public void testImportInvalidContent () throws Throwable {
+		try {
+			compiler.compile ("@import \"test.less\";", (filename, directory) -> Optional.of ("a { display: }"));
+		} catch (LessCompilationException e) {
+			assertEquals (1, e.getLine ());
+			assertEquals (13, e.getColumn ());
+			assertEquals ("test.less", e.getFilename ());
+			assertEquals (3, e.getExtract ().size ());
+			assertEquals ("a { display: }", e.getExtract ().get (1));
+			return;
+		}
+		
+		fail ("Expected exception");
 	}
 }
