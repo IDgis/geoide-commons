@@ -80,8 +80,8 @@ public class TestLessCompiler {
 	/**
 	 * Verifies that imports are not processed by this compiler.
 	 */
-	@Test (expected = LessCompilationException.class)
+	@Test
 	public void testImport () throws Throwable {
-		compiler.compile ("@import \"test.less\";");
+		assertEquals ("a{display:block}", compiler.compile ("@import \"test.less\";"));
 	}
 }
