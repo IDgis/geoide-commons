@@ -262,7 +262,7 @@ public class TestDefaultDocumentCache {
 		}
 		inputStream.close ();
 		
-		assertTrue (data.length () > 0);
+		assertTrue (data.size () > 0);
 		
 		final String content = new String (data.toArray ());
 		
