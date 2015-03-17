@@ -125,6 +125,13 @@
 			clear: both;
 		}
 		
+		> .grid-row {
+			margin-bottom: 0;
+		}
+		> .grid-row:first-child {
+			margin-top: 0;
+		}		
+		
 		.generate-span(@n, @i: 1) when (@i =< @n) {
 			&.span-@{i} {
 				.col-span-n (@i);
