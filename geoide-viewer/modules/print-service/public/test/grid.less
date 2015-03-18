@@ -2,6 +2,9 @@
 //
 // Input variables:
 //
+	@grid-page-orientation: landscape;
+	@grid-page-size: A4;
+	
 	@grid-page-width: 1000px;
 	@grid-page-height: 1000px;
 	
@@ -29,6 +32,14 @@
 //
 	.debug-block(@color) when (@grid-debug = true) {
 		background-color: @color;
+	}
+	
+//
+// Page settings:
+//
+	@page {
+		margin: 0;
+		size: @grid-page-size @grid-page-orientation;
 	}
 	
 //
