@@ -113,7 +113,6 @@
 	.grid-col {
 		margin-left: @grid-gutter-h;
 
-		height: 100%;
 		float: left;
 		position: relative;
 		z-index: 2;
@@ -130,8 +129,22 @@
 		}
 		> .grid-row:first-child {
 			margin-top: 0;
-		}		
+		}
+	}
+	
+	
+	// Set the base height of the columns equal to the height of the containing column:
+	.generate-col-height(@n, @i: 1) when (@i =< @n) {
+		.grid-row.span-@{i} > .grid-col {
+			.row-span-n (@i);			
+		}
 		
+		.generate-col-height (@n, (@i + 1));
+	}
+	.generate-col-height (@grid-row-count);
+
+	.grid-col {		
+		// Generate span and skip:
 		.generate-span(@n, @i: 1) when (@i =< @n) {
 			&.span-@{i} {
 				.col-span-n (@i);

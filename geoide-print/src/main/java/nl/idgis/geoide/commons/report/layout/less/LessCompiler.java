@@ -52,7 +52,7 @@ public class LessCompiler {
 		}
 		
 		// Create a JavaScript engine:
-		scriptEngineManager = new ScriptEngineManager ();
+		scriptEngineManager = new ScriptEngineManager (null);
 		
 		scriptEngine = scriptEngineManager.getEngineByName ("JavaScript");
 		
