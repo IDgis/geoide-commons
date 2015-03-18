@@ -40,6 +40,7 @@
 		<wiremock.version>1.53</wiremock.version>
 		<reactive-streams.version>1.0.0.RC1</reactive-streams.version>
 		<httpcomponents-asyncclient.version>4.0.2</httpcomponents-asyncclient.version>
+		<lesscss.version>2.3.1</lesscss.version>
 		
 		<!-- These versions should match the versions that are in use by the Play framework: -->
 		<scala.version>2.11.1</scala.version>
@@ -350,6 +351,11 @@
 			    <artifactId>jsoup</artifactId>
 			    <version>${jsoup.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.webjars</groupId>
+				<artifactId>less-node</artifactId>
+				<version>${lesscss.version}</version>
+			</dependency>
 			
 			<!-- Conflicting dependencies introduced by idgis-commons: -->
 			<dependency>
@@ -444,8 +450,8 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<configuration>
-						<source>1.7</source>
-						<target>1.7</target>
+						<source>1.8</source>
+						<target>1.8</target>
 						<encoding>utf-8</encoding>
 					</configuration>
 				</plugin>

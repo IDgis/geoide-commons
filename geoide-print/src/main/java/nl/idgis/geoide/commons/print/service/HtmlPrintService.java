@@ -2,13 +2,20 @@ package nl.idgis.geoide.commons.print.service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -23,6 +30,8 @@ import nl.idgis.geoide.commons.print.common.Capabilities;
 import nl.idgis.geoide.commons.print.common.PrintRequest;
 import nl.idgis.geoide.commons.print.svg.ChainedReplacedElementFactory;
 import nl.idgis.geoide.commons.print.svg.SVGReplacedElementFactory;
+import nl.idgis.geoide.commons.report.layout.less.LessCompilationException;
+import nl.idgis.geoide.commons.report.layout.less.LessCompiler;
 import nl.idgis.geoide.documentcache.Document;
 import nl.idgis.geoide.documentcache.DocumentCache;
 import nl.idgis.geoide.documentcache.DocumentCacheException;
@@ -101,6 +110,42 @@ public class HtmlPrintService implements PrintService, Closeable {
 		executor.shutdownNow ();
 	}
 	
+	private URI makeBaseUri (final URI uri) throws URISyntaxException {
+		final String path = uri.getPath ();
+		final int n = path != null ? path.lastIndexOf ('/') : -1;
+
+		return new URI (
+				uri.getScheme (), 
+				uri.getUserInfo (), 
+				uri.getHost (), 
+				uri.getPort (),
+				n >= 0 ? path.substring (0, n + 1) : null,
+				null, 
+				null
+			);
+	}
+	
+	private URI joinUris (final URI baseUri, final String appendPath) throws URISyntaxException {
+		final String path = baseUri.getPath ();
+		final String newPath;
+		
+		if (path == null) {
+			newPath = appendPath;
+		} else {
+			newPath = path.endsWith ("/") ? path + appendPath : path + "/" + appendPath;
+		}
+		
+		return new URI (
+				baseUri.getScheme (),
+				baseUri.getUserInfo (),
+				baseUri.getHost (),
+				baseUri.getPort (),
+				newPath,
+				null,
+				null
+			);
+	}
+	
 	/**
 	 * Performs a print request on this service. The request is scheduled on the thread pool and is executed when a worker thread
 	 * is available and the request is at the front of the queue.
@@ -127,6 +172,12 @@ public class HtmlPrintService implements PrintService, Closeable {
 					// Load the input document:
 					final Document cachedDocument = documentCache.fetch (printRequest.getInputDocument ().getUri ()).get (cacheTimeoutMillis);
 					
+					// Create the parameters map for less:
+					final Map<String, String> lessParameters = new HashMap<> ();
+					for (final Map.Entry<String, Object> entry: printRequest.getLayoutParameters ().entrySet ()) {
+						lessParameters.put (entry.getKey (), entry.getValue () == null ? "" : entry.getValue ().toString ());
+					}
+							
 					// Load the HTML and convert to an XML document:
 					final String xmlDocument;
 					final String baseUrl = printRequest.getBaseUri () != null ? printRequest.getBaseUri ().toString () : cachedDocument.getUri ().toString ();
@@ -134,6 +185,12 @@ public class HtmlPrintService implements PrintService, Closeable {
 					try (final InputStream htmlStream = streamProcessor.asInputStream (cachedDocument.getBody (), cacheTimeoutMillis)) {
 						final org.jsoup.nodes.Document document = Jsoup.parse (htmlStream, charset, baseUrl);
 
+						replaceLess (
+								document, 
+								printRequest.getBaseUri () != null ? printRequest.getBaseUri () : makeBaseUri (cachedDocument.getUri ()),
+								lessParameters
+							);
+						
 						cleanup (document);
 						
 						final StringWriter writer = new StringWriter ();
@@ -261,6 +318,89 @@ public class HtmlPrintService implements PrintService, Closeable {
 	 */
 	private void cleanup (final org.jsoup.nodes.Document document) {
 		HtmlCleanup.cleanup (document);
+	}
+	
+	private String readInputStream (final InputStream inputStream) {
+		if (inputStream == null) {
+			return null;
+		}
+		
+		try (final Reader reader = new InputStreamReader (inputStream)) {
+			final StringBuilder content = new StringBuilder ();
+			final char[] buffer = new char[512];
+			int n;
+			
+			while ((n = reader.read (buffer)) >= 0) {
+				if (n == buffer.length) {
+					content.append (buffer);
+				} else if (n > 0) {
+					content.append (Arrays.copyOf (buffer, n));
+				}
+			}
+			
+			return content.toString ();
+		} catch (IOException e) {
+			return null;
+		} finally {
+			try {
+				inputStream.close ();
+			} catch (IOException e) {
+			}
+		}
+	}
+	
+	/**
+	 * Processes less scripts.
+	 * 
+	 * @param document
+	 * @throws URISyntaxException 
+	 */
+	private void replaceLess (final org.jsoup.nodes.Document document, final URI baseUri, final Map<String, String> lessParameters) throws LessCompilationException, URISyntaxException {
+		log.debug ("Replacing less scripts");
+		LessCompiler lessCompiler = null;
+		
+		for (final Element element: document.select ("link[rel=\"stylesheet/less\"]")) {
+			if (!element.hasAttr ("type") 
+				|| !element.attr ("type").trim ().toLowerCase ().equals ("text/css")
+				|| !element.hasAttr ("href")) {
+				continue;
+			}
+			
+			if (lessCompiler == null) {
+				lessCompiler = new LessCompiler ();
+			}
+			
+			final String href = element.attr ("href");
+			final URI lessUri;
+			
+			if (href.indexOf ("://") >= 0) {
+				lessUri = new URI (href);
+			} else {
+				lessUri = joinUris (baseUri, href);
+			}
+			
+			log.debug ("Less compiling: " + lessUri);
+			
+			final String lessSource = lessCompiler.compile (
+				String.format ("@import \"%s\";", lessUri.toString ()), 
+				lessParameters, 
+				(filename, directory) -> {
+					log.debug ("Importing less script: " + filename);
+					try {
+						final Document lessDocument = documentCache.fetch (new URI (filename)).get (cacheTimeoutMillis);
+						return Optional.of (readInputStream (streamProcessor.asInputStream (lessDocument.getBody (), cacheTimeoutMillis)));
+					} catch (DocumentCacheException | URISyntaxException e) {
+						return Optional.<String>empty ();
+					}
+				});
+
+			final Element replacedElement = document
+					.createElement ("style")
+					.attr ("type", "text/css")
+					.appendText (lessSource);
+			
+			element.replaceWith (replacedElement);
+		}
 	}
 	
 	 private static class ResourceLoaderUserAgent extends ITextUserAgent {

@@ -80,6 +80,10 @@
 			<groupId>xalan</groupId>
 			<artifactId>xalan</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>less-node</artifactId>
+		</dependency>
 	</dependencies>
 	
 	<build>

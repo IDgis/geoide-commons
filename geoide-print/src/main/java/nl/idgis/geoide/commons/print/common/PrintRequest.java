@@ -2,6 +2,9 @@ package nl.idgis.geoide.commons.print.common;
 
 import java.io.Serializable;
 import java.net.URI;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import nl.idgis.ogc.util.MimeContentType;
 
@@ -16,7 +19,8 @@ public final class PrintRequest implements Serializable {
 	private final DocumentReference inputDocument;
 	private final MimeContentType outputFormat;
 	private final URI baseUri;
-	
+	private final Map<String, Object> layoutParameters;
+
 	/**
 	 * Constructs a new print request.
 	 * 
@@ -24,6 +28,17 @@ public final class PrintRequest implements Serializable {
 	 * @param outputFormat	The requested output format, must be one of the supported formats of the service. Cannot be null.
 	 */
 	public PrintRequest (final DocumentReference inputDocument, final MimeContentType outputFormat, final URI baseUri) {
+		this (inputDocument, outputFormat, baseUri, null);
+	}
+	
+	/**
+	 * Constructs a new print request.
+	 * 
+	 * @param inputDocument		The input document to convert using the print service. Cannot be null.
+	 * @param outputFormat		The requested output format, must be one of the supported formats of the service. Cannot be null.
+	 * @param layoutParameters	A map containing parameters to be used by the layout engine. Can be empty. 
+	 */
+	public PrintRequest (final DocumentReference inputDocument, final MimeContentType outputFormat, final URI baseUri, final Map<String, Object> layoutParameters) {
 		if (inputDocument == null) {
 			throw new NullPointerException ("inputDocument cannot be null");
 		}
@@ -34,6 +49,9 @@ public final class PrintRequest implements Serializable {
 		this.inputDocument = inputDocument;
 		this.outputFormat = outputFormat;
 		this.baseUri = baseUri;
+		this.layoutParameters = layoutParameters != null && !layoutParameters.isEmpty ()
+				? new HashMap<String, Object> (layoutParameters)
+				: Collections.<String, Object>emptyMap ();
 	}
 
 	/**
@@ -62,5 +80,14 @@ public final class PrintRequest implements Serializable {
 	 */
 	public URI getBaseUri () {
 		return baseUri;
+	}
+
+	/**
+	 * Returns a map containing parameters that should are used by the layout engine.
+	 * 
+	 * @return A (possibly empty) map containing the layout parameters.
+	 */
+	public Map<String, Object> getLayoutParameters () {
+		return Collections.unmodifiableMap (layoutParameters);
 	}
 }

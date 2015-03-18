@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet/less" type="text/css" href="grid.less">
+	</head>
+	
+	<body class="grid-body">
+
+		<div class="grid-row span-1">
+			Grid row, span 1
+		</div>
+		
+		<div class="grid-row span-2">
+			Grid row, span 2
+		</div>
+
+		<div class="grid-row span-2 skip-1">
+			Grid row, skip 1, span 2
+		</div>	
+		
+		<div class="grid-row span-1">
+			<div class="grid-col span-1">Column 1x1</div>
+			<div class="grid-col span-1">Column 1x1</div>
+			<div class="grid-col span-1">Column 1x1</div>
+			<div class="grid-col span-1">Column 1x1</div>
+			<div class="grid-col span-1">Column 1x1</div>
+			<div class="grid-col span-1">Column 1x1</div>
+			<div class="grid-col span-1">Column 1x1</div>
+			<div class="grid-col span-1">Column 1x1</div>
+			<div class="grid-col span-1">Column 1x1</div>
+			<div class="grid-col span-1">Column 1x1</div>
+			<div class="grid-col span-1">Column 1x1</div>
+			<div class="grid-col span-1">Column 1x1</div>
+		</div>
+			
+		<div class="grid-row span-1">
+			<div class="grid-col span-2">Column 2x1</div>
+			<div class="grid-col span-2">Column 2x1</div>
+			<div class="grid-col span-2">Column 2x1</div>
+			<div class="grid-col span-2">Column 2x1</div>
+			<div class="grid-col span-2">Column 2x1</div>
+			<div class="grid-col span-2">Column 2x1</div>
+		</div>
+		
+		<div class="grid-row">
+			<div class="grid-col span-4">Column 4x? Height flexible depending on content.</div>
+		</div>
+		
+		<div class="grid-row span-2">
+			<div class="grid-col span-4">
+				Column 4x2
+			</div>
+			<div class="grid-col span-4">
+				Column 4x2
+			</div>
+			<div class="grid-col span-4">
+				Column 4x2
+			</div>
+		</div>
+		
+		<div class="grid-row span-1">
+			<div class="grid-col skip-4 span-4">
+				Column 4x1, skip 4
+			</div>
+		</div>
+		
+		<div class="grid-row span-4">
+			<div class="grid-col skip-1 span-10">
+				<div class="grid-row skip-1 span-2">
+					Row inside col, height 2
+				</div>
+			</div>
+		</div>
+		
+		<div class="grid-row span-4">
+			<div class="grid-col skip-1 span-10">
+				<div class="grid-row skip-1 span-1">
+					<div class="grid-col span-5">
+						Nested col, 5x1
+					</div>
+					<div class="grid-col span-5 row-span-1">
+						Nested col, 5x1
+					</div>
+				</div>
+				<div class="grid-row span-1">
+					<div class="grid-col span-5">
+						Nested col, 5x1
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="grid-row">
+			<div class="grid-col skip-4 span-4 row-span-4">
+				4x4 grid cell in height-less row.
+			</div>
+		</div>
+		
+		<div class="grid-row">
+			<div class="grid-col span-6 row-span-4">
+				<div class="grid-row span-2">
+					<div class="grid-col span-3">
+						3x2, nested
+					</div>
+					<div class="grid-col span-3">
+						3x2, nested
+					</div>
+				</div>
+				<div class="grid-row span-2">
+					<div class="grid-col span-3">
+						3x2, nested
+					</div>
+					<div class="grid-col span-3">
+						<div class="grid-row span-1">
+							<div class="grid-col span-1">1x1</div>
+							<div class="grid-col span-1">1x1</div>
+							<div class="grid-col span-1">1x1</div>
+						</div>
+						<div class="grid-row span-1">
+							<div class="grid-col span-1">1x1</div>
+							<div class="grid-col span-1">1x1</div>
+							<div class="grid-col span-1">1x1</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="grid-col span-6 row-span-4">
+				6x4
+			</div>
+		</div>
+		
+		<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.3.1/less.min.js"></script>
+		
+	</body>
+</html>

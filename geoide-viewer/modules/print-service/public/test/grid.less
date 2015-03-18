@@ -1,0 +1,219 @@
+
+//
+// Input variables:
+//
+	@grid-page-orientation: landscape;
+	@grid-page-size: A4;
+	
+	@grid-page-width: 1000px;
+	@grid-page-height: 1000px;
+	
+	@grid-margin-top: 20px;
+	@grid-margin-bottom: 20px;
+	@grid-margin-left: 20px;
+	@grid-margin-right: 20px;
+	
+	@grid-gutter-h: 10px;
+	@grid-gutter-v: 10px;
+	
+	@grid-row-count: 12;
+	@grid-column-count: 12;
+	
+	@grid-debug: true;
+
+//
+// Grid parameters:
+//
+	@grid-row-height: (@grid-page-height - @grid-margin-top - @grid-margin-bottom - ((@grid-row-count - 1) * @grid-gutter-v)) / @grid-row-count;
+	@grid-column-width: (@grid-page-width - @grid-margin-right - @grid-margin-left - ((@grid-column-count - 1) * @grid-gutter-h)) / @grid-column-count;
+	
+//
+// Debug helpers:
+//
+	.debug-block(@color) when (@grid-debug = true) {
+		background-color: @color;
+	}
+	
+//
+// Page settings:
+//
+	@page {
+		margin: 0;
+		size: @grid-page-size @grid-page-orientation;
+		
+		@top-center {
+			content: element(header);
+		}
+		
+		@bottom-center {
+			content: element(footer);
+		}
+	}
+	
+//
+// Grid body:
+//
+	.grid-body {
+		display: block;
+		width: (@grid-page-width - @grid-margin-left - @grid-margin-right); 
+		margin: @grid-margin-top @grid-margin-right @grid-margin-bottom @grid-margin-left;
+		padding: 0;
+		position: relative;
+		z-index: 0;
+	}
+	
+//
+// Grid rows:
+//
+
+	.row-span-n(@n) {
+		height: ((@n * @grid-row-height) + ((@n - 1) * @grid-gutter-v));
+	}
+	
+	.row-skip-n(@n) {
+		margin-top: (2 * @grid-gutter-v) + ((@n * @grid-row-height) + ((@n - 1) * @grid-gutter-v));
+	}
+	
+	.grid-row {
+		display: block;
+		position: relative;
+		margin-top: @grid-gutter-v; 
+		margin-bottom: @grid-gutter-v;
+		padding: 0;
+		
+		// Compensate for the gutter on column blocks:
+		margin-left: -@grid-gutter-h;
+		margin-right: -@grid-gutter-h;
+		
+		// Contain all floats inside the row:
+		&:after {
+			content: "";
+			display: block;
+			clear: both;
+		}
+	
+		.generate-span(@n, @i: 1) when (@i =< @n) {
+			&.span-@{i} {
+				.row-span-n (@i);
+			}
+			
+			.generate-span (@n, (@i + 1));
+		}
+
+		.generate-skip(@n, @i: 1) when (@i =< @n) {
+			&.skip-@{i} {
+				.row-skip-n (@i);
+			}
+			
+			.generate-skip (@n, (@i + 1));
+		}
+		
+		.generate-span (@grid-row-count);
+		.generate-skip (@grid-row-count - 1);
+		
+		// Header and footer:
+		&.header {
+			position: running(header);
+		}
+		
+		&.footer {
+			position: running(footer);
+		}
+
+		.debug-block (red);
+	}
+	
+//
+// Grid column:
+//
+	.col-span-n(@n) {
+		width: ((@n * @grid-column-width) + ((@n - 1) * @grid-gutter-h));
+	}
+	
+	.col-skip-n(@n) {
+		margin-left: (2 * @grid-gutter-h) + ((@n * @grid-column-width) + ((@n - 1) * @grid-gutter-h));
+	}
+	
+	.col-row-span-n(@n) {
+		height: ((@n * @grid-row-height) + ((@n - 1) * @grid-gutter-v));
+	}
+	
+	.grid-col {
+		margin-left: @grid-gutter-h;
+
+		float: left;
+		position: relative;
+		z-index: 2;
+				
+		// Contain all floats inside the cell:
+		&:after {
+			content: "";
+			display: block;
+			clear: both;
+		}
+		
+		> .grid-row {
+			margin-bottom: 0;
+		}
+		> .grid-row:first-child {
+			margin-top: 0;
+		}
+	}
+	
+	
+	// Set the base height of the columns equal to the height of the containing column:
+	.generate-col-height(@n, @i: 1) when (@i =< @n) {
+		.grid-row.span-@{i} > .grid-col {
+			.row-span-n (@i);			
+		}
+		
+		.generate-col-height (@n, (@i + 1));
+	}
+	.generate-col-height (@grid-row-count);
+
+	.grid-col {		
+		// Generate span and skip:
+		.generate-span(@n, @i: 1) when (@i =< @n) {
+			&.span-@{i} {
+				.col-span-n (@i);
+			}
+			
+			.generate-span (@n, (@i + 1));
+		}
+
+		.generate-skip(@n, @i: 1) when (@i =< @n) {
+			&.skip-@{i} {
+				.col-skip-n (@i);
+			}
+			
+			.generate-skip (@n, (@i + 1));
+		}
+		
+		.generate-row-span(@n, @i: 1) when (@i =< @n) {
+			&.row-span-@{i} {
+				.col-row-span-n (@i);
+			}
+			
+			.generate-row-span (@n, (@i + 1));
+		}
+		
+		.generate-span (@grid-column-count);
+		.generate-skip (@grid-column-count - 1);
+		.generate-row-span (@grid-row-count);
+			
+		.debug-block (green);
+		outline: dotted 1px black;
+	}
+	
+//
+// Grid pagination:
+//
+	.grid-page-break-avoid {
+		page-break-inside: avoid;
+	}
+	.grid-page-break-before {
+		page-break-before: always;
+	}
+	.grid-page-break-after {
+		page-break-after: always;
+	}

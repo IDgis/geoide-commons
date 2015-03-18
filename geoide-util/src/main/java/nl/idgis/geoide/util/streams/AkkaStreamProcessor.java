@@ -252,7 +252,7 @@ public class AkkaStreamProcessor implements StreamProcessor, Closeable {
 	        		
 	        		byteString.copyToArray (b, off);
 	        		
-	        		return byteString.length ();
+	        		return byteString.size ();
 	        	} else if ("complete".equals (response)) {
 	        		return -1;
 	        	} else if (response instanceof Throwable) {
@@ -397,7 +397,7 @@ public class AkkaStreamProcessor implements StreamProcessor, Closeable {
 				currentException = null;
 				return true;
 			} else if (currentData != null) {
-				final int n = Math.min (currentData.length (), length);
+				final int n = Math.min (currentData.size (), length);
 				target.tell (currentData.take (n), self ());
 				currentData = currentData.drop (n);
 				if (currentData.isEmpty ()) {
