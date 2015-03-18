@@ -40,6 +40,14 @@
 	@page {
 		margin: 0;
 		size: @grid-page-size @grid-page-orientation;
+		
+		@top-center {
+			content: element(header);
+		}
+		
+		@bottom-center {
+			content: element(footer);
+		}
 	}
 	
 //
@@ -102,6 +110,15 @@
 		
 		.generate-span (@grid-row-count);
 		.generate-skip (@grid-row-count - 1);
+		
+		// Header and footer:
+		&.header {
+			position: running(header);
+		}
+		
+		&.footer {
+			position: running(footer);
+		}
 
 		.debug-block (red);
 	}
