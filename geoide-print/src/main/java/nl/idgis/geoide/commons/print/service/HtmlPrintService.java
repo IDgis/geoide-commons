@@ -356,7 +356,7 @@ public class HtmlPrintService implements PrintService, Closeable {
 	 * @throws URISyntaxException 
 	 */
 	private void replaceLess (final org.jsoup.nodes.Document document, final URI baseUri, final Map<String, String> lessParameters) throws LessCompilationException, URISyntaxException {
-		log.error ("Replacing less scripts");
+		log.debug ("Replacing less scripts");
 		LessCompiler lessCompiler = null;
 		
 		for (final Element element: document.select ("link[rel=\"stylesheet/less\"]")) {
@@ -379,13 +379,13 @@ public class HtmlPrintService implements PrintService, Closeable {
 				lessUri = joinUris (baseUri, href);
 			}
 			
-			log.error ("Less compiling: " + lessUri);
+			log.debug ("Less compiling: " + lessUri);
 			
 			final String lessSource = lessCompiler.compile (
 				String.format ("@import \"%s\";", lessUri.toString ()), 
 				lessParameters, 
 				(filename, directory) -> {
-					log.error (filename);
+					log.debug ("Importing less script: " + filename);
 					try {
 						final Document lessDocument = documentCache.fetch (new URI (filename)).get (cacheTimeoutMillis);
 						return Optional.of (readInputStream (streamProcessor.asInputStream (lessDocument.getBody (), cacheTimeoutMillis)));
