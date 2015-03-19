@@ -79,7 +79,8 @@ public class ReportComposer {
 		final JsonNode clientInfoBlocks = templateInfo.path("blocks");
 		//TODO get template path from configuration 
 		final String templatePath = "templates/";
-		final String templateUrl = templatePath + templateInfo.path ("id").asText() + ".html";
+		final String templateUrl = templatePath + templateInfo.path ("id").asText();
+		
 		
 		
 		final Map<String, JsonNode> viewerStateNodes = new HashMap<> ();
@@ -90,6 +91,7 @@ public class ReportComposer {
 
 		
 		final TemplateDocument template = templateProvider.getTemplateDocument(templateUrl);
+		
 		PaperFormat format = PaperFormat.valueOf(template.getPageFormat() + template.getPageOrientation());
 		ReportData reportData = new ReportData(format, template.getLeftMargin() ,template.getRightMargin(), template.getTopMargin(), template.getBottomMargin() );
 				
@@ -165,7 +167,7 @@ public class ReportComposer {
 					for (final Tuple<Element, Block> tuple: blocks) {
 						final Element sourceElement = tuple._1;
 						final Block block = tuple._2;
-						final URI cssUri = block.getCss ();
+						final URI cssUri = block.getCssUri ();
 						
 						sourceElement.replaceWith (block.getBlock ());
 						

@@ -1,26 +1,29 @@
 package nl.idgis.geoide.commons.report.template;
 
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 public class HtmlTemplateDocument extends Document implements TemplateDocument {
-	private final String storeUri;
+	private final URI docUri;
 
-	public HtmlTemplateDocument(String baseUri) {		
-		super(baseUri);
-		this.storeUri = baseUri;
+	public HtmlTemplateDocument(String docUri) throws URISyntaxException {		
+		super(docUri);
+		this.docUri = new URI(docUri);
 	}
 
 	@Override
 	public Elements getBlocks() {
 		return this.getElementsByClass("block"); 
 	}
-
-	@Override	
-	public String getStoreUri() {
-		return storeUri;
+	
+	@Override
+	public URI getDocumentUri() {
+		return docUri;
 	}
 
 	@Override

@@ -45,7 +45,7 @@ public class ReportPostProcessor {
 		
 		System.out.println("++++++++ filled template: " + template.asString());
 
-		final URI documentUri = new URI (template.getStoreUri());
+		final URI documentUri = template.getDocumentUri();
 
 		return documentCache
 				.store(documentUri, new MimeContentType ("text/html"), template.asString().getBytes())
