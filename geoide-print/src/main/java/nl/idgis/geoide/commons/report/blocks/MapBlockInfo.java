@@ -1,10 +1,11 @@
 package nl.idgis.geoide.commons.report.blocks;
 
 import java.util.Map;
+import java.util.Set;
 
 import nl.idgis.geoide.commons.report.ReportData;
 
-import org.jsoup.nodes.Attributes;
+import org.jsoup.nodes.Element;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,6 +13,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class MapBlockInfo implements BlockInfo {
 	private final JsonNode clientInfo;
+	private final Element block;
 	private final Map<String, String> blockDataSet;
 	private final ReportData reportData;
 	private double scale;
@@ -22,9 +24,10 @@ public class MapBlockInfo implements BlockInfo {
 	private double resolution;
 	
 	
-	public MapBlockInfo (JsonNode clientInfo, Attributes blockAttributes, ReportData reportData) {
+	public MapBlockInfo (JsonNode clientInfo, Element block, ReportData reportData) {
 		this.clientInfo = clientInfo;
-		this.blockDataSet = blockAttributes.dataset();
+		this.block = block;
+		this.blockDataSet = block.attributes().dataset();
 		this.reportData = reportData;	
 		prepare();
 	}
@@ -33,25 +36,54 @@ public class MapBlockInfo implements BlockInfo {
 		resolution = clientInfo.path("resolution").asDouble();
 		final JsonNode extent = clientInfo.path("extent");
 		scale = clientInfo.path("scale").asInt();	
+
+		int gridHeight = 1;
+		int gridWidth = 1;
 		
-		int gridWidth;
-		try {
-			gridWidth = Integer.parseInt(blockDataSet.get("grid-width"));
-		} catch (NumberFormatException e) {
-			gridWidth = 12;
+		Set <String> classNames = block.classNames();	
+		for (String className : classNames) {
+			if (className.matches("^span\\-[1-9][0-9]*$")){
+				if (block.hasClass("grid-row")) {
+					gridHeight = Integer.parseInt(className.substring(5));
+					for(Element parent : block.parents()) {
+						if (parent.hasClass("grid-col")) {
+							Set <String> parentClassNames = parent.classNames();
+							for (String parentClassName : parentClassNames) {
+								if (parentClassName.matches("^span\\-[1-9][0-9]*$")){
+									gridWidth = Integer.parseInt(parentClassName.substring(5));
+									break;
+								}
+							}
+						}
+						break;
+					}
+				} 
+				if (block.hasClass("grid-col")) {
+					gridWidth = Integer.parseInt(className.substring(5));
+					for(Element parent : block.parents()) {
+						if (parent.hasClass("grid-row")) {
+							Set <String> parentClassNames = parent.classNames();
+							for (String parentClassName : parentClassNames) {
+								if (parentClassName.matches("^span\\-[1-9][0-9]*$")){
+									gridHeight = Integer.parseInt(parentClassName.substring(5));
+									break;
+								}
+							}
+						}
+						break;
+					}	
+				} 	
+			}
 		}
-		int gridHeight;
-		try {
-			gridHeight = Integer.parseInt(blockDataSet.get("grid-height"));
-		} catch (NumberFormatException e) {
-			gridHeight = 12;
-		}
+		
 		final boolean scaleFixed = Boolean.parseBoolean("" + blockDataSet.get("scale-fixed") + "");
+
+		double colWidthmm = (reportData.getReportWidth() -  (reportData.getColCount() - 1) * reportData.getGutterH()) / reportData.getColCount();
+		double rowHeightmm = (reportData.getReportHeight() -  (reportData.getRowCount() - 1) * reportData.getGutterV()) / reportData.getRowCount();
 		
-		blockWidthmm = reportData.getReportWidth() * gridWidth/12; 
-		blockHeightmm = reportData.getReportHeight() * gridHeight/12; 
+		blockWidthmm = (colWidthmm * gridWidth) + ((gridWidth - 1) * reportData.getGutterH());
+		blockHeightmm = (rowHeightmm * gridHeight) + ((gridHeight - 1) * reportData.getGutterV());
 		
-		//TODO: CenterScale with resolution	
 		centerX = extent.path("minx").asDouble() + ((extent.path("maxx").asDouble() - extent.path("minx").asDouble())/2);
 		centerY = extent.path("miny").asDouble() + ((extent.path("maxy").asDouble() - extent.path("miny").asDouble())/2);
 				
@@ -121,8 +153,7 @@ public class MapBlockInfo implements BlockInfo {
 	}
 	
 	public double getResizeFactor(double tileResolution) {
-		double mapWidthm = (centerX + ((scale/1000) * blockWidthmm)/2) - (centerX - ((scale/1000) * blockWidthmm)/2);
-		return tileResolution/(mapWidthm/(blockWidthmm / 0.28));
+		return tileResolution/resolution;
 	}
 	
 }

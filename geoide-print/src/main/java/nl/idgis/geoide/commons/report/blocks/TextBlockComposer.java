@@ -30,15 +30,15 @@ public class TextBlockComposer implements BlockComposer {
 	
 	@Override
 	public Promise<Block> compose (Element blockElement, BlockInfo info, DocumentCache documentCache) throws Throwable {
-		Element block = getChild(blockElement);
-		block.appendElement (((TextBlockInfo) info).getTag()).append (((TextBlockInfo) info).getText());
+		Element block = getInnerChild(blockElement);
+		block.append (((TextBlockInfo) info).getText());
 		Block textBlock = new Block(blockElement, null);
 		return Promise.pure(textBlock);
 	}
 	
-	private Element getChild(Element block) {
+	private Element getInnerChild(Element block) {
 		if(block.children().size() > 0) {
-			block = getChild(block.children().first());
+			block = getInnerChild(block.children().first());
 		}
 		return block;
 	}

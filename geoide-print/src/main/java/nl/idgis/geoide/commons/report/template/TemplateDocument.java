@@ -14,11 +14,15 @@ public interface TemplateDocument  {
 		public Element head();
 		public Element child(int childNumber);
 		public String attr (String attributeKey);
-		double getRightMargin();
-		double getLeftMargin();
-		double getTopMargin();
-		double getBottomMargin();
-		String getPageFormat();
-		String getPageOrientation();
-		URI getDocumentUri();
+		public double getRightMargin();
+		public double getLeftMargin();
+		public double getTopMargin();
+		public double getBottomMargin();
+		public String getPageFormat();
+		public String getPageOrientation();
+		public URI getDocumentUri();
+		public int getColCount();
+		public int getRowCount();
+		double getGutterH();
+		double getGutterV();
 }
