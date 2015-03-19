@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 import nl.idgis.geoide.commons.domain.ServiceRequest;
+import nl.idgis.geoide.commons.print.service.HtmlPrintService;
 import nl.idgis.geoide.documentcache.DocumentCache;
 import nl.idgis.geoide.map.MapView;
 import nl.idgis.geoide.service.LayerServiceType;
@@ -14,6 +15,8 @@ import nl.idgis.ogc.util.MimeContentType;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import play.libs.F.Function;
 import play.libs.F.Promise;
@@ -30,6 +33,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 public class MapBlockComposer implements BlockComposer {
 	final MapView mapView;
 	private URI mapCssUri;
+	private static Logger log = LoggerFactory.getLogger (HtmlPrintService.class);
 	
 	
 	/**
@@ -68,9 +72,10 @@ public class MapBlockComposer implements BlockComposer {
 		final List<ServiceRequest> serviceRequests = mapView.getServiceRequests (mapView.flattenLayerList (info.getClientInfo()));	
 		int layernr = 1;
 		
-		int width = mapInfo.getWidthpx();
-		int height = mapInfo.getHeightpx();
-		
+		int widthpx = mapInfo.getWidthpx();
+		int heightpx = mapInfo.getHeightpx();
+		double widthmm = mapInfo.getBlockWidth();
+		double heightmm = mapInfo.getBlockHeight();
 		
 
 		for (final ServiceRequest request: serviceRequests) {				
@@ -78,12 +83,12 @@ public class MapBlockComposer implements BlockComposer {
 			
 			if (serviceType instanceof LayerServiceType ) {
 				LayerServiceType layerServiceType = (LayerServiceType) serviceType;
-				List<JsonNode>  requestUrls = layerServiceType.getLayerRequestUrls(request, mapInfo.getMapExtent(), mapInfo.getResolution(), width, height);
+				List<JsonNode>  requestUrls = layerServiceType.getLayerRequestUrls(request, mapInfo.getMapExtent(), mapInfo.getResolution(), widthpx, heightpx);
 			
 				if (request.getService().getIdentification().getServiceType().equals("TMS")){
 					
 					for (JsonNode requestUrl:requestUrls) {
-						Element mapLayer = createLayerElement(mapRow, width, height, layernr);
+						Element mapLayer = createLayerElement(mapRow, widthmm, heightmm, layernr);
 						mapCss += getLayerCss (layernr, mapInfo);
 						URI tileSvgUri = new URI ("stored://" + UUID.randomUUID ().toString ());
 						Document tileSvg = createTileSvg (tileSvgUri, requestUrl, mapInfo);
@@ -94,7 +99,7 @@ public class MapBlockComposer implements BlockComposer {
 					
 				} else {
 					
-					Element mapLayer = createLayerElement(mapRow, width, height, layernr);					
+					Element mapLayer = createLayerElement(mapRow, widthmm, heightmm, layernr);					
 					mapCss += getLayerCss (layernr, mapInfo);
 					mapLayer.childNode(0).attr("data", requestUrls.get(0).path("uri").asText());	
 					layernr += 1;
@@ -107,6 +112,7 @@ public class MapBlockComposer implements BlockComposer {
 				
 		mapCssUri = new URI ("stored://" + UUID.randomUUID ().toString ());
 		documentPromises.add (documentCache.store(mapCssUri, new MimeContentType ("text/css"), mapCss.getBytes()));
+		log.debug("mapblock css:" + mapCss);
 		
 		final Block mapBlock = new Block(blockElement, mapCssUri);
 		
@@ -123,12 +129,12 @@ public class MapBlockComposer implements BlockComposer {
 	};
 
 	
-	private Element createLayerElement(Element mapRow, int width, int height, int layernr) {
+	private Element createLayerElement(Element mapRow, double width, double height, int layernr) {
 		Element mapLayer = mapRow.appendElement("div");
 		mapLayer.attr("id", "map_layer" + layernr);		
 		Element layerObject = mapLayer.appendElement("object");
 		layerObject	.attr("type", "image/svg+xml")
-					.attr("style", "left:0;px;top:0px; width:" + width + "px; height:" + height + "px;");
+					.attr("style", "left:0;top:0;width:" + width + "mm; height:" + height + "mm;");
 		return mapLayer;
 	}
 
@@ -146,9 +152,9 @@ public class MapBlockComposer implements BlockComposer {
 		Element svgNode = tileSvg.appendElement("svg"); 
 		double factor = info.getResizeFactor(requestUrl.path("resolution").asDouble());
 		
-		svgNode	.attr ("viewBox", "0 0 " + info.getWidthpx() + " " + info.getHeightpx() + "")
-				.attr ("width", info.getWidthpx() + "px")
-				.attr ("height", info.getHeightpx() + "px")
+		svgNode	//.attr ("viewBox", "0 0 " + info.getWidthpx() + " " + info.getHeightpx() + "")
+				.attr ("width", info.getWidthpx() + "px" )
+				.attr ("height", info.getHeightpx()  + "px")
 				.attr ("version", "1.1")
 				.attr ("xmlns","http://www.w3.org/2000/svg")
 				.attr ("xmlns:xlink", "http://www.w3.org/1999/xlink");
@@ -157,8 +163,8 @@ public class MapBlockComposer implements BlockComposer {
 		svgImage.attr("xlink:href", requestUrl.path("uri").asText());
 		svgImage.attr("x", String.valueOf( requestUrl.path("left").asDouble() * factor));
 		svgImage.attr("y", String.valueOf( requestUrl.path("top").asDouble() * factor));
-		svgImage.attr("width",  String.valueOf((requestUrl.path("right").asDouble()* factor) - (requestUrl.path("left").asDouble()) * factor));
-		svgImage.attr("height",  String.valueOf((requestUrl.path("bottom").asDouble() * factor)- (requestUrl.path("top").asDouble()) * factor));
+		svgImage.attr("width",  String.valueOf((requestUrl.path("right").asDouble() - requestUrl.path("left").asDouble()) * factor));
+		svgImage.attr("height",  String.valueOf((requestUrl.path("bottom").asDouble()- requestUrl.path("top").asDouble()) * factor));
 
 		return tileSvg;
 		
@@ -171,10 +177,10 @@ public class MapBlockComposer implements BlockComposer {
 	 */
 	private String createMapCss(MapBlockInfo blockInfo) {
 		String mapCss = ".map_row {" +
-			    	"height: " + blockInfo.getHeightpx() + "px;" + 
-			    	"width: " + blockInfo.getWidthpx() + "px;" +
+					"border-color:green; border-size:1px;" + 
+			    	"height: " + blockInfo.getBlockHeight() + "mm;" + 
+			    	"width: " + blockInfo.getBlockWidth() + "mm;" +
 			    	"position: relative;" +
-			    	"border: 1px solid gray;" + 
 			    	"overflow: hidden;" + 
 				"}" +
 				".pos-abs {" +
@@ -195,10 +201,10 @@ public class MapBlockComposer implements BlockComposer {
 		 return "#map_layer"+ layernr + " {" +
 			    "position: absolute;" +
 			    "z-index: " + layernr + ";" +
-			    "left: 0px;" +
-			    "top: 0px;" + 
-			    "height: " + blockInfo.getHeightpx() + "px;" + 
-				"width: " + blockInfo.getWidthpx() + "px;" +
+			    "left: 0;" +
+			    "top: 0;" + 
+			    "height: " + blockInfo.getBlockHeight() + "mm;" + 
+				"width: "+ blockInfo.getBlockWidth() + "mm;" +
 			"}";
 	}
 		

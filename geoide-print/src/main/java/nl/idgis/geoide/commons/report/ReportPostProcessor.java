@@ -1,6 +1,8 @@
 package nl.idgis.geoide.commons.report;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 import nl.idgis.geoide.commons.print.common.DocumentReference;
 import nl.idgis.geoide.commons.print.common.PrintRequest;
@@ -41,12 +43,28 @@ public class ReportPostProcessor {
 	 * @param template		the report to print ( a "filled" template document)
 	 * @return 				a pdf Document
 	 */
-	public Promise<Document> process (TemplateDocument template) throws Throwable {
+	public Promise<Document> process (TemplateDocument template, ReportData reportData) throws Throwable {
 		
-		System.out.println("++++++++ filled template: " + template.asString());
 
 		final URI documentUri = template.getDocumentUri();
 
+		final Map<String, Object> layoutParameters = new HashMap<String, Object>();
+		layoutParameters.put("grid-page-size",template.getPageFormat());
+		layoutParameters.put("grid-page-orientation", template.getPageOrientation());
+		layoutParameters.put("grid-page-width", reportData.getFormat().getWidth() + "mm");
+		layoutParameters.put("grid-page-height", reportData.getFormat().getHeight() + "mm");
+		layoutParameters.put("grid-margin-top", reportData.getTopMargin() + "mm");
+		layoutParameters.put("grid-margin-bottom", reportData.getBottomMargin() + "mm");
+		layoutParameters.put("grid-margin-left", reportData.getLeftMargin() + "mm");
+		layoutParameters.put("grid-margin-right", reportData.getRightMargin() + "mm");
+		layoutParameters.put("grid-gutter-h", reportData.getGutterH() + "mm");
+		layoutParameters.put("grid-gutter-v", reportData.getGutterV() + "mm");
+		layoutParameters.put("grid-row-count", reportData.getRowCount());
+		layoutParameters.put("grid-column-count", reportData.getColCount());
+		layoutParameters.put("grid-debug", false);
+		
+		
+		
 		return documentCache
 				.store(documentUri, new MimeContentType ("text/html"), template.asString().getBytes())
 				.flatMap(new Function<Document, Promise<Document>> () {
@@ -55,7 +73,8 @@ public class ReportPostProcessor {
 								new PrintRequest (
 										new DocumentReference (new MimeContentType ("text/html"), documentUri), 
 										new MimeContentType ("application/pdf"), 
-										documentUri
+										documentUri,
+										layoutParameters
 								)
 							);
 				}});

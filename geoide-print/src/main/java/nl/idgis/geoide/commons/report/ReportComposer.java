@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import nl.idgis.geoide.commons.print.service.HtmlPrintService;
 import nl.idgis.geoide.commons.report.blocks.Block;
 import nl.idgis.geoide.commons.report.blocks.BlockInfo;
 import nl.idgis.geoide.commons.report.blocks.DateBlockInfo;
@@ -23,6 +24,8 @@ import nl.idgis.geoide.map.MapView;
 
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -45,7 +48,7 @@ public class ReportComposer {
 	private final TextBlockComposer textBlockComposer;
 	private final MapBlockComposer mapBlockComposer;
 	private final DocumentCache documentCache;
-	
+	private static Logger log = LoggerFactory.getLogger (HtmlPrintService.class);
 	
 	/**
 	 * Constructs a report composer with a series of specialized composers
@@ -78,7 +81,7 @@ public class ReportComposer {
 		final JsonNode templateInfo = clientInfo.findPath("template");
 		final JsonNode clientInfoBlocks = templateInfo.path("blocks");
 		//TODO get template path from configuration 
-		final String templatePath = "templates/";
+		final String templatePath = "/templates/";
 		final String templateUrl = templatePath + templateInfo.path ("id").asText();
 		
 		
@@ -93,35 +96,35 @@ public class ReportComposer {
 		final TemplateDocument template = templateProvider.getTemplateDocument(templateUrl);
 		
 		PaperFormat format = PaperFormat.valueOf(template.getPageFormat() + template.getPageOrientation());
-		ReportData reportData = new ReportData(format, template.getLeftMargin() ,template.getRightMargin(), template.getTopMargin(), template.getBottomMargin() );
+		ReportData reportData = new ReportData(format, template.getLeftMargin() ,template.getRightMargin(), template.getTopMargin(), template.getBottomMargin(), template.getGutterH(), template.getGutterV(), template.getRowCount(), template.getColCount());
 				
 		Elements blockElements = template.body().select(".block");
 		
 		final List<Promise<Tuple<Element, Block>>> promises = new ArrayList<> (blockElements.size ());
-		final List< Tuple<Tuple<Element,Element>, BlockInfo>> preparedBlocks = new ArrayList<> (blockElements.size ());
+		final List<Tuple<Tuple<Element,Element>, BlockInfo>> preparedBlocks = new ArrayList<> (blockElements.size ());
 		final Map <String, MapBlockInfo> mapBlockInfoMap = new HashMap<String, MapBlockInfo>();
 		
 		ObjectMapper mapper = new ObjectMapper();
 		
 		
 		for (Element templateBlockElement : blockElements) {
-			Element blockElement = templateBlockElement.clone();
+
 			BlockInfo blockInfo = null;
 			
 			//special block date
-			if(blockElement.hasClass("date")) {
-				blockInfo = new DateBlockInfo (mapper.createObjectNode(), blockElement.attributes(), reportData);
+			if(templateBlockElement.hasClass("date")) {
+				blockInfo = new DateBlockInfo (mapper.createObjectNode(), templateBlockElement.attributes(), reportData);
 			}
 			//specialblock scale
-			if(blockElement.hasClass("scale")) {
-				blockInfo = new ScaleTextBlockInfo (null, blockElement.attributes(), reportData);
+			if(templateBlockElement.hasClass("scale")) {
+				blockInfo = new ScaleTextBlockInfo (null, templateBlockElement.attributes(), reportData);
 			}
 			
-			if(blockElement.hasClass("map")) {
-				String viewerStateId = blockElement.attributes().get("data-viewerstate-id");
+			if(templateBlockElement.hasClass("map")) {
+				String viewerStateId = templateBlockElement.attributes().get("data-viewerstate-id");
 				if(viewerStateId!=null){
 					
-					blockInfo = new MapBlockInfo (viewerStateNodes.get(viewerStateId),blockElement.attributes(), reportData);
+					blockInfo = new MapBlockInfo (viewerStateNodes.get(viewerStateId),templateBlockElement, reportData);
 					mapBlockInfoMap.put(viewerStateId, (MapBlockInfo) blockInfo);
 				} else {
 					//foutmelding 
@@ -130,11 +133,11 @@ public class ReportComposer {
 			//TextElements
 			for (final JsonNode clientInfoBlock: clientInfoBlocks) {
 				
-				if(blockElement.id().equals(clientInfoBlock.path("id").asText().toLowerCase())){
-					blockInfo = new TextBlockInfo(clientInfoBlock, blockElement.attributes(), reportData);
+				if(templateBlockElement.id().equals(clientInfoBlock.path("id").asText().toLowerCase())){
+					blockInfo = new TextBlockInfo(clientInfoBlock, templateBlockElement.attributes(), reportData);
 				}
-			}	
-			
+			}		
+			Element blockElement = templateBlockElement.clone();
 			Tuple <Element,Element> elements = new Tuple<Element, Element>(templateBlockElement, blockElement);
 			preparedBlocks.add(new Tuple<Tuple<Element,Element>, BlockInfo> (elements,blockInfo));
 		}
@@ -143,18 +146,19 @@ public class ReportComposer {
 			Element sourceElement = preparedBlock._1._1;
 			Element blockElement = preparedBlock._1._2;
 			BlockInfo blockInfo = preparedBlock._2;
-			
-			if (blockElement.hasClass("text") && !blockElement.hasClass("scale")) {
-				promises.add (processBlock (sourceElement, textBlockComposer.compose (blockElement, blockInfo, documentCache)));
-			}
-			if (blockElement.hasClass("scale")){
-				int scale = (int) mapBlockInfoMap.get(blockInfo.getBlockAttribute("viewerstate-id")).getScale();
-				((ScaleTextBlockInfo) blockInfo).setScale(scale);
-				promises.add (processBlock (sourceElement, textBlockComposer.compose (blockElement, blockInfo, documentCache)));
-			}
-			if (blockElement.hasClass("map")) {
-				promises.add (processBlock (sourceElement, mapBlockComposer.compose (blockElement, blockInfo, documentCache)));
-			}
+			if (blockInfo != null) {
+				if (blockElement.hasClass("text") && !blockElement.hasClass("scale")) {
+					promises.add (processBlock (sourceElement, textBlockComposer.compose (blockElement, blockInfo, documentCache)));
+				}
+				if (blockElement.hasClass("scale")){
+					int scale = (int) mapBlockInfoMap.get(blockInfo.getBlockAttribute("viewerstate-id")).getScale();
+					((ScaleTextBlockInfo) blockInfo).setScale(scale);
+					promises.add (processBlock (sourceElement, textBlockComposer.compose (blockElement, blockInfo, documentCache)));
+				}
+				if (blockElement.hasClass("map")) {
+					promises.add (processBlock (sourceElement, mapBlockComposer.compose (blockElement, blockInfo, documentCache)));
+				}
+			}	
 			
 		}
 		
@@ -183,7 +187,9 @@ public class ReportComposer {
 							.attr ("type", "text/css");
 					}
 					
-					return processor.process (template);
+					log.debug("html template :"  + template);
+					
+					return processor.process (template, reportData);
 				}
 			});
 	}

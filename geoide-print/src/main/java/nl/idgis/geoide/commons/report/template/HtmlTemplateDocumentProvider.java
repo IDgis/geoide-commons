@@ -1,6 +1,9 @@
 package nl.idgis.geoide.commons.report.template;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.UUID;
 
@@ -22,13 +25,21 @@ public class HtmlTemplateDocumentProvider implements TemplateDocumentProvider {
 			e.printStackTrace();
 		}
 		Document template = null;
-		try {
-			template = Jsoup.parse(Play.application().resourceAsStream (templateUrl),"UTF-8",templateUrl + ".html");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		
+		//InputStream is;
+
+	    try {
+	        //is = new FileInputStream(templateUrl + "/report.html");
+	        template = Jsoup.parse(Play.application().resourceAsStream (templateUrl + "/report.html"),"UTF-8",templateDoc.getDocumentUri().toString());
+	       // is.close(); 
+	    } catch (FileNotFoundException e) {
+	        // TODO Auto-generated catch block
+	        e.printStackTrace();
+	    } catch (IOException e) {
+	        // TODO Auto-generated catch block
+	        e.printStackTrace();
+	    }
+				
 		templateDoc.appendChild(template);
 		
 		return templateDoc;

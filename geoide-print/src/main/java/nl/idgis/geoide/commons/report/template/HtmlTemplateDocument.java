@@ -69,13 +69,57 @@ public class HtmlTemplateDocument extends Document implements TemplateDocument {
 	
 	@Override
 	public String getPageFormat() {
-		 return this.select("html").attr("data-pageformat"); 
+		if(this.select("html").attr("data-pageformat") != "") {
+			return this.select("html").attr("data-pageformat"); 
+		} else {
+			return "A4";
+		}
 		 
 	}
 	
 	@Override
 	public String getPageOrientation() {
-		 return this.select("html").attr("data-page-orientation");
+		if(this.select("html").attr("data-page-orientation") != "") {
+			return this.select("html").attr("data-page-orientation");
+		} else {
+			return "portrait";
+		}
+	}
+	
+	@Override
+	public double getGutterH() {
+		if(this.select("html").attr("data-gutter-h") != "") {
+			return Double.parseDouble(this.select("html").attr("data-gutter-h"));
+		} else {
+			return 2;
+		}
+	}
+	
+	@Override
+	public double getGutterV() {
+		if(this.select("html").attr("data-gutter-v") != "") {
+			return Double.parseDouble(this.select("html").attr("data-gutter-v"));
+		} else {
+			return 2;
+		}
+	}
+	
+	@Override
+	public int getColCount() {
+		if(this.select("html").attr("data-col-count") != "") {
+			return Integer.parseInt(this.select("html").attr("data-col-count"));
+		} else {
+			return 12;
+		}
+	}
+
+	@Override
+	public int getRowCount() {
+		if(this.select("html").attr("data-row-count") != "") {
+			return Integer.parseInt(this.select("html").attr("data-row-count"));
+		} else {
+			return 12;
+		}
 	}
 	
 	
@@ -102,6 +146,8 @@ public class HtmlTemplateDocument extends Document implements TemplateDocument {
 	public String attr (String attributeKey) {
 		return super.attr(attributeKey);
 	}
+
+
 	
 	
 

@@ -39,11 +39,4 @@ public class TextBlockInfo implements BlockInfo {
 		return clientInfo.path("text").asText(); 
 	}
 	
-	public String getTag() {
-		if(clientInfo.path("tag")==null) {
-			return "p";
-		} else {
-			return clientInfo.path("tag").asText();
-		}
-	}
 }
