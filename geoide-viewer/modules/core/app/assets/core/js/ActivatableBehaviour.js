@@ -54,8 +54,6 @@ function (
 						parent = parent.parentNode;
 					}
 					if (parent) {
-						//not in IE < 11
-						//var layerId = parent.dataset.layerId;
 						var layerId = domAttr.get(parent, "data-layer-id");
 						domClass.toggle (parent, 'active');
 						
