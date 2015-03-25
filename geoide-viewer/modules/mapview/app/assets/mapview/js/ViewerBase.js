@@ -655,7 +655,6 @@ define ([
 					},
 					data: json.stringify (reportInfo)
 				}).then (lang.hitch (this, function (data) {
-					console.log(data);
 					def.resolve (data);
 				}));
 			}));
