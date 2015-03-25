@@ -146,6 +146,7 @@ define ([
 		],
 		'dragZoom': [
 			new ol.interaction.DragZoom ({ condition: ol.events.condition.always })
+			
 		],
 		'drawGeometry': [
 			function (config, self) {
@@ -302,6 +303,7 @@ define ([
 		},
 		
 		_resolutionSetter: function (resolution) {
+			console.log("resolutionSetter!!!!!!!!");
 			this.olMap.getView ().setResolution (this._normalizeResolution (resolution));
 		},
 		
@@ -309,6 +311,7 @@ define ([
 		// Utilities:
 		// =====================================================================
 		zoomTo: function (center, resolution, animate) {
+			console.log("zoomTo" + animate);
 			var def = new Deferred ();
 			
 			if (animate) {

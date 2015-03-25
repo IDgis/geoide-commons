@@ -148,6 +148,8 @@ define ([
 				
 		layerState: null,
 		
+		activeLayer:null,
+		
 		_engineAttributes: null,
 		_watchHandles: null,
 		
@@ -279,7 +281,7 @@ define ([
 		getViewerState: function () {
 			return { id:'main', mapid:this.mapId , extent: this.getCurrentExtent() , scale: this.get('scale'), resolution: this.get('resolution'), layers: this._buildViewerState (this.map.get ('layers')) };
 		},
-			
+		
 		/**
 		 * Schedules an update of the viewer at the next browser frame (setTimeout (..., 0)). The update
 		 * is scheduled so that multiple changes to the viewer state are posted simultaneously.
@@ -451,6 +453,19 @@ define ([
 			
 			return { };
 		},
+		
+		
+		_activeLayerSetter: function (layerId) {
+			if (layerId) {
+				this.activeLayer = layerId;
+			} else {
+				this.activeLayer = null;
+			}
+		},
+		_activeLayerGetter: function () {
+			return this.activeLayer;
+		},
+		
 		
 		/**
 		 * Interaction names:
@@ -640,7 +655,6 @@ define ([
 					},
 					data: json.stringify (reportInfo)
 				}).then (lang.hitch (this, function (data) {
-					console.log(data);
 					def.resolve (data);
 				}));
 			}));
