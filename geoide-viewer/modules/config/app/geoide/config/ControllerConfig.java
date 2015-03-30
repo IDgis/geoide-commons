@@ -8,6 +8,7 @@ import nl.idgis.geoide.commons.layer.LayerTypeRegistry;
 import nl.idgis.geoide.commons.print.service.PrintService;
 import nl.idgis.geoide.commons.report.ReportComposer;
 import nl.idgis.geoide.documentcache.DocumentCache;
+import nl.idgis.geoide.documentcache.service.FileStore;
 import nl.idgis.geoide.map.MapView;
 import nl.idgis.geoide.service.ServiceTypeRegistry;
 import nl.idgis.geoide.util.streams.StreamProcessor;
@@ -25,6 +26,7 @@ import controllers.mapview.Symbol;
 import controllers.mapview.View;
 import controllers.printservice.Print;
 import controllers.printservice.Report;
+import controllers.printservice.Template;
 
 
 
@@ -83,5 +85,14 @@ public class ControllerConfig {
 			) {
 		return new Report (composer, streamProcessor, documentCache);
 	}
+	
+	@Bean
+	@Autowired
+	public Template templateController (
+			final  @Qualifier ("printFileStore") FileStore templateFileStore
+			) {
+		return new Template (templateFileStore);
+	}
+	
 	
 }

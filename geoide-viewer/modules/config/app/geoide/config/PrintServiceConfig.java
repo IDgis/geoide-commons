@@ -1,9 +1,9 @@
 package geoide.config;
 
+import java.io.File;
 import java.io.IOException;
 
 import nl.idgis.geoide.commons.http.client.HttpClient;
-import nl.idgis.geoide.map.MapView;
 import nl.idgis.geoide.commons.print.service.HtmlPrintService;
 import nl.idgis.geoide.commons.report.ReportComposer;
 import nl.idgis.geoide.commons.report.ReportPostProcessor;
@@ -12,7 +12,10 @@ import nl.idgis.geoide.commons.report.template.TemplateDocumentProvider;
 import nl.idgis.geoide.documentcache.DocumentCache;
 import nl.idgis.geoide.documentcache.DocumentStore;
 import nl.idgis.geoide.documentcache.service.DefaultDocumentCache;
+import nl.idgis.geoide.documentcache.service.DelegatingStore;
+import nl.idgis.geoide.documentcache.service.FileStore;
 import nl.idgis.geoide.documentcache.service.HttpDocumentStore;
+import nl.idgis.geoide.map.MapView;
 import nl.idgis.geoide.util.streams.StreamProcessor;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,9 +37,26 @@ public class PrintServiceConfig {
 	}
 	
 	@Bean
+	@Qualifier ("printFileStore")
+	@Autowired
+	public DocumentStore printFileStore (final @Qualifier("streamProcessor") StreamProcessor streamProcessor) {
+		String basePath = Play.application ().configuration ().getString ("geoide.services.print.templatepath", "C:/Temp");
+		String protocol = "template";
+		return new FileStore(new File(basePath), protocol, streamProcessor);
+	}
+	
+	@Bean
+	@Qualifier ("delegatingDocumentStore")
+	@Autowired
+	public DelegatingStore delegatingStore (final @Qualifier("printHttpDocumentStore") DocumentStore httpDocumentStore, final @Qualifier("printFileStore") DocumentStore fileStore) {
+		DocumentStore[] stores = {httpDocumentStore, fileStore};
+		return new DelegatingStore(stores);
+	}
+	
+	@Bean
 	@Qualifier ("printDocumentCache")
 	@Autowired
-	public DefaultDocumentCache printDocumentCache (final @Qualifier("printHttpDocumentStore") DocumentStore documentStore, final StreamProcessor streamProcessor) throws IOException {
+	public DefaultDocumentCache printDocumentCache (final @Qualifier("delegatingDocumentStore") DocumentStore documentStore, final StreamProcessor streamProcessor) throws IOException {
 		return DefaultDocumentCache.createTempFileCache (
 				Akka.system (), 
 				streamProcessor, 
