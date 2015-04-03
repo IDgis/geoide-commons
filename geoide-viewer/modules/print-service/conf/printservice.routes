@@ -5,7 +5,7 @@ POST   /report  					@controllers.printservice.Report.report()
 
 GET   /fetchReport  				@controllers.printservice.Report.fetchReport(u: String)
 
-GET   /templates  			    	@controllers.printservice.Template.getTemplateFiles()
+GET   /templates  			    	@controllers.printservice.Template.getTemplates()
 
 GET   /templateProperties/:template  @controllers.printservice.Template.getTemplateProperties(template)
 

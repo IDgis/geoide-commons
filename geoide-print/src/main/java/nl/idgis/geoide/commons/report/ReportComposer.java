@@ -75,30 +75,34 @@ public class ReportComposer {
 	 * @return a promise of a report document (html)
 	 */
 	public Promise<Document> compose (JsonNode clientInfo) throws Throwable {
-		
-		//parse templateInfo
-		final JsonNode viewerStates = clientInfo.findPath("viewerstates");
+
 		final JsonNode templateInfo = clientInfo.findPath("template");
+	
+		final String templateUrl = templateInfo.path ("id").asText();
+		
+		Promise<TemplateDocument> doc = templateProvider.getTemplateDocument(templateUrl);
+		
+		return doc.flatMap((d) -> composeTemplate(d, clientInfo));
+		
+	
+	}
+		
+		
+	private Promise<Document> composeTemplate (TemplateDocument template, JsonNode clientInfo) throws Throwable {	
+		//parse templateInfo
+		final JsonNode templateInfo = clientInfo.findPath("template");
+		final JsonNode viewerStates = clientInfo.findPath("viewerstates");	
 		final JsonNode clientInfoBlocks = templateInfo.path("blocks");
-		//TODO get template path from configuration 
-		final String templatePath = "/templates/";
-		final String templateUrl = templatePath + templateInfo.path ("id").asText();
-		
-		
-		
 		final Map<String, JsonNode> viewerStateNodes = new HashMap<> ();
 		for (final JsonNode stateNode: viewerStates) {
 			final JsonNode stateId =  stateNode.path ("id");
 			viewerStateNodes.put(stateId.textValue(), stateNode);
 		}
-
-		
-		final TemplateDocument template = templateProvider.getTemplateDocument(templateUrl);
 		
 		PaperFormat format = PaperFormat.valueOf(template.getPageFormat() + template.getPageOrientation());
 		ReportData reportData = new ReportData(format, template.getLeftMargin() ,template.getRightMargin(), template.getTopMargin(), template.getBottomMargin(), template.getGutterH(), template.getGutterV(), template.getRowCount(), template.getColCount());
 				
-		Elements blockElements = template.body().select(".block");
+		Elements blockElements = template.getBlocks();
 		
 		final List<Promise<Tuple<Element, Block>>> promises = new ArrayList<> (blockElements.size ());
 		final List<Tuple<Tuple<Element,Element>, BlockInfo>> preparedBlocks = new ArrayList<> (blockElements.size ());
@@ -180,7 +184,7 @@ public class ReportComposer {
 						}
 						
 						template
-							.head ()
+							.getDocument().head ()
 							.appendElement ("link")
 							.attr ("rel", "stylesheet")
 							.attr ("href", cssUri.toString ())
