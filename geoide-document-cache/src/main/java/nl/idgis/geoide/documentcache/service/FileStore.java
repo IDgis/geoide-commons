@@ -10,7 +10,6 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 
 import nl.idgis.geoide.documentcache.Document;
-import nl.idgis.geoide.documentcache.DocumentCache;
 import nl.idgis.geoide.documentcache.DocumentCacheException;
 import nl.idgis.geoide.documentcache.DocumentStore;
 import nl.idgis.geoide.util.streams.StreamProcessor;
@@ -27,8 +26,6 @@ import akka.util.ByteString;
  * An implementation of {@link DocumentStore} that uses a {@link BaseUrl} to retrieve documents
  * by composing a file url.
  * 
- * The store doesn't perform caching, but it can be used as a readthrough
- * store for a {@link DocumentCache}.
  */
 
 
@@ -38,37 +35,46 @@ public class FileStore implements DocumentStore {
 	private final String protocol;
 	private final StreamProcessor streamProcessor;
 	
-
+	/**
+	 * Creates a new (file) document store for the given basePath and protocol
+	 * 
+	 * @param basePath The basePath on the filesystem for this store
+	 * @param protocol The protocol for this FileStore (f.i. "template"
+	 * @streamProcessor A Utility class  {@link StreamProcessor} to read and write files
+	 */
 	public FileStore(File basePath, String protocol, StreamProcessor streamProcessor) {
 		this.basePath = basePath;
 		this.protocol = protocol;
 		this.streamProcessor = streamProcessor;
 	}
 	
-	
+	/**
+	 * Returns the protocol of the filestore.
+	 *  
+	 * @return The protocol of the filestore.
+	 */
 	public String getProtocol() {
 		return protocol;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	
 	@Override
 	public Promise<Document> fetch (URI fileUri) {
+				
+		if (!protocol.equals (fileUri.getScheme ())) {
+			Logger.debug ("Bad scheme: " + fileUri.toString ());
+			return Promise.throwing (new DocumentCacheException.DocumentNotFoundException (fileUri)); 
+		}
+		
 		final File file = new File (basePath, fileUri.getPath ());
-	
 		
 		if (!file.getAbsolutePath().startsWith(basePath.getAbsolutePath())) {
 			Logger.debug ("file: " + fileUri.getPath() + " is not on the basepath: " + basePath);
 			return Promise.throwing (new DocumentCacheException.IOError(null));
 		}
-
-		//combine url, normalize path
-		//check if file within basepath
-		//check if exists
-		//make FileInputStream from File
-		//publishInputStream
-		//Publisher 
-		// bepaal contenttype op basis file extensie mimemagic oid
-		// anders standaard mimetype binary content
-		// return met promise.pure
 		
 		String contentType;
 		try {
@@ -110,11 +116,19 @@ public class FileStore implements DocumentStore {
 
 	}
 	
-	
+	/**
+	 * Returns an Array of files located on the basePath of this filestore.
+	 *  
+	 * @return Array of files
+	 */
 	public File[] getFiles() {
 		return basePath.listFiles();
 	}
-	
+	/**
+	 * Returns an Array of directories located on the basePath of this filestore.
+	 *  
+	 * @return Array of directories
+	 */
 	public File[] getDirectories() {
 		File[] directories = basePath.listFiles(new FilenameFilter() {
 		  @Override
