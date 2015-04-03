@@ -8,16 +8,31 @@ import nl.idgis.geoide.documentcache.DocumentCacheException;
 import nl.idgis.geoide.documentcache.DocumentStore;
 import play.libs.F.Promise;
 
+
+/**
+ * An implementation of {@link DocumentStore} that delegates the requests to (one of) the document stores in stores
+ * 
+ */
+
 public class DelegatingStore implements DocumentStore {
 
 	
 	private final DocumentStore[] stores;
 
 
+	/**
+	 * Creates a new delegating document store
+	 * 
+	 * @param stores An array of stores where to delegate to=
+	 */
 	public DelegatingStore(DocumentStore... stores) {
 		this.stores = stores;
 	}
 	
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Promise<Document> fetch(URI uri) {
 		return fetch(uri,0);			
@@ -35,27 +50,5 @@ public class DelegatingStore implements DocumentStore {
 		
 	}
 	
-
-	/*public String[] list() {
-		return list(0);
-	}
-	
-	private String[] list(int n) {
-		if(n >=stores.length ) {
-			return null;
-		} 
-		if(stores[n].getClass() == FileStore.class) {
-			return ((FileStore) stores[n]).getFileList();
-		} else {
-			
-			list (n+1);
-		}
-		return null;
-		
-	}
-	*/
-	
-	
-
 
 }
