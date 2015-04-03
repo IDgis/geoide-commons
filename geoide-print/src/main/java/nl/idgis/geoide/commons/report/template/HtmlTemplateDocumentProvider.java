@@ -90,7 +90,9 @@ public class HtmlTemplateDocumentProvider implements TemplateDocumentProvider {
 				for (final JsonNode template: templates) {
 					templateList.add(template);	
 				}
-				return templateList;
+				ObjectNode allTemplates = JsonFactory.mapper ().createObjectNode();
+				allTemplates.put("templates", templateList);
+				return allTemplates;
 			});
 	}
 	
