@@ -8,8 +8,6 @@ import nl.idgis.geoide.commons.layer.LayerTypeRegistry;
 import nl.idgis.geoide.commons.print.service.PrintService;
 import nl.idgis.geoide.commons.report.ReportComposer;
 import nl.idgis.geoide.commons.report.template.HtmlTemplateDocumentProvider;
-import nl.idgis.geoide.commons.report.template.TemplateDocumentProvider;
-import nl.idgis.geoide.documentcache.DocumentCache;
 import nl.idgis.geoide.documentcache.service.DefaultDocumentCache;
 import nl.idgis.geoide.map.MapView;
 import nl.idgis.geoide.service.ServiceTypeRegistry;

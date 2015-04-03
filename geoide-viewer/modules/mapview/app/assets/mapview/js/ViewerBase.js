@@ -662,6 +662,19 @@ define ([
 			return def;
 		},
 		
+		templates: function () {
+			var def = new Deferred ();
+
+			xhr.get (geoideReportRoutes.controllers.printservice.Template.templates ().url).then (lang.hitch (this, function (data) {
+					console.log(data);
+					def.resolve (data);
+				}));
+			}));
+			
+			return def;
+		},
+		
+		
 		
 		
 	});
