@@ -1,7 +1,6 @@
 package nl.idgis.geoide.documentcache.service;
 
-import java.io.File;
-import java.lang.reflect.Method;
+
 import java.net.URI;
 
 import nl.idgis.geoide.documentcache.Document;
@@ -30,11 +29,13 @@ public class DelegatingStore implements DocumentStore {
 			return Promise.throwing(new DocumentCacheException.DocumentNotFoundException (uri));
 		}
 		Promise<Document> doc = stores[n].fetch(uri);
-		doc.recoverWith ((t) -> fetch (uri, n + 1));
-		return doc.map ((d) -> (Document)doc);
+		return doc
+			.recoverWith ((t) -> fetch (uri, n + 1))
+			.map ((d) -> d);
 		
 	}
 	
+
 	/*public String[] list() {
 		return list(0);
 	}

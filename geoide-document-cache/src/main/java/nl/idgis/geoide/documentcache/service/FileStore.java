@@ -3,6 +3,7 @@ package nl.idgis.geoide.documentcache.service;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -44,29 +45,19 @@ public class FileStore implements DocumentStore {
 		this.streamProcessor = streamProcessor;
 	}
 	
+	
+	public String getProtocol() {
+		return protocol;
+	}
+	
 	@Override
-	public Promise<Document> fetch (URI localUri) {
-		File file = null;
-		String filePath = basePath + localUri.getPath();
-		final URI uri;
-		try {
-			uri = new URI(filePath).normalize();
-		} catch (URISyntaxException e) {
-	    	Logger.debug ("Not a valid URI: " + filePath);
-	    	return Promise.throwing (e); 
-		}	
-			
-		try {
-			file = new File (uri);
-		} catch (Exception e) {
-			Logger.debug ("Cannot create file from filePath: " + filePath);
-			return Promise.throwing (e); 
-		}
+	public Promise<Document> fetch (URI fileUri) {
+		final File file = new File (basePath, fileUri.getPath ());
 	
 		
-		if (file.getAbsolutePath().indexOf(basePath.getAbsolutePath()) == -1) {
-			Logger.debug ("file: " + filePath + " is not on the basepath: " + basePath);
-			return Promise.throwing (new DocumentCacheException.DocumentNotFoundException (uri));
+		if (!file.getAbsolutePath().startsWith(basePath.getAbsolutePath())) {
+			Logger.debug ("file: " + fileUri.getPath() + " is not on the basepath: " + basePath);
+			return Promise.throwing (new DocumentCacheException.IOError(null));
 		}
 
 		//combine url, normalize path
@@ -88,21 +79,20 @@ public class FileStore implements DocumentStore {
 		}
 		
 		
-		
 		Publisher<ByteString> body; 
 
 		try {
-			body = streamProcessor.publishInputStream(new FileInputStream(file), 512, 1000);
+			body = streamProcessor.publishInputStream(new FileInputStream(file), 1024, 30000);
 		} catch (FileNotFoundException e) {
 			Logger.debug ("Cannot find file on filePath: " + file.getAbsolutePath());
 	    	return Promise.throwing (e);
 		}
 		
-		 Document document = new Document () {
+		
+		Document document = new Document () {
 				@Override
-				public URI getUri () {
-					
-					return uri;
+				public URI getUri () throws URISyntaxException  {
+					return new URI(file.getPath());
 				}
 				
 				@Override
@@ -121,8 +111,17 @@ public class FileStore implements DocumentStore {
 	}
 	
 	
-	public String[] getFileList() {
-		return basePath.list();
+	public File[] getFiles() {
+		return basePath.listFiles();
 	}
-
+	
+	public File[] getDirectories() {
+		File[] directories = basePath.listFiles(new FilenameFilter() {
+		  @Override
+		  public boolean accept(File current, String name) {
+		    return new File(current, name).isDirectory();
+		  }
+		});
+		return directories;
+	}
 }

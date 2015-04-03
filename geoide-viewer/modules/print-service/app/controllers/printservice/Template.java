@@ -1,34 +1,33 @@
 package controllers.printservice;
 
-import nl.idgis.geoide.documentcache.service.FileStore;
+import nl.idgis.geoide.commons.report.template.HtmlTemplateDocumentProvider;
+import play.libs.F.Promise;
 import play.mvc.Controller;
 import play.mvc.Result;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 public class Template extends Controller {
-	private final FileStore fileStore;
+	private final HtmlTemplateDocumentProvider templateProvider;
 	
-	public Template(FileStore fileStore) {
-		this.fileStore = fileStore;
+	public Template(HtmlTemplateDocumentProvider templateProvider) {
+		this.templateProvider = templateProvider;
 		
-		if (fileStore == null) {
-			throw new NullPointerException ("fileStore cannot be null");
+		if (templateProvider  == null) {
+			throw new NullPointerException ("templateProvider cannot be null");
 		}
 		
 	}
 		
-	public	Result getTemplateFiles () throws Throwable {
-		String[] files = fileStore.getFileList();
-		String list = "";
-		for(int n = 0; n < files.length; n++){
-			list +=  files[n] + ";";
-		}
-		return ok(list);
+	public	 Promise<Result> getTemplates () throws Throwable {
+
+		final Promise<JsonNode> templatePromise = this.templateProvider.getTemplates();
+		
+		return templatePromise.map((templates) -> {
+			return ok(templates);
+		});
 	}
 	
-	public Result getTemplateProperties (final String templateName) throws Throwable {
-		return ok();
-	
-	}
+
 }
+
