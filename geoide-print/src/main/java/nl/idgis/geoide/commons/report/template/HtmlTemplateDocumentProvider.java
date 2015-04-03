@@ -8,20 +8,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-
-
-
-
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
 import nl.idgis.geoide.commons.domain.JsonFactory;
 import nl.idgis.geoide.documentcache.Document;
 import nl.idgis.geoide.documentcache.service.DelegatingStore;
 import nl.idgis.geoide.documentcache.service.FileStore;
 import nl.idgis.geoide.util.streams.StreamProcessor;
+
+import org.jsoup.select.Elements;
+
 import play.libs.F.Promise;
-import play.libs.F.Tuple;
 import akka.util.ByteString;
 import akka.util.ByteString.ByteStrings;
 
@@ -91,12 +86,10 @@ public class HtmlTemplateDocumentProvider implements TemplateDocumentProvider {
 		return Promise
 			.sequence(promises)
 			.map ((templates) -> {
-				final ObjectNode allTemplates =  JsonFactory.mapper ().createObjectNode();
-				final ArrayNode templateList = allTemplates.arrayNode();
+				final ArrayNode templateList = JsonFactory.mapper ().createObjectNode().arrayNode();
 				for (final JsonNode template: templates) {
 					templateList.add(template);	
 				}
-				
 				return templateList;
 			});
 	}
@@ -110,18 +103,18 @@ public class HtmlTemplateDocumentProvider implements TemplateDocumentProvider {
 			final ObjectNode template = JsonFactory.mapper ().createObjectNode ();
 			template.put("template", templateName);
 			template.put ("description", d.getDocument().select("meta[name=description]").first().attr("content"));
-			final ObjectNode propertiesNode =  JsonFactory.mapper ().createObjectNode();
-			//final ArrayNode properties = propertiesNode.arrayNode();
+			final ArrayNode properties = template.arrayNode();
 			Elements blocks = d.getBlocks();
 			for ( int n = 0; n< blocks.size(); n++) {
+				final ObjectNode property =  JsonFactory.mapper ().createObjectNode();
 				if(blocks.get(n).hasClass("text")) {
-					propertiesNode.put("name", blocks.get(n).select("#id").toString())
-								  .put("maxwidth", blocks.get(n).select("^max-width").toString())	
-								  .put("default",blocks.get(n).html()); 	
+					property.put("name", blocks.get(n).id())
+							.put("maxwidth", blocks.get(n).attr("data-max-width"))	
+							.put("default",blocks.get(n).text()); 	
+					properties.add(property);
 				}
-				template.put("variables", propertiesNode);
 			}
-			
+			template.put("variables", properties);
 			return (JsonNode)template;
 
 		});
