@@ -1,6 +1,7 @@
 package nl.idgis.geoide.documentcache;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import nl.idgis.ogc.util.MimeContentType;
 
@@ -19,8 +20,9 @@ public interface Document {
 	 * Returns the URI of the document. Each document in a store or a cache is identified with a unique URI.
 	 *  
 	 * @return The URI of the document.
+	 * @throws URISyntaxException 
 	 */
-	URI getUri ();
+	URI getUri () throws URISyntaxException;
 	
 	/**
 	 * Returns the content type of the document.

@@ -1,9 +1,13 @@
-GET		/print					@controllers.printservice.Print.printGet(u: String)
-POST	/print					@controllers.printservice.Print.printPost(u: String)
+GET		/print						@controllers.printservice.Print.printGet(u: String)
+POST	/print						@controllers.printservice.Print.printPost(u: String)
 
-POST   /report  				@controllers.printservice.Report.report()
+POST   /report  					@controllers.printservice.Report.report()
 
-GET   /fetchReport  			@controllers.printservice.Report.fetchReport(u: String)
+GET   /fetchReport  				@controllers.printservice.Report.fetchReport(u: String)
+
+GET   /templates  			    	@controllers.printservice.Template.getTemplates()
+
+
 
 # JavaScript routes:
 GET		/report/routes			controllers.printservice.JavaScript.javascriptRoutes()

@@ -1,18 +1,20 @@
 package geoide.config;
 
+import java.io.File;
 import java.io.IOException;
 
 import nl.idgis.geoide.commons.http.client.HttpClient;
-import nl.idgis.geoide.map.MapView;
 import nl.idgis.geoide.commons.print.service.HtmlPrintService;
 import nl.idgis.geoide.commons.report.ReportComposer;
 import nl.idgis.geoide.commons.report.ReportPostProcessor;
 import nl.idgis.geoide.commons.report.template.HtmlTemplateDocumentProvider;
-import nl.idgis.geoide.commons.report.template.TemplateDocumentProvider;
 import nl.idgis.geoide.documentcache.DocumentCache;
 import nl.idgis.geoide.documentcache.DocumentStore;
 import nl.idgis.geoide.documentcache.service.DefaultDocumentCache;
+import nl.idgis.geoide.documentcache.service.DelegatingStore;
+import nl.idgis.geoide.documentcache.service.FileStore;
 import nl.idgis.geoide.documentcache.service.HttpDocumentStore;
+import nl.idgis.geoide.map.MapView;
 import nl.idgis.geoide.util.streams.StreamProcessor;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,14 +31,31 @@ public class PrintServiceConfig {
 	@Bean
 	@Qualifier ("printHttpDocumentStore")
 	@Autowired
-	public DocumentStore printHttpDocumentStore (final HttpClient httpClient) {
+	public HttpDocumentStore printHttpDocumentStore (final HttpClient httpClient) {
 		return new HttpDocumentStore (httpClient);
+	}
+	
+	@Bean
+	@Qualifier ("printFileStore")
+	@Autowired
+	public FileStore printFileStore (final @Qualifier("streamProcessor") StreamProcessor streamProcessor) {
+		String basePath = Play.application ().configuration ().getString ("geoide.services.print.templatepath", "C:/Temp");
+		String protocol = "template";
+		return new FileStore(new File(basePath), protocol, streamProcessor);
+	}
+	
+	@Bean
+	@Qualifier ("delegatingDocumentStore")
+	@Autowired
+	public DelegatingStore delegatingStore (final @Qualifier("printHttpDocumentStore") HttpDocumentStore httpDocumentStore, final @Qualifier("printFileStore") FileStore fileStore) {
+		DocumentStore[] stores = {httpDocumentStore, fileStore};
+		return new DelegatingStore(stores);
 	}
 	
 	@Bean
 	@Qualifier ("printDocumentCache")
 	@Autowired
-	public DefaultDocumentCache printDocumentCache (final @Qualifier("printHttpDocumentStore") DocumentStore documentStore, final StreamProcessor streamProcessor) throws IOException {
+	public DefaultDocumentCache printDocumentCache (final @Qualifier("delegatingDocumentStore") DelegatingStore documentStore, final StreamProcessor streamProcessor) throws IOException {
 		return DefaultDocumentCache.createTempFileCache (
 				Akka.system (), 
 				streamProcessor, 
@@ -61,24 +80,27 @@ public class PrintServiceConfig {
 	@Bean
 	@Qualifier ("reportPostProcessor")
 	@Autowired
-	public ReportPostProcessor reportPostProcessor (HtmlPrintService htmlPrintService, final @Qualifier ("printDocumentCache") DocumentCache documentCache ) {
+	public ReportPostProcessor reportPostProcessor (HtmlPrintService htmlPrintService, final @Qualifier ("printDocumentCache") DefaultDocumentCache documentCache ) {
 		return new ReportPostProcessor (
 				htmlPrintService,
 				documentCache
 		);
 	}
 	
+	
+	
 	@Bean
+	@Qualifier ("templateDocumentProvider")
 	@Autowired
-	public TemplateDocumentProvider templateProvider() {
-		return new HtmlTemplateDocumentProvider();
+	public HtmlTemplateDocumentProvider templateProvider(final @Qualifier("delegatingDocumentStore") DelegatingStore documentStore, final @Qualifier("printFileStore") FileStore fileStore, final @Qualifier("streamProcessor") StreamProcessor streamProcessor ) {
+		return new HtmlTemplateDocumentProvider(documentStore, fileStore, streamProcessor);
 	}
 	
 	
 	@Bean
 	@Qualifier ("reportComposer")
 	@Autowired
-	public ReportComposer reportComposer (final @Qualifier ("reportPostProcessor") ReportPostProcessor reportPostProcessor, TemplateDocumentProvider templateProvider, MapView mapView, final @Qualifier ("printDocumentCache") DocumentCache documentCache) {
+	public ReportComposer reportComposer (final @Qualifier ("reportPostProcessor") ReportPostProcessor reportPostProcessor, HtmlTemplateDocumentProvider templateProvider, MapView mapView, final @Qualifier ("printDocumentCache") DocumentCache documentCache) {
 		return new ReportComposer (
 				reportPostProcessor,
 				templateProvider, 

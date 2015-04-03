@@ -7,7 +7,8 @@ import nl.idgis.geoide.commons.domain.provider.ServiceProvider;
 import nl.idgis.geoide.commons.layer.LayerTypeRegistry;
 import nl.idgis.geoide.commons.print.service.PrintService;
 import nl.idgis.geoide.commons.report.ReportComposer;
-import nl.idgis.geoide.documentcache.DocumentCache;
+import nl.idgis.geoide.commons.report.template.HtmlTemplateDocumentProvider;
+import nl.idgis.geoide.documentcache.service.DefaultDocumentCache;
 import nl.idgis.geoide.map.MapView;
 import nl.idgis.geoide.service.ServiceTypeRegistry;
 import nl.idgis.geoide.util.streams.StreamProcessor;
@@ -25,6 +26,7 @@ import controllers.mapview.Symbol;
 import controllers.mapview.View;
 import controllers.printservice.Print;
 import controllers.printservice.Report;
+import controllers.printservice.Template;
 
 
 
@@ -69,7 +71,7 @@ public class ControllerConfig {
 	@Autowired
 	public Print printServiceController (
 			final PrintService printService, 
-			final @Qualifier ("printDocumentCache") DocumentCache documentCache,
+			final @Qualifier ("printDocumentCache") DefaultDocumentCache documentCache,
 			final StreamProcessor streamProcessor) {
 		return new Print (printService, documentCache, streamProcessor);
 	}
@@ -79,9 +81,18 @@ public class ControllerConfig {
 	public Report reportController (
 			final  @Qualifier ("reportComposer") ReportComposer composer,
 			final StreamProcessor streamProcessor,
-			final @Qualifier ("printDocumentCache") DocumentCache documentCache
+			final @Qualifier ("printDocumentCache") DefaultDocumentCache documentCache
 			) {
 		return new Report (composer, streamProcessor, documentCache);
 	}
+	
+	@Bean
+	@Autowired
+	public Template templateController (
+			final  @Qualifier ("templateDocumentProvider") HtmlTemplateDocumentProvider templateDocumentProvider
+			) {
+		return new Template (templateDocumentProvider);
+	}
+	
 	
 }
