@@ -665,8 +665,7 @@ define ([
 		templates: function () {
 			var def = new Deferred ();
 
-			xhr.get (geoideReportRoutes.controllers.printservice.Template.templates ().url).then (lang.hitch (this, function (data) {
-					console.log(data);
+			xhr.get (geoideReportRoutes.controllers.printservice.Template.getTemplates ().url).then (lang.hitch (this, function (data) {
 					def.resolve (data);
 			}));
 			
