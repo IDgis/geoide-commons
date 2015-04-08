@@ -3,6 +3,7 @@ package nl.idgis.geoide.commons.report.template;
 
 import java.net.URI;
 
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
@@ -11,10 +12,10 @@ public class HtmlTemplateDocument implements TemplateDocument {
 	private final Document html; 
 
 	public HtmlTemplateDocument(URI templateUri, String html) {		
-		this.templateUri = templateUri;
+		this.templateUri = templateUri;	
 		
-		this.html = new Document(templateUri.toString());
-		this.html.append(html);
+		this.html = Jsoup.parse(html, templateUri.toString());
+
 	}
 
 	@Override 
