@@ -15,6 +15,7 @@ import nl.idgis.geoide.documentcache.DocumentStore;
 import nl.idgis.geoide.util.streams.StreamProcessor;
 import nl.idgis.ogc.util.MimeContentType;
 
+import org.apache.commons.io.FilenameUtils;
 import org.reactivestreams.Publisher;
 
 import play.Logger;
@@ -79,11 +80,20 @@ public class FileStore implements DocumentStore {
 		String contentType;
 		try {
 			contentType = Files.probeContentType(file.toPath());
+			if(contentType == null) {
+				String ext = FilenameUtils.getExtension(file.getAbsolutePath());
+				if (ext.equals("less")){
+					contentType = "text/less";
+				}
+				
+			}
+			
 		} catch (IOException e) {
 			Logger.debug ("Cannot determine contentType from file: " + file.getAbsolutePath());
 			return Promise.throwing (e); 
 		}
 		
+		String contType = contentType;
 		
 		Publisher<ByteString> body; 
 
@@ -98,12 +108,12 @@ public class FileStore implements DocumentStore {
 		Document document = new Document () {
 				@Override
 				public URI getUri () throws URISyntaxException  {
-					return new URI(file.getPath());
+					return fileUri;
 				}
 				
 				@Override
 				public MimeContentType getContentType () {
-					return new MimeContentType(contentType);
+					return new MimeContentType(contType);
 				}
 				
 				@Override
