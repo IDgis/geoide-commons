@@ -84,6 +84,8 @@ public class FileStore implements DocumentStore {
 				String ext = FilenameUtils.getExtension(file.getAbsolutePath());
 				if (ext.equals("less")){
 					contentType = "text/less";
+				} else {
+					contentType = "application/octet-stream";
 				}
 				
 			}

@@ -53,14 +53,14 @@ public class TestFileStore {
 	
 
 	/**
-	 * Destroys the FileStore and stream processor.
+	 * Destroys the FileStore and stream processor and remove the temp files from the filesystem.
 	 */
 	@After
-	public void destroyHttpClient () {
+	public void destroyFileStore () {
 		streamProcessor = null;
 		JavaTestKit.shutdownActorSystem (actorSystem);
 		fileStore = null;
-		basePath.delete();
+		deleteDirectory(basePath);
 	}
 	
 	
@@ -86,8 +86,7 @@ public class TestFileStore {
 					TestDefaultDocumentCache.assertContent ("Hello, World!", document, streamProcessor);
 				} catch (IOException e) {
 					throw new RuntimeException (e);
-				}
-				
+				} 
 			}
 		});
 	}
@@ -153,6 +152,7 @@ public class TestFileStore {
 				final File[] dirs;
 				dirs = fileStore.getDirectories();
 				assertEquals (1, dirs.length);	
+				
 			}
 		});
 		
@@ -186,12 +186,31 @@ public class TestFileStore {
         BufferedWriter output = new BufferedWriter(new FileWriter(testFile));
         output.write("Hello, World!");
         output.close();
-		testFile = new File(basePath, "test2.txt");
-		bool = testFile.createNewFile();
+		File testFile2 = new File(basePath, "test2.txt");
+		bool = testFile2.createNewFile();
 		File testDir = new File(basePath, "test");
 		bool = testDir.mkdirs();
-		testFile = new File(testDir, "test3.txt");
-		bool = testFile.createNewFile();
+		File testFile3 = new File(testDir, "test3.txt");
+		bool = testFile3.createNewFile();
 		
 	}
+	
+	
+	public static boolean deleteDirectory(File directory) {
+	    if(directory.exists()){
+	        File[] files = directory.listFiles();
+	        if(null!=files){
+	            for(int i=0; i<files.length; i++) {
+	                if(files[i].isDirectory()) {
+	                    deleteDirectory(files[i]);
+	                }
+	                else {
+	                    files[i].delete();
+	                }
+	            }
+	        }
+	    }
+	    return(directory.delete());
+	}
+	
 }
