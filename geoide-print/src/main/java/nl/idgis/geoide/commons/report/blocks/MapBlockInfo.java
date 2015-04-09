@@ -1,7 +1,6 @@
 package nl.idgis.geoide.commons.report.blocks;
 
 import java.util.Map;
-import java.util.Set;
 
 import nl.idgis.geoide.commons.report.ReportData;
 
@@ -37,44 +36,8 @@ public class MapBlockInfo implements BlockInfo {
 		final JsonNode extent = clientInfo.path("extent");
 		scale = clientInfo.path("scale").asInt();	
 
-		int gridHeight = 1;
-		int gridWidth = 1;
-		
-		Set <String> classNames = block.classNames();	
-		for (String className : classNames) {
-			if (className.matches("^span\\-[1-9][0-9]*$")){
-				if (block.hasClass("grid-row")) {
-					gridHeight = Integer.parseInt(className.substring(5));
-					for(Element parent : block.parents()) {
-						if (parent.hasClass("grid-col")) {
-							Set <String> parentClassNames = parent.classNames();
-							for (String parentClassName : parentClassNames) {
-								if (parentClassName.matches("^span\\-[1-9][0-9]*$")){
-									gridWidth = Integer.parseInt(parentClassName.substring(5));
-									break;
-								}
-							}
-						}
-						break;
-					}
-				} 
-				if (block.hasClass("grid-col")) {
-					gridWidth = Integer.parseInt(className.substring(5));
-					for(Element parent : block.parents()) {
-						if (parent.hasClass("grid-row")) {
-							Set <String> parentClassNames = parent.classNames();
-							for (String parentClassName : parentClassNames) {
-								if (parentClassName.matches("^span\\-[1-9][0-9]*$")){
-									gridHeight = Integer.parseInt(parentClassName.substring(5));
-									break;
-								}
-							}
-						}
-						break;
-					}	
-				} 	
-			}
-		}
+		int gridHeight = BlockUtil.getGridHeight(block);
+		int gridWidth = BlockUtil.getGridWidth(block);;
 		
 		final boolean scaleFixed = Boolean.parseBoolean("" + blockDataSet.get("scale-fixed") + "");
 
