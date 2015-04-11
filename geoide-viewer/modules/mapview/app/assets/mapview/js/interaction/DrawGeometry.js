@@ -24,6 +24,7 @@ define ([
 	 */
 	return declare ([Interaction, Evented, Engine], {
 		type: 'point',
-		format: 'geojson'
+		format: 'geojson',
+		modifier: 'none'
 	});
 });
