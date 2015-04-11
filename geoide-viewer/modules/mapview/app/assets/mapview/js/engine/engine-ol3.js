@@ -154,7 +154,6 @@ define ([
 					format = config.format || 'geojson',
 					olType,
 					olFormat;
-				
 				switch (('' + type).toLowerCase ()) {
 				default:
 				case 'point':
@@ -196,6 +195,7 @@ define ([
 					// Raise the draw event:
 					
 				});
+				
 				
 				return drawInteraction;
 			}
@@ -303,7 +303,6 @@ define ([
 		},
 		
 		_resolutionSetter: function (resolution) {
-			console.log("resolutionSetter!!!!!!!!");
 			this.olMap.getView ().setResolution (this._normalizeResolution (resolution));
 		},
 		
@@ -311,7 +310,6 @@ define ([
 		// Utilities:
 		// =====================================================================
 		zoomTo: function (center, resolution, animate) {
-			console.log("zoomTo" + animate);
 			var def = new Deferred ();
 			
 			if (animate) {

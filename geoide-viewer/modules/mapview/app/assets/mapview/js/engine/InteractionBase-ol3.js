@@ -31,8 +31,12 @@ define ([
 			this._interactions = null;
 		},
 		
+		
 		_createInteractions: function (engine) {
 			throw new Error ('_createInteractions not implemented');
 		}
+		
+		
+		
 	});
 });

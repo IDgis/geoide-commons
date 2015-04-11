@@ -44,9 +44,21 @@ define ([
 				break;
 			}
 			
+			switch (this.modifier.toLowerCase ()) {
+				default:
+				case 'shiftKey':
+					condition = ol.events.condition.shiftKeyOnly;
+					break;
+				case 'none':
+					condition = ol.events.condition.noModifierKeys;
+					break;
+			}
+			
+			
 			this._interaction = new ol.interaction.Draw ({
 				source: engine._vectorSource,
-				type: olType
+				type: olType,
+				condition: condition
 			});
 			
 			engine._vectorSource.clear ();
