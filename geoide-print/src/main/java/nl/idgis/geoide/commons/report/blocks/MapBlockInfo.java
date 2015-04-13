@@ -47,6 +47,14 @@ public class MapBlockInfo implements BlockInfo {
 		blockWidthmm = (colWidthmm * gridWidth) + ((gridWidth - 1) * reportData.getGutterH());
 		blockHeightmm = (rowHeightmm * gridHeight) + ((gridHeight - 1) * reportData.getGutterV());
 		
+		if(getBlockAttribute("border-width")!= null ) {
+			if(getBlockAttribute("border-width").endsWith("mm")) {
+				double borderWidth = Double.parseDouble(getBlockAttribute("border-width").substring(0, getBlockAttribute("border-width").length() - 2));
+				blockWidthmm -= borderWidth;
+			    blockHeightmm -= borderWidth;
+			}
+		}
+		
 		centerX = extent.path("minx").asDouble() + ((extent.path("maxx").asDouble() - extent.path("minx").asDouble())/2);
 		centerY = extent.path("miny").asDouble() + ((extent.path("maxy").asDouble() - extent.path("miny").asDouble())/2);
 				
