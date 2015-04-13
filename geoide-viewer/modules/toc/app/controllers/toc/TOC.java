@@ -44,7 +44,6 @@ public class TOC  {
 			Traits<TOCItem> tocItem = tocItems.get(n);
 			List<Traits<TOCItem>> tocChildItems = tocItem.get().getItems();
 			if(tocChildItems.size() > 0) {
-				
 				revertItems(tocChildItems,new ArrayList<Traits<TOCItem>>());
 			}
 			parentList.add(tocItem);	

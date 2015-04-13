@@ -10,11 +10,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-public class MapBlockInfo implements BlockInfo {
-	private final JsonNode clientInfo;
+public class MapBlockInfo extends BlockInfo {
 	private final Element block;
-	private final Map<String, String> blockDataSet;
-	private final ReportData reportData;
+
 	private double scale;
 	private double centerX;
 	private double centerY;
@@ -71,13 +69,6 @@ public class MapBlockInfo implements BlockInfo {
 		}
 	}
 	
-	public JsonNode getClientInfo() {
-		return clientInfo;
-	}
-	
-	public String getBlockAttribute(String attrName){
-		return blockDataSet.get(attrName);
-	}
 		
 	public double getScale(){
 		return scale;

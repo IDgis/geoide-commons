@@ -117,11 +117,11 @@ public class ReportComposer {
 			
 			//special block date
 			if(templateBlockElement.hasClass("date")) {
-				blockInfo = new DateBlockInfo (mapper.createObjectNode(), templateBlockElement.attributes(), reportData);
+				blockInfo = new DateBlockInfo (mapper.createObjectNode(), templateBlockElement, reportData);
 			}
 			//specialblock scale
 			if(templateBlockElement.hasClass("scale")) {
-				blockInfo = new ScaleTextBlockInfo (null, templateBlockElement.attributes(), reportData);
+				blockInfo = new ScaleTextBlockInfo (null, templateBlockElement, reportData);
 			}
 			
 			if(templateBlockElement.hasClass("map")) {
@@ -138,7 +138,7 @@ public class ReportComposer {
 			for (final JsonNode clientInfoBlock: clientInfoBlocks) {
 				
 				if(templateBlockElement.id().equals(clientInfoBlock.path("id").asText().toLowerCase())){
-					blockInfo = new TextBlockInfo(clientInfoBlock, templateBlockElement.attributes(), reportData);
+					blockInfo = new TextBlockInfo(clientInfoBlock, templateBlockElement, reportData);
 				}
 			}		
 			Element blockElement = templateBlockElement.clone();
