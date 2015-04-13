@@ -1,28 +1,22 @@
 package nl.idgis.geoide.commons.report.blocks;
 
 
-import org.jsoup.nodes.Attributes;
-
 import nl.idgis.geoide.commons.report.ReportData;
+
+import org.jsoup.nodes.Element;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-public class ScaleTextBlockInfo extends TextBlockInfo implements BlockInfo {
+public class ScaleTextBlockInfo extends TextBlockInfo  {
 
 
 
-	public ScaleTextBlockInfo (JsonNode clientInfo, Attributes blockAttributes, ReportData reportData) {
-		super( clientInfo, blockAttributes, reportData);
-		prepare();
+	public ScaleTextBlockInfo (JsonNode clientInfo, Element block, ReportData reportData) {
+		super( clientInfo, block, reportData);
 	}
 	
-	@Override
-	public void prepare() {
-		
-	}
-
 	
 	public void setScale(int scale) {
 		ObjectMapper mapper = new ObjectMapper();
