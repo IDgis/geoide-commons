@@ -35,7 +35,7 @@ public class MapBlockInfo extends BlockInfo {
 		scale = clientInfo.path("scale").asInt();	
 
 		int gridHeight = BlockUtil.getGridHeight(block);
-		int gridWidth = BlockUtil.getGridWidth(block);;
+		int gridWidth = BlockUtil.getGridWidth(block);
 		
 		final boolean scaleFixed = Boolean.parseBoolean("" + blockDataSet.get("scale-fixed") + "");
 
