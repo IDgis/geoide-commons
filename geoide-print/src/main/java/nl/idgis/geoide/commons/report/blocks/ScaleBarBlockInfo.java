@@ -35,8 +35,6 @@ public class ScaleBarBlockInfo extends BlockInfo {
 		double maxRectWidthm = (scale/1000) * maxRectWidthmm;
 		
 		
-		
-		
 		int multiplier = 1;
 		int n = 1;
 		while (n < String.valueOf((int) maxRectWidthm).length()) {
@@ -75,7 +73,7 @@ public class ScaleBarBlockInfo extends BlockInfo {
 	
 	
 	public String getScaleBarText (int n) {
-		if(String.valueOf(rectWidth).length() > 3) {
+		if(String.valueOf((int) rectWidth).length() > 3) {
 			return String.valueOf((n *  rectWidth)/1000) + ((n == nrOfRects ? " km" : ""));
 		} else {
 			return String.valueOf(n *  rectWidth) + ((n == nrOfRects ? " m" : ""));
