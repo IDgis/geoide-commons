@@ -13,6 +13,8 @@ import nl.idgis.geoide.commons.report.blocks.BlockInfo;
 import nl.idgis.geoide.commons.report.blocks.DateBlockInfo;
 import nl.idgis.geoide.commons.report.blocks.MapBlockComposer;
 import nl.idgis.geoide.commons.report.blocks.MapBlockInfo;
+import nl.idgis.geoide.commons.report.blocks.ScaleBarBlockComposer;
+import nl.idgis.geoide.commons.report.blocks.ScaleBarBlockInfo;
 import nl.idgis.geoide.commons.report.blocks.ScaleTextBlockInfo;
 import nl.idgis.geoide.commons.report.blocks.TextBlockComposer;
 import nl.idgis.geoide.commons.report.blocks.TextBlockInfo;
@@ -27,12 +29,12 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import play.libs.F.Function;
 import play.libs.F.Promise;
 import play.libs.F.Tuple;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 /**
@@ -47,6 +49,7 @@ public class ReportComposer {
 	private final TemplateDocumentProvider templateProvider;
 	private final TextBlockComposer textBlockComposer;
 	private final MapBlockComposer mapBlockComposer;
+	private final ScaleBarBlockComposer scaleBarBlockComposer;
 	private final DocumentCache documentCache;
 	private static Logger log = LoggerFactory.getLogger (HtmlPrintService.class);
 	
@@ -65,6 +68,7 @@ public class ReportComposer {
 		this.templateProvider = templateProvider;
 		this.textBlockComposer = new TextBlockComposer();
 		this.mapBlockComposer = new MapBlockComposer(mapView);
+		this.scaleBarBlockComposer = new ScaleBarBlockComposer();
 		this.documentCache = documentCache;
 	}
 	
@@ -117,13 +121,21 @@ public class ReportComposer {
 			
 			//special block date
 			if(templateBlockElement.hasClass("date")) {
-				blockInfo = new DateBlockInfo (mapper.createObjectNode(), templateBlockElement.attributes(), reportData);
+				blockInfo = new DateBlockInfo (mapper.createObjectNode(), templateBlockElement, reportData);
 			}
 			//specialblock scale
 			if(templateBlockElement.hasClass("scale")) {
-				blockInfo = new ScaleTextBlockInfo (null, templateBlockElement.attributes(), reportData);
+				blockInfo = new ScaleTextBlockInfo (null, templateBlockElement, reportData);
 			}
 			
+			if(templateBlockElement.hasClass("scalebar")) {
+				String viewerStateId = templateBlockElement.attributes().get("data-viewerstate-id");
+				if(viewerStateId!=null){
+					blockInfo = new ScaleBarBlockInfo (viewerStateNodes.get(viewerStateId), templateBlockElement, reportData);
+				} else {
+					//foutmelding
+				}
+			}
 			if(templateBlockElement.hasClass("map")) {
 				String viewerStateId = templateBlockElement.attributes().get("data-viewerstate-id");
 				if(viewerStateId!=null){
@@ -138,7 +150,7 @@ public class ReportComposer {
 			for (final JsonNode clientInfoBlock: clientInfoBlocks) {
 				
 				if(templateBlockElement.id().equals(clientInfoBlock.path("id").asText().toLowerCase())){
-					blockInfo = new TextBlockInfo(clientInfoBlock, templateBlockElement.attributes(), reportData);
+					blockInfo = new TextBlockInfo(clientInfoBlock, templateBlockElement, reportData);
 				}
 			}		
 			Element blockElement = templateBlockElement.clone();
@@ -161,6 +173,9 @@ public class ReportComposer {
 				}
 				if (blockElement.hasClass("map")) {
 					promises.add (processBlock (sourceElement, mapBlockComposer.compose (blockElement, blockInfo, documentCache)));
+				}
+				if (blockElement.hasClass("scalebar")) {
+					promises.add (processBlock (sourceElement, scaleBarBlockComposer.compose (blockElement, blockInfo, documentCache)));
 				}
 			}	
 			
