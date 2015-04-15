@@ -2,6 +2,13 @@ name := """geoide-mapview"""
 
 Common.settings
 
+// Use IDgis repositories:
+updateOptions := updateOptions.value.withLatestSnapshots(false).withCachedResolution(true)
+
+externalResolvers := Common.resolvers		
+
+resolvers := Seq()
+
 libraryDependencies ++= Seq(
   javaJdbc,
   javaEbean,
@@ -23,6 +30,3 @@ libraryDependencies ++= Seq(
   Common.Dependencies.springAop,
   Common.Dependencies.springTest
 )
-
-// Use IDgis repositories:
-resolvers := Common.resolvers

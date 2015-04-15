@@ -10,10 +10,7 @@ object Common {
 	val geoideCommonsVersion = "1.0-SNAPSHOT"
 	
 	val resolvers = Seq[Resolver] (
-		"Local Maven Repository" at "file:///" + Path.userHome.absolutePath + "/.m2/repository",
-		"idgis-public" at "http://nexus.idgis.eu/content/groups/public/"
-		// "idgis-thirdparty" at "http://nexus.idgis.eu/content/repositories/thirdparty/",
-		// "idgis-restricted" at "http://nexus.idgis.eu/content/groups/restricted/"	
+		"idgis-restricted" at "http://nexus.idgis.eu/content/groups/restricted/"	
 	)
 	
 	val settings: Seq[Setting[_]] = Seq (

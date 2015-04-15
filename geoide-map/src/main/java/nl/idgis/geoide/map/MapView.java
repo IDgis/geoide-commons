@@ -1,7 +1,10 @@
 package nl.idgis.geoide.map;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import nl.idgis.geoide.commons.domain.Layer;
 import nl.idgis.geoide.commons.domain.ParameterizedServiceLayer;
@@ -9,6 +12,7 @@ import nl.idgis.geoide.commons.domain.Service;
 import nl.idgis.geoide.commons.domain.ServiceRequest;
 import nl.idgis.geoide.commons.domain.provider.LayerProvider;
 import nl.idgis.geoide.commons.domain.traits.Traits;
+import nl.idgis.geoide.commons.layer.LayerState;
 import nl.idgis.geoide.commons.layer.LayerType;
 import nl.idgis.geoide.commons.layer.LayerTypeRegistry;
 import nl.idgis.geoide.service.LayerServiceType;
@@ -16,10 +20,7 @@ import nl.idgis.geoide.service.ServiceRequestContext;
 import nl.idgis.geoide.service.ServiceType;
 import nl.idgis.geoide.service.ServiceTypeRegistry;
 
-
 import com.fasterxml.jackson.databind.JsonNode;
-
-
 
 public class MapView {
 	private final LayerTypeRegistry layerTypeRegistry;
@@ -32,10 +33,10 @@ public class MapView {
 		this.layerProvider = layerProvider;
 	}
 
-	public List<ServiceRequest> getServiceRequests (List<LayerWithState> layers) {
+	public List<ServiceRequest> getServiceRequests (final List<Traits<LayerState>> layerStates) {
 		
 		// Turn the list of layers in a list of service layers:
-		final List<ParameterizedServiceLayer<?>> serviceLayers = createServiceLayerList (layers);
+		final List<ParameterizedServiceLayer<?>> serviceLayers = createServiceLayerList (layerStates);
 
 		// Merge the service layer list into a list of concrete requests for the client to execute.
 		return createServiceRequests (serviceLayers);
@@ -80,35 +81,51 @@ public class MapView {
 		return serviceRequests;
 	}
 	
-	private List<ParameterizedServiceLayer<?>> createServiceLayerList (final List<LayerWithState> layers) {
+	private List<ParameterizedServiceLayer<?>> createServiceLayerList (final List<Traits<LayerState>> layerStates) {
 		final List<ParameterizedServiceLayer<?>> serviceLayers = new ArrayList<> ();
 	
-		for (final LayerWithState l: layers) {
-			final Layer layer = l.layer ();
-			final JsonNode state = l.state ();
+		for (final Traits<LayerState> layerState: layerStates) {
+			final Layer layer = layerState.get ().getLayer ();
 			final Traits<LayerType> layerType = layerTypeRegistry.getLayerType (layer);
 			
-			serviceLayers.addAll (layerType.get ().getServiceLayers (layer, state));
+			serviceLayers.addAll (layerType.get ().getServiceLayers (layerState));
 		}
 		
 		return serviceLayers;
 	}
 	
-	public List<LayerWithState> flattenLayerList (final JsonNode viewerState) {
-		final List<LayerWithState> layers = new ArrayList<> ();
+	public List<Traits<LayerState>> flattenLayerList (final JsonNode viewerState) {
+		return flattenLayerList (viewerState, Collections.emptyList ());
+	}
+	
+	private List<Traits<LayerState>> flattenLayerList (final JsonNode viewerState, final List<Traits<LayerState>> parents) {
+		final List<Traits<LayerState>> layers = new ArrayList<> ();
 		final JsonNode layersNode = viewerState.path ("layers");
 		
-		System.out.println(viewerState.toString());
 		if (layersNode.isMissingNode ()) {
 			return layers;
 		}
-		
+
 		for (final JsonNode layerNode: layersNode) {
+			final Layer layer = getLayer (layerNode.path ("id"));
+			final Traits<LayerType> layerType = layerTypeRegistry.getLayerType (layer);
+			
+			if (layerType == null) {
+				throw new IllegalArgumentException ("Unable to find layer type for " + layer.getLayerType ());
+			}
+
+			final Traits<LayerState> layerState = layerType.get ().createLayerState (layer, layerNode.path ("state"), parents);
+
 			// Add the layer:
-			layers.add (new LayerWithState (getLayer (layerNode.path ("id")), layerNode.path ("state")));
+			layers.add (layerState);
 			
 			// Add all sub-layers of this layer:
-			layers.addAll (flattenLayerList (layerNode));
+			layers.addAll (flattenLayerList (
+				layerNode, 
+				Stream.concat (
+					parents.stream (), 
+					Stream.of (layerState))
+						.collect (Collectors.toList ())));
 		}
 		
 		return layers;
@@ -125,24 +142,6 @@ public class MapView {
 		}
 		
 		return layer;
-	}
-
-	public final static class LayerWithState {
-		private final Layer layer;
-		private final JsonNode state;
-		
-		public LayerWithState (final Layer layer, final JsonNode state) {
-				this.layer = layer;
-				this.state = state;
-		}
-		
-		public Layer layer () {
-			return this.layer;
-		}
-		
-		public JsonNode state () {
-			return this.state;
-		}
 	}
 
 	public ServiceType getServiceType(Service currentService) {	
