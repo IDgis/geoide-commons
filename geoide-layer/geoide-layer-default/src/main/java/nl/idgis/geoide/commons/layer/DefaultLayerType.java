@@ -31,7 +31,7 @@ public final class DefaultLayerType extends LayerType {
 	public List<ParameterizedServiceLayer<?>> getServiceLayers (final Traits<LayerState> layerState) {
 		final List<ParameterizedServiceLayer<?>> result = new ArrayList<ParameterizedServiceLayer<?>> ();
 		
-		if (layerState.get ().isVisible ()) {
+		if (isEffectiveVisible (layerState)) {
 			for (final ServiceLayer serviceLayer: layerState.get ().getLayer ().getServiceLayers ()) {
 				result.add (new ParameterizedServiceLayer<Object> (serviceLayer, null));
 			}
@@ -76,5 +76,19 @@ public final class DefaultLayerType extends LayerType {
 				return Collections.unmodifiableList (parents);
 			}
 		});
+	}
+	
+	private boolean isEffectiveVisible (final Traits<LayerState> layerState) {
+		if (!layerState.get ().isVisible ()) {
+			return false;
+		}
+		
+		for (final Traits<LayerState> parentState: layerState.get ().getParents ()) {
+			if (!parentState.get ().isVisible ()) {
+				return false;
+			}
+		}
+		
+		return true;
 	}
 }

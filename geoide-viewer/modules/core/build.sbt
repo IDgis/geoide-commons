@@ -3,11 +3,11 @@ name := """geoide-core"""
 Common.settings
 
 // Use IDgis repositories:
-updateOptions := updateOptions.value.withLatestSnapshots(false).withCachedResolution(true)
+updateOptions := updateOptions.value.withLatestSnapshots(true).withCachedResolution(false)
 
-externalResolvers := Common.resolvers		
+// externalResolvers := Common.resolvers		
 
-resolvers := Seq()
+resolvers := Common.resolvers
 
 libraryDependencies ++= Seq(
   cache,
