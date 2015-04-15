@@ -57,7 +57,7 @@ public final class DefaultLayerType extends LayerType {
 
 	@Override
 	public Traits<LayerState> createLayerState (final Layer layer, final JsonNode state, final List<Traits<LayerState>> parentStates) {
-		final List<Traits<LayerState>> parents = parentStates.isEmpty () || parentStates == null ? Collections.emptyList () : new ArrayList<> ();
+		final List<Traits<LayerState>> parents = parentStates.isEmpty () || parentStates == null ? Collections.emptyList () : new ArrayList<> (parentStates);
 		final boolean visible = state.path ("visible").asBoolean ();
 		
 		return Traits.create (new LayerState () {
