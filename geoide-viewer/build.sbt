@@ -57,4 +57,6 @@ libraryDependencies ++= Seq(
 // packagedArtifacts += ((artifact in playPackageAssets).value -> playPackageAssets.value)
 
 // Use IDgis repositories:
-resolvers ++= Common.resolvers		
+updateOptions := updateOptions.value.withLatestSnapshots(false).withCachedResolution(true)
+
+resolvers := Common.resolvers		

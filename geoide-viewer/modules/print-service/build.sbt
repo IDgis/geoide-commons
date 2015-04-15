@@ -17,4 +17,4 @@ libraryDependencies ++= Seq(
 )
 
 // Use IDgis repositories:
-resolvers ++= Common.resolvers		
+resolvers := Common.resolvers
