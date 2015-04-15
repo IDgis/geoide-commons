@@ -73,10 +73,13 @@ public class ScaleBarBlockInfo extends BlockInfo {
 	
 	
 	public String getScaleBarText (int n) {
+		
 		if(String.valueOf((int) rectWidth).length() > 3) {
-			return String.valueOf((n *  rectWidth)/1000) + ((n == nrOfRects ? " km" : ""));
+			String text =  String.valueOf ((n *  rectWidth)/1000);
+			return (text.endsWith(".0") ? text.replace(".0", "") : text) + ((n == nrOfRects ? " km" : ""));
 		} else {
-			return String.valueOf(n *  rectWidth) + ((n == nrOfRects ? " m" : ""));
+			String text =  String.valueOf ((n *  rectWidth));
+			return (text.endsWith(".0") ? text.replace(".0", "") : text) + ((n == nrOfRects ? " m" : ""));
 		}
 
 	}
