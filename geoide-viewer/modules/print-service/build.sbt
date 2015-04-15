@@ -2,13 +2,6 @@ name := """geoide-print-service"""
 
 Common.settings
 
-// Use IDgis repositories:
-updateOptions := updateOptions.value.withLatestSnapshots(true).withCachedResolution(false)
-
-// externalResolvers := Common.resolvers		
-
-resolvers := Common.resolvers
-
 libraryDependencies ++= Seq(
   javaJdbc,
   javaEbean,
@@ -22,3 +15,6 @@ libraryDependencies ++= Seq(
   Common.Dependencies.springAop,
   Common.Dependencies.springTest
 )
+
+// Use IDgis repositories:
+resolvers ++= Common.resolvers

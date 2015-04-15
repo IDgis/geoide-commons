@@ -2,13 +2,6 @@ name := """geoide-toc"""
 
 Common.settings
 
-// Use IDgis repositories:
-updateOptions := updateOptions.value.withLatestSnapshots(true).withCachedResolution(false)
-
-// externalResolvers := Common.resolvers		
-
-resolvers := Common.resolvers
-
 libraryDependencies ++= Seq(
   Common.Dependencies.geoideDomain,
   Common.Dependencies.geoideDomainTest,
@@ -16,3 +9,6 @@ libraryDependencies ++= Seq(
   Common.Dependencies.geoideServiceCommon,
   Common.Dependencies.geoideLayerCommon
 )
+
+// Use IDgis repositories:
+resolvers ++= Common.resolvers

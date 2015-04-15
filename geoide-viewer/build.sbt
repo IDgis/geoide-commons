@@ -2,13 +2,6 @@
 
 name := """geoide-viewer"""
 
-// Use IDgis repositories:
-updateOptions := updateOptions.value.withLatestSnapshots(true).withCachedResolution(false)
-
-// externalResolvers := Common.resolvers		
-
-resolvers := Common.resolvers
-
 // Include common settings:
 Common.settings
 
@@ -64,3 +57,6 @@ libraryDependencies ++= Seq(
 
 // Also deploy the assets:
 // packagedArtifacts += ((artifact in playPackageAssets).value -> playPackageAssets.value)
+
+// Use IDgis repositories:
+resolvers ++= Common.resolvers

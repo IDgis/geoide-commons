@@ -2,13 +2,6 @@ name := """geoide-core"""
 
 Common.settings
 
-// Use IDgis repositories:
-updateOptions := updateOptions.value.withLatestSnapshots(true).withCachedResolution(false)
-
-// externalResolvers := Common.resolvers		
-
-resolvers := Common.resolvers
-
 libraryDependencies ++= Seq(
   cache,
   Common.Dependencies.geoideDomain,
@@ -21,3 +14,6 @@ libraryDependencies ++= Seq(
   Common.Dependencies.springTest,
   Common.Dependencies.webjarsFontAwesome
 )
+
+// Use IDgis repositories:
+resolvers ++= Common.resolvers
