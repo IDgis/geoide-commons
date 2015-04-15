@@ -10,6 +10,7 @@ import nl.idgis.geoide.commons.domain.Layer;
 import nl.idgis.geoide.commons.domain.ParameterizedFeatureType;
 import nl.idgis.geoide.commons.domain.ParameterizedServiceLayer;
 import nl.idgis.geoide.commons.domain.ServiceLayer;
+import nl.idgis.geoide.commons.domain.traits.Traits;
 import nl.idgis.geoide.commons.layer.LayerType;
 import nl.idgis.geoide.service.ServiceTypeRegistry;
 
@@ -27,11 +28,11 @@ public final class DefaultLayerType extends LayerType {
 	}
 
 	@Override
-	public List<ParameterizedServiceLayer<?>> getServiceLayers (final Layer layer, final JsonNode state) {
+	public List<ParameterizedServiceLayer<?>> getServiceLayers (final Traits<LayerState> layerState) {
 		final List<ParameterizedServiceLayer<?>> result = new ArrayList<ParameterizedServiceLayer<?>> ();
 		
-		if (state.path ("visible").asBoolean ()) {
-			for (final ServiceLayer serviceLayer: layer.getServiceLayers ()) {
+		if (isEffectiveVisible (layerState)) {
+			for (final ServiceLayer serviceLayer: layerState.get ().getLayer ().getServiceLayers ()) {
 				result.add (new ParameterizedServiceLayer<Object> (serviceLayer, null));
 			}
 		}
@@ -52,5 +53,42 @@ public final class DefaultLayerType extends LayerType {
 		}
 		
 		return Collections.unmodifiableList (result);
+	}
+
+	@Override
+	public Traits<LayerState> createLayerState (final Layer layer, final JsonNode state, final List<Traits<LayerState>> parentStates) {
+		final List<Traits<LayerState>> parents = parentStates.isEmpty () || parentStates == null ? Collections.emptyList () : new ArrayList<> (parentStates);
+		final boolean visible = state.path ("visible").asBoolean ();
+		
+		return Traits.create (new LayerState () {
+			@Override
+			public boolean isVisible () {
+				return visible;
+			}
+
+			@Override
+			public Layer getLayer () {
+				return layer;
+			}
+
+			@Override
+			public List<Traits<LayerState>> getParents() {
+				return Collections.unmodifiableList (parents);
+			}
+		});
+	}
+	
+	private boolean isEffectiveVisible (final Traits<LayerState> layerState) {
+		if (!layerState.get ().isVisible ()) {
+			return false;
+		}
+		
+		for (final Traits<LayerState> parentState: layerState.get ().getParents ()) {
+			if (!parentState.get ().isVisible ()) {
+				return false;
+			}
+		}
+		
+		return true;
 	}
 }

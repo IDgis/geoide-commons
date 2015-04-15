@@ -3,8 +3,9 @@ package controllers.mapview;
 import java.util.List;
 
 import nl.idgis.geoide.commons.domain.ServiceRequest;
+import nl.idgis.geoide.commons.domain.traits.Traits;
+import nl.idgis.geoide.commons.layer.LayerState;
 import nl.idgis.geoide.map.MapView;
-import nl.idgis.geoide.map.MapView.LayerWithState;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -23,7 +24,7 @@ public class View extends Controller {
 	public Result buildView () {
 		final JsonNode viewerState = request ().body ().asJson ();
 		// Flatten the layer list in a depth-first fashion:
-		final List<LayerWithState> layers;
+		final List<Traits<LayerState>> layers;
 		try {
 			layers = mapView.flattenLayerList (viewerState);
 		} catch (IllegalArgumentException e) {

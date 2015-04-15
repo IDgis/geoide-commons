@@ -2,8 +2,10 @@
 
 name := """geoide-viewer"""
 
+// Include common settings:
 Common.settings
 
+// Submodules:
 lazy val viewer = (project in file("."))
 	.enablePlugins(PlayJava)
 	.aggregate(mapView, toc, geoidePrintService, geoideConfig, geoideCore)
@@ -57,4 +59,4 @@ libraryDependencies ++= Seq(
 // packagedArtifacts += ((artifact in playPackageAssets).value -> playPackageAssets.value)
 
 // Use IDgis repositories:
-resolvers ++= Common.resolvers		
+resolvers ++= Common.resolvers
