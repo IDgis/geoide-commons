@@ -1,6 +1,7 @@
 package nl.idgis.geoide.commons.report;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -73,18 +74,25 @@ public class ReportPostProcessor {
 								new PrintRequest (
 										new DocumentReference (new MimeContentType ("text/html"), documentUri), 
 										new MimeContentType ("application/pdf"), 
-										documentUri,
+										makeBaseUri (template.getUri ()),
 										layoutParameters
 								)
 							);
 				}});
 	}
 
-				
+	private URI makeBaseUri (final URI uri) throws URISyntaxException {
+		final String path = uri.getPath ();
+		final int n = path != null ? path.lastIndexOf ('/') : -1;
 
-	
-	
-	
-	
-	
+		return new URI (
+				uri.getScheme (), 
+				uri.getUserInfo (), 
+				uri.getHost (), 
+				uri.getPort (),
+				n >= 0 ? path.substring (0, n + 1) : null,
+				null, 
+				null
+			);
+	}
 }

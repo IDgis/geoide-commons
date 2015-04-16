@@ -39,7 +39,7 @@ public class HtmlTemplateDocumentProvider implements TemplateDocumentProvider {
 	@Override
 	public Promise<TemplateDocument> getTemplateDocument(String templateName) {
 		
-		URI uri = null;
+		URI uri;
 		
 		try {
 	    	uri = new URI("template:///" + templateName + "/report.html");
@@ -63,7 +63,7 @@ public class HtmlTemplateDocumentProvider implements TemplateDocumentProvider {
 					
 			final String content = new String (data.toArray ());
 			
-			return new HtmlTemplateDocument(templateURI,content);
+			return new HtmlTemplateDocument(templateURI,content, uri);
 		});
 		
 	   

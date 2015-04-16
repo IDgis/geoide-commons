@@ -6,6 +6,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 public interface TemplateDocument  {
+		URI getUri ();
 		public double getRightMargin();
 		public double getLeftMargin();
 		public double getTopMargin();

@@ -8,16 +8,23 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 public class HtmlTemplateDocument implements TemplateDocument {
+	private final URI baseUri;
 	private final URI templateUri;
 	private final Document html; 
 
-	public HtmlTemplateDocument(URI templateUri, String html) {		
+	public HtmlTemplateDocument(URI templateUri, String html, final URI baseUri) {		
 		this.templateUri = templateUri;	
+		this.baseUri = baseUri;
 		
 		this.html = Jsoup.parse(html, templateUri.toString());
 
 	}
 
+	@Override
+	public URI getUri () {
+		return baseUri;
+	}
+	
 	@Override 
 	public Document getDocument() {
 		return html;
