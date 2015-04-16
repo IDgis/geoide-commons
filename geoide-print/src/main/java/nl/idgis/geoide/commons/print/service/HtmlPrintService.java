@@ -180,7 +180,7 @@ public class HtmlPrintService implements PrintService, Closeable {
 							
 					// Load the HTML and convert to an XML document:
 					final String xmlDocument;
-					final String baseUrl = printRequest.getBaseUri () != null ? printRequest.getBaseUri ().toString () : cachedDocument.getUri ().toString ();
+					final String baseUrl = printRequest.getBaseUri () != null ? printRequest.getBaseUri ().toString () : makeBaseUri (cachedDocument.getUri ()).toString ();
 					final String charset = printRequest.getInputDocument ().getContentType ().parameters ().containsKey ("charset") ? printRequest.getInputDocument ().getContentType ().parameters ().get ("charset") : "UTF-8"; 
 					try (final InputStream htmlStream = streamProcessor.asInputStream (cachedDocument.getBody (), cacheTimeoutMillis)) {
 						final org.jsoup.nodes.Document document = Jsoup.parse (htmlStream, charset, baseUrl);
