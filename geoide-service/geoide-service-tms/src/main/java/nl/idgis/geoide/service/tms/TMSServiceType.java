@@ -74,7 +74,9 @@ public class TMSServiceType extends ServiceType implements LayerServiceType {
 		final TilingProperties props = new TilingProperties();
 		final int tilingLevel = props.getTilingLevel(resolution).getKey();
 		final double tilingResolution = props.getTilingLevel(resolution).getValue();
-		final String baseUrl = serviceEndPoint + "/" + parameters.getLayer() + "/" + serviceVersion + "/" + tilingLevel;
+		//TODO: get href from capabilities
+		//final String baseUrl = serviceEndPoint + "/" + parameters.getLayer() + "/" + serviceVersion + "/" + tilingLevel;
+		final String baseUrl = serviceEndPoint + "/" + tilingLevel;
 		return  getTileCoördinates (props, mapExtent, tilingResolution, baseUrl);
 		
 		//Tiling richtlijn 

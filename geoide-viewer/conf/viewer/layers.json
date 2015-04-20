@@ -10,7 +10,7 @@
 			"layerType": "default",
 			"label": "LPG",
 			"serviceLayers": [ "test-service-2-p_LPG" ],
-			"state": { "onzin": "blub", "bullshit": "blubblub" }
+			"state": { }
 		}
 	]
 }	

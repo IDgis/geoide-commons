@@ -1,7 +1,5 @@
 package nl.idgis.geoide.commons.report.blocks;
 
-import java.util.Map;
-
 import nl.idgis.geoide.commons.report.ReportData;
 
 import org.jsoup.nodes.Element;
