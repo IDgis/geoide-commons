@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>nl.idgis.geoide</groupId>
 		<artifactId>geoide-commons</artifactId>
-		<version>0.1.0</version>
+		<version>0.2.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>geoide-print</artifactId>
 	<name>Geoide Commons - Print</name>
