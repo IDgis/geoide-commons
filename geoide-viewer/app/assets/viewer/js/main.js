@@ -18,6 +18,7 @@ require ([
 	'geoide-map/interaction/DragZoom',
 	'geoide-map/interaction/DrawGeometry',
 	'geoide-map/interaction/Click',
+	'geoide-map/interaction/ModifyGeometry',
 	
 	'dojo/domReady!'
 ], function (
@@ -38,7 +39,8 @@ require ([
 	KeyboardNavigation,
 	DragZoom,
 	DrawGeometry,
-	Click
+	Click,
+	ModifyGeometry
 ) {
 	
 	var drawGeometry = new DrawGeometry ({
@@ -157,7 +159,8 @@ require ([
 	window.mapCopy = linkedCopy (window.mapModel);
 	
 	// Redlining interactions:
-	var redlineInteraction = null;
+	var redlineInteraction = null,
+		modifyInteraction = null;
 	
 	function redline (interaction) {
 		viewers[0].disableInteraction (draw);
@@ -165,9 +168,16 @@ require ([
 		if (redlineInteraction) {
 			viewers[0].disableInteraction (redlineInteraction);
 		}
+		if (modifyInteraction) {
+			viewers[0].disableInteraction (modifyInteraction);
+		}
 		
 		viewers[0].enableInteraction (interaction);
 		redlineInteraction = interaction;
+		modifyInteraction = new ModifyGeometry ({
+			features: viewers[0].overlay ('redline').getFeatures ()
+		});
+		viewers[0].enableInteraction (modifyInteraction);
 	}
 	
 	on (dom.byId ('draw-point'), 'click', function (e) {

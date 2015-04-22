@@ -20,6 +20,8 @@ define ([
 	 * Configuration parameters:
 	 * - type: Geometry type: point, line or polygon
 	 * - format: format of the geometry passed to the event handlers. Accepted values: 'GeoJSON' or 'WKT'. 
+	 * - source: (optional) an OpenLayers feature source to which features are drawn.
+	 * - features: (optional) an OpenLayers feature collection to which features are drawn.
 	 * 
 	 * Events:
 	 * - drawstart: invoked when the user starts drawing geometry. The event object has no properties.
