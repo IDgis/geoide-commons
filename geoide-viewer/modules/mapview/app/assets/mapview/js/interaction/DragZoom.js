@@ -1,11 +1,15 @@
 define ([
 	'dojo/_base/declare',
 	
-	'./InteractionBase'
+	'./InteractionBase',
+	
+	'openlayers/ol'
 ], function (
 	declare,
 	
-	InteractionBase
+	InteractionBase,
+	
+	ol
 ) {
 
 	return declare ([InteractionBase], {

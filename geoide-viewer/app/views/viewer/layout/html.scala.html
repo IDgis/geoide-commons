@@ -7,7 +7,7 @@
 		<link rel="stylesheet" href="@controllers.core.routes.Assets.at("lib/bootstrap/css/bootstrap.css")">
 		<link href="@controllers.core.routes.Assets.at("lib/font-awesome/css/font-awesome.min.css")" rel="stylesheet">
 		<link rel="stylesheet" href="@controllers.viewer.routes.Assets.at("viewer/css/layout.css")">
-		<link rel="stylesheet" href="@controllers.mapview.routes.Assets.at("lib/ol3/css/ol.css")"></script>
+		<link rel="stylesheet" href="@controllers.mapview.routes.Assets.at("lib/openlayers/ol.css")"></script>
 	</head>
 	
 	<body@if(bodyClass != null){ class="@bodyClass"}>
@@ -20,7 +20,6 @@
 				"geoide-map" -> controllers.core.routes.Assets.at("lib/geoide-mapview/mapview/js").url,
 				"geoide-toc" -> controllers.core.routes.Assets.at("lib/geoide-toc/toc/js").url
 			), Seq())"></script>
-		<script type="text/javascript" src="@controllers.mapview.routes.Assets.at("lib/ol3/ol/ol.js")"></script>
 		<script type="text/javascript" src="@controllers.core.routes.JavaScript.javascriptRoutes()"></script>
 		<script type="text/javascript" src="@controllers.mapview.routes.JavaScript.javascriptRoutes()"></script>
 		<script type="text/javascript" src="@controllers.viewer.routes.Assets.at("viewer/js/main.js")"></script>

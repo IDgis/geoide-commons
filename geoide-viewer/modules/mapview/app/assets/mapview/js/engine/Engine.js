@@ -7,7 +7,9 @@ define ([
 	
 	'geoide-core/map/registry',
 	
-	'put-selector/put'
+	'put-selector/put',
+	
+	'openlayers/ol'
 ], function (
 	declare,
 	
@@ -17,7 +19,9 @@ define ([
 	
 	registry,
 	
-	put
+	put,
+	
+	ol
 ) {
 	
 	var projection = new ol.proj.Projection ({ code: 'EPSG:28992', units: 'm' }),

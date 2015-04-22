@@ -43,7 +43,6 @@ libraryDependencies ++= Seq(
   javaWs,
   Common.Dependencies.geoideDomain,
   Common.Dependencies.geoideDomainTest,
-  Common.Dependencies.geoideOL3,
   Common.Dependencies.geoideUtil,
   Common.Dependencies.geoideServiceCommon,
   Common.Dependencies.geoideServiceTms,

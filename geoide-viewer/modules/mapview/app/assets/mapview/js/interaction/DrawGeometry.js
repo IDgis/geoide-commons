@@ -5,11 +5,15 @@ define ([
 	
 	'./Interaction',
 	'./InteractionBase',
+	
+	'openlayers/ol'
 ], function (
 	declare,
 	Evented,
 	Interaction,
-	InteractionBase
+	InteractionBase,
+	
+	ol
 ) {
 
 	/**
