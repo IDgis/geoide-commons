@@ -19,7 +19,7 @@ define ([
 	'geoide-core/DOMBehaviour',
 	'geoide-core/map/MapBehaviour',
 	'./Stateful',
-	'./engine/engine-ol3'
+	'./engine/Engine'
 ], function (
 	lang,
 	array,
