@@ -3,7 +3,7 @@ define ([
 	
 	'dojo/Deferred',
 	
-	'./EngineBase',
+	'../Stateful',
 	
 	'geoide-core/map/registry',
 	
@@ -15,7 +15,7 @@ define ([
 	
 	Deferred,
 	
-	EngineBase,
+	Stateful,
 	
 	registry,
 	
@@ -206,7 +206,7 @@ define ([
 		]
 	};
 	
-	return declare ([EngineBase], {
+	return declare ([Stateful], {
 		viewer: null,
 		layersList: null,
 		layersMap: null,
@@ -360,9 +360,6 @@ define ([
 				
 				// Move the layer to the correct index in the map and make it the base layer if it's the first layer:
 				this.setLayerIndex (layer.olLayer, i);
-				if (i === 0) {
-					this.setBaseLayer (layer.olLayer);
-				}
 				this.setLayerVisibility (layer.olLayer, true);
 			}
 			

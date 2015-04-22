@@ -672,9 +672,5 @@ define ([
 			return def;
 
 		}
-		
-		
-		
-		
 	});
 });

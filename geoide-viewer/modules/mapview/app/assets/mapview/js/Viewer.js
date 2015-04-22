@@ -2,13 +2,15 @@ define ([
 	'dojo/_base/declare',
 	
 	'./ViewerBase',
-	'./ViewerQueryMixin'
+	'./ViewerQueryMixin',
+	'./ViewerOverlayMixin'
 ], function (
 	declare,
 	
 	ViewerBase,
-	ViewerQueryMixin
+	ViewerQueryMixin,
+	ViewerOverlayMixin
 ) {
 	
-	return declare ([ViewerBase, ViewerQueryMixin], { });
+	return declare ([ViewerBase, ViewerQueryMixin, ViewerOverlayMixin], { });
 });

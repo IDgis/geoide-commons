@@ -30,6 +30,8 @@ define ([
 		type: 'point',
 		format: 'geojson',
 		modifier: 'none',
+		features: null,
+		source: null,
 		
 		_interaction: null,
 		
@@ -50,7 +52,7 @@ define ([
 			case 'polygon':
 				olType = 'Polygon';
 				break;
-			case 'lineString':
+			case 'linestring':
 				olType = 'LineString';
 				break;
 			}
@@ -77,13 +79,22 @@ define ([
 					condition = ol.events.condition.noModifierKeys;
 					break;
 			}
-			
-			
-			this._interaction = new ol.interaction.Draw ({
-				source: engine._vectorSource,
+
+			var drawConfig = {
 				type: olType,
 				condition: condition
-			});
+			};
+			
+			if (this.source) {
+				drawConfig.source = this.source;
+			} else if (this.features) {
+				console.log ('Features: ', this.features);
+				drawConfig.features = this.features;
+			} else {
+				drawConfig.source = engine._vectorSource;
+			}
+			
+			this._interaction = new ol.interaction.Draw (drawConfig);
 			
 			engine._vectorSource.clear ();
 	

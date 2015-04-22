@@ -2,6 +2,8 @@ require ([
 	'dojo/_base/lang',
 	
 	'dojo/query',
+	'dojo/dom',
+	'dojo/on',
 	
 	'put-selector/put',
 	
@@ -22,6 +24,8 @@ require ([
 	lang,
 	
 	query,
+	dom,
+	on,
 	
 	put, 
 	
@@ -130,6 +134,10 @@ require ([
 		});
 	};
 	
+	window.overlay = function (name) {
+		return viewers[0].overlay (name);
+	};
+	
 	window.model = new Model ({
 		id: 'my-model',
 		layers: [
@@ -147,4 +155,49 @@ require ([
 	var value = {"id":"test-map","label":"Test map","layers":[{"id":"layer-1","label":"BRT achtergrondkaart"},{"id":"layer-2","label":"LPG"}]};
 	window.mapModel = new Map (value);
 	window.mapCopy = linkedCopy (window.mapModel);
+	
+	// Redlining interactions:
+	var redlineInteraction = null;
+	
+	function redline (interaction) {
+		viewers[0].disableInteraction (draw);
+		viewers[0].disableInteraction (draw2);
+		if (redlineInteraction) {
+			viewers[0].disableInteraction (redlineInteraction);
+		}
+		
+		viewers[0].enableInteraction (interaction);
+		redlineInteraction = interaction;
+	}
+	
+	on (dom.byId ('draw-point'), 'click', function (e) {
+		e.preventDefault ();
+		e.stopPropagation ();
+	
+		redline (new DrawGeometry ({
+			type: 'Point', 
+			format: 'wkt',
+			features: viewers[0].overlay ('redline').getFeatures ()
+		}));
+	});
+	on (dom.byId ('draw-line'), 'click', function (e) {
+		e.preventDefault ();
+		e.stopPropagation ();
+		
+		redline (new DrawGeometry ({
+			type: 'LineString', 
+			format: 'wkt', 
+			features: viewers[0].overlay ('redline').getFeatures ()
+		}));
+	});
+	on (dom.byId ('draw-polygon'), 'click', function (e) {
+		e.preventDefault ();
+		e.stopPropagation ();
+		
+		redline (new DrawGeometry ({
+			type: 'Polygon', 
+			format: 'wkt', 
+			features: viewers[0].overlay ('redline').getFeatures ()
+		}));
+	});
 });
