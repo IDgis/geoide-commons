@@ -4,7 +4,7 @@ define ([
 	'dojo/Evented',
 	
 	'./Interaction',
-	'dojo/has!config-OpenLayers-3?../engine/DrawGeometry-ol3:../engine/DrawGeometry-ol2'
+	'../engine/DrawGeometry-ol3'
 ], function (
 	declare,
 	Evented,

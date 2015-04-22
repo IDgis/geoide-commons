@@ -30,28 +30,9 @@ public class Viewer extends Controller {
 	}
 	
 	public Result viewerForMap (final String mapId) {
-		return viewerForMapOpenLayers2 (mapId);
-	}
-	
-	public Result viewerForMapOpenLayers2 (final String mapId) {
 		final MapDefinition mapDef = mapProvider.getMapDefinition(mapId);
 		List<Traits<TOCItem>> tocItems = toc.getItems (mapDef);
-		
-		Logger.debug ("TOC items: " + tocItems.size ());
-		/*for(Traits<TOCItem> tocItem : tocItems){
-			if(tocItem.has(TOCItemLayerTrait.class)) {
-				Logger.debug("TOC items tocItems " + tocItem.trait(TOCItemLayerTrait.class).getLayer().getId());
-			}
-		}*/
-		return ok (viewer.render (mapId, "2", tocItems));
-	}
-	
-	
-	
-	public Result viewerForMapOpenLayers3 (final String mapId) {
-		final MapDefinition mapDef = mapProvider.getMapDefinition(mapId);
-		List<Traits<TOCItem>> tocItems = toc.getItems (mapDef);
-		return ok (viewer.render (mapId, "3", tocItems));
+		return ok (viewer.render (mapId, tocItems));
 	}
 	
 	public Result testPDF () {

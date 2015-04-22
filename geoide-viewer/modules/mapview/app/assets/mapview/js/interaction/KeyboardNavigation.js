@@ -1,6 +1,6 @@
 define ([
 	'dojo/_base/declare',
-	'dojo/has!config-OpenLayers-3?../engine/KeyboardNavigation-ol3:../engine/KeyboardNavigation-ol2'
+	'../engine/KeyboardNavigation-ol3'
 ], function (
 	declare,
 	Engine

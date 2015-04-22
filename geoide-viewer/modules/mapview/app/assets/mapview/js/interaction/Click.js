@@ -2,7 +2,7 @@ define ([
 	'dojo/_base/declare',
 	'dojo/Evented',
 	'./Interaction',
-	'dojo/has!config-OpenLayers-3?../engine/Click-ol3:../engine/Click-ol2'
+	'../engine/Click-ol3'
 ], function (
 	declare,
 	Evented,
