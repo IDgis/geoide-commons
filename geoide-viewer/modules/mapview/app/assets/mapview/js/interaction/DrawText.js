@@ -43,26 +43,16 @@ define ([
 			this.on ('drawend', function (e) {
 				console.log ('Drawing text at: ', e.geometry);
 				
-				var o = new Overlay ({
+				var overlay = new Overlay ({
+					feature: e.feature,
 					text: '',
 					height: 40
 				});
-				o.update ();
+				overlay.update ();
 				
-				var overlay = new ol.Overlay ({
-					element: o._container,// container,
-					autoPan: true,
-					autoPanAnimation: {
-						duration: 250
-					},
-					position: e.geometry.getFirstCoordinate (),
-					stopEvent: false,
-					insertFirst: false
-				});
+				engine.olMap.addOverlay (overlay._overlay);
 				
-				engine.olMap.addOverlay (overlay);
-				
-				o.edit ();
+				overlay.edit ();
 			});
 		},
 		

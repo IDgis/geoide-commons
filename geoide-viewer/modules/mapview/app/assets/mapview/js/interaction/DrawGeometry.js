@@ -109,9 +109,9 @@ define ([
 			
 			this._interaction.on ('drawend', function (e) {
 				if (olFormat === null) {
-					self.emit ('drawend', { geometry: e.feature.getGeometry () });
+					self.emit ('drawend', { geometry: e.feature.getGeometry (), feature: e.feature });
 				} else {
-					self.emit ('drawend', { geometry: olFormat.writeGeometry (e.feature.getGeometry ()) });
+					self.emit ('drawend', { geometry: olFormat.writeGeometry (e.feature.getGeometry ()), feature: e.feature });
 				}
 			});
 

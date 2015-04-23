@@ -3,13 +3,15 @@ define ([
 	'dojo/_base/lang',
 	'dojo/query',
 	'dojo/dom-construct',
-	'./Stateful'
+	'./Stateful',
+	'openlayers/ol'
 ], function (
 	declare,
 	lang,
 	query,
 	domConstruct,
-	Stateful
+	Stateful,
+	ol
 ) {
 	
 	function svg (name, attributes, parent) {
@@ -53,6 +55,7 @@ define ([
 	}
 	
 	return declare ([Stateful], {
+		feature: null,
 		width: 150,
 		height: 100,
 		offset: null,
@@ -67,6 +70,7 @@ define ([
 		_svgRoot: null,
 		_svgArrow: null,
 		_svgBox: null,
+		_olOverlay: null,
 		
 		constructor: function (options) {
 			this.offset = [-50, 50];
@@ -101,6 +105,18 @@ define ([
 			this.own (this.watch ('borderWidth', lang.hitch (this, this.update)));
 			this.own (this.watch ('arrowWidth', lang.hitch (this, this.update)));
 			this.own (this.watch ('arrowLength', lang.hitch (this, this.update)));
+			
+			// Create an OpenLayers overlay:
+			this._overlay = new ol.Overlay ({
+				element: this._container,
+				autoPan: true,
+				autoPanAnimation: {
+					duration: 250
+				},
+				position: this.feature.getGeometry ().getFirstCoordinate (),
+				stopEvent: false,
+				insertFirst: false
+			});
 		},
 		
 		own: function (handle) {
