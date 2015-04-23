@@ -61,6 +61,7 @@ define ([
 		arrowWidth: 20,
 		arrowLength: 20,
 		
+		_handles: null,
 		_container: null,
 		_body: null,
 		_svgRoot: null,
@@ -94,7 +95,31 @@ define ([
 			this._contentSetter (this.content);
 			
 			// Register watches:
-			this.watch ('offset', lang.hitch (this, this.update));
+			this.own (this.watch ('offset', lang.hitch (this, this.update)));
+			this.own (this.watch ('width', lang.hitch (this, this.update)));
+			this.own (this.watch ('height', lang.hitch (this, this.update)));
+			this.own (this.watch ('borderWidth', lang.hitch (this, this.update)));
+			this.own (this.watch ('arrowWidth', lang.hitch (this, this.update)));
+			this.own (this.watch ('arrowLength', lang.hitch (this, this.update)));
+		},
+		
+		own: function (handle) {
+			if (!this._handles) {
+				this._handles = [ ];
+			}
+			
+			this._handles.push (handle);
+		},
+		
+		remove: function () {
+			if (this._handles) {
+				for (var i = 0; i < this._handles.length; ++ i) {
+					this._handles[i].remove ();
+				}
+				this._handles = null;
+			}
+			
+			domConstruct.remove (this._container);
 		},
 		
 		_contentSetter: function (content) {

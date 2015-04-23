@@ -44,7 +44,8 @@ define ([
 				console.log ('Drawing text at: ', e.geometry);
 				
 				var o = new Overlay ({
-					text: ''
+					text: '',
+					height: 40
 				});
 				o.update ();
 				

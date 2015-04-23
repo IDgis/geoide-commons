@@ -108,6 +108,10 @@ define ([
 				
 				this.set ('text', this.content.value);
 				this._editorNode = null;
+				
+				// Update the height of the box:
+				var newHeight = Math.max (32, this.content.offsetHeight + this.borderWidth * 2);
+				this.set ('height', newHeight);
 			}));
 		}
 	});
