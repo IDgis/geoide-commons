@@ -2,7 +2,7 @@ define ([
 	'dojo/_base/declare',
 
 	'./DrawGeometry',
-	'../Overlay',
+	'../MoveableOverlay',
 	
 	'openlayers/ol'
 ], function (

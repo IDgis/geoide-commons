@@ -1,9 +1,11 @@
 define ([
 	'dojo/_base/declare',
+	'dojo/_base/lang',
 	'dojo/query',
 	'./Stateful'
 ], function (
 	declare,
+	lang,
 	query,
 	Stateful
 ) {
@@ -48,7 +50,7 @@ define ([
 		return p;
 	}
 	
-	return declare ([], {
+	return declare ([Stateful], {
 		width: 150,
 		height: 100,
 		offset: null,
@@ -93,6 +95,9 @@ define ([
 			this._body.style.position = 'absolute';
 			this._container.appendChild (this._body);
 			this._body.appendChild (this.content);
+			
+			// Register watches:
+			this.watch ('offset', lang.hitch (this, this.update));
 		},
 		
 		update: function () {
