@@ -31,6 +31,15 @@ define ([
 			parent.appendChild (elem);
 		}
 		
+		// Add the "contains" method to SVG elements, OpenLayers uses this method
+		// when handling mouse move events, but IE 9 doesn't provide it for SVG
+		// elements:
+		if (!elem.contains) {
+			elem.contains = function () {
+				return false;
+			};
+		}
+		
 		return elem;
 	}
 	
