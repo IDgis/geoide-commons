@@ -101,8 +101,12 @@ define ([
 			this.content.style.height = '100%';
 			this.content.style.resize = 'none';
 			
-			var blurHandle = on (this.content, 'blur', lang.hitch (this, function (e) {
-				blurHandle.remove ();
+			var handles = [ ];
+			
+			var finishEdit = lang.hitch (this, function () {
+				for (var i = 0; i < handles.length; ++ i) {
+					handles[i].remove ();
+				}
 				
 				this.set ('text', this.content.value);
 				this._editorNode = null;
@@ -110,6 +114,16 @@ define ([
 				// Update the height of the box:
 				var newHeight = Math.max (32, this.content.offsetHeight + this.borderWidth * 2);
 				this.set ('height', newHeight);
+			});
+			
+			handles.push (on (this.content, 'blur', finishEdit));
+			
+			handles.push (on (this.content, 'keydown', function (e) {
+				if (e.keyCode == 13) {
+					e.preventDefault ();
+					e.stopPropagation ();
+					finishEdit ();
+				}
 			}));
 		}
 	});
