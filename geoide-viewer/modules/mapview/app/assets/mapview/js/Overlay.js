@@ -186,10 +186,10 @@ define ([
 				}, this._svgRoot);
 			}
 			
-			var minX = Math.min (this.offset[0], 0) - this.borderWidth,
-				minY = Math.min (this.offset[1], 0) - this.borderWidth,
-				maxX = Math.max (this.offset[0] + this.width, 0) + this.borderWidth,
-				maxY = Math.max (this.offset[1] + this.height, 0) + this.borderWidth;
+			var minX = Math.min (this.offset[0], 0) - this.borderWidth - (this.arrowWidth / 2),
+				minY = Math.min (this.offset[1], 0) - this.borderWidth - (this.arrowWidth / 2),
+				maxX = Math.max (this.offset[0] + this.width, this.arrowWidth / 2) + this.borderWidth + (this.arrowWidth / 2),
+				maxY = Math.max (this.offset[1] + this.height, this.arrowWidth / 2) + this.borderWidth + (this.arrowWidth / 2);
 			
 			this._svgRoot.setAttribute ('viewBox', 
 				'' + minX + ' ' + minY + ' ' + (maxX - minX) + ' ' + (maxY - minY) 
@@ -201,8 +201,8 @@ define ([
 			this._container.style.top = minY + 'px';
 			
 			// Position the container body:
-			this._body.style.left = (Math.max (0, this.offset[0]) + 1.5 * this.borderWidth) + 'px';
-			this._body.style.top = (Math.max (0, this.offset[1]) + 1.5 * this.borderWidth) + 'px';
+			this._body.style.left = (Math.max (0, this.offset[0]) + 1.5 * this.borderWidth + 0.5 * this.arrowWidth) + 'px';
+			this._body.style.top = (Math.max (0, this.offset[1]) + 1.5 * this.borderWidth + 0.5 * this.arrowWidth) + 'px';
 			this._body.style.width = (this.width - this.borderWidth) + 'px';
 			this._body.style.height = (this.height - this.borderWidth) + 'px';
 		}
