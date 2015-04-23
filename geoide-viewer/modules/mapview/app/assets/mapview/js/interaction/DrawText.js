@@ -2,7 +2,7 @@ define ([
 	'dojo/_base/declare',
 
 	'./DrawGeometry',
-	'../MoveableOverlay',
+	'../EditableOverlay',
 	
 	'openlayers/ol'
 ], function (
@@ -42,19 +42,9 @@ define ([
 			
 			this.on ('drawend', function (e) {
 				console.log ('Drawing text at: ', e.geometry);
-				var offset = [50, 50];
-
-				var element = document.createElement ('div');
-				element.style.position = 'absolute';
-				element.style.width = '100%';
-				element.style.height = '100%';
-				element.style.top = '0px';
-				element.style.left = '0px';
-				element.style.backgroundColor = 'red';
-				element.appendChild (document.createTextNode ('Hello, World!'));
 				
 				var o = new Overlay ({
-					content: element
+					text: ''
 				});
 				o.update ();
 				
@@ -70,6 +60,8 @@ define ([
 				});
 				
 				engine.olMap.addOverlay (overlay);
+				
+				o.edit ();
 			});
 		},
 		

@@ -2,11 +2,13 @@ define ([
 	'dojo/_base/declare',
 	'dojo/_base/lang',
 	'dojo/query',
+	'dojo/dom-construct',
 	'./Stateful'
 ], function (
 	declare,
 	lang,
 	query,
+	domConstruct,
 	Stateful
 ) {
 	
@@ -77,13 +79,6 @@ define ([
 				}
 			}
 			
-			// Locate or create the content element:
-			if (typeof this.content == 'string') {
-				this.content = query (this.content)[0];
-			} else if (this.content === null) {
-				this.content = document.createElement ('div');
-			}
-			
 			// Create the DOM for this overlay and move the content into the container:
 			this._container = document.createElement ('div');
 			this._container.style.position = 'absolute';
@@ -94,10 +89,24 @@ define ([
 			this._body.className = 'gi-overlay-body';
 			this._body.style.position = 'absolute';
 			this._container.appendChild (this._body);
-			this._body.appendChild (this.content);
+			
+			// Locate or create the content element:
+			this._contentSetter (this.content);
 			
 			// Register watches:
 			this.watch ('offset', lang.hitch (this, this.update));
+		},
+		
+		_contentSetter: function (content) {
+			if (typeof content == 'string') {
+				content = query (content)[0];
+			} else if (content === null) {
+				content = document.createElement ('div');
+			}
+			
+			domConstruct.empty (this._body);
+			this._body.appendChild (content);
+			this.content = content;
 		},
 		
 		update: function () {
