@@ -63,8 +63,10 @@ define ([
 		borderWidth: 2,
 		arrowWidth: 20,
 		arrowLength: 20,
+		arrowDistance: 8,
 		
 		_handles: null,
+		_geometryChangeKey: null,
 		_container: null,
 		_body: null,
 		_svgRoot: null,
@@ -117,6 +119,10 @@ define ([
 				stopEvent: false,
 				insertFirst: false
 			});
+			
+			this._geometryChangeKey = this.feature.on ('change', function (e) {
+				this._overlay.setPosition (this.feature.getGeometry ().getFirstCoordinate ());
+			}, this);
 		},
 		
 		own: function (handle) {
@@ -136,6 +142,8 @@ define ([
 			}
 			
 			domConstruct.remove (this._container);
+			
+			this.feature.unByKey (this._geometryChangeKey);
 		},
 		
 		_contentSetter: function (content) {
@@ -163,12 +171,12 @@ define ([
 				cy = -dx;
 			
 			var arrowPath = path ([
-				[0, 0],
-				[dx * this.arrowLength + cx * (this.arrowWidth / 2), dy * this.arrowLength + cy * (this.arrowWidth / 2)],
-				[dx * this.arrowLength - cx * (this.arrowWidth / 2), dy * this.arrowLength - cy * (this.arrowWidth / 2)],
-				[0, 0]
+				[dx * this.arrowDistance, dy * this.arrowDistance],
+				[dx * (this.arrowLength + this.arrowDistance) + cx * (this.arrowWidth / 2), dy * (this.arrowLength + this.arrowDistance) + cy * (this.arrowWidth / 2)],
+				[dx * (this.arrowLength + this.arrowDistance) - cx * (this.arrowWidth / 2), dy * (this.arrowLength + this.arrowDistance) - cy * (this.arrowWidth / 2)],
+				[dx * this.arrowDistance, dy * this.arrowDistance]
 			], [
-				[dx * this.arrowWidth, dy * this.arrowWidth],
+				[dx * (this.arrowLength + this.arrowDistance), dy * (this.arrowLength + this.arrowDistance)],
 				[center[0], center[1]]
 			]);
 			
