@@ -19,7 +19,7 @@ define ([
 	/**
 	 * Configuration parameters:
 	 * - type: Geometry type: point, line or polygon
-	 * - format: format of the geometry passed to the event handlers. Accepted values: 'GeoJSON' or 'WKT'. 
+	 * - format: format of the geometry passed to the event handlers. Accepted values: 'GeoJSON', 'WKT' or 'Raw'. 
 	 * - source: (optional) an OpenLayers feature source to which features are drawn.
 	 * - features: (optional) an OpenLayers feature collection to which features are drawn.
 	 * 
@@ -30,7 +30,7 @@ define ([
 	 */
 	return declare ([Interaction, Evented, InteractionBase], {
 		type: 'point',
-		format: 'geojson',
+		format: 'raw',
 		modifier: 'none',
 		features: null,
 		source: null,
@@ -61,6 +61,9 @@ define ([
 			
 			switch (this.format.toLowerCase ()) {
 			default:
+			case 'feature':
+				olFormat = null;
+				break;
 			case 'geojson':
 				olFormat = new ol.format.GeoJSON ();
 				break;
@@ -105,7 +108,11 @@ define ([
 			});
 			
 			this._interaction.on ('drawend', function (e) {
-				self.emit ('drawend', { geometry: olFormat.writeGeometry (e.feature.getGeometry ()) });
+				if (olFormat === null) {
+					self.emit ('drawend', { geometry: e.feature.getGeometry () });
+				} else {
+					self.emit ('drawend', { geometry: olFormat.writeGeometry (e.feature.getGeometry ()) });
+				}
 			});
 
 			engine.olMap.addInteraction (this._interaction);

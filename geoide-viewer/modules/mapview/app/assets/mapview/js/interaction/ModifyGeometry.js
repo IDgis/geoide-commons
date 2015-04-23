@@ -15,7 +15,8 @@ define ([
 	
 	ol
 ) {
-
+	"use strict";
+	
 	/**
 	 * Configuration parameters:
 	 * - source: (optional) an OpenLayers feature source from which features are modified.

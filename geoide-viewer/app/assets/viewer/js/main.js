@@ -19,6 +19,7 @@ require ([
 	'geoide-map/interaction/DrawGeometry',
 	'geoide-map/interaction/Click',
 	'geoide-map/interaction/ModifyGeometry',
+	'geoide-map/interaction/DrawText',
 	
 	'dojo/domReady!'
 ], function (
@@ -40,7 +41,8 @@ require ([
 	DragZoom,
 	DrawGeometry,
 	Click,
-	ModifyGeometry
+	ModifyGeometry,
+	DrawText
 ) {
 	
 	var drawGeometry = new DrawGeometry ({
@@ -207,6 +209,14 @@ require ([
 		redline (new DrawGeometry ({
 			type: 'Polygon', 
 			format: 'wkt', 
+			features: viewers[0].overlay ('redline').getFeatures ()
+		}));
+	});
+	on (dom.byId ('draw-text'), 'click', function (e) {
+		e.preventDefault ();
+		e.stopPropagation ();
+		
+		redline (new DrawText ({
 			features: viewers[0].overlay ('redline').getFeatures ()
 		}));
 	});
