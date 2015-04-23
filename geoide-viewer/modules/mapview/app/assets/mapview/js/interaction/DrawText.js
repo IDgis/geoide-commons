@@ -41,12 +41,11 @@ define ([
 			this.inherited (arguments);
 			
 			this.on ('drawend', function (e) {
-				console.log ('Drawing text at: ', e.geometry);
-				
 				var overlay = new Overlay ({
 					feature: e.feature,
 					text: '',
-					height: 40
+					height: 40,
+					offset: [50, 50]
 				});
 				overlay.update ();
 				

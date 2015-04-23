@@ -45,8 +45,6 @@ define ([
 		},
 		
 		_dragMoveable: function (e) {
-			console.log ('Drag: ', e);
-			
 			var startX = e.clientX,
 				startY = e.clientY,
 				startOffset = this.get ('offset'),

@@ -93,7 +93,6 @@ define ([
 			if (this.source) {
 				drawConfig.source = this.source;
 			} else if (this.features) {
-				console.log ('Features: ', this.features);
 				drawConfig.features = this.features;
 			} else {
 				drawConfig.source = engine._vectorSource;
