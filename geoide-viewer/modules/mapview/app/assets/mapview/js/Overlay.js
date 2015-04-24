@@ -156,7 +156,7 @@ define ([
 				this._handles = null;
 			}
 			
-			domConstruct.remove (this._container);
+			domConstruct.destroy (this._container);
 			
 			this.feature.set ('_geoideOverlay', null);
 			this.feature.unByKey (this._geometryChangeKey);

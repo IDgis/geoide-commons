@@ -220,4 +220,12 @@ require ([
 			features: viewers[0].overlay ('redline').getFeatures ()
 		}));
 	});
+	on (dom.byId ('delete-features'), 'click', function (e) {
+		e.preventDefault ();
+		e.stopPropagation ();
+		
+		if (redlineInteraction && redlineInteraction.deleteSelected) {
+			redlineInteraction.deleteSelected ();
+		}
+	});
 });

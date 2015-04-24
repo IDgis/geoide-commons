@@ -32,6 +32,7 @@ define ([
 		features: null,
 		source: null,
 		
+		_currentEngine: null,
 		_modifyInteraction: null,
 		_selectInteraction: null,
 		
@@ -42,6 +43,8 @@ define ([
 			if (this._modifyInteraction) {
 				this._disable ();
 			}
+			
+			this._currentEngine = engine;
 			
 			this._selectedFeatures = [ ];
 			
@@ -87,6 +90,7 @@ define ([
 			
 			this._selectInteraction.unByKey (this._selectHandle);
 			
+			this._currentEngine = null;
 			this._selectedFeatures = null;
 			this._selectHandle = null;
 			this._modifyInteraction = null;
@@ -126,6 +130,34 @@ define ([
 				overlay.set ('selected', false);
 				console.log ('Unselect overlay: ', overlay);
 			}
+		},
+		
+		_removeFeature: function (/*ol.Feature*/feature) {
+			console.log ('Remove feature: ', feature);
+			
+			var overlay = feature.get ('_geoideOverlay');
+			
+			if (overlay) {
+				console.log ('Removing overlay');
+				this._currentEngine.olMap.removeOverlay (overlay._overlay);
+				overlay.remove ();
+			}
+			
+			this.features.remove (feature);
+		},
+		
+		deleteSelected: function () {
+			if (!this._selectedFeatures || this._selectedFeatures.length === 0) {
+				return;
+			}
+			
+			this._selectInteraction.getFeatures ().clear ();
+			
+			var features = this._selectedFeatures.concat ([ ]);
+			array.forEach (features, function (feature) {
+				this._unselectFeature (feature);
+				this._removeFeature (feature);
+			}, this);
 		}
 	});
 });
