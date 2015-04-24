@@ -651,12 +651,12 @@ define ([
 		},
 		
 		
-		report: function (templateInfo) {
+		report: function (templateInfo, /*Object?*/viewerStateOptions) {
 			var def = new Deferred ();
 			
 			when (this.map, lang.hitch (this, function (map) {
 				
-				var viewerState = this.getViewerState();
+				var viewerState = this.getViewerState(viewerStateOptions);
 				
 				var reportInfo = {viewerstates: [ viewerState ] , template: templateInfo};
 

@@ -29,7 +29,19 @@ define ([
 			
 			return state;
 		},
-		 
+
+		/**
+		 * Extends the report function with the ability to include overlays in the print.
+		 * 
+		 * viewerStateOptions:
+		 * - includeOverlays: true or false (default true). Whether to include overlays in the print.
+		 */
+		report: function (templateInfo, /*Object?*/viewerStateOptions) {
+			viewerStateOptions = viewerStateOptions || { };
+			
+			return this.inherited (arguments, [templateInfo, lang.mixin ({ includeOverlays: true }, viewerStateOptions) ]);
+		},
+
 		/**
 		 * Adds a vector overlay to the map viewer. If an overlay of the same name
 		 * exists, that overlay is returned, otherwise a new overlay is created.

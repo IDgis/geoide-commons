@@ -146,6 +146,10 @@ require ([
 		return viewers[0].getViewerState (options);
 	};
 	
+	window.report = function (templateOptions, viewerStateOptions) {
+		return viewers[0].report (templateOptions, viewerStateOptions);
+	};
+	
 	window.model = new Model ({
 		id: 'my-model',
 		layers: [
