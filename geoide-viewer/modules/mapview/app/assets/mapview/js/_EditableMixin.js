@@ -56,6 +56,18 @@ define ([
 			}
 		},
 		
+		getProperties: function () {
+			var properties = this.inherited (arguments);
+			
+			if ('content' in properties) {
+				delete properties['content'];
+			}
+			
+			properties.text = this.get ('text');
+			
+			return properties;
+		},
+		
 		_textSetter: function (text) {
 			var newContent = document.createElement ('div');
 			newContent.appendChild (document.createTextNode (text));

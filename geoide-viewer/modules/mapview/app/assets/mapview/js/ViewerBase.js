@@ -278,8 +278,21 @@ define ([
 			return this._getLayerState (layerId, key);
 		},
 		
-		getViewerState: function () {
-			return { id:'main', mapid:this.mapId , extent: this.getCurrentExtent() , scale: this.get('scale'), resolution: this.get('resolution'), layers: this._buildViewerState (this.map.get ('layers')) };
+		/**
+		 * Returns the current viewer state.
+		 * 
+		 * Options, a map containing any of the following properties:
+		 * (none)
+		 */
+		getViewerState: function (/*Object?*/options) {
+			return { 
+				id: 'main', 
+				mapid: this.mapId, 
+				extent: this.getCurrentExtent (), 
+				scale: this.get ('scale'), 
+				resolution: this.get ('resolution'), 
+				layers: this._buildViewerState (this.map.get ('layers')) 
+			};
 		},
 		
 		/**

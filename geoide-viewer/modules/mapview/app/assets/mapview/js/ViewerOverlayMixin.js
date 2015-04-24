@@ -9,11 +9,27 @@ define ([
 	when,
 	ol
 ) {
-	"use strict";
-	
 	return declare ([], {
 		_overlays: null,
 		
+		/**
+		 * Returns the current viewer state. Extends the functionality of the base getViewerState with additional options.
+		 * 
+		 * Options, a map containing any of the following properties:
+		 * - includeOverlays: true or false (default false). Whether to include overlays in the viewer state.
+		 */
+		getViewerState: function (/*Object?*/options) {
+			options = options || { };
+
+			var state = this.inherited (arguments);
+
+			if (options.includeOverlays) {
+				state.overlays = this._buildOverlayState ();
+			}
+			
+			return state;
+		},
+		 
 		/**
 		 * Adds a vector overlay to the map viewer. If an overlay of the same name
 		 * exists, that overlay is returned, otherwise a new overlay is created.
@@ -53,6 +69,53 @@ define ([
 			}));
 			
 			return overlay;
+		},
+		
+		_buildOverlayState: function () {
+			if (!this._overlays) {
+				return { };
+			}
+			
+			var overlays = { };
+			
+			for (var i in this._overlays) {
+				if (!this._overlays.hasOwnProperty (i)) {
+					continue;
+				}
+				
+				overlays[i] = this._serializeOverlay (this._overlays[i]);
+			}
+			
+			return overlays;
+		},
+		
+		_serializeOverlay: function (/*ol.FeatureOverlay*/overlay) {
+			var features = [ ];
+			
+			overlay.getFeatures ().forEach (function (feature) {
+				features.push (this._serializeFeature (feature));
+			}, this);
+			
+			return {
+				features: features
+			};
+		},
+		
+		_serializeFeature: function (/*ol.Feature*/feature) {
+			var format = new ol.format.GeoJSON (),
+				overlay = feature.get ('_geoideOverlay');
+			
+			if (overlay) {
+				return {
+					type: 'Feature',
+					geometry: format.writeGeometryObject (feature.getGeometry ()),
+					properties: { 
+						overlay: overlay.getProperties ()
+					}
+				};
+			} else {
+				return format.writeFeatureObject (feature);
+			}
 		}
 	});
 });

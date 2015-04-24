@@ -142,6 +142,10 @@ require ([
 		return viewers[0].overlay (name);
 	};
 	
+	window.getViewerState = function (options) {
+		return viewers[0].getViewerState (options);
+	};
+	
 	window.model = new Model ({
 		id: 'my-model',
 		layers: [
