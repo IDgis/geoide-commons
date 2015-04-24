@@ -6,14 +6,23 @@
 	bottom: 0px;
 }
 
-.gi-overlay-body {
-	background-color: white;
+.gi-overlay {
 	
-	&.moveable {
-		cursor: move;
+	&.selected {
+		path {
+			stroke: blue; 
+		}
 	}
 	
-	.editable-text {
-		padding: 4px;
+	.gi-overlay-body {
+		background-color: white;
+		
+		&.moveable {
+			cursor: move;
+		}
+		
+		.editable-text {
+			padding: 4px;
+		}
 	}
 }

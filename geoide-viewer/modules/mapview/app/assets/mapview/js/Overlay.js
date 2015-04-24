@@ -3,6 +3,7 @@ define ([
 	'dojo/_base/lang',
 	'dojo/query',
 	'dojo/dom-construct',
+	'dojo/dom-class',
 	'./Stateful',
 	'openlayers/ol'
 ], function (
@@ -10,6 +11,7 @@ define ([
 	lang,
 	query,
 	domConstruct,
+	domClass,
 	Stateful,
 	ol
 ) {
@@ -73,6 +75,7 @@ define ([
 		arrowWidth: 20,
 		arrowLength: 20,
 		arrowDistance: 8,
+		selected: false,
 		
 		_handles: null,
 		_geometryChangeKey: null,
@@ -98,6 +101,7 @@ define ([
 			// Create the DOM for this overlay and move the content into the container:
 			this._container = document.createElement ('div');
 			this._container.style.position = 'absolute';
+			this._container.className = 'gi-overlay';
 			
 			this._svgRoot = svg ('svg', { }, this._container);
 			
@@ -129,6 +133,8 @@ define ([
 				insertFirst: false
 			});
 			
+			// Link the overlay to the feature:
+			this.feature.set ('_geoideOverlay', this);
 			this._geometryChangeKey = this.feature.on ('change', function (e) {
 				this._overlay.setPosition (this.feature.getGeometry ().getFirstCoordinate ());
 			}, this);
@@ -152,6 +158,7 @@ define ([
 			
 			domConstruct.remove (this._container);
 			
+			this.feature.set ('_geoideOverlay', null);
 			this.feature.unByKey (this._geometryChangeKey);
 		},
 		
@@ -165,6 +172,10 @@ define ([
 			domConstruct.empty (this._body);
 			this._body.appendChild (content);
 			this.content = content;
+		},
+		
+		_selectedSetter: function (selected) {
+			domClass[selected ? 'add' : 'remove'] (this._container, 'selected');
 		},
 		
 		update: function () {
