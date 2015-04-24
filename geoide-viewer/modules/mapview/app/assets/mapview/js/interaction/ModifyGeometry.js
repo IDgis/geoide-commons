@@ -38,6 +38,7 @@ define ([
 		
 		_selectedFeatures: null,
 		_selectHandle: null,
+		_overlayHandles: null,
 		
 		_enable: function (engine) {
 			if (this._modifyInteraction) {
@@ -75,6 +76,20 @@ define ([
 				array.forEach (e.deselected, this._unselectFeature, this);
 				array.forEach (e.selected, this._selectFeature, this);
 			}, this);
+			
+			// Register listeners on overlays:
+			this._overlayHandles = [ ];
+			this.features.forEach (function (feature) {
+				var overlay = feature.get ('_geoideOverlay');
+				
+				if (overlay) {
+					console.log ('Watching overlay: ', overlay);
+					this._overlayHandles.push (overlay.on ('select', lang.hitch (this, function (e) {
+						console.log ('Selecting overlay: ', e.overlay);
+						this.selectFeature (e.overlay.get ('feature'), e.keyEvent.shiftKey);
+					})));
+				}
+			}, this);
 		},
 		
 		_disable: function (engine) {
@@ -90,11 +105,37 @@ define ([
 			
 			this._selectInteraction.unByKey (this._selectHandle);
 			
+			// Remove overlay watches:
+			array.forEach (this._overlayHandles, function (h) { h.remove (); });
+			
 			this._currentEngine = null;
 			this._selectedFeatures = null;
 			this._selectHandle = null;
 			this._modifyInteraction = null;
 			this._selectInteraction = null;
+			this._overlayHandles = null;
+		},
+		
+		selectFeature: function (/*ol.Feature*/feature, /*Boolean*/addToSelection) {
+			if (!this._selectedFeatures) {
+				return;
+			}
+			
+			for (var i = 0; i < this._selectedFeatures.length; ++ i) {
+				if (feature === this._selectedFeatures[i]) {
+					return;
+				}
+			}
+			
+			if (!addToSelection) {
+				this._selectInteraction.getFeatures ().clear ();
+				array.forEach (this._selectedFeatures.concat ([]), function (feature) {
+					this._unselectFeature (feature);
+				}, this);
+			}
+			
+			this._selectInteraction.getFeatures ().push (feature);
+			this._selectFeature (feature);
 		},
 		
 		_selectFeature: function (/*ol.Feature*/feature) {

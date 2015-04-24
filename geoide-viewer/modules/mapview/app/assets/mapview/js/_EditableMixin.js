@@ -30,13 +30,26 @@ define ([
 				this._dragMoveable (eventType, e);
 			});
 			
-			on (this._body, 'pointerdown', function (e) {
-				handleDown ('pointer', e);
-			});
+			on (this._body, 'pointerdown', lang.hitch (this, function (e) {
+				if (this.get ('selected')) {
+					handleDown ('pointer', e);
+				}
+			}));
 			
-			on (this._body, 'mousedown', function (e) {
-				handleDown ('mouse', e);
-			});
+			on (this._body, 'mousedown', lang.hitch (this, function (e) {
+				if (this.get ('selected')) {
+					handleDown ('mouse', e);
+				}
+			}));
+			
+			on (this._body, 'click', lang.hitch (this, function (e) {
+				if (!this.get ('selected')) {
+					e.preventDefault ();
+					e.stopPropagation ();
+					
+					this.emit ('select', { overlay: this, keyEvent: e });
+				}
+			}));
 			
 			if (this.text) {
 				this.set ('text', this.text);
@@ -84,7 +97,11 @@ define ([
 				}
 				
 				if (Math.abs (dx) < 5 && Math.abs (dy) < 5) {
-					self.edit ();
+					if (!self.get ('selected')) {
+						self.emit ('select', { overlay: self, keyEvent: e });
+					} else {
+						self.edit ();
+					}
 				}
 			}));
 		},

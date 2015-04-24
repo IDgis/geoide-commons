@@ -8,21 +8,23 @@
 
 .gi-overlay {
 	
+	.gi-overlay-body {
+		background-color: white;
+		
+		.editable-text {
+			padding: 4px;
+		}
+	}
+	
 	&.selected {
 		path {
 			stroke: blue; 
 		}
-	}
-	
-	.gi-overlay-body {
-		background-color: white;
 		
-		&.moveable {
-			cursor: move;
-		}
-		
-		.editable-text {
-			padding: 4px;
+		.gi-overlay-body {
+			&.moveable {
+				cursor: move;
+			}
 		}
 	}
 }

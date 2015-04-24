@@ -5,6 +5,7 @@ define ([
 	'dojo/dom-construct',
 	'dojo/dom-class',
 	'./Stateful',
+	'dojo/Evented',
 	'openlayers/ol'
 ], function (
 	declare,
@@ -13,6 +14,7 @@ define ([
 	domConstruct,
 	domClass,
 	Stateful,
+	Evented,
 	ol
 ) {
 	
@@ -65,7 +67,7 @@ define ([
 		return p;
 	}
 	
-	return declare ([Stateful], {
+	return declare ([Stateful, Evented], {
 		feature: null,
 		width: 150,
 		height: 100,
@@ -176,6 +178,7 @@ define ([
 		
 		_selectedSetter: function (selected) {
 			domClass[selected ? 'add' : 'remove'] (this._container, 'selected');
+			this.selected = selected;
 		},
 		
 		update: function () {
