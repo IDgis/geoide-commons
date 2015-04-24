@@ -83,9 +83,7 @@ define ([
 				var overlay = feature.get ('_geoideOverlay');
 				
 				if (overlay) {
-					console.log ('Watching overlay: ', overlay);
 					this._overlayHandles.push (overlay.on ('select', lang.hitch (this, function (e) {
-						console.log ('Selecting overlay: ', e.overlay);
 						this.selectFeature (e.overlay.get ('feature'), e.keyEvent.shiftKey);
 					})));
 				}
@@ -139,8 +137,6 @@ define ([
 		},
 		
 		_selectFeature: function (/*ol.Feature*/feature) {
-			console.log ('Select feature: ', feature);
-			
 			// Add the feature to the list of selected features:
 			this._selectedFeatures.push (feature);
 			
@@ -149,13 +145,10 @@ define ([
 			
 			if (overlay) {
 				overlay.set ('selected', true);
-				console.log ('Select overlay: ', overlay);
 			}
 		},
 		
 		_unselectFeature: function (/*ol.Feature*/feature) {
-			console.log ('Unselect feature: ', feature);
-
 			// Remove the feature from the list of selected features:
 			for (var i = 0; i < this._selectedFeatures.length; ++ i) {
 				if (this._selectedFeatures[i] === feature) {
@@ -169,17 +162,13 @@ define ([
 			
 			if (overlay) {
 				overlay.set ('selected', false);
-				console.log ('Unselect overlay: ', overlay);
 			}
 		},
 		
 		_removeFeature: function (/*ol.Feature*/feature) {
-			console.log ('Remove feature: ', feature);
-			
 			var overlay = feature.get ('_geoideOverlay');
 			
 			if (overlay) {
-				console.log ('Removing overlay');
 				this._currentEngine.olMap.removeOverlay (overlay._overlay);
 				overlay.remove ();
 			}

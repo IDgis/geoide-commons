@@ -142,6 +142,19 @@ define ([
 			}, this);
 		},
 		
+		getProperties: function () {
+			return {
+				width: this.get ('width'),
+				height: this.get ('height'),
+				offset: this.get ('offset'),
+				content: this.get ('content').innerHTML,
+				borderWidth: this.get ('borderWidth'),
+				arrowWidth: this.get ('arrowWidth'),
+				arrowLength: this.get ('arrowLength'),
+				arrowDistance: this.get ('arrowDistance')
+			};
+		},
+		
 		own: function (handle) {
 			if (!this._handles) {
 				this._handles = [ ];
