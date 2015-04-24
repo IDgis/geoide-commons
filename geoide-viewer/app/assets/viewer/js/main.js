@@ -161,8 +161,7 @@ require ([
 	window.mapCopy = linkedCopy (window.mapModel);
 	
 	// Redlining interactions:
-	var redlineInteraction = null,
-		modifyInteraction = null;
+	var redlineInteraction = null;
 	
 	function redline (interaction) {
 		viewers[0].disableInteraction (draw);
@@ -170,16 +169,9 @@ require ([
 		if (redlineInteraction) {
 			viewers[0].disableInteraction (redlineInteraction);
 		}
-		if (modifyInteraction) {
-			viewers[0].disableInteraction (modifyInteraction);
-		}
 		
 		viewers[0].enableInteraction (interaction);
 		redlineInteraction = interaction;
-		modifyInteraction = new ModifyGeometry ({
-			features: viewers[0].overlay ('redline').getFeatures ()
-		});
-		viewers[0].enableInteraction (modifyInteraction);
 	}
 	
 	on (dom.byId ('draw-point'), 'click', function (e) {
@@ -219,5 +211,21 @@ require ([
 		redline (new DrawText ({
 			features: viewers[0].overlay ('redline').getFeatures ()
 		}));
+	});
+	on (dom.byId ('edit-geometry'), 'click', function (e) {
+		e.preventDefault ();
+		e.stopPropagation ();
+		
+		redline (new ModifyGeometry ({
+			features: viewers[0].overlay ('redline').getFeatures ()
+		}));
+	});
+	on (dom.byId ('delete-features'), 'click', function (e) {
+		e.preventDefault ();
+		e.stopPropagation ();
+		
+		if (redlineInteraction && redlineInteraction.deleteSelected) {
+			redlineInteraction.deleteSelected ();
+		}
 	});
 });
