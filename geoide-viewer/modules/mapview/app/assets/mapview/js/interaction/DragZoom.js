@@ -1,12 +1,22 @@
 define ([
 	'dojo/_base/declare',
-	'dojo/has!config-OpenLayers-3?../engine/DragZoom-ol3:../engine/DragZoom-ol2'
+	
+	'./InteractionBase',
+	
+	'openlayers/ol'
 ], function (
 	declare,
-	Engine
+	
+	InteractionBase,
+	
+	ol
 ) {
 
-	return declare ([Engine], {
-		
+	return declare ([InteractionBase], {
+		_createInteractions: function (engine) {
+			return [
+				new ol.interaction.DragZoom ({ condition: ol.events.condition.always })
+			];
+		}
 	});
 });

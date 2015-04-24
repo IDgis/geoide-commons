@@ -1,12 +1,28 @@
 define ([
 	'dojo/_base/declare',
-	'dojo/has!config-OpenLayers-3?../engine/Navigation-ol3:../engine/Navigation-ol2'
+	'./InteractionBase',
+	
+	'openlayers/ol'
 ], function (
 	declare,
-	Engine
+	InteractionBase,
+	
+	ol
 ) {
 
-	return declare ([Engine], {
-		
+	return declare ([InteractionBase], {
+		_createInteractions: function (engine) {
+			return [
+				new ol.interaction.DragRotate (), 
+				new ol.interaction.DoubleClickZoom (), 
+				new ol.interaction.DragPan ({
+					kinetic: new ol.Kinetic (-0.005, 0.05, 100)
+				}), 
+				new ol.interaction.PinchRotate (),
+				new ol.interaction.PinchZoom (),
+				new ol.interaction.MouseWheelZoom (),
+				new ol.interaction.DragZoom ()
+			];
+		}
 	});
 });

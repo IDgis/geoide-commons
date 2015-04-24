@@ -33,7 +33,6 @@ object Common {
 	object Dependencies {
 		val geoideDomain = "nl.idgis.geoide" % "geoide-domain" % "0.2.1-SNAPSHOT"
 		val geoideDomainTest = "nl.idgis.geoide" % "geoide-domain-test" % "0.2.1-SNAPSHOT"
-		val geoideOL3 = "nl.idgis.geoide" % "geoide-ol3" % "0.2.1-SNAPSHOT"
 		val geoideUtil = "nl.idgis.geoide" % "geoide-util" % "0.2.1-SNAPSHOT"
 		val geoideServiceCommon = "nl.idgis.geoide" % "geoide-service-common" % "0.2.1-SNAPSHOT"
 		val geoideServiceTms = "nl.idgis.geoide" % "geoide-service-tms" % "0.2.1-SNAPSHOT"
@@ -48,7 +47,7 @@ object Common {
 		val webjarsPlay = "org.webjars" %% "webjars-play" % "2.3.0"
   		val webjarsBootstrap = "org.webjars" % "bootstrap" % "3.2.0"
   		val webjarsDojoBase = "org.webjars" % "dojo-base" % "1.10.0-SNAPSHOT"
-  		val webjarsOpenLayers = "org.webjars" % "openlayers" % "2.13.1"
+  		val webjarsOpenLayers = "org.webjars" % "openlayers" % "3.4.0"
   		val webjarsPutSelector = "org.webjars" % "put-selector" % "0.3.5"
   		val webjarsFontAwesome = "org.webjars" % "font-awesome" % "4.2.0"
   		

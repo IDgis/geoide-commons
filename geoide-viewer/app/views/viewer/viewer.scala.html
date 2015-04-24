@@ -1,7 +1,7 @@
-@(mapId: String, versionOpenLayers: String, tocItems:List[nl.idgis.geoide.commons.domain.traits.Traits[nl.idgis.geoide.commons.domain.toc.TOCItem]])
+@(mapId: String, tocItems:List[nl.idgis.geoide.commons.domain.traits.Traits[nl.idgis.geoide.commons.domain.toc.TOCItem]])
 
 	
-@layout.html("Viewer", versionOpenLayers) {
+@layout.html("Viewer") {
 	
 
 	<pre>@controllers.core.RequireJS.getDojoConfig</pre>
@@ -9,5 +9,12 @@
 	<div id="toc-container">@views.html.toc.toc(mapId, tocItems)</div>
 	
 	<div id="viewer-container" class="js-geoide-viewer" data-geoide-map="@mapId"></div>
-
+	
+	<p>
+		Draw:
+		<button type="button" id="draw-point">Punt</button>
+		<button type="button" id="draw-line">Lijn</button>
+		<button type="button" id="draw-polygon">Polygoon</button>
+		<button type="button" id="draw-text">Tekst</button>
+	</p>
 }

@@ -1,12 +1,21 @@
 define ([
 	'dojo/_base/declare',
-	'dojo/has!config-OpenLayers-3?../engine/KeyboardNavigation-ol3:../engine/KeyboardNavigation-ol2'
+	'./InteractionBase',
+	
+	'openlayers/ol'
 ], function (
 	declare,
-	Engine
+	InteractionBase,
+	
+	ol
 ) {
 
-	return declare ([Engine], {
-		
+	return declare ([InteractionBase], {
+		_createInteractions: function (engine) {
+			return [
+				new ol.interaction.KeyboardPan (),
+				new ol.interaction.KeyboardZoom ()
+			];
+		}
 	});
 });
