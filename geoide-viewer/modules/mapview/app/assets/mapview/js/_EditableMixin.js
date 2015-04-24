@@ -18,7 +18,7 @@ define ([
 		constructor: function () {
 			domClass.add (this._body, 'moveable');
 			
-			on (this._body, 'mousedown', lang.hitch (this, function (e) {
+			var handleDown = lang.hitch (this, function (eventType, e) {
 				e.stopPropagation ();
 				
 				if (e.target.tagName.toLowerCase () == 'textarea') {
@@ -27,8 +27,16 @@ define ([
 				
 				e.preventDefault ();
 				
-				this._dragMoveable (e);
-			}));
+				this._dragMoveable (eventType, e);
+			});
+			
+			on (this._body, 'pointerdown', function (e) {
+				handleDown ('pointer', e);
+			});
+			
+			on (this._body, 'mousedown', function (e) {
+				handleDown ('mouse', e);
+			});
 			
 			if (this.text) {
 				this.set ('text', this.text);
@@ -44,7 +52,7 @@ define ([
 			this.text = text;
 		},
 		
-		_dragMoveable: function (e) {
+		_dragMoveable: function (eventType, e) {
 			var startX = e.clientX,
 				startY = e.clientY,
 				startOffset = this.get ('offset'),
@@ -61,11 +69,11 @@ define ([
 				self.set ('offset', newOffset);
 			};
 			
-			handles.push (on (window, 'mousemove', function (e) {
+			handles.push (on (window, eventType + 'move', function (e) {
 				updateDrag (e.clientX - startX, e.clientY - startY);
 			}));
 			
-			handles.push (on (window, 'mouseup', function (e) {
+			handles.push (on (window, eventType + 'up', function (e) {
 				var dx = e.clientX - startX,
 					dy = e.clientY - startY;
 				
