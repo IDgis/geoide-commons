@@ -2,12 +2,24 @@ package nl.idgis.geoide.commons.domain.geometry.geojson;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import nl.idgis.geoide.commons.domain.geometry.Geometry;
 import nl.idgis.geoide.commons.domain.geometry.GeometryType;
 import nl.idgis.geoide.commons.domain.geometry.Srs;
 import nl.idgis.geoide.commons.domain.geometry.GeometryType.Type;
 
+@JsonTypeInfo (use = JsonTypeInfo.Id.NAME, property = "type")
+@JsonSubTypes ({
+	@JsonSubTypes.Type (name = "GeometryCollection", value = GeoJsonGeometryCollection.class),
+	@JsonSubTypes.Type (name = "LineString", value = GeoJsonLineString.class),
+	@JsonSubTypes.Type (name = "MultiLineString", value = GeoJsonMultiLineString.class),
+	@JsonSubTypes.Type (name = "MultiPoint", value = GeoJsonMultiPoint.class),
+	@JsonSubTypes.Type (name = "MultiPolygon", value = GeoJsonMultiPolygon.class),
+	@JsonSubTypes.Type (name = "Point", value = GeoJsonPoint.class),
+	@JsonSubTypes.Type (name = "Polygon", value = GeoJsonPolygon.class)
+})
 public abstract class AbstractGeoJsonGeometry implements Geometry {
 	private static final long serialVersionUID = -5590461394080222106L;
 
