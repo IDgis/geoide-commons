@@ -1,5 +1,10 @@
 package nl.idgis.geoide.commons.domain.geometry;
 
-public interface Point extends Geometry {
+import java.util.Optional;
 
+public interface Point extends Geometry {
+	double getX ();
+	double getY ();
+	Optional<Double> getZ ();
+	Optional<Double> getM ();
 }

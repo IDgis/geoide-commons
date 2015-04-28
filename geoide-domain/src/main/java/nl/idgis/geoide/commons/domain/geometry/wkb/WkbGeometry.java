@@ -5,6 +5,7 @@ import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamException;
+import java.util.Optional;
 
 import nl.idgis.geoide.commons.domain.geometry.Envelope;
 import nl.idgis.geoide.commons.domain.geometry.Geometry;
@@ -176,7 +177,7 @@ public class WkbGeometry implements Geometry {
 	private static abstract class WrappedGeometry implements Geometry {
 		private static final long serialVersionUID = -617003639662114767L;
 		
-		private final WkbGeometry geom;
+		protected final WkbGeometry geom;
 		
 		WrappedGeometry (final WkbGeometry geom) {
 			this.geom = geom;
@@ -239,6 +240,20 @@ public class WkbGeometry implements Geometry {
 		WrappedMultiLineString (final WkbGeometry geom) {
 			super(geom);
 		}
+
+		private com.vividsolutions.jts.geom.MultiLineString wrapped () {
+			return (com.vividsolutions.jts.geom.MultiLineString) geom.jtsGeometry;
+		}
+		
+		@Override
+		public int getNumGeometries () {
+			return wrapped ().getNumGeometries ();
+		}
+
+		@Override
+		public LineString getGeometryN (final int n) {
+			return new WrappedLineString (new WkbGeometry (geom.getSrs (), wrapped ().getGeometryN (n)));
+		}
 		
 	}
 	
@@ -248,6 +263,20 @@ public class WkbGeometry implements Geometry {
 		WrappedMultiPolygon (final WkbGeometry geom) {
 			super(geom);
 		}
+
+		private com.vividsolutions.jts.geom.MultiPolygon wrapped () {
+			return (com.vividsolutions.jts.geom.MultiPolygon) geom.jtsGeometry;
+		}
+		
+		@Override
+		public int getNumGeometries () {
+			return wrapped ().getNumGeometries ();
+		}
+
+		@Override
+		public Polygon getGeometryN (int n) {
+			return new WrappedPolygon (new WkbGeometry (geom.getSrs (), wrapped ().getGeometryN (n)));
+		}
 	}
 	
 	private final static class WrappedLinearRing extends WrappedGeometry implements LinearRing {
@@ -255,6 +284,30 @@ public class WkbGeometry implements Geometry {
 
 		WrappedLinearRing (final WkbGeometry geom) {
 			super(geom);
+		}
+		
+		private com.vividsolutions.jts.geom.LinearRing wrapped () {
+			return (com.vividsolutions.jts.geom.LinearRing) geom.jtsGeometry;
+		}
+
+		@Override
+		public int getNumPoints () {
+			return wrapped ().getNumPoints ();
+		}
+
+		@Override
+		public Point getPointN (final int n) {
+			return new WrappedPoint (new WkbGeometry (geom.getSrs (), wrapped ().getPointN (n)));
+		}
+
+		@Override
+		public Point getStartPoint () {
+			return getPointN (0);
+		}
+
+		@Override
+		public Point getEndPoint () {
+			return getPointN (getNumPoints () - 1);
 		}
 	}
 	
@@ -264,6 +317,20 @@ public class WkbGeometry implements Geometry {
 		WrappedMultiPoint (final WkbGeometry geom) {
 			super(geom);
 		}
+		
+		private com.vividsolutions.jts.geom.MultiPoint wrapped () {
+			return (com.vividsolutions.jts.geom.MultiPoint) geom.jtsGeometry;
+		}
+
+		@Override
+		public int getNumGeometries () {
+			return wrapped ().getNumGeometries ();
+		}
+
+		@Override
+		public Point getGeometryN(int n) {
+			return new WrappedPoint (new WkbGeometry (geom.getSrs (), wrapped ().getGeometryN (n)));
+		}
 	}
 	
 	private final static class WrappedPolygon extends WrappedGeometry implements Polygon {
@@ -271,6 +338,25 @@ public class WkbGeometry implements Geometry {
 
 		WrappedPolygon (final WkbGeometry geom) {
 			super(geom);
+		}
+		
+		com.vividsolutions.jts.geom.Polygon wrapped () {
+			return (com.vividsolutions.jts.geom.Polygon) geom.jtsGeometry;
+		}
+
+		@Override
+		public LineString getExteriorRing () {
+			return new WrappedLineString (new WkbGeometry (geom.getSrs (), wrapped ().getExteriorRing ()));
+		}
+
+		@Override
+		public int getNumInteriorRing () {
+			return wrapped ().getNumInteriorRing ();
+		}
+
+		@Override
+		public LineString getInteriorRingN (final int n) {
+			return new WrappedLineString (new WkbGeometry (geom.getSrs (), wrapped ().getInteriorRingN (n)));
 		}
 	}
 	
@@ -280,13 +366,51 @@ public class WkbGeometry implements Geometry {
 		WrappedLineString (final WkbGeometry geom) {
 			super(geom);
 		}
+		
+		private com.vividsolutions.jts.geom.LineString wrapped () {
+			return (com.vividsolutions.jts.geom.LineString) geom.jtsGeometry;
+		}
+
+		@Override
+		public Point getStartPoint () {
+			return new WrappedPoint (new WkbGeometry (geom.getSrs (), wrapped ().getStartPoint ()));
+		}
+
+		@Override
+		public Point getEndPoint () {
+			return new WrappedPoint (new WkbGeometry (geom.getSrs (), wrapped ().getEndPoint ()));
+		}
+
+		@Override
+		public int getNumPoints () {
+			return wrapped ().getNumPoints ();
+		}
+
+		@Override
+		public Point getPointN (final int n) {
+			return new WrappedPoint (new WkbGeometry (geom.getSrs (), wrapped ().getPointN (n)));
+		}
 	}
 	
-	private final static class WrappedGeometryCollection extends WrappedGeometry implements GeometryCollection {
+	private final static class WrappedGeometryCollection extends WrappedGeometry implements GeometryCollection<Geometry> {
 		private static final long serialVersionUID = -1370588734404539955L;
 
 		WrappedGeometryCollection (final WkbGeometry geom) {
 			super(geom);
+		}
+		
+		private com.vividsolutions.jts.geom.GeometryCollection wrapped () {
+			return (com.vividsolutions.jts.geom.GeometryCollection) geom.jtsGeometry;
+		}
+
+		@Override
+		public int getNumGeometries () {
+			return wrapped ().getNumGeometries ();
+		}
+
+		@Override
+		public Geometry getGeometryN (final int n) {
+			return new WkbGeometry (geom.getSrs (), wrapped ().getGeometryN (n));
 		}
 	}
 	
@@ -295,6 +419,30 @@ public class WkbGeometry implements Geometry {
 
 		WrappedPoint (final WkbGeometry geom) {
 			super(geom);
+		}
+		
+		private com.vividsolutions.jts.geom.Point wrapped () {
+			return (com.vividsolutions.jts.geom.Point) geom.jtsGeometry;
+		}
+
+		@Override
+		public double getX () {
+			return wrapped ().getX ();
+		}
+
+		@Override
+		public double getY() {
+			return wrapped ().getY ();
+		}
+
+		@Override
+		public Optional<Double> getZ() {
+			return Optional.empty ();
+		}
+
+		@Override
+		public Optional<Double> getM() {
+			return Optional.empty ();
 		}
 	}
 }

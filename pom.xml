@@ -43,6 +43,7 @@
 		<reactive-streams.version>1.0.0.RC1</reactive-streams.version>
 		<httpcomponents-asyncclient.version>4.0.2</httpcomponents-asyncclient.version>
 		<lesscss.version>2.3.1</lesscss.version>
+		<geoapi.version>3.0.0</geoapi.version>
 		
 		<!-- These versions should match the versions that are in use by the Play framework: -->
 		<scala.version>2.11.1</scala.version>
@@ -298,6 +299,12 @@
 				<groupId>com.vividsolutions</groupId>
 				<artifactId>jts</artifactId>
 				<version>${jts.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.opengis</groupId>
+				<artifactId>geoapi</artifactId>
+				<version>${geoapi.version}</version>
 			</dependency>
 			
 			<!-- Apache XMLGraphics (Batik and FOP): -->
