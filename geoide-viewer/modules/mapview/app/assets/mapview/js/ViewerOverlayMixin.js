@@ -102,10 +102,14 @@ define ([
 		},
 		
 		_serializeOverlay: function (/*ol.FeatureOverlay*/overlay) {
-			var features = [ ];
+			var features = [ ],
+				defaultStyleFunction = overlay.getStyleFunction ();
 			
 			overlay.getFeatures ().forEach (function (feature) {
-				features.push (this._serializeFeature (feature));
+				var serializedFeature = this._serializeFeature (feature, defaultStyleFunction);
+				if (serializedFeature) {
+					features.push (serializedFeature);
+				}
 			}, this);
 			
 			return {
@@ -113,21 +117,131 @@ define ([
 			};
 		},
 		
-		_serializeFeature: function (/*ol.Feature*/feature) {
+		_serializeFeature: function (/*ol.Feature*/feature, /*ol.style.StyleFunction*/defaultStyleFunction) {
 			var format = new ol.format.GeoJSON (),
-				overlay = feature.get ('_geoideOverlay');
+				overlay = feature.get ('_geoideOverlay'),
+				styleFunction = feature.getStyleFunction () || defaultStyleFunction,
+				resolution = this.get ('resolution');
+
+			console.log ('Overlay style function: ', styleFunction);
 			
-			if (overlay) {
-				return {
-					type: 'Feature',
-					geometry: format.writeGeometryObject (feature.getGeometry ()),
-					properties: { 
-						overlay: overlay.getProperties ()
-					}
-				};
-			} else {
-				return format.writeFeatureObject (feature);
+			var styles = styleFunction (feature, resolution);
+			
+			console.log ('Feature styles: ', styles);
+			
+			if (!styles) {
+				return null;
 			}
+			
+			var serializedFeature = {
+			};
+			
+			// Store the overlay:
+			if (overlay) {
+				serializedFeature.overlay = overlay.getProperties ();
+			}
+			
+			// Store the styles and corresponding geometries:
+			serializedFeature.styledGeometry = [ ];
+			for (var i = 0; i < styles.length; ++ i) {
+				var style = styles[i],
+					geometry = style.getGeometryFunction () (feature);
+				
+				if (!geometry) {
+					continue;
+				}
+				
+				serializedFeature.styledGeometry.push ({
+					geometry: format.writeGeometryObject (geometry),
+					style: this._serializeStyle (style) 
+				});
+			}
+			
+			return serializedFeature;
+		},
+		
+		_serializeStyle: function (style) {
+			var fillStyle = style.getFill (),
+				strokeStyle = style.getStroke (),
+				imageStyle = style.getImage (),
+				textStyle = style.getText (),
+				zIndex = style.getZIndex () || 0;
+			
+			return {
+				fill: this._serializeFillStyle (fillStyle),
+				stroke: this._serializeStrokeStyle (strokeStyle),
+				image: this._serializeImageStyle (imageStyle),
+				text: this._serializeTextStyle (textStyle),
+				zIndex: zIndex
+			};
+		},
+		
+		_serializeFillStyle: function (fillStyle) {
+			if (!fillStyle) {
+				return null;
+			}
+			
+			return this._getObjectProperties (fillStyle, ['color']);
+		},
+		
+		_serializeStrokeStyle: function (strokeStyle) {
+			if (!strokeStyle) {
+				return null;
+			}
+			
+			return this._getObjectProperties (strokeStyle, ['color', 'lineCap', 'lineDash', 'lineJoin', 'miterLimit', 'width']);
+		},
+		
+		_serializeImageStyle: function (imageStyle) {
+			if (!imageStyle) {
+				return null;
+			}
+			
+			var result = this._getObjectProperties (imageStyle, ['opacity', 'rotateWithView', 'rotation', 'scale', 'snapToPixel', 'anchor', 'origin', 'size', 'fill', 'radius']);
+			
+			if (imageStyle.getFill) {
+				result.type = 'circle';
+				result.fill = this._serializeFillStyle (imageStyle.getFill ());
+				result.stroke = this._serializeStrokeStyle (imageStyle.getStroke ());
+			} else {
+				result.type = 'image';
+			}
+			
+			return result;
+		},
+		
+		_serializeTextStyle: function (textStyle) {
+			if (!textStyle) {
+				return null;
+			}
+			
+			var result = this._getObjectProperties (textStyle, ['font', 'offsetX', 'offsetY', 'rotation', 'scale', 'text', 'textAlign', 'textBaseline']);
+			
+			result.fill = this._serializeFillStyle (textStyle.getFill ());
+			result.stroke = this._serializeStrokeStyle (textStyle.getStroke ());
+			
+			return result;
+		},
+		
+		_getObjectProperties: function (/*Object*/object, /*String[]*/propertyNames) {
+			var result = { };
+			
+			for (var i = 0; i < propertyNames.length; ++ i) {
+				var name = propertyNames[i],
+					getter = 'get' + name.substring (0, 1).toUpperCase () + name.substring (1);
+
+				if (!object[getter]) {
+					continue;
+				}
+				
+				var value = object[getter] ();
+				
+				if (typeof value !== 'undefined') {
+					result[name] = value;
+				}
+			}
+			
+			return result;
 		}
 	});
 });
