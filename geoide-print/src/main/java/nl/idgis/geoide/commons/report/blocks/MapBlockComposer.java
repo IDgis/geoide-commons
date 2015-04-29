@@ -5,14 +5,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamWriter;
+
 import nl.idgis.geoide.commons.domain.ServiceRequest;
+import nl.idgis.geoide.commons.domain.feature.FeatureOverlay;
 import nl.idgis.geoide.commons.print.service.HtmlPrintService;
+import nl.idgis.geoide.commons.report.render.OverlayRenderer;
 import nl.idgis.geoide.documentcache.DocumentCache;
 import nl.idgis.geoide.map.MapView;
 import nl.idgis.geoide.service.LayerServiceType;
 import nl.idgis.geoide.service.ServiceType;
 import nl.idgis.ogc.util.MimeContentType;
 
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
@@ -30,7 +36,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  **/ 
 
 
-public class MapBlockComposer implements BlockComposer {
+public class MapBlockComposer implements BlockComposer<MapBlockInfo> {
 	final MapView mapView;
 	private URI mapCssUri;
 	private static Logger log = LoggerFactory.getLogger (HtmlPrintService.class);
@@ -59,9 +65,8 @@ public class MapBlockComposer implements BlockComposer {
 	 */
 	
 	@Override
-	public Promise<Block> compose (Element blockElement, BlockInfo info, DocumentCache documentCache) throws Throwable {
+	public Promise<Block> compose (Element blockElement, MapBlockInfo mapInfo, DocumentCache documentCache) throws Throwable {
 		
-		MapBlockInfo mapInfo = (MapBlockInfo) info;
 		final List<Promise<nl.idgis.geoide.documentcache.Document>> documentPromises = new ArrayList<> ();
 		
 		String mapCss = createMapCss(mapInfo);
@@ -69,7 +74,7 @@ public class MapBlockComposer implements BlockComposer {
 		Element mapRow = blockElement.appendElement("div");
 		mapRow.attr("class", "map_row");
 				
-		final List<ServiceRequest> serviceRequests = mapView.getServiceRequests (mapView.flattenLayerList (info.getClientInfo()));	
+		final List<ServiceRequest> serviceRequests = mapView.getServiceRequests (mapView.flattenLayerList (mapInfo.getClientInfo()));	
 		int layernr = 1;
 		
 		int widthpx = mapInfo.getWidthpx();
@@ -83,7 +88,7 @@ public class MapBlockComposer implements BlockComposer {
 			
 			if (serviceType instanceof LayerServiceType ) {
 				LayerServiceType layerServiceType = (LayerServiceType) serviceType;
-				List<JsonNode>  requestUrls = layerServiceType.getLayerRequestUrls(request, mapInfo.getMapExtent(), mapInfo.getResolution(), widthpx, heightpx);
+				List<JsonNode>  requestUrls = layerServiceType.getLayerRequestUrls(request, mapInfo.getMapExtentJson(), mapInfo.getResolution(), widthpx, heightpx);
 			
 				if (request.getService().getIdentification().getServiceType().equals("TMS")){
 					
@@ -109,6 +114,16 @@ public class MapBlockComposer implements BlockComposer {
 			}
 
 		}
+		
+		// Add overlay:
+		final URI overlaySvgUri = new URI ("stored://" + UUID.randomUUID ().toString ());
+		documentPromises.add (documentCache.store (
+				overlaySvgUri, 
+				new MimeContentType ("image/svg+xml"), 
+				createOverlaySvg (mapInfo, mapInfo.getOverlays ())
+			));
+		createOverlayElement (mapRow, widthmm, heightmm, overlaySvgUri.toString ());
+		mapCss += getOverlayCss (layernr + 1, mapInfo);
 				
 		mapCssUri = new URI ("stored://" + UUID.randomUUID ().toString ());
 		documentPromises.add (documentCache.store(mapCssUri, new MimeContentType ("text/css"), mapCss.getBytes()));
@@ -128,6 +143,19 @@ public class MapBlockComposer implements BlockComposer {
 			});
 	};
 
+	private Element createOverlayElement (final Element mapRow, final double width, final double height, final String uri) {
+		final Element overlayElement = mapRow
+			.appendElement ("div")
+			.addClass ("map-overlays");
+		
+		overlayElement
+			.appendElement ("object")
+			.attr ("type", "image/svg+xml")
+			.attr ("style", "left:0;top:0;width:" + width + "mm;height:" + height + "mm;")
+			.attr ("data", uri);
+		
+		return overlayElement;
+	}
 	
 	private Element createLayerElement(Element mapRow, double width, double height, int layernr) {
 		Element mapLayer = mapRow.appendElement("div");
@@ -207,6 +235,26 @@ public class MapBlockComposer implements BlockComposer {
 				"width: "+ blockInfo.getBlockWidth() + "mm;" +
 			"}";
 	}
+	
+	private String getOverlayCss (final int zIndex, final MapBlockInfo blockInfo) {
+		return ".map-overlays { position: absolute; z-index: " + zIndex + "; left: 0; top: 0; width:" 
+				+ blockInfo.getBlockWidth () + "mm; height:" + blockInfo.getBlockHeight () + "mm;}"; 
+	}
 		
-
+	protected byte[] createOverlaySvg (final MapBlockInfo info, final List<FeatureOverlay> overlays) throws Throwable {
+		final OverlayRenderer renderer = new OverlayRenderer (
+				info.getMapExtent (),
+				info.getResolution ()
+			);
+		
+		final ByteArrayOutputStream os = new ByteArrayOutputStream ();
+		
+		final XMLStreamWriter writer = XMLOutputFactory.newInstance ().createXMLStreamWriter (os);
+		
+		renderer.overlays (writer, overlays);
+		
+		os.close ();
+		
+		return os.toByteArray ();
+	}
 }

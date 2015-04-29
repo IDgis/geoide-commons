@@ -12,7 +12,7 @@ import play.libs.F.Promise;
  * Composes a report block with information from the client and a (part of) a report template
  **/ 
 
-public interface BlockComposer {
+public interface BlockComposer<T extends BlockInfo> {
 	
 	 
 
@@ -26,7 +26,7 @@ public interface BlockComposer {
 	**/
 
 	
-	Promise<Block> compose(Element blockElement, BlockInfo info,
+	Promise<Block> compose(Element blockElement, T info,
 			DocumentCache documentCache) throws Throwable;
 
 

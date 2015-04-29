@@ -9,6 +9,7 @@ import java.util.stream.StreamSupport;
 
 import nl.idgis.geoide.commons.domain.feature.FeatureOverlay;
 import nl.idgis.geoide.commons.domain.feature.OverlayFeature;
+import nl.idgis.geoide.commons.domain.geometry.Envelope;
 import nl.idgis.geoide.commons.report.ReportData;
 
 import org.jsoup.nodes.Element;
@@ -130,7 +131,16 @@ public class MapBlockInfo extends BlockInfo {
 		return (int) (blockHeightmm / 0.28);
 	}
 	
-	public JsonNode getMapExtent() {
+	public Envelope getMapExtent () {
+		return new Envelope (
+			centerX - ((scale/1000) * blockWidthmm)/2,
+			centerY - ((scale/1000) * blockHeightmm)/2,
+			centerX + ((scale/1000) * blockWidthmm)/2,
+			centerY + ((scale/1000) * blockHeightmm)/2
+		);
+	}
+	
+	public JsonNode getMapExtentJson () {
 		final ObjectMapper mapper = new ObjectMapper();
 		final ObjectNode mapExtent = mapper.createObjectNode();
 		
