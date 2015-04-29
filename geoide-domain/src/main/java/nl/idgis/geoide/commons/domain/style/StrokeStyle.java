@@ -6,8 +6,10 @@ import java.util.Collections;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@JsonIgnoreProperties (ignoreUnknown = true)
 public class StrokeStyle implements Serializable {
 	private static final long serialVersionUID = 4256687646185356945L;
 	
