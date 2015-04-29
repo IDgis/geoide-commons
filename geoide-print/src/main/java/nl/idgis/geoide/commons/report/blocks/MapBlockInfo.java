@@ -1,9 +1,19 @@
 package nl.idgis.geoide.commons.report.blocks;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import nl.idgis.geoide.commons.domain.feature.FeatureOverlay;
+import nl.idgis.geoide.commons.domain.feature.OverlayFeature;
 import nl.idgis.geoide.commons.report.ReportData;
 
 import org.jsoup.nodes.Element;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -17,13 +27,33 @@ public class MapBlockInfo extends BlockInfo {
 	private double blockWidthmm;
 	private double blockHeightmm;
 	private double resolution;
-	
+	private final List<FeatureOverlay> overlays;
 	
 	public MapBlockInfo (JsonNode clientInfo, Element block, ReportData reportData) {
 		this.clientInfo = clientInfo;
 		this.block = block;
 		this.blockDataSet = block.attributes().dataset();
 		this.reportData = reportData;	
+
+		final ObjectMapper mapper = new ObjectMapper ();
+		this.overlays = StreamSupport
+			.stream (Spliterators.spliteratorUnknownSize (clientInfo.path ("overlays").fields (), Spliterator.ORDERED), false)
+			.map ((entry) -> {
+				final List<OverlayFeature> features = StreamSupport
+					.stream (entry.getValue ().path ("features").spliterator (), false)
+					.map ((node) -> {
+						try {
+							return mapper.treeToValue (node, OverlayFeature.class);
+						} catch (JsonProcessingException e) {
+							throw new IllegalArgumentException (e);
+						}
+					})
+					.collect (Collectors.toList ());
+				
+				return new FeatureOverlay (entry.getKey (), features);
+			})
+			.collect (Collectors.toList ());
+			
 		prepare();
 	}
 	
@@ -116,4 +146,7 @@ public class MapBlockInfo extends BlockInfo {
 		return tileResolution/resolution;
 	}
 	
+	public List<FeatureOverlay> getOverlays () {
+		return Collections.unmodifiableList (overlays);
+	}
 }
