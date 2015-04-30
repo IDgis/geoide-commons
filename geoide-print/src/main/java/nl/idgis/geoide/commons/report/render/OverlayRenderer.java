@@ -185,7 +185,7 @@ public class OverlayRenderer extends SvgRenderer {
 		return new PositionedTextOverlay (
 				overlay, 
 				createSvgPoint (ox, oy), 
-				createSvgPoint (minX, minY), 
+				createSvgPoint (minX, Math.max(maxY, minY)), 
 				new SvgPoint (Math.abs (maxX - minX), Math.abs (maxY - minY))
 			);
 	}

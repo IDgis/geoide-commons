@@ -13,14 +13,11 @@ import nl.idgis.geoide.commons.domain.ServiceRequest;
 import nl.idgis.geoide.commons.domain.feature.FeatureOverlay;
 import nl.idgis.geoide.commons.domain.feature.Overlay;
 import nl.idgis.geoide.commons.domain.feature.OverlayFeature;
-import nl.idgis.geoide.commons.domain.feature.StyledGeometry;
 import nl.idgis.geoide.commons.domain.geometry.Envelope;
-import nl.idgis.geoide.commons.domain.geometry.GeometryType;
-import nl.idgis.geoide.commons.domain.geometry.Point;
-import nl.idgis.geoide.commons.domain.geometry.geojson.GeoJsonPosition;
 import nl.idgis.geoide.commons.print.service.HtmlPrintService;
 import nl.idgis.geoide.commons.report.render.OverlayRenderer;
 import nl.idgis.geoide.commons.report.render.OverlayRenderer.PositionedTextOverlay;
+import nl.idgis.geoide.commons.report.render.SvgRenderer.SvgPoint;
 import nl.idgis.geoide.documentcache.DocumentCache;
 import nl.idgis.geoide.map.MapView;
 import nl.idgis.geoide.service.LayerServiceType;
@@ -142,14 +139,15 @@ public class MapBlockComposer implements BlockComposer<MapBlockInfo> {
 				}
 				
 				final URI textOverlaySvgUri = new URI ("stored://" + UUID.randomUUID ().toString ());
+				final TextOverlayRenderResult renderResult = createTextOverlaySvg (mapInfo, overlayFeature);
 				documentPromises.add (documentCache.store (
-						textOverlaySvgUri,
-						new MimeContentType ("image/svg+xml"),
-						createTextOverlaySvg (mapInfo, overlayFeature)
+					textOverlaySvgUri,
+					new MimeContentType ("image/svg+xml"),
+					renderResult.bytes
 				));
 				
 				createOverlayElement (mapRow, widthmm, heightmm, ++ layernr, textOverlaySvgUri.toString ());
-				createOverlayBoxElement (mapRow, mapInfo, widthmm, heightmm, ++ layernr, overlayFeature);
+				createOverlayBoxElement (mapRow, mapInfo, widthmm, heightmm, ++ layernr, renderResult.positionedOverlay);
 			}
 		}
 				
@@ -186,29 +184,19 @@ public class MapBlockComposer implements BlockComposer<MapBlockInfo> {
 		return overlayElement;
 	}
 	
-	private void createOverlayBoxElement (final Element mapRow, final MapBlockInfo info, final double width, final double height, final int zIndex, final OverlayFeature feature) {
-		final Overlay overlay = feature.getOverlay ();
+	private void createOverlayBoxElement (final Element mapRow, final MapBlockInfo info, final double width, final double height, final int zIndex, final PositionedTextOverlay positionedOverlay) {
+		final Overlay overlay = positionedOverlay.getOverlay ();
 		if (overlay == null) {
 			return;
 		}
 		
-		Point point = null;
-		
-		for (final StyledGeometry styledGeometry: feature.getStyledGeometry ()) {
-			if (styledGeometry.getGeometry ().is (GeometryType.POINT)) {
-				point = styledGeometry.getGeometry ().as (GeometryType.POINT);
-			}
-		}
-		
-		if (point == null) {
-			return;
-		}
+		final SvgPoint point = positionedOverlay.getPosition ();
 		
 		final Envelope extent = info.getMapExtent ();
 		final double pixelWidth = (extent.getMaxX () - extent.getMinX ()) / info.getResolution ();
 		final double pixelHeight = Math.abs (extent.getMaxY() - extent.getMinY ()) / info.getResolution ();
 		final double anchorX = ((point.getX () - extent.getMinX ()) / (extent.getMaxX () - extent.getMinX ())) * pixelWidth;
-		final double anchorY = pixelHeight - ((point.getY () - extent.getMinY ()) / (extent.getMaxY () - extent.getMinY ())) * pixelHeight;
+		final double anchorY = ((point.getY () - extent.getMinY ()) / (extent.getMaxY () - extent.getMinY ())) * pixelHeight;
 		final double rx = width / pixelWidth;
 		final double ry = height / pixelHeight;
 		
@@ -217,8 +205,8 @@ public class MapBlockComposer implements BlockComposer<MapBlockInfo> {
 				.addClass ("map-overlay-text-box")
 				.attr (
 					"style", "display: block; position: absolute; z-index: " + zIndex + "; "
-					+ String.format (Locale.US, "left:%fmm;", (anchorX + overlay.getOffset ().get (0) + 2) * rx)
-					+ String.format (Locale.US, "top:%fmm;", (anchorY + overlay.getOffset ().get (1) + 2) * ry)
+					+ String.format (Locale.US, "left:%fmm;", (anchorX + 2) * rx)
+					+ String.format (Locale.US, "top:%fmm;", (anchorY + 2) * ry)
 					+ String.format (Locale.US, "width:%fmm;", (overlay.getWidth () - 4) * rx)
 					+ String.format (Locale.US, "height:%fmm;", (overlay.getHeight () - 4) * ry)
 				);
@@ -330,7 +318,7 @@ public class MapBlockComposer implements BlockComposer<MapBlockInfo> {
 		return os.toByteArray ();
 	}
 	
-	protected byte[] createTextOverlaySvg (final MapBlockInfo info, final OverlayFeature feature) throws Throwable {
+	protected TextOverlayRenderResult createTextOverlaySvg (final MapBlockInfo info, final OverlayFeature feature) throws Throwable {
 		final OverlayRenderer renderer = new OverlayRenderer (info.getMapExtent (), info.getResolution ());
 		
 		final ByteArrayOutputStream os = new ByteArrayOutputStream ();
@@ -341,6 +329,16 @@ public class MapBlockComposer implements BlockComposer<MapBlockInfo> {
 		
 		os.close ();
 		
-		return os.toByteArray ();
+		return new TextOverlayRenderResult (positionedOverlay, os.toByteArray ());
+	}
+	
+	protected static class TextOverlayRenderResult {
+		public final PositionedTextOverlay positionedOverlay;
+		public final byte[] bytes;
+		
+		public TextOverlayRenderResult (final PositionedTextOverlay positionedOverlay, final byte[] bytes) {
+			this.positionedOverlay = positionedOverlay;
+			this.bytes = bytes;
+		}
 	}
 }
