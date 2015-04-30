@@ -1,6 +1,7 @@
 package nl.idgis.geoide.commons.report.render;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -8,6 +9,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import nl.idgis.geoide.commons.domain.feature.FeatureOverlay;
+import nl.idgis.geoide.commons.domain.feature.Overlay;
 import nl.idgis.geoide.commons.domain.feature.OverlayFeature;
 import nl.idgis.geoide.commons.domain.feature.StyledGeometry;
 import nl.idgis.geoide.commons.domain.geometry.Envelope;
@@ -59,7 +61,106 @@ public class OverlayRenderer extends SvgRenderer {
 			return;
 		}
 		
+		// Render the geometry for this feature:
 		styledGeometries (writer, feature.getStyledGeometry ());
+	}
+
+	public void textOverlay (final XMLStreamWriter writer, final OverlayFeature feature) throws XMLStreamException {
+		svg (writer, envelope.getMinX (), envelope.getMinY (), envelope.getMaxX () - envelope.getMinX (), envelope.getMaxY () - envelope.getMinY (), (w) -> {
+			if (feature == null) {
+				return;
+			}
+			
+			// Render a text overlay if available:
+			final Overlay overlay = feature.getOverlay ();
+			if (overlay != null) {
+				// Locate the styles for the overlay:
+				FillStyle fillStyle = null;
+				StrokeStyle strokeStyle = null;
+				Point anchorPoint = null;
+				for (final StyledGeometry styledGeometry: feature.getStyledGeometry ()) {
+					final Style style = styledGeometry.getStyle ();
+					final ImageStyle imageStyle = style.getImage ();
+					
+					if (imageStyle != null && imageStyle.getFill () != null) {
+						fillStyle = imageStyle.getFill ();
+					} else if (style.getFill () != null) {
+						fillStyle = style.getFill ();
+					}
+					
+					if (imageStyle != null && imageStyle.getStroke () != null) {
+						strokeStyle = imageStyle.getStroke ();
+					} else if (style.getStroke () != null){
+						strokeStyle = style.getStroke (); 
+					}
+					
+					if (styledGeometry.getGeometry ().is (GeometryType.POINT)) {
+						anchorPoint = styledGeometry.getGeometry ().as (GeometryType.POINT);
+					}
+				}
+				
+				textOverlay (writer, overlay, anchorPoint, fillStyle, strokeStyle);
+			}
+		});
+	}
+	
+	public void textOverlay (final XMLStreamWriter writer, final Overlay overlay, final Point anchorPoint, final FillStyle fillStyle, final StrokeStyle strokeStyle) throws XMLStreamException {
+		// Don't render the overlay if it has no visible style:
+		if (overlay == null || anchorPoint == null || (fillStyle == null && strokeStyle == null)) {
+			return;
+		}
+
+		final double ox = anchorPoint.getX ();
+		final double oy = anchorPoint.getY ();
+		final double minX = anchorPoint.getX () + (overlay.getOffset ().get (0) * resolution);
+		final double minY = anchorPoint.getY () - (overlay.getOffset ().get (1) * resolution);
+		final double maxX = minX + overlay.getWidth () * resolution;
+		final double maxY = minY - overlay.getHeight () * resolution;
+
+		// Render the arrow:
+		final double centerX = (minX + maxX) / 2;
+		final double centerY = (minY + maxY) / 2;
+		final double vx = centerX - anchorPoint.getX ();
+		final double vy = centerY - anchorPoint.getY ();
+		final double length = Math.sqrt (vx * vx + vy * vy);
+		final double dx = Math.abs (length) < .0001 ? 0 : vx / length;
+		final double dy = Math.abs (length) < .0001 ? 0 : vy / length;
+		final double cx = dy;
+		final double cy = -dx;
+
+		final double arrowDistance = overlay.getArrowDistance () * resolution;
+		final double arrowLength = overlay.getArrowLength () * resolution;
+		final double arrowWidth = overlay.getArrowWidth () * resolution;
+		
+		path (
+			writer, 
+			createStroke (strokeStyle), 
+			createFillFromStroke (createStroke (strokeStyle), createFill (fillStyle)), 
+			Arrays.asList (new SvgPoint[] { 
+				createSvgPoint (ox + dx * arrowDistance, oy + dy * arrowDistance),
+				createSvgPoint (ox + dx * (arrowLength + arrowDistance) + cx * (arrowWidth / 2), oy + dy * (arrowLength + arrowDistance) + cy * (arrowWidth / 2)),
+				createSvgPoint (ox + dx * (arrowLength + arrowDistance) - cx * (arrowWidth / 2), oy + dy * (arrowLength + arrowDistance) - cy * (arrowWidth / 2)),
+				createSvgPoint (ox + dx * arrowDistance, oy + dy * arrowDistance)
+			}), Arrays.asList (new SvgPoint[] {
+				createSvgPoint (ox + dx * (arrowLength + arrowDistance), oy + dy * (arrowLength + arrowDistance)),
+				createSvgPoint (centerX, centerY)
+			})
+		);		
+		
+		// Render the box:
+		final SvgPoint[] points = new SvgPoint[] {
+			createSvgPoint (minX, minY),
+			createSvgPoint (maxX, minY),
+			createSvgPoint (maxX, maxY),
+			createSvgPoint (minX, maxY)
+		};
+		
+		super.polygon (
+			writer, 
+			Arrays.asList (points), 
+			createStroke (strokeStyle), 
+			makeSolid (createFill (fillStyle))
+		);
 	}
 	
 	public void styledGeometries (final XMLStreamWriter writer, final List<StyledGeometry> geometries) throws XMLStreamException {
@@ -204,7 +305,27 @@ public class OverlayRenderer extends SvgRenderer {
 		);
 	}
 	
+	public Fill makeSolid (final Fill fill) {
+		if (fill == null) {
+			return new Fill ("#ffffff", 1.0);
+		}
+		
+		return new Fill (fill.getColor (), 1.0);
+	}
+	
+	public Fill createFillFromStroke (final Stroke stroke, final Fill fill) {
+		if (stroke == null) {
+			return fill;
+		}
+		
+		return new Fill (stroke.getColor(), stroke.getOpacity ());
+	}
+	
 	public SvgPoint createSvgPoint (final Point point) {
-		return new SvgPoint (point.getX (), envelope.getMaxY () - (point.getY () - envelope.getMinY ()));
+		return createSvgPoint (point.getX (), point.getY ());
+	}
+	
+	public SvgPoint createSvgPoint (final double x, final double y) {
+		return new SvgPoint (x, envelope.getMaxY () - (y - envelope.getMinY ()));
 	}
 }

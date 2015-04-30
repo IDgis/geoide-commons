@@ -65,6 +65,34 @@ public class SvgRenderer {
 		writer.writeEndElement (); // polyline
 	}
 	
+	@SafeVarargs
+	public final void path (final XMLStreamWriter writer, final Stroke stroke, final Fill fill, final List<SvgPoint> ... pointLists) throws XMLStreamException {
+		final StringBuilder builder = new StringBuilder ();
+		
+		for (final List<SvgPoint> pointList: pointLists) {
+			if (pointList == null || pointList.size () < 2) {
+				continue;
+			}
+			
+			// Move to the first point:
+			builder.append (String.format (Locale.US, "M %f %f ", pointList.get (0).getX (), pointList.get (0).getY ()));
+			
+			// Draw lines to the next points:
+			for (int i = 1; i < pointList.size (); ++ i) {
+				builder.append (String.format (Locale.US, "L %f %f ", pointList.get (i).getX (), pointList.get (i).getY ()));
+			}
+		}
+		
+		writer.writeStartElement (NS, "path");
+		
+		writer.writeAttribute ("d", builder.toString ());
+		
+		strokeAttributes (writer, stroke);
+		fillAttributes (writer, fill);
+		
+		writer.writeEndElement (); // path
+	}
+	
 	public void polygon (final XMLStreamWriter writer, final List<SvgPoint> points, final Stroke stroke, final Fill fill) throws XMLStreamException {
 		final StringBuffer pointsBuffer = new StringBuffer ();
 		
