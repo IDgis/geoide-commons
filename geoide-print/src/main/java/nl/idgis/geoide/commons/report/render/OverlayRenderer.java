@@ -65,10 +65,10 @@ public class OverlayRenderer extends SvgRenderer {
 		styledGeometries (writer, feature.getStyledGeometry ());
 	}
 
-	public void textOverlay (final XMLStreamWriter writer, final OverlayFeature feature) throws XMLStreamException {
-		svg (writer, envelope.getMinX (), envelope.getMinY (), envelope.getMaxX () - envelope.getMinX (), envelope.getMaxY () - envelope.getMinY (), (w) -> {
+	public PositionedTextOverlay textOverlay (final XMLStreamWriter writer, final OverlayFeature feature) throws XMLStreamException {
+		return svg (writer, envelope.getMinX (), envelope.getMinY (), envelope.getMaxX () - envelope.getMinX (), envelope.getMaxY () - envelope.getMinY (), (RenderFunction<PositionedTextOverlay>) (w) -> {
 			if (feature == null) {
-				return;
+				return (PositionedTextOverlay) null;
 			}
 			
 			// Render a text overlay if available:
@@ -99,24 +99,44 @@ public class OverlayRenderer extends SvgRenderer {
 					}
 				}
 				
-				textOverlay (writer, overlay, anchorPoint, fillStyle, strokeStyle);
+				return textOverlay (writer, overlay, anchorPoint, fillStyle, strokeStyle);
 			}
+			
+			return null;
 		});
 	}
 	
-	public void textOverlay (final XMLStreamWriter writer, final Overlay overlay, final Point anchorPoint, final FillStyle fillStyle, final StrokeStyle strokeStyle) throws XMLStreamException {
+	public PositionedTextOverlay textOverlay (final XMLStreamWriter writer, final Overlay overlay, final Point anchorPoint, final FillStyle fillStyle, final StrokeStyle strokeStyle) throws XMLStreamException {
 		// Don't render the overlay if it has no visible style:
 		if (overlay == null || anchorPoint == null || (fillStyle == null && strokeStyle == null)) {
-			return;
+			return null;
 		}
 
 		final double ox = anchorPoint.getX ();
 		final double oy = anchorPoint.getY ();
-		final double minX = anchorPoint.getX () + (overlay.getOffset ().get (0) * resolution);
-		final double minY = anchorPoint.getY () - (overlay.getOffset ().get (1) * resolution);
-		final double maxX = minX + overlay.getWidth () * resolution;
-		final double maxY = minY - overlay.getHeight () * resolution;
+		double minX = anchorPoint.getX () + (overlay.getOffset ().get (0) * resolution);
+		double minY = anchorPoint.getY () - (overlay.getOffset ().get (1) * resolution);
+		double maxX = minX + overlay.getWidth () * resolution;
+		double maxY = minY - overlay.getHeight () * resolution;
 
+		// Position the box inside the viewport:
+		if (minX < envelope.getMinX ()) {
+			maxX += envelope.getMinX () - minX;
+			minX = envelope.getMinX ();
+		}
+		if (maxX > envelope.getMaxX ()) {
+			minX -= maxX - envelope.getMaxX ();
+			maxX = envelope.getMaxX ();
+		}
+		if (maxY < envelope.getMinY ()) {
+			minY += envelope.getMinY () - maxY;
+			maxY = envelope.getMinY ();
+		}
+		if (minY > envelope.getMaxY ()) {
+			maxY -= minY - envelope.getMaxY ();
+			minY = envelope.getMaxY ();
+		}
+		
 		// Render the arrow:
 		final double centerX = (minX + maxX) / 2;
 		final double centerY = (minY + maxY) / 2;
@@ -161,6 +181,13 @@ public class OverlayRenderer extends SvgRenderer {
 			createStroke (strokeStyle), 
 			makeSolid (createFill (fillStyle))
 		);
+		
+		return new PositionedTextOverlay (
+				overlay, 
+				createSvgPoint (ox, oy), 
+				createSvgPoint (minX, minY), 
+				new SvgPoint (Math.abs (maxX - minX), Math.abs (maxY - minY))
+			);
 	}
 	
 	public void styledGeometries (final XMLStreamWriter writer, final List<StyledGeometry> geometries) throws XMLStreamException {
@@ -327,5 +354,35 @@ public class OverlayRenderer extends SvgRenderer {
 	
 	public SvgPoint createSvgPoint (final double x, final double y) {
 		return new SvgPoint (x, envelope.getMaxY () - (y - envelope.getMinY ()));
+	}
+	
+	public static class PositionedTextOverlay {
+		private final Overlay overlay;
+		private final SvgPoint anchor;
+		private final SvgPoint position;
+		private final SvgPoint size;
+		
+		public PositionedTextOverlay (final Overlay overlay, final SvgPoint anchor, final SvgPoint position, final SvgPoint size) {
+			this.overlay = overlay;
+			this.anchor = anchor;
+			this.position = position;
+			this.size = size;
+		}
+
+		public Overlay getOverlay () {
+			return overlay;
+		}
+
+		public SvgPoint getAnchor () {
+			return anchor;
+		}
+
+		public SvgPoint getPosition () {
+			return position;
+		}
+
+		public SvgPoint getSize () {
+			return size;
+		}
 	}
 }

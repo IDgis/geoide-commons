@@ -20,6 +20,7 @@ import nl.idgis.geoide.commons.domain.geometry.Point;
 import nl.idgis.geoide.commons.domain.geometry.geojson.GeoJsonPosition;
 import nl.idgis.geoide.commons.print.service.HtmlPrintService;
 import nl.idgis.geoide.commons.report.render.OverlayRenderer;
+import nl.idgis.geoide.commons.report.render.OverlayRenderer.PositionedTextOverlay;
 import nl.idgis.geoide.documentcache.DocumentCache;
 import nl.idgis.geoide.map.MapView;
 import nl.idgis.geoide.service.LayerServiceType;
@@ -336,7 +337,7 @@ public class MapBlockComposer implements BlockComposer<MapBlockInfo> {
 		
 		final XMLStreamWriter writer = XMLOutputFactory.newInstance ().createXMLStreamWriter (os);
 		
-		renderer.textOverlay (writer, feature);
+		final PositionedTextOverlay positionedOverlay = renderer.textOverlay (writer, feature);
 		
 		os.close ();
 		
