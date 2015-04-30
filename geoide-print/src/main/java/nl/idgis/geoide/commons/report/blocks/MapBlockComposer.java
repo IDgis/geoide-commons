@@ -185,6 +185,10 @@ public class MapBlockComposer implements BlockComposer<MapBlockInfo> {
 	}
 	
 	private void createOverlayBoxElement (final Element mapRow, final MapBlockInfo info, final double width, final double height, final int zIndex, final PositionedTextOverlay positionedOverlay) {
+		if (positionedOverlay == null) {
+			return;
+		}
+		
 		final Overlay overlay = positionedOverlay.getOverlay ();
 		if (overlay == null) {
 			return;

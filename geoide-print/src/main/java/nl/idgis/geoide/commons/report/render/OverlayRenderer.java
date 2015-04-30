@@ -114,6 +114,14 @@ public class OverlayRenderer extends SvgRenderer {
 
 		final double ox = anchorPoint.getX ();
 		final double oy = anchorPoint.getY ();
+		
+		if (ox < envelope.getMinX () || ox > envelope.getMaxX ()) {
+			return null;
+		}
+		if (oy < envelope.getMinY () || oy > envelope.getMaxY ()) {
+			return null;
+		}
+		
 		double minX = anchorPoint.getX () + (overlay.getOffset ().get (0) * resolution);
 		double minY = anchorPoint.getY () - (overlay.getOffset ().get (1) * resolution);
 		double maxX = minX + overlay.getWidth () * resolution;
