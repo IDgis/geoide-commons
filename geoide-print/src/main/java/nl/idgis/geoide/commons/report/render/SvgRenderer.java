@@ -11,11 +11,23 @@ public class SvgRenderer {
 	private final static String NS = "http://www.w3.org/2000/svg";
 	
 	@FunctionalInterface
-	public static interface RenderFunction {
+	public static interface RenderCallback {
 		public void render (final XMLStreamWriter writer) throws XMLStreamException;
 	}
 	
-	public void svg (final XMLStreamWriter writer, final double minX, final double minY, final double width, final double height, final RenderFunction content) throws XMLStreamException {
+	@FunctionalInterface
+	public static interface RenderFunction<T> {
+		public T render (final XMLStreamWriter writer) throws XMLStreamException;
+	}
+	
+	public void svg (final XMLStreamWriter writer, final double minX, final double minY, final double width, final double height, final RenderCallback content) throws XMLStreamException {
+		svg (writer, minX, minY, width, height, (w) -> {
+			content.render (w);
+			return true;
+		});
+	}
+	
+	public <T> T svg (final XMLStreamWriter writer, final double minX, final double minY, final double width, final double height, final RenderFunction<T> content) throws XMLStreamException {
 		writer.writeStartDocument ();
 
 		writer.writeStartElement ("svg");
@@ -24,11 +36,13 @@ public class SvgRenderer {
 		writer.writeAttribute ("height", String.format (Locale.US, "%f", height));
 		writer.writeAttribute ("viewBox", String.format (Locale.US, "%f %f %f %f", minX, minY, width, height));
 
-		content.render (writer);
+		final T result = content.render (writer);
 		
 		writer.writeEndElement ();	// svg
 		
 		writer.writeEndDocument ();
+		
+		return result;
 	}
 	
 	public void circle (final XMLStreamWriter writer, final double cx, final double cy, final double radius, final Stroke stroke, final Fill fill) throws XMLStreamException {
@@ -63,6 +77,34 @@ public class SvgRenderer {
 		writer.writeAttribute ("points", pointsBuffer.toString ());
 		
 		writer.writeEndElement (); // polyline
+	}
+	
+	@SafeVarargs
+	public final void path (final XMLStreamWriter writer, final Stroke stroke, final Fill fill, final List<SvgPoint> ... pointLists) throws XMLStreamException {
+		final StringBuilder builder = new StringBuilder ();
+		
+		for (final List<SvgPoint> pointList: pointLists) {
+			if (pointList == null || pointList.size () < 2) {
+				continue;
+			}
+			
+			// Move to the first point:
+			builder.append (String.format (Locale.US, "M %f %f ", pointList.get (0).getX (), pointList.get (0).getY ()));
+			
+			// Draw lines to the next points:
+			for (int i = 1; i < pointList.size (); ++ i) {
+				builder.append (String.format (Locale.US, "L %f %f ", pointList.get (i).getX (), pointList.get (i).getY ()));
+			}
+		}
+		
+		writer.writeStartElement (NS, "path");
+		
+		writer.writeAttribute ("d", builder.toString ());
+		
+		strokeAttributes (writer, stroke);
+		fillAttributes (writer, fill);
+		
+		writer.writeEndElement (); // path
 	}
 	
 	public void polygon (final XMLStreamWriter writer, final List<SvgPoint> points, final Stroke stroke, final Fill fill) throws XMLStreamException {

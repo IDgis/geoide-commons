@@ -3,6 +3,7 @@ package nl.idgis.geoide.commons.report.blocks;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import javax.xml.stream.XMLOutputFactory;
@@ -10,8 +11,13 @@ import javax.xml.stream.XMLStreamWriter;
 
 import nl.idgis.geoide.commons.domain.ServiceRequest;
 import nl.idgis.geoide.commons.domain.feature.FeatureOverlay;
+import nl.idgis.geoide.commons.domain.feature.Overlay;
+import nl.idgis.geoide.commons.domain.feature.OverlayFeature;
+import nl.idgis.geoide.commons.domain.geometry.Envelope;
 import nl.idgis.geoide.commons.print.service.HtmlPrintService;
 import nl.idgis.geoide.commons.report.render.OverlayRenderer;
+import nl.idgis.geoide.commons.report.render.OverlayRenderer.PositionedTextOverlay;
+import nl.idgis.geoide.commons.report.render.SvgRenderer.SvgPoint;
 import nl.idgis.geoide.documentcache.DocumentCache;
 import nl.idgis.geoide.map.MapView;
 import nl.idgis.geoide.service.LayerServiceType;
@@ -115,15 +121,35 @@ public class MapBlockComposer implements BlockComposer<MapBlockInfo> {
 
 		}
 		
-		// Add overlay:
+		// Add overlay features:
 		final URI overlaySvgUri = new URI ("stored://" + UUID.randomUUID ().toString ());
 		documentPromises.add (documentCache.store (
 				overlaySvgUri, 
 				new MimeContentType ("image/svg+xml"), 
 				createOverlaySvg (mapInfo, mapInfo.getOverlays ())
 			));
-		createOverlayElement (mapRow, widthmm, heightmm, overlaySvgUri.toString ());
-		mapCss += getOverlayCss (layernr + 1, mapInfo);
+		createOverlayElement (mapRow, widthmm, heightmm, ++ layernr, overlaySvgUri.toString ());
+		mapCss += getOverlayCss (mapInfo);
+		
+		// Add text overlays:
+		for (final FeatureOverlay overlay: mapInfo.getOverlays ()) {
+			for (final OverlayFeature overlayFeature: overlay.getFeatures ()) {
+				if (overlayFeature.getOverlay () == null) {
+					continue;
+				}
+				
+				final URI textOverlaySvgUri = new URI ("stored://" + UUID.randomUUID ().toString ());
+				final TextOverlayRenderResult renderResult = createTextOverlaySvg (mapInfo, overlayFeature);
+				documentPromises.add (documentCache.store (
+					textOverlaySvgUri,
+					new MimeContentType ("image/svg+xml"),
+					renderResult.bytes
+				));
+				
+				createOverlayElement (mapRow, widthmm, heightmm, ++ layernr, textOverlaySvgUri.toString ());
+				createOverlayBoxElement (mapRow, mapInfo, widthmm, heightmm, ++ layernr, renderResult.positionedOverlay);
+			}
+		}
 				
 		mapCssUri = new URI ("stored://" + UUID.randomUUID ().toString ());
 		documentPromises.add (documentCache.store(mapCssUri, new MimeContentType ("text/css"), mapCss.getBytes()));
@@ -143,10 +169,11 @@ public class MapBlockComposer implements BlockComposer<MapBlockInfo> {
 			});
 	};
 
-	private Element createOverlayElement (final Element mapRow, final double width, final double height, final String uri) {
+	private Element createOverlayElement (final Element mapRow, final double width, final double height, final int zIndex, final String uri) {
 		final Element overlayElement = mapRow
 			.appendElement ("div")
-			.addClass ("map-overlays");
+			.addClass ("map-overlays")
+			.attr ("style", "z-index:" + zIndex + ";");
 		
 		overlayElement
 			.appendElement ("object")
@@ -155,6 +182,43 @@ public class MapBlockComposer implements BlockComposer<MapBlockInfo> {
 			.attr ("data", uri);
 		
 		return overlayElement;
+	}
+	
+	private void createOverlayBoxElement (final Element mapRow, final MapBlockInfo info, final double width, final double height, final int zIndex, final PositionedTextOverlay positionedOverlay) {
+		if (positionedOverlay == null) {
+			return;
+		}
+		
+		final Overlay overlay = positionedOverlay.getOverlay ();
+		if (overlay == null) {
+			return;
+		}
+		
+		final SvgPoint point = positionedOverlay.getPosition ();
+		
+		final Envelope extent = info.getMapExtent ();
+		final double pixelWidth = (extent.getMaxX () - extent.getMinX ()) / info.getResolution ();
+		final double pixelHeight = Math.abs (extent.getMaxY() - extent.getMinY ()) / info.getResolution ();
+		final double anchorX = ((point.getX () - extent.getMinX ()) / (extent.getMaxX () - extent.getMinX ())) * pixelWidth;
+		final double anchorY = ((point.getY () - extent.getMinY ()) / (extent.getMaxY () - extent.getMinY ())) * pixelHeight;
+		final double rx = width / pixelWidth;
+		final double ry = height / pixelHeight;
+		
+		final Element boxElement = mapRow
+				.appendElement ("div")
+				.addClass ("map-overlay-text-box")
+				.attr (
+					"style", "display: block; position: absolute; z-index: " + zIndex + "; "
+					+ String.format (Locale.US, "left:%fmm;", (anchorX + 2) * rx)
+					+ String.format (Locale.US, "top:%fmm;", (anchorY + 2) * ry)
+					+ String.format (Locale.US, "width:%fmm;", (overlay.getWidth () - 4) * rx)
+					+ String.format (Locale.US, "height:%fmm;", (overlay.getHeight () - 4) * ry)
+				);
+				
+
+		if (overlay.getText () != null) {
+			boxElement.appendText (overlay.getText ());
+		}
 	}
 	
 	private Element createLayerElement(Element mapRow, double width, double height, int layernr) {
@@ -236,8 +300,8 @@ public class MapBlockComposer implements BlockComposer<MapBlockInfo> {
 			"}";
 	}
 	
-	private String getOverlayCss (final int zIndex, final MapBlockInfo blockInfo) {
-		return ".map-overlays { position: absolute; z-index: " + zIndex + "; left: 0; top: 0; width:" 
+	private String getOverlayCss (final MapBlockInfo blockInfo) {
+		return ".map-overlays { position: absolute; left: 0; top: 0; width:" 
 				+ blockInfo.getBlockWidth () + "mm; height:" + blockInfo.getBlockHeight () + "mm;}"; 
 	}
 		
@@ -256,5 +320,29 @@ public class MapBlockComposer implements BlockComposer<MapBlockInfo> {
 		os.close ();
 		
 		return os.toByteArray ();
+	}
+	
+	protected TextOverlayRenderResult createTextOverlaySvg (final MapBlockInfo info, final OverlayFeature feature) throws Throwable {
+		final OverlayRenderer renderer = new OverlayRenderer (info.getMapExtent (), info.getResolution ());
+		
+		final ByteArrayOutputStream os = new ByteArrayOutputStream ();
+		
+		final XMLStreamWriter writer = XMLOutputFactory.newInstance ().createXMLStreamWriter (os);
+		
+		final PositionedTextOverlay positionedOverlay = renderer.textOverlay (writer, feature);
+		
+		os.close ();
+		
+		return new TextOverlayRenderResult (positionedOverlay, os.toByteArray ());
+	}
+	
+	protected static class TextOverlayRenderResult {
+		public final PositionedTextOverlay positionedOverlay;
+		public final byte[] bytes;
+		
+		public TextOverlayRenderResult (final PositionedTextOverlay positionedOverlay, final byte[] bytes) {
+			this.positionedOverlay = positionedOverlay;
+			this.bytes = bytes;
+		}
 	}
 }
