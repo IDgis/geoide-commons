@@ -265,6 +265,53 @@ define ([
 			this._body.style.top = (Math.max (0, this.offset[1]) + 1.5 * this.borderWidth + 0.5 * this.arrowWidth) + 'px';
 			this._body.style.width = (this.width - this.borderWidth) + 'px';
 			this._body.style.height = (this.height - this.borderWidth) + 'px';
+		},
+		
+		panIntoView: function (margin) {
+			if (typeof margin === 'undefined') {
+				margin = 0;
+			}
+			
+			var map = this._overlay.getMap ();
+			if (!map) {
+				return;
+			}
+			
+			var anchorPosition = map.getPixelFromCoordinate (this._overlay.getPosition ()),
+				minX = anchorPosition[0] + this.offset[0] - this.borderWidth - (this.arrowWidth / 2) - margin,
+				minY = anchorPosition[1] + this.offset[1] - this.borderWidth - (this.arrowWidth / 2) - margin,
+				maxX = anchorPosition[0] + this.offset[0] + this.width + this.borderWidth + (this.arrowWidth / 2) + margin,
+				maxY = anchorPosition[1] + this.offset[1] + this.height + this.borderWidth + (this.arrowWidth / 2) + margin;
+			
+			var mapSize = map.getSize (),
+				mapRect = [0, 0, mapSize[0], mapSize[1]],
+				boxRect = [minX, minY, maxX, maxY],
+				offset = [0, 0];
+			
+			// min = map.getCoordinateFromPixel ([minX, minY]),
+			// max = map.getCoordinateFromPixel ([maxX, maxY]);
+			
+			// Do nothing if the overlay is already contained in the map view:
+			if (ol.extent.containsExtent (mapRect, boxRect)) {
+				return;
+			}
+			
+			for (var i = 0; i < 2; ++ i) {
+				if (boxRect[i] < mapRect[i]) {
+					// Move to the right:
+					offset[i] = boxRect[i] - mapRect[i];
+				} else if (boxRect[2 + i] > mapRect[2 + i]) {
+					// Move to the left:
+					offset[i] = boxRect[2 + i] - mapRect[2 + i];
+				}
+			}
+			
+			var mapView = map.getView (),
+				center = mapView.getCenter (),
+				centerPixel = map.getPixelFromCoordinate (center),
+				modifiedCenter = map.getCoordinateFromPixel ([centerPixel[0] + offset[0], centerPixel[1] + offset[1]]);
+			
+			mapView.setCenter (modifiedCenter);
 		}
 	});
 });
