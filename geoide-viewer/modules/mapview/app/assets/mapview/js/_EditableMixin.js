@@ -123,6 +123,8 @@ define ([
 				return;
 			}
 			
+			this.panIntoView (10);
+			
 			this._editorNode = document.createElement ('textarea');
 			this.set ('content', this._editorNode);
 			
