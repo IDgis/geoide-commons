@@ -37,10 +37,12 @@ define ([
 		type: 'point',
 		format: 'Feature',
 		
+		_handle: null,
+		
 		_enable: function (engine) {
 			this.inherited (arguments);
 			
-			this.on ('drawend', function (e) {
+			this._handle = this.on ('drawend', function (e) {
 				var overlay = new Overlay ({
 					feature: e.feature,
 					text: '',
@@ -57,6 +59,10 @@ define ([
 		
 		_disable: function (engine) {
 			this.inherited (arguments);
+			
+			if (this._handle) {
+				this._handle.remove ();
+			}
 		}
 	});
 });
