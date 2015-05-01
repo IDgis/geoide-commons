@@ -34,8 +34,31 @@ define ([
 		modifier: 'none',
 		features: null,
 		source: null,
+		defaultStyle: null,
 		
 		_interaction: null,
+		
+		constructor: function (parameters) {
+			if(parameters.style) {
+				this.defaultStyle = parameters.style;
+			} else {
+				this.defaultStyle = new ol.style.Style({
+					fill: new ol.style.Fill({color: [255,255,255,0.4]}),
+					stroke: new ol.style.Stroke({color: '#ff4400', width: 2}),
+					image: new ol.style.Circle({
+						radius: 5,
+						fill: new ol.style.Fill({
+							color: [255,255,255,0.4]
+						}),
+						stroke: new ol.style.Stroke({
+							color: '#ff4400',
+							width: 2
+						})
+					})
+				});
+			}
+
+		},
 		
 		_enable: function (engine) {
 			if (this._interaction) {
@@ -107,6 +130,7 @@ define ([
 			});
 			
 			this._interaction.on ('drawend', function (e) {
+				e.feature.setStyle(self.defaultStyle);
 				if (olFormat === null) {
 					self.emit ('drawend', { geometry: e.feature.getGeometry (), feature: e.feature });
 				} else {

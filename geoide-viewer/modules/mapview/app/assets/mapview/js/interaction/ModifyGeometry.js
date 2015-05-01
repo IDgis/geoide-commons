@@ -31,6 +31,7 @@ define ([
 	return declare ([Interaction, Evented, InteractionBase], {
 		features: null,
 		source: null,
+		selectStyle: null,
 		
 		_currentEngine: null,
 		_modifyInteraction: null,
@@ -39,6 +40,7 @@ define ([
 		_selectedFeatures: null,
 		_selectHandle: null,
 		_overlayHandles: null,
+		
 		
 		_enable: function (engine) {
 			if (this._modifyInteraction) {
@@ -137,6 +139,7 @@ define ([
 		},
 		
 		_selectFeature: function (/*ol.Feature*/feature) {
+			this.emit('beforeselectfeature', {feature: feature});
 			// Add the feature to the list of selected features:
 			this._selectedFeatures.push (feature);
 			
@@ -146,9 +149,12 @@ define ([
 			if (overlay) {
 				overlay.set ('selected', true);
 			}
+			this.emit('afterselectfeature', {feature: feature});
 		},
 		
 		_unselectFeature: function (/*ol.Feature*/feature) {
+			this.emit('beforeunselectfeature', {feature: feature});
+			
 			// Remove the feature from the list of selected features:
 			for (var i = 0; i < this._selectedFeatures.length; ++ i) {
 				if (this._selectedFeatures[i] === feature) {
@@ -163,6 +169,7 @@ define ([
 			if (overlay) {
 				overlay.set ('selected', false);
 			}
+			this.emit('afterunselectfeature', {feature: feature});
 		},
 		
 		_removeFeature: function (/*ol.Feature*/feature) {
