@@ -74,10 +74,13 @@ define ([
 		offset: null,
 		content: null,
 		borderWidth: 2,
-		arrowWidth: 20,
-		arrowLength: 20,
+		arrowWidth: 10,
+		arrowLength: 25,
 		arrowDistance: 8,
+		color: '#FF00FF',
+		fillcolor: '#FF0000',
 		selected: false,
+		
 		
 		_handles: null,
 		_geometryChangeKey: null,
@@ -140,6 +143,14 @@ define ([
 			this._geometryChangeKey = this.feature.on ('change', function (e) {
 				this._overlay.setPosition (this.feature.getGeometry ().getFirstCoordinate ());
 			}, this);
+			
+			var fstyle = this.feature.getStyle();
+			if (fstyle instanceof Array) {
+				fstyle = this.feature.getStyle()[0];
+			}
+			this.color = fstyle.getStroke().getColor(); 
+			this.fillcolor = fstyle.getFill().getColor(); 
+			
 		},
 		
 		getProperties: function () {
@@ -229,8 +240,8 @@ define ([
 			} else {
 				this._svgArrow = svg ('path', {
 					d: arrowPath,
-					fill: 'white',
-					stroke: 'black',
+					fill: this.color,
+					stroke: this.color,
 					'stroke-width': this.borderWidth
 				}, this._svgRoot);
 			}
@@ -240,8 +251,8 @@ define ([
 			} else {
 				this._svgBox = svg ('path', {
 					d: boxPath,
-					fill: 'white',
-					stroke: 'black',
+					fill: this.fillcolor,
+					stroke: this.color,
 					'stroke-width': this.borderWidth
 				}, this._svgRoot);
 			}
