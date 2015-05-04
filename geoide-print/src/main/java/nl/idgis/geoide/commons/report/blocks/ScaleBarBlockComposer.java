@@ -1,6 +1,7 @@
 package nl.idgis.geoide.commons.report.blocks;
 
 import java.net.URI;
+import java.util.Locale;
 import java.util.UUID;
 
 import nl.idgis.geoide.documentcache.DocumentCache;
@@ -11,23 +12,19 @@ import org.jsoup.nodes.Element;
 
 import play.libs.F.Promise;
 
-public class ScaleBarBlockComposer implements BlockComposer {
+public class ScaleBarBlockComposer implements BlockComposer<ScaleBarBlockInfo> {
 
 	@Override
-	public Promise<Block> compose(Element blockElement, BlockInfo info,	DocumentCache documentCache) throws Throwable {
-		ScaleBarBlockInfo barinfo = (ScaleBarBlockInfo) info;
-		
+	public Promise<Block> compose(Element blockElement, ScaleBarBlockInfo barinfo,	DocumentCache documentCache) throws Throwable {
 		//create svg file
 		URI scaleBarUri = new URI ("stored://" + UUID.randomUUID ().toString ());
 		Document scaleBarDoc = new Document(scaleBarUri.toString());
 		Element svgNode = scaleBarDoc.appendElement("svg"); 
 		double f = 1/0.028;
-		svgNode	.attr ("width", (barinfo.getTotalWidthmm() * f) + "px" )
-				.attr ("height", 7 * f + "px")
-				.attr ("version", "1.1")
-				.attr ("viewbox", "0,0," + (barinfo.getTotalWidthmm() * f) + "," + 10 * f)
-				.attr ("xmlns","http://www.w3.org/2000/svg")
-				.attr ("xmlns:xlink", "http://www.w3.org/1999/xlink");
+		svgNode	.attr ("width", String.format (Locale.US, "%f", barinfo.getTotalWidthmm() * f))
+				.attr ("height", String.format (Locale.US, "%f", 10 * f))
+				.attr ("viewBox", String.format (Locale.US, "%f %f %f %f", 0.0, 0.0, barinfo.getTotalWidthmm() * f,  10 * f))
+				.attr ("xmlns","http://www.w3.org/2000/svg");
 			
 		double x = 3 * f;
 		double y = 4 * f;
@@ -57,13 +54,12 @@ public class ScaleBarBlockComposer implements BlockComposer {
 				.attr("style","text-anchor: middle;font-size:" + 3 * f + ";font-family:Arial");
 		svgText.appendText(barinfo.getScaleBarText(n));	
 		
-		
 		//create html image object
 		Element scaleBar = blockElement.appendElement("div");
-		scaleBar.attr("id", "scaleBar_" + info.getBlockAttribute("viewerstate-id"));		
+		scaleBar.attr("id", "scaleBar_" + barinfo.getBlockAttribute("viewerstate-id"));		
 		Element scaleBarObject = scaleBar.appendElement("object");
 		scaleBarObject	.attr("type", "image/svg+xml")
-						.attr("style", "left:0;top:0;width:" + barinfo.getTotalWidthmm()  + "mm;height:7mm;")
+						.attr("style", "left:0;top:0;width:" + barinfo.getTotalWidthmm()  + "mm;height:10mm;")
 						.attr("data", scaleBarUri.toString());
 		
 		Promise<nl.idgis.geoide.documentcache.Document> scaleBarPromise = documentCache.store(scaleBarUri, new MimeContentType ("image/svg+xml"), scaleBarDoc.toString().getBytes());

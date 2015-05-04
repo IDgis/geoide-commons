@@ -175,7 +175,7 @@ public class ReportComposer {
 					promises.add (processBlock (sourceElement, mapBlockComposer.compose (blockElement, (MapBlockInfo) blockInfo, documentCache)));
 				}
 				if (blockElement.hasClass("scalebar")) {
-					promises.add (processBlock (sourceElement, scaleBarBlockComposer.compose (blockElement, blockInfo, documentCache)));
+					promises.add (processBlock (sourceElement, scaleBarBlockComposer.compose (blockElement, (ScaleBarBlockInfo) blockInfo, documentCache)));
 				}
 			}	
 			
