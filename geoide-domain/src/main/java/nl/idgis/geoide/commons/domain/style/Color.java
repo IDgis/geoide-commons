@@ -23,13 +23,21 @@ public class Color implements Serializable {
 		}
 		
 		if (rgba.length == 3) {
-			this.rgba = new double[] { rgba[0], rgba[1], rgba[2], 1.0 };
+			this.rgba = createColor (rgba[0], rgba[1], rgba[2], 1.0);
 		} else if (rgba.length == 1) {
-			this.rgba = new double[] { rgba[0], rgba[0], rgba[0], 1.0 };
+			this.rgba = createColor (rgba[0], rgba[0], rgba[0], 1.0);
 		} else if (rgba.length == 4) {
-			this.rgba = new double[] { rgba[0], rgba[1], rgba[2], rgba[3] };
+			this.rgba = createColor (rgba[0], rgba[1], rgba[2], rgba[3]);
 		} else {
 			throw new IllegalArgumentException ("rgba must have 1, 3 or 4 elements");
+		}
+	}
+	
+	private static double[] createColor (final double r, final double g, final double b, final double a) {
+		if (r < 1.0 || g < 1.0 || b < 1.0) {
+			return new double[] { r, g, b, a };
+		} else {
+			return new double[] { r / 255.0, g / 255.0, b / 255.0, a };
 		}
 	}
 	

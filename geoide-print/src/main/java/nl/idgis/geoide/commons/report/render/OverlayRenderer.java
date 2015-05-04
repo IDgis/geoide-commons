@@ -314,9 +314,9 @@ public class OverlayRenderer extends SvgRenderer {
 			String.format (
 				Locale.US, 
 				"#%02X%02X%02X", 
-				(int)(fill.getColor ().getR () * 255.0),
-				(int)(fill.getColor ().getG () * 255.0),
-				(int)(fill.getColor ().getB () * 255.0)
+				(int)(fill.getColor ().getR () * 255.0) & 0xFF,
+				(int)(fill.getColor ().getG () * 255.0) & 0xFF,
+				(int)(fill.getColor ().getB () * 255.0) & 0xFF
 			),
 			fill.getColor ().getA ()
 		);
@@ -331,9 +331,9 @@ public class OverlayRenderer extends SvgRenderer {
 			String.format (
 				Locale.US, 
 				"#%02X%02X%02X", 
-				(int)(stroke.getColor ().getR () * 255.0),
-				(int)(stroke.getColor ().getG () * 255.0),
-				(int)(stroke.getColor ().getB () * 255.0)
+				(int)(stroke.getColor ().getR () * 255.0) & 0xFF,
+				(int)(stroke.getColor ().getG () * 255.0) & 0xFF,
+				(int)(stroke.getColor ().getB () * 255.0) & 0xFF
 			),
 			stroke.getColor ().getA (),
 			stroke.getWidth () * resolution
