@@ -19,7 +19,8 @@
 		<module>geoide-document-cache</module>
 		<module>geoide-http-client</module>
     	<module>geoide-map</module>
-  </modules>
+    	<module>geoide-remote</module>
+	</modules>
 
 	<scm>
 		<connection>scm:git:git@github.com:IDgis/geoide-commons.git</connection>
