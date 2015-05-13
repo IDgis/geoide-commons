@@ -77,4 +77,18 @@ public final class MethodReference implements Serializable {
 			return false;
 		return true;
 	}
+	
+	@Override
+	public String toString () {
+		final StringBuilder builder = new StringBuilder ();
+		
+		for (final Class<?> pt: parameterTypes) {
+			if (builder.length () > 0) {
+				builder.append (",");
+			}
+			builder.append (pt.getCanonicalName ());
+		}
+		
+		return cls.getCanonicalName () + "#" + name + "(" + builder.toString() + ")";
+	}
 }

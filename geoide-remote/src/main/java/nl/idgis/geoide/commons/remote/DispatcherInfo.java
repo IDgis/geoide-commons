@@ -3,15 +3,17 @@ package nl.idgis.geoide.commons.remote;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ProxyDispatcher<T> {
+public class DispatcherInfo<T> {
 
 	private final Class<T> cls;
-	private final Map<Method, MethodDispatcher> methodDispatchers;
+	private final Map<Method, MethodDispatcherInfo> methodDispatchers;
 	
-	public ProxyDispatcher (final Class<T> cls, final Map<Method, MethodDispatcher> methodDispatchers) {
+	public DispatcherInfo (final Class<T> cls, final Map<Method, MethodDispatcherInfo> methodDispatchers) {
 		if (cls == null) {
 			throw new NullPointerException ("cls cannot be null");
 		}
@@ -26,7 +28,7 @@ public class ProxyDispatcher<T> {
 	public T createProxy (final RemoteMethodClient client, final String qualifier) {
 		@SuppressWarnings("unchecked")
 		final T proxy = (T) Proxy.newProxyInstance (cls.getClassLoader (), new Class<?>[] { cls }, (proxyObject, method, args) -> {
-			final MethodDispatcher dispatcher = methodDispatchers.get (method);
+			final MethodDispatcherInfo dispatcher = methodDispatchers.get (method);
 			if (dispatcher == null) {
 				throw new RuntimeException ("Unknown method: " + method.toString ());
 			}
@@ -37,5 +39,9 @@ public class ProxyDispatcher<T> {
 		});
 		
 		return proxy;
+	}
+	
+	public Collection<MethodDispatcherInfo> getMethodDispatcherInfos () {
+		return Collections.unmodifiableCollection (methodDispatchers.values ());
 	}
 }
