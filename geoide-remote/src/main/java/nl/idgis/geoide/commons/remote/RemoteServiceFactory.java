@@ -1,28 +1,43 @@
 package nl.idgis.geoide.commons.remote;
 
-import java.io.Serializable;
-import java.lang.reflect.GenericArrayType;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class RemoteServiceFactory {
 
+	private final RemoteMethodClient client;
+	
+	public RemoteServiceFactory (final RemoteMethodClient client) {
+		if (client == null) {
+			throw new NullPointerException ("client cannot be null");
+		}
+		
+		this.client = client;
+	}
+	
 	public <T> T createServiceReference (final Class<T> cls) {
+		return createServiceReference (cls, null);
+	}
+	
+	public <T> T createServiceReference (final Class<T> cls, final String qualifier) {
 		if (!cls.isInterface ()) {
 			throw new IllegalArgumentException ("Class " + cls.getCanonicalName () + " should be an interface.");
 		}
 		
-		final Map<String, MethodDispatcher> methodDispatchers = new HashMap<> ();
+		final Map<Method, MethodDispatcher> methodDispatchers = new HashMap<> ();
 		
 		for (final Method method: cls.getMethods ()) {
-			methodDispatchers.put (method.getName (), createMethodDispatcher (cls, method));
+			methodDispatchers.put (method, createMethodDispatcher (cls, method));
 		}
 		
-		return null;
+		final ProxyDispatcher<T> proxyDispatcher = new ProxyDispatcher<> (cls, methodDispatchers);
+		
+		return proxyDispatcher.createProxy (client, qualifier);
 	}
 	
 	public <T> MethodDispatcher createMethodDispatcher (final Class<T> cls, final Method method) {
@@ -31,18 +46,12 @@ public class RemoteServiceFactory {
 			throw new IllegalArgumentException ("Method " + cls.getCanonicalName () + "#" + method.getName () + " should return " + CompletableFuture.class.getCanonicalName ());
 		}
 		
-		return new MethodDispatcher ();
-	}
-	
-	private boolean isTypeSerializable (final Type type) {
-		if (type instanceof Class) {
-			return Serializable.class.isAssignableFrom ((Class<?>) type);
-		} else if (type instanceof GenericArrayType) {
-			return isTypeSerializable (((GenericArrayType) type).getGenericComponentType ());
-		} else if (type instanceof ParameterizedType) {
-			return isTypeSerializable (((ParameterizedType) type).getRawType ());
+		try {
+			final MethodHandle methodHandle = MethodHandles.lookup ().unreflect (method);
+			
+			return new MethodDispatcher (new MethodReference (cls, method.getName (), Arrays.asList (method.getParameterTypes ())), methodHandle);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException (e);
 		}
-
-		return false;
 	}
 }
