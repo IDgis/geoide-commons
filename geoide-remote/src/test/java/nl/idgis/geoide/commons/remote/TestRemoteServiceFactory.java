@@ -21,14 +21,15 @@ public class TestRemoteServiceFactory {
 	public void createFactory () {
 		client = mock (RemoteMethodClient.class);
 		
-		factory = new RemoteServiceFactory (client);
+		factory = new RemoteServiceFactory ();
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test
 	public void testInvokeProxyMethod () throws Throwable {
-		final TestInterface proxy = factory.createServiceReference (TestInterface.class);
+		final TestInterface proxy = factory.createServiceReference (client, TestInterface.class);
 		
-		when (client.invokeMethod (any (RemoteMethodCall.class))).thenReturn (CompletableFuture.completedFuture (new ArrayList<> (Arrays.asList (new String[] { "Hello", "World!" }))));
+		when (client.invokeMethod (any (RemoteMethodCall.class))).thenReturn ((CompletableFuture) CompletableFuture.completedFuture (new ArrayList<> (Arrays.asList (new String[] { "Hello", "World!" }))));
 		
 		final CompletableFuture<List<String>> result = proxy.testMethod ("Hello, World!", 123.45);
 
@@ -54,7 +55,33 @@ public class TestRemoteServiceFactory {
 	
 	@Test (expected = IllegalArgumentException.class)
 	public void testCreateProxyWithoutFuture () {
-		factory.createServiceReference (TestInterfaceWithoutFuture.class);
+		factory.createServiceReference (client, TestInterfaceWithoutFuture.class);
+	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Test
+	public void testInvokeServerComponent () throws Throwable {
+		final TestInterface object = mock (TestInterface.class);
+		
+		when (object.testMethod (anyString (), anyDouble ())).thenReturn ((CompletableFuture) CompletableFuture.completedFuture (new ArrayList<> (Arrays.asList (new String[] { "Hello", "World!" }))));
+		
+		final ServiceRegistration<TestInterface> registration = new ServiceRegistration<> (TestInterface.class, object, null);
+		final RemoteMethodCall call = new RemoteMethodCall (
+				TestInterface.class, null, new MethodReference (
+						TestInterface.class, "testMethod", Arrays.asList (new Class<?>[] { String.class, Double.TYPE })), 
+						Arrays.asList (new Object[] { "Hello, World!", 123.45 }));
+		final RemoteMethodServer server = factory.createRemoteMethodServer (registration);
+		
+		final CompletableFuture<?> future = server.invokeMethod (call);
+		
+		assertNotNull (future);
+		
+		final List<String> result = (List<String>) future.get ();
+		
+		assertNotNull (result);
+		assertEquals (2, result.size ());
+		assertEquals ("Hello", result.get (0));
+		assertEquals ("World!", result.get (1));
 	}
 
 	public static interface TestInterface {

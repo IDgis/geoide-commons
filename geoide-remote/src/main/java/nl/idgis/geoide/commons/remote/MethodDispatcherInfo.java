@@ -2,12 +2,12 @@ package nl.idgis.geoide.commons.remote;
 
 import java.lang.invoke.MethodHandle;
 
-public class MethodDispatcher {
+public class MethodDispatcherInfo {
 	
 	private final MethodReference methodReference;
 	private final MethodHandle methodHandle;
 	
-	public MethodDispatcher (final MethodReference methodReference, final MethodHandle methodHandle) {
+	public MethodDispatcherInfo (final MethodReference methodReference, final MethodHandle methodHandle) {
 		if (methodReference == null) {
 			throw new NullPointerException ("methodReference cannot be null");
 		}
