@@ -45,6 +45,7 @@
 		<httpcomponents-asyncclient.version>4.0.2</httpcomponents-asyncclient.version>
 		<lesscss.version>2.3.1</lesscss.version>
 		<geoapi.version>3.0.0</geoapi.version>
+		<mockito.version>1.10.19</mockito.version>
 		
 		<!-- These versions should match the versions that are in use by the Play framework: -->
 		<scala.version>2.11.1</scala.version>
@@ -369,6 +370,13 @@
 				<version>${lesscss.version}</version>
 			</dependency>
 			
+			<dependency>
+			    <groupId>org.mockito</groupId>
+			    <artifactId>mockito-core</artifactId>
+			    <version>${mockito.version}</version>
+			    <scope>test</scope>
+			</dependency>
+
 			<!-- Conflicting dependencies introduced by idgis-commons: -->
 			<dependency>
 				<groupId>org.slf4j</groupId>
