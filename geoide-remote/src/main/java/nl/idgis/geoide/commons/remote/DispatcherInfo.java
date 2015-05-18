@@ -33,7 +33,7 @@ public class DispatcherInfo<T> {
 				throw new RuntimeException ("Unknown method: " + method.toString ());
 			}
 			
-			final RemoteMethodCall call = new RemoteMethodCall (cls, qualifier, dispatcher.getMethodReference (), Arrays.asList (args));
+			final RemoteMethodCall call = new RemoteMethodCall (cls, qualifier, dispatcher.getMethodReference (), args == null ? Collections.emptyList() : Arrays.asList (args));
 			
 			return (Object) client.invokeMethod (call);
 		});

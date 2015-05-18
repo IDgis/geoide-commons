@@ -53,6 +53,27 @@ public class TestRemoteServiceFactory {
 		assertEquals ("testMethod", captor.getValue ().getMethodReference().getName ());
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Test
+	public void testInvokeProxyMethodNoParameters () throws Throwable {
+		final TestInterface proxy = factory.createServiceReference (client, TestInterface.class);
+		
+		when (client.invokeMethod (any (RemoteMethodCall.class))).thenReturn ((CompletableFuture) CompletableFuture.completedFuture (Integer.valueOf (42)));
+		
+		final CompletableFuture<Integer> result = proxy.testMethodNoParameters ();
+		
+		assertNotNull (result);
+		assertEquals (Integer.valueOf (42), result.get ());
+		
+		final ArgumentCaptor<RemoteMethodCall> captor = ArgumentCaptor.forClass (RemoteMethodCall.class);
+		
+		verify (client, times (1)).invokeMethod (captor.capture ());
+		
+		assertNotNull (captor.getValue ());
+		assertEquals (0, captor.getValue ().getArguments ().size ());
+		assertEquals ("testMethodNoParameters", captor.getValue ().getMethodReference().getName ());
+	}
+	
 	@Test (expected = IllegalArgumentException.class)
 	public void testCreateProxyWithoutFuture () {
 		factory.createServiceReference (client, TestInterfaceWithoutFuture.class);
@@ -86,6 +107,7 @@ public class TestRemoteServiceFactory {
 
 	public static interface TestInterface {
 		CompletableFuture<List<String>> testMethod (String a, double b);
+		CompletableFuture<Integer> testMethodNoParameters ();
 	}
 	
 	public static interface TestInterfaceWithoutFuture {
