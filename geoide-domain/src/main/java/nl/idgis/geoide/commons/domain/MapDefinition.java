@@ -16,15 +16,17 @@ public class MapDefinition extends Entity {
 	private static final long serialVersionUID = -5946086390948660716L;
 	private final List<Layer> rootLayers;
 	private final String label;
+	private final String prefix;
 	private final String initialExtent;
 	private final Map<String, Service> services = new HashMap<> ();
 	private final Map<String, ServiceLayer> serviceLayers = new HashMap<> ();
 	private final Map<String, FeatureType> featureTypes = new HashMap<> ();
 	private final Map<String, Layer> layers = new HashMap<> ();
 
-	public MapDefinition (final String id, final String label, final String initialExtent, final List<Layer> rootLayers) {
+	public MapDefinition (final String id, final String label, final String prefix, final String initialExtent, final List<Layer> rootLayers) {
 		super (id);
 		this.label = label;
+		this.prefix = prefix;
 		this.initialExtent = initialExtent;
 		this.rootLayers = rootLayers == null ? Collections.<Layer>emptyList () : new ArrayList<> (rootLayers);
 		// Scan the layers and fill the indices:
@@ -36,6 +38,7 @@ public class MapDefinition extends Entity {
 		final ObjectNode obj = JsonFactory.mapper ().createObjectNode ();
 		obj.put ("id", getId ());
 		obj.put ("label", getLabel ());
+		obj.put ("prefix", getPrefix ());
 		obj.put ("initial-extent", getInitialExtent());
 		// Write services:
 		if (!getServices ().values ().isEmpty ()) {
@@ -75,6 +78,10 @@ public class MapDefinition extends Entity {
 	
 	public String getLabel () {
 		return label;
+	}
+	
+	public String getPrefix () {
+		return prefix;
 	}
 	
 	public String getInitialExtent () {

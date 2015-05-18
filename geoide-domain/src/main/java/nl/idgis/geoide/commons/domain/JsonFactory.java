@@ -131,6 +131,7 @@ public class JsonFactory {
 		for (final JsonNode mapNode: maps) {
 			final JsonNode id = mapNode.path ("id"); 
 			final JsonNode label = mapNode.path ("label");
+			final JsonNode prefix = mapNode.path ("prefix");
 			final String initialExtent;
 			final JsonNode initialExtentNode = mapNode.path("initial-extent");
 			if (!initialExtentNode.isMissingNode ()) {
@@ -157,7 +158,7 @@ public class JsonFactory {
 					final Layer layer = JsonFactory.layer (mapLayer, serviceLayerMap);
 					layerList.add (layer);	
 				}
-				mapDefinitions.add (new MapDefinition (id.asText (), label.asText (), initialExtent, layerList));
+				mapDefinitions.add (new MapDefinition (id.asText (), label.asText (), prefix.asText(), initialExtent, layerList));
 			} else {
 				throw new IllegalArgumentException ("Missing property: maplayers");
 			}
