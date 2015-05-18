@@ -1,5 +1,13 @@
 package nl.idgis.geoide.commons.remote.transport;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintWriter;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -8,15 +16,17 @@ import nl.idgis.geoide.commons.remote.RemoteMethodClient;
 import nl.idgis.geoide.commons.remote.RemoteMethodServer;
 import nl.idgis.geoide.commons.remote.RemoteServiceFactory;
 import nl.idgis.geoide.commons.remote.ServiceRegistration;
+import nl.idgis.geoide.util.streams.AkkaStreamProcessor;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.reactivestreams.Publisher;
 
 import scala.concurrent.duration.FiniteDuration;
 import akka.actor.ActorSystem;
 import akka.testkit.JavaTestKit;
-import static org.junit.Assert.*;
+import akka.util.ByteString;
 
 public class TestAkkaTransport {
 	
@@ -25,19 +35,23 @@ public class TestAkkaTransport {
 	private AkkaTransport transport;
 	private TestImpl serverObject;
 	private RemoteMethodServer server;
+	private AkkaStreamProcessor streamProcessor;
 	
 	@Before
 	public void createTransport () {
 		system = ActorSystem.create ();
 		transport = new AkkaTransport (system, "transport", 5000);
 		factory = new RemoteServiceFactory ();
-		serverObject = new TestImpl (system);
+		streamProcessor = new AkkaStreamProcessor (system);
+		serverObject = new TestImpl (system, streamProcessor);
 		server = factory.createRemoteMethodServer (new ServiceRegistration<TestInterface> (TestInterface.class, serverObject, null));
 	}
 	
 	@After
 	public void destroyTransport () {
+		server = null;
 		serverObject = null;
+		streamProcessor.close ();
 		factory = null;
 		transport = null;
 		JavaTestKit.shutdownActorSystem (system);
@@ -98,18 +112,30 @@ public class TestAkkaTransport {
 		fail ("Expected: RuntimeException");
 	}
 	
+	@Test
+	public void testInvokeRemotePublisher () throws Throwable {
+		transport.listen (server, "testInterface");
+		final RemoteMethodClient client = transport.connect ("akka://default/user/transport", "testInterface");
+		final TestInterface localObject = factory.createServiceReference (client, TestInterface.class);
+		
+		final ObjectWithPublisher object = localObject.returnPublisher ().get ();
+	}
+	
 	public static interface TestInterface {
 		CompletableFuture<Integer> returnValue (int value);
 		CompletableFuture<Integer> returnValueDelayed (int value);
 		CompletableFuture<Integer> throwException ();
 		CompletableFuture<Integer> throwExceptionDelayed ();
+		CompletableFuture<ObjectWithPublisher> returnPublisher ();
 	}
 	
 	public static class TestImpl implements TestInterface {
 		private final ActorSystem system;
+		private final AkkaStreamProcessor streamProcessor;
 		
-		public TestImpl (final ActorSystem system) {
+		public TestImpl (final ActorSystem system, final AkkaStreamProcessor streamProcessor) {
 			this.system = system;
+			this.streamProcessor = streamProcessor;
 		}
 		
 		@Override
@@ -150,6 +176,25 @@ public class TestAkkaTransport {
 				);
 			
 			return future;
+		}
+		
+		public CompletableFuture<ObjectWithPublisher> returnPublisher () {
+			final ByteArrayOutputStream bos = new ByteArrayOutputStream ();
+			try (final PrintWriter writer = new PrintWriter (bos)) {
+				writer.println ("Hello, World!");
+			}
+			
+			final Publisher<ByteString> publisher = streamProcessor.publishInputStream (new ByteArrayInputStream (bos.toByteArray ()), 2, 1000);
+			
+			return CompletableFuture.completedFuture (new ObjectWithPublisher (publisher));
+		}
+	}
+	
+	public static class ObjectWithPublisher {
+		private final Publisher<ByteString> publisher;
+		
+		public ObjectWithPublisher (final Publisher<ByteString> publisher) {
+			this.publisher = publisher;
 		}
 	}
 }
