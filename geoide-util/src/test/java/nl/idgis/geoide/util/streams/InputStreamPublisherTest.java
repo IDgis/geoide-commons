@@ -16,10 +16,10 @@ import org.testng.annotations.Test;
 import play.libs.F.Function2;
 import akka.actor.ActorSystem;
 import akka.testkit.JavaTestKit;
-import akka.util.ByteString;
 import akka.util.ByteString.ByteStrings;
+import akka.util.CompactByteString;
 
-public class InputStreamPublisherTest extends PublisherVerification<ByteString> {
+public class InputStreamPublisherTest extends PublisherVerification<CompactByteString> {
 
 	private final static int BLOCK_SIZE = 10;
 	
@@ -45,7 +45,7 @@ public class InputStreamPublisherTest extends PublisherVerification<ByteString> 
 	}
 	
 	@Override
-	public Publisher<ByteString> createPublisher (long elements) {
+	public Publisher<CompactByteString> createPublisher (long elements) {
 		try {
 			return streamProcessor.publishInputStream (testInputStream (BLOCK_SIZE, (int) elements), BLOCK_SIZE, 10000);
 		} catch (Throwable e) {
@@ -58,10 +58,10 @@ public class InputStreamPublisherTest extends PublisherVerification<ByteString> 
 	}
 	
 	@Override
-	public Publisher<ByteString> createErrorStatePublisher () {
-		return new Publisher<ByteString> () {
+	public Publisher<CompactByteString> createErrorStatePublisher () {
+		return new Publisher<CompactByteString> () {
 			@Override
-			public void subscribe (final Subscriber<? super ByteString> s) {
+			public void subscribe (final Subscriber<? super CompactByteString> s) {
 				s.onError (new RuntimeException ("Can't subscribe to subscriber"));
 			}
 		};
@@ -77,10 +77,10 @@ public class InputStreamPublisherTest extends PublisherVerification<ByteString> 
 	 */
 	@Test
 	public void testStreamContent () {
-		final byte[] data = streamProcessor.reduce (createPublisher (10), ByteStrings.empty (), new Function2<ByteString, ByteString, ByteString> () {
+		final byte[] data = streamProcessor.reduce (createPublisher (10), ByteStrings.empty ().compact (), new Function2<CompactByteString, CompactByteString, CompactByteString> () {
 			@Override
-			public ByteString apply (final ByteString a, final ByteString b) throws Throwable {
-				return a.concat (b);
+			public CompactByteString apply (final CompactByteString a, final CompactByteString b) throws Throwable {
+				return a.concat (b).compact ();
 			}
 		}).get (1000).toArray ();
 		
@@ -89,7 +89,7 @@ public class InputStreamPublisherTest extends PublisherVerification<ByteString> 
 	
 	@Test
 	public void testStreamAdapter () throws Throwable {
-		final Publisher<ByteString> publisher = createPublisher (100);
+		final Publisher<CompactByteString> publisher = createPublisher (100);
 		final InputStream is = streamProcessor.asInputStream (publisher, 1000);
 		final byte[] expectedBytes = testBytes (BLOCK_SIZE, 100);
 		final byte[] resultingBytes = new byte[expectedBytes.length];
@@ -107,7 +107,7 @@ public class InputStreamPublisherTest extends PublisherVerification<ByteString> 
 	
 	@Test (expectedExceptions = IOException.class)
 	public void testStreamAdapterTimeout () throws Throwable {
-		final Publisher<ByteString> publisher = createPublisher (100);
+		final Publisher<CompactByteString> publisher = createPublisher (100);
 		final InputStream is = streamProcessor.asInputStream (publisher, 1000);
 		final byte[] expectedBytes = testBytes (BLOCK_SIZE, 100);
 		final byte[] resultingBytes = new byte[expectedBytes.length];
@@ -124,7 +124,7 @@ public class InputStreamPublisherTest extends PublisherVerification<ByteString> 
 		Assert.assertEquals (expectedBytes, resultingBytes);
 	}
 	
-	private byte[] testBytes (final int blockSize, final int numBlocks) {
+	public static byte[] testBytes (final int blockSize, final int numBlocks) {
 		final byte[] data = new byte[blockSize * numBlocks];
 		
 		for (int i = 0; i < numBlocks; ++ i) {
@@ -136,7 +136,7 @@ public class InputStreamPublisherTest extends PublisherVerification<ByteString> 
 		return data;
 	}
 	
-	private InputStream testInputStream (final int blockSize, final int numBlocks) throws Throwable {
+	public static InputStream testInputStream (final int blockSize, final int numBlocks) throws Throwable {
 		return new ByteArrayInputStream (testBytes (blockSize, numBlocks));
 	}
 }
