@@ -3,27 +3,32 @@ package nl.idgis.geoide.util.streams;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
-import play.libs.F.Callback;
-import play.libs.F.Function;
 import play.libs.F.Function2;
 import play.libs.F.Promise;
+import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
 import akka.actor.ActorRef;
 import akka.actor.ActorRefFactory;
 import akka.actor.Cancellable;
 import akka.actor.Props;
 import akka.actor.UntypedActor;
+import akka.dispatch.OnComplete;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import akka.pattern.Patterns;
 import akka.util.ByteString;
 import akka.util.ByteString.ByteStrings;
+import akka.util.CompactByteString;
 
 /**
  * An {@link StreamProcessor} implementation that uses an Akka actor system for scheduling.
@@ -33,6 +38,7 @@ public class AkkaStreamProcessor implements StreamProcessor, Closeable {
 	private final ActorRefFactory actorRefFactory;
 	private final ActorRef publishInputStreamContainer;
 	private final ActorRef asInputStreamContainer;
+	private final ActorRef serializablePublisherManager;
 
 	/**
 	 * Creates a new AkkaStreamProcessor by providing an ActorRefFectory on which
@@ -48,6 +54,7 @@ public class AkkaStreamProcessor implements StreamProcessor, Closeable {
 		this.actorRefFactory = actorRefFactory;
 		this.publishInputStreamContainer = actorRefFactory.actorOf (ContainerActor.props (), "stream-processor-publish-input-stream");
 		this.asInputStreamContainer = actorRefFactory.actorOf (ContainerActor.props (), "stream-processor-as-input-stream");
+		this.serializablePublisherManager = actorRefFactory.actorOf (ContainerActor.props (), "publisher-manager");
 	}
 	
 	/**
@@ -141,14 +148,14 @@ public class AkkaStreamProcessor implements StreamProcessor, Closeable {
 	 * @see StreamProcessor#publishInputStream(InputStream, int, long)
 	 */
 	@Override
-	public Publisher<ByteString> publishInputStream (final InputStream inputStream, final int maxBlockSize, final long timeoutInMillis) {
+	public Publisher<CompactByteString> publishInputStream (final InputStream inputStream, final int maxBlockSize, final long timeoutInMillis) {
 		if (inputStream == null) {
 			throw new NullPointerException ("inputStream cannot be null");
 		}
 		
 		// Ask the container actor to create a new actor to process this stream:
 		
-		final Promise<ActorRef> actorPromise = createActor (
+		final CompletableFuture<ActorRef> actorPromise = createActor (
 			publishInputStreamContainer, 
 			InputStreamPublishActor.props (
 				inputStream, 
@@ -167,13 +174,13 @@ public class AkkaStreamProcessor implements StreamProcessor, Closeable {
 	 * @see StreamProcessor#asInputStream(Publisher, long)
 	 */
 	@Override
-	public InputStream asInputStream (final Publisher<ByteString> publisher, final long timeoutInMillis) {
+	public <T extends ByteString> InputStream asInputStream (final Publisher<T> publisher, final long timeoutInMillis) {
 		if (publisher == null) {
 			throw new NullPointerException ("publisher cannot be null");
 		}
 		
 		// Ask the container actor to create an actor to process this stream:
-		final Promise<ActorRef> actorPromise = createActor (
+		final CompletableFuture<ActorRef> actorPromise = createActor (
 			asInputStreamContainer, 
 			ConsumeByteStringsActor.props (
 				publisher, 
@@ -182,26 +189,45 @@ public class AkkaStreamProcessor implements StreamProcessor, Closeable {
 			timeoutInMillis
 		);
 		
-		return new ByteStringInputStream (actorPromise, timeoutInMillis);
+		try {
+			return new ByteStringInputStream (actorPromise, timeoutInMillis);
+		} catch (TimeoutException | ExecutionException | InterruptedException e) {
+			throw new RuntimeException (e);
+		}
 	}
 	
-	private static Promise<ActorRef> createActor (final ActorRef containerActor, final Props props, final long timeoutInMillis) {
-		return Promise.wrap (
-			Patterns.ask (
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <T extends Serializable> SerializablePublisher<T> asSerializable (final Publisher<T> publisher) {
+		final CompletableFuture<ActorRef> actorFuture = createActor (serializablePublisherManager, SerializablePublisherActor.props (publisher, 10000), 5000);
+		return new AkkaSerializablePublisher<> (actorFuture);
+	}
+	
+	private CompletableFuture<ActorRef> createActor (final ActorRef containerActor, final Props props, final long timeoutInMillis) {
+		final Future<Object> scalaFuture = Patterns.ask (
 				containerActor,
 				props,
 				timeoutInMillis
-			)
-		).map (new Function<Object, ActorRef> () {
+			);
+		
+		final CompletableFuture<ActorRef> future = new CompletableFuture<> ();
+		
+		scalaFuture.onComplete (new OnComplete<Object> () {
 			@Override
-			public ActorRef apply (final Object response) throws Throwable {
-				if (response instanceof ActorRef) {
-					return (ActorRef) response;
+			public void onComplete (final Throwable throwable, final Object result) throws Throwable {
+				if (throwable != null) {
+					future.completeExceptionally (throwable);
+				} else if (result instanceof ActorRef){
+					future.complete ((ActorRef) result);
+				} else {
+					future.completeExceptionally (new IllegalArgumentException ("Unknown response type: " + result.getClass ().getCanonicalName ()));
 				}
-
-				throw new IllegalArgumentException ("Unknown response type: " + response.getClass ().getCanonicalName ());
 			}
-		});
+		}, actorRefFactory.dispatcher ());
+		
+		return future;
 	}
 	
 	/**
@@ -212,8 +238,8 @@ public class AkkaStreamProcessor implements StreamProcessor, Closeable {
 		private final ActorRef actor;
 		private final long timeout;
 		
-		public ByteStringInputStream (final Promise<ActorRef> actorPromise, final long timeout) {
-			this.actor = actorPromise.get (timeout);
+		public ByteStringInputStream (final CompletableFuture<ActorRef> actorPromise, final long timeout) throws TimeoutException, InterruptedException, ExecutionException {
+			this.actor = actorPromise.get (timeout, TimeUnit.MILLISECONDS);
 			this.timeout = timeout;
 		}
 
@@ -277,7 +303,7 @@ public class AkkaStreamProcessor implements StreamProcessor, Closeable {
 	public final static class ConsumeByteStringsActor extends UntypedActor {
 
 		private final long timeout;
-		private final Publisher<ByteString> publisher;
+		private final Publisher<? extends ByteString> publisher;
 
 		private Subscription subscription = null;
 		
@@ -289,12 +315,12 @@ public class AkkaStreamProcessor implements StreamProcessor, Closeable {
 		private ByteString currentData = null;
 		private Throwable currentException = null;
 		
-		public ConsumeByteStringsActor (final Publisher<ByteString> publisher, final long timeout) {
+		public ConsumeByteStringsActor (final Publisher<? extends ByteString> publisher, final long timeout) {
 			this.publisher = publisher;
 			this.timeout = timeout;
 		}
 		
-		public static Props props (final Publisher<ByteString> publisher, final long timeout) {
+		public static Props props (final Publisher<? extends ByteString> publisher, final long timeout) {
 			return Props.create (ConsumeByteStringsActor.class, publisher, timeout);
 		}
 		
@@ -430,26 +456,23 @@ public class AkkaStreamProcessor implements StreamProcessor, Closeable {
 	/**
 	 * Reactive streams publisher for input streams. Uses an Akka actor that wraps the input stream.
 	 */
-	private final static class InputStreamPublisher implements Publisher<ByteString> {
-		private final Promise<ActorRef> actorPromise;
+	private final static class InputStreamPublisher implements Publisher<CompactByteString> {
+		private final CompletableFuture<ActorRef> actorPromise;
 		
-		public InputStreamPublisher (final Promise<ActorRef> actorPromise) {
+		public InputStreamPublisher (final CompletableFuture<ActorRef> actorPromise) {
 			this.actorPromise = actorPromise;
 		}
 
 		@Override
-		public void subscribe (final Subscriber<? super ByteString> subscriber) {
-			actorPromise.onRedeem (new Callback<ActorRef> () {
-				@Override
-				public void invoke (final ActorRef actor) throws Throwable {
-					actor.tell (subscriber, actor);
+		public void subscribe (final Subscriber<? super CompactByteString> subscriber) {
+			actorPromise.handle ((actorRef, throwable) -> {
+				if (throwable != null) {
+					subscriber.onError (throwable);
+					return null;
 				}
-			});
-			actorPromise.onFailure (new Callback<Throwable> () {
-				@Override
-				public void invoke (final Throwable a) throws Throwable {
-					subscriber.onError (a);
-				}
+				
+				actorRef.tell (subscriber, actorRef);
+				return null;
 			});
 		}
 	}
@@ -554,7 +577,7 @@ public class AkkaStreamProcessor implements StreamProcessor, Closeable {
 							break;
 						}
 						
-						subscriber.onNext (ByteStrings.fromArray (data, 0, nread));
+						subscriber.onNext (ByteStrings.fromArray (data, 0, nread).compact ());
 					}
 				} catch (IOException e) {
 					subscriber.onError (e);
