@@ -465,6 +465,10 @@ public class AkkaStreamProcessor implements StreamProcessor, Closeable {
 
 		@Override
 		public void subscribe (final Subscriber<? super CompactByteString> subscriber) {
+			if (subscriber == null) {
+				throw new NullPointerException ("subscriber cannot be null");
+			}
+			
 			actorPromise.handle ((actorRef, throwable) -> {
 				if (throwable != null) {
 					subscriber.onError (throwable);

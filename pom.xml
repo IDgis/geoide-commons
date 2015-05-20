@@ -41,7 +41,7 @@
 		<jsoup.version>1.8.1</jsoup.version>
 		<mapdb.version>1.0.6</mapdb.version>
 		<wiremock.version>1.53</wiremock.version>
-		<reactive-streams.version>1.0.0.RC1</reactive-streams.version>
+		<reactive-streams.version>1.0.0</reactive-streams.version>
 		<httpcomponents-asyncclient.version>4.0.2</httpcomponents-asyncclient.version>
 		<lesscss.version>2.3.1</lesscss.version>
 		<geoapi.version>3.0.0</geoapi.version>

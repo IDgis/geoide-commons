@@ -6,6 +6,7 @@ import java.io.InputStream;
 
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
 import org.reactivestreams.tck.PublisherVerification;
 import org.reactivestreams.tck.TestEnvironment;
 import org.testng.Assert;
@@ -58,10 +59,21 @@ public class InputStreamPublisherTest extends PublisherVerification<CompactByteS
 	}
 	
 	@Override
-	public Publisher<CompactByteString> createErrorStatePublisher () {
+	public Publisher<CompactByteString> createFailedPublisher () {
 		return new Publisher<CompactByteString> () {
 			@Override
 			public void subscribe (final Subscriber<? super CompactByteString> s) {
+				final Subscription subscription = new Subscription () {
+					@Override
+					public void request (final long n) {
+					}
+					
+					@Override
+					public void cancel() {
+					}
+				};
+				
+				s.onSubscribe (subscription);
 				s.onError (new RuntimeException ("Can't subscribe to subscriber"));
 			}
 		};
