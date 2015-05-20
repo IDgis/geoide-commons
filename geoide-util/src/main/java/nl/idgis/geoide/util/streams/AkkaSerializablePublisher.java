@@ -26,6 +26,10 @@ public class AkkaSerializablePublisher<T> implements SerializablePublisher<T> {
 	
 	@Override
 	public void subscribe (final Subscriber<? super T> subscriber) {
+		if (subscriber == null) {
+			throw new NullPointerException ("subscriber cannot be null");
+		}
+		
 		actor.tell (subscriber, actor);
 	}
 }
