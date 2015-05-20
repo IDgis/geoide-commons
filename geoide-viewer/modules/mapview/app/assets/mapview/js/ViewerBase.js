@@ -278,6 +278,11 @@ define ([
 			return this._getLayerState (layerId, key);
 		},
 		
+		getLayerProperty: function (layerId, key, defaultValue) {
+			return this._getLayerProperty (layerId, key, defaultValue);
+		},
+		
+		
 		/**
 		 * Returns the current viewer state.
 		 * 
@@ -453,6 +458,35 @@ define ([
 				return typeof value === 'undefined' ? defaultValue : value;
 			}
 		},
+		_getLayerProperty: function (layerId, key, defaultValue) {
+			if (this.map.then) {
+				var deferred = new Deferred ();
+				
+				when (this.map, function (map) {
+					var layer = map.getLayerById (layerId);
+					if (!layer) {
+						throw new Error ("Unknown layer: " + layerId);
+					}
+					if (layer.get ('properties')) {
+						var value = layer.get ('properties').get (key);
+						deferred.resolve (typeof value === 'undefined' ? defaultValue : value);
+					}	
+				});
+				
+				return deferred;
+			} else {
+				var layer = this.map.getLayerById(layerId);
+				if (!layer) {
+					throw new Error ('Unknown layer: ' + layerId);
+				}
+				var value;
+				if (layer.get ('properties')) {
+					value = layer.get ('properties').get (key);
+				}	
+				return typeof value === 'undefined' ? defaultValue : value;
+			}
+		},
+		
 		
 		_parseConfig: function (config) {
 			config = this.inherited (arguments);
