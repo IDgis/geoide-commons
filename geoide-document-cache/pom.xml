@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>nl.idgis.geoide</groupId>
 		<artifactId>geoide-commons</artifactId>
-		<version>0.2.1-SNAPSHOT</version>
+		<version>0.2.1</version>
 	</parent>
 	<artifactId>geoide-document-cache</artifactId>
 	<name>Geoide Commons - Document cache</name>

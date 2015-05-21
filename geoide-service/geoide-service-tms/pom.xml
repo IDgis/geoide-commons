@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>nl.idgis.geoide</groupId>
 		<artifactId>geoide-service</artifactId>
-		<version>0.2.1-SNAPSHOT</version>
+		<version>0.2.1</version>
 	</parent>
 	<artifactId>geoide-service-tms</artifactId>
 	<name>Geoide - Service - TMS</name>
