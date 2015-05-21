@@ -102,8 +102,7 @@ public class InputStreamPublisherTest extends PublisherVerification<ByteString> 
 	@Test
 	public void testStreamAdapter () throws Throwable {
 		final Publisher<ByteString> publisher = createPublisher (100);
-		@SuppressWarnings({ "unchecked", "rawtypes" })
-		final InputStream is = streamProcessor.asInputStream (((Publisher<ByteString>)((Publisher) publisher)), 1000);
+		final InputStream is = streamProcessor.asInputStream (publisher, 1000);
 		final byte[] expectedBytes = testBytes (BLOCK_SIZE, 100);
 		final byte[] resultingBytes = new byte[expectedBytes.length];
 
@@ -121,8 +120,7 @@ public class InputStreamPublisherTest extends PublisherVerification<ByteString> 
 	@Test (expectedExceptions = IOException.class)
 	public void testStreamAdapterTimeout () throws Throwable {
 		final Publisher<ByteString> publisher = createPublisher (100);
-		@SuppressWarnings({ "unchecked", "rawtypes" })
-		final InputStream is = streamProcessor.asInputStream ((((Publisher<ByteString>) ((Publisher) publisher))), 1000);
+		final InputStream is = streamProcessor.asInputStream (publisher, 1000);
 		final byte[] expectedBytes = testBytes (BLOCK_SIZE, 100);
 		final byte[] resultingBytes = new byte[expectedBytes.length];
 
