@@ -7,7 +7,7 @@ import com.typesafe.sbt.rjs.Import._
 import com.typesafe.sbt.less.Import._
 
 object Common {
-	val geoideCommonsVersion = "0.2.1-SNAPSHOT"
+	val geoideCommonsVersion = "0.3.1-SNAPSHOT"
 	
 	val resolvers = Seq[Resolver] (
 		"idgis-public" at "http://nexus.idgis.eu/content/groups/public/",
@@ -31,18 +31,18 @@ object Common {
 	)
 	
 	object Dependencies {
-		val geoideDomain = "nl.idgis.geoide" % "geoide-domain" % "0.2.1-SNAPSHOT"
-		val geoideDomainTest = "nl.idgis.geoide" % "geoide-domain-test" % "0.2.1-SNAPSHOT"
-		val geoideUtil = "nl.idgis.geoide" % "geoide-util" % "0.2.1-SNAPSHOT"
-		val geoideServiceCommon = "nl.idgis.geoide" % "geoide-service-common" % "0.2.1-SNAPSHOT"
-		val geoideServiceTms = "nl.idgis.geoide" % "geoide-service-tms" % "0.2.1-SNAPSHOT"
-		val geoideServiceWms = "nl.idgis.geoide" % "geoide-service-wms" % "0.2.1-SNAPSHOT"
-		val geoideServiceWfs = "nl.idgis.geoide" % "geoide-service-wfs" % "0.2.1-SNAPSHOT"
-		val geoideLayerCommon = "nl.idgis.geoide" % "geoide-layer-common" % "0.2.1-SNAPSHOT"
-		val geoideLayerDefault = "nl.idgis.geoide" % "geoide-layer-default" % "0.2.1-SNAPSHOT"
-		val geoidePrint = "nl.idgis.geoide" % "geoide-print" % "0.2.1-SNAPSHOT"
-		val geoideHttpClient = "nl.idgis.geoide" % "geoide-http-client" % "0.2.1-SNAPSHOT"
-		val geoideMap = "nl.idgis.geoide" % "geoide-map" % "0.2.1-SNAPSHOT"
+		val geoideDomain = "nl.idgis.geoide" % "geoide-domain" % "0.3.1-SNAPSHOT"
+		val geoideDomainTest = "nl.idgis.geoide" % "geoide-domain-test" % "0.3.1-SNAPSHOT"
+		val geoideUtil = "nl.idgis.geoide" % "geoide-util" % "0.3.1-SNAPSHOT"
+		val geoideServiceCommon = "nl.idgis.geoide" % "geoide-service-common" % "0.3.1-SNAPSHOT"
+		val geoideServiceTms = "nl.idgis.geoide" % "geoide-service-tms" % "0.3.1-SNAPSHOT"
+		val geoideServiceWms = "nl.idgis.geoide" % "geoide-service-wms" % "0.3.1-SNAPSHOT"
+		val geoideServiceWfs = "nl.idgis.geoide" % "geoide-service-wfs" % "0.3.1-SNAPSHOT"
+		val geoideLayerCommon = "nl.idgis.geoide" % "geoide-layer-common" % "0.3.1-SNAPSHOT"
+		val geoideLayerDefault = "nl.idgis.geoide" % "geoide-layer-default" % "0.3.1-SNAPSHOT"
+		val geoidePrint = "nl.idgis.geoide" % "geoide-print" % "0.3.1-SNAPSHOT"
+		val geoideHttpClient = "nl.idgis.geoide" % "geoide-http-client" % "0.3.1-SNAPSHOT"
+		val geoideMap = "nl.idgis.geoide" % "geoide-map" % "0.3.1-SNAPSHOT"
 		
 		val webjarsPlay = "org.webjars" %% "webjars-play" % "2.3.0"
   		val webjarsBootstrap = "org.webjars" % "bootstrap" % "3.2.0"
