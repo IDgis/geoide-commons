@@ -2,13 +2,8 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>nl.idgis.geoide</groupId>
-    <artifactId>geoide-commons</artifactId>
+    <artifactId>geoide-services</artifactId>
     <version>0.3.1-SNAPSHOT</version>
   </parent>
-  <artifactId>geoide-services</artifactId>
-  <packaging>pom</packaging>
-  <modules>
-  	<module>geoide-services-main</module>
-  	<module>geoide-services-configuration</module>
-  </modules>
+  <artifactId>geoide-services-main</artifactId>
 </project>
