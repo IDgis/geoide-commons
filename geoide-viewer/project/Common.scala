@@ -33,7 +33,7 @@ object Common {
 	object Dependencies {
 		val geoideDomain = "nl.idgis.geoide" % "geoide-domain" % "0.2.1"
 		val geoideDomainTest = "nl.idgis.geoide" % "geoide-domain-test" % "0.2.1"
-		val geoideUtil = "nl.idgis.geoide" % "geoide-util" % "0.2.1-SNAPSHOT"
+		val geoideUtil = "nl.idgis.geoide" % "geoide-util" % "0.2.1"
 		val geoideServiceCommon = "nl.idgis.geoide" % "geoide-service-common" % "0.2.1"
 		val geoideServiceTms = "nl.idgis.geoide" % "geoide-service-tms" % "0.2.1"
 		val geoideServiceWms = "nl.idgis.geoide" % "geoide-service-wms" % "0.2.1"
