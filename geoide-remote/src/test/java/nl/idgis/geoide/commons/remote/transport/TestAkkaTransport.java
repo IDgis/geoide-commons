@@ -27,6 +27,7 @@ import scala.concurrent.duration.FiniteDuration;
 import akka.actor.ActorSystem;
 import akka.testkit.JavaTestKit;
 import akka.util.ByteString;
+import akka.util.CompactByteString;
 
 public class TestAkkaTransport {
 	
@@ -184,16 +185,16 @@ public class TestAkkaTransport {
 				writer.println ("Hello, World!");
 			}
 			
-			final Publisher<ByteString> publisher = streamProcessor.publishInputStream (new ByteArrayInputStream (bos.toByteArray ()), 2, 1000);
+			final Publisher<CompactByteString> publisher = streamProcessor.publishInputStream (new ByteArrayInputStream (bos.toByteArray ()), 2, 1000);
 			
 			return CompletableFuture.completedFuture (new ObjectWithPublisher (publisher));
 		}
 	}
 	
 	public static class ObjectWithPublisher {
-		private final Publisher<ByteString> publisher;
+		private final Publisher<CompactByteString> publisher;
 		
-		public ObjectWithPublisher (final Publisher<ByteString> publisher) {
+		public ObjectWithPublisher (final Publisher<CompactByteString> publisher) {
 			this.publisher = publisher;
 		}
 	}
