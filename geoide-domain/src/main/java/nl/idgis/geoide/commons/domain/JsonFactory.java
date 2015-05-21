@@ -292,6 +292,7 @@ public class JsonFactory {
 		final JsonNode serviceLayers = node.path ("serviceLayers");
 		//state is initial state
 		final JsonNode state = node.path("state");
+		final JsonNode properties = node.path("properties");
 		
 		
 		if (id.isMissingNode () || id.asText ().isEmpty ()) {
@@ -311,6 +312,7 @@ public class JsonFactory {
 		
 		final List<ServiceLayer> serviceLayerList = new ArrayList<> ();
 		final Map<String, JsonNode> initialStateMap = new HashMap<> ();  
+		final Map<String, JsonNode> propertiesMap = new HashMap<> ();  
 		
 		for (final JsonNode serviceLayerNode: serviceLayers) {
 			if (!serviceLayerMap.containsKey (serviceLayerNode.asText ())) {
@@ -326,8 +328,15 @@ public class JsonFactory {
 			}
 		}
 		
+		if (!properties.isMissingNode()){	
+			for (Iterator<Entry<String,JsonNode>> iterator = properties.fields(); iterator.hasNext();) {
+				 Entry<String, JsonNode> item = iterator.next();   
+				 propertiesMap.put(item.getKey(), item.getValue());
+			}
+		}
 		
-		return new Layer (id.asText (), layerType.asText (), label.asText (), layerList, serviceLayerList, initialStateMap);
+		
+		return new Layer (id.asText (), layerType.asText (), label.asText (), layerList, serviceLayerList, initialStateMap, propertiesMap);
 	}
 	
 	public static JsonNode serialize (final MapDefinition mapDefinition) {

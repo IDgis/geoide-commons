@@ -24,6 +24,7 @@ public class Layer extends Entity {
 	private final List<Layer> layers;
 	private final List<ServiceLayer> serviceLayers;
 	private final Map<String, JsonNode> state;
+	private final Map<String, JsonNode> properties;
 	
 	@JsonCreator
 	public Layer (
@@ -32,7 +33,8 @@ public class Layer extends Entity {
 			final @JsonProperty("label") String label,
 			final @JsonProperty("layers") List<Layer> layers,
 			final @JsonProperty("serviceLayers") List<ServiceLayer> serviceLayers,
-			final @JsonProperty("state") Map <String,JsonNode> state ) {
+			final @JsonProperty("state") Map <String,JsonNode> state,
+			final @JsonProperty("properties") Map <String,JsonNode> properties) {
 		super (id);
 		
 		Assert.notNull (label, "label");
@@ -43,6 +45,7 @@ public class Layer extends Entity {
 		this.layers = layers == null ? Collections.<Layer>emptyList () : new ArrayList<> (layers);
 		this.serviceLayers = serviceLayers == null ? Collections.<ServiceLayer>emptyList () : new ArrayList<> (serviceLayers);
 		this.state = state == null ? Collections.<String, JsonNode>emptyMap() : new HashMap<String, JsonNode> (state); 
+		this.properties = properties == null ? Collections.<String, JsonNode>emptyMap() : new HashMap<String, JsonNode> (properties); 
 	}
 	
 	@JsonValue
@@ -65,6 +68,12 @@ public class Layer extends Entity {
 			final ObjectNode stateNode = n.putObject("state");
 			stateNode.putAll(state);
 		}
+		
+		if (!properties.isEmpty()) {
+			final ObjectNode propertiesNode = n.putObject("properties");
+			propertiesNode.putAll(properties);
+		}
+		
 		
 		if (!getServiceLayers ().isEmpty ()) {
 			final ArrayNode serviceLayersNode = n.putArray ("serviceLayers");

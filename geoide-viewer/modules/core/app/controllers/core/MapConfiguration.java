@@ -1,5 +1,6 @@
 package controllers.core;
 
+
 import nl.idgis.geoide.commons.domain.MapDefinition;
 import nl.idgis.geoide.commons.domain.provider.MapProvider;
 import play.libs.Json;
@@ -7,6 +8,8 @@ import play.mvc.Controller;
 import play.mvc.Result;
 
 import com.fasterxml.jackson.databind.JsonNode;
+
+
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -44,12 +47,18 @@ public class MapConfiguration extends Controller {
 		if (!state.isMissingNode ()) {
 			result.put ("state", map.path("state"));
 		}
+			
+		final JsonNode properties = map.path ("properties");
+		if (!properties.isMissingNode ()) {
+			result.put ("properties", map.path("properties"));
+		}
+		
 		
 		final JsonNode layers = map.path ("layers");
 		if (!layers.isMissingNode ()) {
 			filterLayers (layers, result.putArray ("layers"));
 		}
-		
+	
 		
 		return result;
 	}
