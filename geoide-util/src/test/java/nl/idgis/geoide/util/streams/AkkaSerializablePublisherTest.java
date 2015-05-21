@@ -13,9 +13,9 @@ import org.testng.annotations.Test;
 
 import akka.actor.ActorSystem;
 import akka.testkit.JavaTestKit;
-import akka.util.CompactByteString;
+import akka.util.ByteString;
 
-public class AkkaSerializablePublisherTest extends PublisherVerification<CompactByteString> {
+public class AkkaSerializablePublisherTest extends PublisherVerification<ByteString> {
 
 	private final static int BLOCK_SIZE = 10;
 	
@@ -40,12 +40,12 @@ public class AkkaSerializablePublisherTest extends PublisherVerification<Compact
 		actorSystem = null;
 	}
 	
-	private SerializablePublisher<CompactByteString> wrapPublisher (final Publisher<CompactByteString> original) {
+	private SerializablePublisher<ByteString> wrapPublisher (final Publisher<ByteString> original) {
 		return streamProcessor.asSerializable (original);
 	}
 	
 	@Override
-	public Publisher<CompactByteString> createPublisher (long elements) {
+	public Publisher<ByteString> createPublisher (long elements) {
 		try {
 			return wrapPublisher (streamProcessor.publishInputStream (testInputStream (BLOCK_SIZE, (int) elements), BLOCK_SIZE, 10000));
 		} catch (Throwable e) {
@@ -58,10 +58,10 @@ public class AkkaSerializablePublisherTest extends PublisherVerification<Compact
 	}
 	
 	@Override
-	public Publisher<CompactByteString> createFailedPublisher () {
-		return wrapPublisher (new Publisher<CompactByteString> () {
+	public Publisher<ByteString> createFailedPublisher () {
+		return wrapPublisher (new Publisher<ByteString> () {
 			@Override
-			public void subscribe (final Subscriber<? super CompactByteString> s) {
+			public void subscribe (final Subscriber<? super ByteString> s) {
 				final Subscription subscription = new Subscription () {
 					@Override
 					public void request (final long n) {

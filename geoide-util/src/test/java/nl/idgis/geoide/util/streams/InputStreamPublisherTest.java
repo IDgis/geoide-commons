@@ -17,10 +17,10 @@ import org.testng.annotations.Test;
 import play.libs.F.Function2;
 import akka.actor.ActorSystem;
 import akka.testkit.JavaTestKit;
+import akka.util.ByteString;
 import akka.util.ByteString.ByteStrings;
-import akka.util.CompactByteString;
 
-public class InputStreamPublisherTest extends PublisherVerification<CompactByteString> {
+public class InputStreamPublisherTest extends PublisherVerification<ByteString> {
 
 	private final static int BLOCK_SIZE = 10;
 	
@@ -46,7 +46,7 @@ public class InputStreamPublisherTest extends PublisherVerification<CompactByteS
 	}
 	
 	@Override
-	public Publisher<CompactByteString> createPublisher (long elements) {
+	public Publisher<ByteString> createPublisher (long elements) {
 		try {
 			return streamProcessor.publishInputStream (testInputStream (BLOCK_SIZE, (int) elements), BLOCK_SIZE, 10000);
 		} catch (Throwable e) {
@@ -59,10 +59,10 @@ public class InputStreamPublisherTest extends PublisherVerification<CompactByteS
 	}
 	
 	@Override
-	public Publisher<CompactByteString> createFailedPublisher () {
-		return new Publisher<CompactByteString> () {
+	public Publisher<ByteString> createFailedPublisher () {
+		return new Publisher<ByteString> () {
 			@Override
-			public void subscribe (final Subscriber<? super CompactByteString> s) {
+			public void subscribe (final Subscriber<? super ByteString> s) {
 				final Subscription subscription = new Subscription () {
 					@Override
 					public void request (final long n) {
@@ -89,9 +89,9 @@ public class InputStreamPublisherTest extends PublisherVerification<CompactByteS
 	 */
 	@Test
 	public void testStreamContent () {
-		final byte[] data = streamProcessor.reduce (createPublisher (10), ByteStrings.empty ().compact (), new Function2<CompactByteString, CompactByteString, CompactByteString> () {
+		final byte[] data = streamProcessor.reduce (createPublisher (10), ByteStrings.empty ().compact (), new Function2<ByteString, ByteString, ByteString> () {
 			@Override
-			public CompactByteString apply (final CompactByteString a, final CompactByteString b) throws Throwable {
+			public ByteString apply (final ByteString a, final ByteString b) throws Throwable {
 				return a.concat (b).compact ();
 			}
 		}).get (1000).toArray ();
@@ -101,8 +101,9 @@ public class InputStreamPublisherTest extends PublisherVerification<CompactByteS
 	
 	@Test
 	public void testStreamAdapter () throws Throwable {
-		final Publisher<CompactByteString> publisher = createPublisher (100);
-		final InputStream is = streamProcessor.asInputStream (publisher, 1000);
+		final Publisher<ByteString> publisher = createPublisher (100);
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		final InputStream is = streamProcessor.asInputStream (((Publisher<ByteString>)((Publisher) publisher)), 1000);
 		final byte[] expectedBytes = testBytes (BLOCK_SIZE, 100);
 		final byte[] resultingBytes = new byte[expectedBytes.length];
 
@@ -119,8 +120,9 @@ public class InputStreamPublisherTest extends PublisherVerification<CompactByteS
 	
 	@Test (expectedExceptions = IOException.class)
 	public void testStreamAdapterTimeout () throws Throwable {
-		final Publisher<CompactByteString> publisher = createPublisher (100);
-		final InputStream is = streamProcessor.asInputStream (publisher, 1000);
+		final Publisher<ByteString> publisher = createPublisher (100);
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		final InputStream is = streamProcessor.asInputStream ((((Publisher<ByteString>) ((Publisher) publisher))), 1000);
 		final byte[] expectedBytes = testBytes (BLOCK_SIZE, 100);
 		final byte[] resultingBytes = new byte[expectedBytes.length];
 

@@ -23,7 +23,7 @@ import akka.japi.Procedure;
 public class SerializablePublisherSubscriptionActor extends UntypedActor {
 
 	private final ActorRef publisherActor;
-	private final Publisher<? extends Serializable> publisher;
+	private final Publisher<?> publisher;
 	private final Subscriber<?> subscriber;
 	private final long timeoutInMillis;
 	
@@ -31,14 +31,14 @@ public class SerializablePublisherSubscriptionActor extends UntypedActor {
 		COMPLETE
 	}
 	
-	public SerializablePublisherSubscriptionActor (final ActorRef publisherActor, final Publisher<? extends Serializable> publisher, final Subscriber<?> subscriber, final long timeoutInMillis) {
+	public SerializablePublisherSubscriptionActor (final ActorRef publisherActor, final Publisher<?> publisher, final Subscriber<?> subscriber, final long timeoutInMillis) {
 		this.publisherActor = publisherActor;
 		this.publisher = publisher;
 		this.subscriber = subscriber;
 		this.timeoutInMillis = timeoutInMillis;
 	}
 	
-	public static Props props (final ActorRef publisherActor, final Publisher<? extends Serializable> publisher, final Subscriber<?> subscriber, final long timeoutInMillis) {
+	public static Props props (final ActorRef publisherActor, final Publisher<?> publisher, final Subscriber<?> subscriber, final long timeoutInMillis) {
 		if (publisherActor == null) {
 			throw new NullPointerException ("publisherActor cannot be null");
 		}

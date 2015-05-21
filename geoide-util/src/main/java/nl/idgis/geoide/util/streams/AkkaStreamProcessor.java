@@ -3,7 +3,6 @@ package nl.idgis.geoide.util.streams;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -28,7 +27,6 @@ import akka.event.LoggingAdapter;
 import akka.pattern.Patterns;
 import akka.util.ByteString;
 import akka.util.ByteString.ByteStrings;
-import akka.util.CompactByteString;
 
 /**
  * An {@link StreamProcessor} implementation that uses an Akka actor system for scheduling.
@@ -148,7 +146,7 @@ public class AkkaStreamProcessor implements StreamProcessor, Closeable {
 	 * @see StreamProcessor#publishInputStream(InputStream, int, long)
 	 */
 	@Override
-	public Publisher<CompactByteString> publishInputStream (final InputStream inputStream, final int maxBlockSize, final long timeoutInMillis) {
+	public Publisher<ByteString> publishInputStream (final InputStream inputStream, final int maxBlockSize, final long timeoutInMillis) {
 		if (inputStream == null) {
 			throw new NullPointerException ("inputStream cannot be null");
 		}
@@ -174,7 +172,7 @@ public class AkkaStreamProcessor implements StreamProcessor, Closeable {
 	 * @see StreamProcessor#asInputStream(Publisher, long)
 	 */
 	@Override
-	public <T extends ByteString> InputStream asInputStream (final Publisher<T> publisher, final long timeoutInMillis) {
+	public InputStream asInputStream (final Publisher<ByteString> publisher, final long timeoutInMillis) {
 		if (publisher == null) {
 			throw new NullPointerException ("publisher cannot be null");
 		}
@@ -200,8 +198,8 @@ public class AkkaStreamProcessor implements StreamProcessor, Closeable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public <T extends Serializable> SerializablePublisher<T> asSerializable (final Publisher<T> publisher) {
-		final CompletableFuture<ActorRef> actorFuture = createActor (serializablePublisherManager, SerializablePublisherActor.props (publisher, 10000), 5000);
+	public <T> SerializablePublisher<T> asSerializable (final Publisher<T> publisher) {
+		final CompletableFuture<ActorRef> actorFuture = createActor (serializablePublisherManager, SerializablePublisherActor.props (publisher, 10000l), 5000);
 		return new AkkaSerializablePublisher<> (actorFuture);
 	}
 	
@@ -456,7 +454,7 @@ public class AkkaStreamProcessor implements StreamProcessor, Closeable {
 	/**
 	 * Reactive streams publisher for input streams. Uses an Akka actor that wraps the input stream.
 	 */
-	private final static class InputStreamPublisher implements Publisher<CompactByteString> {
+	private final static class InputStreamPublisher implements Publisher<ByteString> {
 		private final CompletableFuture<ActorRef> actorPromise;
 		
 		public InputStreamPublisher (final CompletableFuture<ActorRef> actorPromise) {
@@ -464,7 +462,7 @@ public class AkkaStreamProcessor implements StreamProcessor, Closeable {
 		}
 
 		@Override
-		public void subscribe (final Subscriber<? super CompactByteString> subscriber) {
+		public void subscribe (final Subscriber<? super ByteString> subscriber) {
 			if (subscriber == null) {
 				throw new NullPointerException ("subscriber cannot be null");
 			}

@@ -1,14 +1,12 @@
 package nl.idgis.geoide.util.streams;
 
 import java.io.InputStream;
-import java.io.Serializable;
 
 import org.reactivestreams.Publisher;
 
 import play.libs.F.Function2;
 import play.libs.F.Promise;
 import akka.util.ByteString;
-import akka.util.CompactByteString;
 
 /**
  * The StreamProcessor interface provides generic utilities to work with reactive streams. Most operations
@@ -53,7 +51,7 @@ public interface StreamProcessor {
 	 * @param timeoutInMillis The timeout before the input stream is closed if there is no activity on a subscription to the publisher.
 	 * @return A publisher that publishes the given InputStream as a sequence of ByteStrings.
 	 */
-	Publisher<CompactByteString> publishInputStream (InputStream inputStream, int maxBlockSize, long timeoutInMillis);
+	Publisher<ByteString> publishInputStream (InputStream inputStream, int maxBlockSize, long timeoutInMillis);
 	
 	/**
 	 * Utility to turn a publisher of ByteStrings into a "legacy" InputStream. Reading from the returned InputStream is
@@ -67,7 +65,7 @@ public interface StreamProcessor {
 	 * @param timeoutInMillis The timeout before the subscription on the publisher is closed after inactivity.
 	 * @return An input stream that reads bytes from the given publisher.
 	 */
-	<T extends ByteString> InputStream asInputStream (Publisher<T> publisher, long timeoutInMillis);
+	InputStream asInputStream (Publisher<ByteString> publisher, long timeoutInMillis);
 
 	/**
 	 * Turns a publisher into a "serializable" publisher: a publisher that is serializable and can be transferred to remote hosts.
@@ -75,5 +73,5 @@ public interface StreamProcessor {
 	 * @param publisher	The source publisher.
 	 * @return			A remote publisher that wraps the given publisher.
 	 */
-	<T extends Serializable> SerializablePublisher<T> asSerializable (Publisher<T> publisher);
+	<T> SerializablePublisher<T> asSerializable (Publisher<T> publisher);
 }
