@@ -317,6 +317,7 @@ public class MapBlockComposer implements BlockComposer<MapBlockInfo> {
 		
 		renderer.overlays (writer, overlays);
 		
+		writer.close();
 		os.close ();
 		
 		return os.toByteArray ();
@@ -331,6 +332,7 @@ public class MapBlockComposer implements BlockComposer<MapBlockInfo> {
 		
 		final PositionedTextOverlay positionedOverlay = renderer.textOverlay (writer, feature);
 		
+		writer.close();
 		os.close ();
 		
 		return new TextOverlayRenderResult (positionedOverlay, os.toByteArray ());
