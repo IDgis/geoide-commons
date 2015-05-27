@@ -10,6 +10,7 @@
   <param name="teamcitySshKey" value="id_rsa" />
   <param name="url" value="git@github.com:IDgis/geoide-commons.git" />
   <param name="useAlternates" value="true" />
+  <param name="userForTags" value="teamcity@idgis.nl" />
   <param name="usernameStyle" value="USERID" />
 </vcs-root>
 
