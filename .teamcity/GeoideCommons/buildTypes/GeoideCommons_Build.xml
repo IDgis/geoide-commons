@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<build-type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="a84dc01d-08f4-4644-8a27-4c405c7c0832" xsi:noNamespaceSchemaLocation="http://www.jetbrains.com/teamcity/schemas/9.0/project-config.xsd">
+  <name>Build</name>
+  <description>Build and deploy to Nexus</description>
+  <settings>
+    <options>
+      <option name="checkoutMode" value="ON_AGENT" />
+    </options>
+    <parameters />
+    <build-runners>
+      <runner id="RUNNER_6" name="" type="Maven2">
+        <parameters>
+          <param name="goals" value="clean deploy" />
+          <param name="maven.home" value="" />
+          <param name="mavenSelection" value="mavenSelection:default" />
+          <param name="pomLocation" value="pom.xml" />
+          <param name="target.jdk.home" value="%env.JDK_18%" />
+          <param name="teamcity.step.mode" value="default" />
+          <param name="userSettingsPath" value="" />
+          <param name="userSettingsSelection" value="settings.xml" />
+        </parameters>
+      </runner>
+      <runner id="RUNNER_7" name="" type="SBT">
+        <parameters>
+          <param name="jvmArgs" value="-Xmx512m -XX:MaxPermSize=256m -XX:ReservedCodeCacheSize=128m -Dsbt.log.noformat=true -Dsbt.log.format=false -Dsbt.version=0.13.7" />
+          <param name="sbt.args" value="clean compile test publish" />
+          <param name="sbt.installationMode" value="auto" />
+          <param name="target.jdk.home" value="%env.JDK_18%" />
+          <param name="teamcity.build.workingDir" value="geoide-viewer" />
+          <param name="teamcity.step.mode" value="default" />
+        </parameters>
+      </runner>
+    </build-runners>
+    <vcs-settings>
+      <vcs-entry-ref root-id="GeoideCommons_HttpsGithubComIDgisGeoideCommonsGitMaster" />
+    </vcs-settings>
+    <requirements />
+    <build-triggers>
+      <build-trigger id="vcsTrigger" type="vcsTrigger">
+        <parameters>
+          <param name="groupCheckinsByCommitter" value="true" />
+          <param name="perCheckinTriggering" value="true" />
+          <param name="quietPeriodMode" value="DO_NOT_USE" />
+        </parameters>
+      </build-trigger>
+    </build-triggers>
+    <cleanup />
+  </settings>
+</build-type>
+

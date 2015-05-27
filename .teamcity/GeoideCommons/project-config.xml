@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" parent-id="Geoide" uuid="b725e325-67da-4b8d-aee6-95f42a242d37" xsi:noNamespaceSchemaLocation="http://www.jetbrains.com/teamcity/schemas/9.0/project-config.xsd">
+  <name>Geoide Commons</name>
+  <parameters />
+  <cleanup />
+</project>
+

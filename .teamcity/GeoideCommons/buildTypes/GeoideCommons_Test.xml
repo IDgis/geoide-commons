@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<build-type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="7eb57315-5944-4850-9c80-54980bc67fdb" xsi:noNamespaceSchemaLocation="http://www.jetbrains.com/teamcity/schemas/9.0/project-config.xsd">
+  <name>Test</name>
+  <description />
+  <settings>
+    <options>
+      <option name="checkoutMode" value="ON_AGENT" />
+    </options>
+    <parameters />
+    <build-runners>
+      <runner id="RUNNER_4" name="" type="Maven2">
+        <parameters>
+          <param name="goals" value="clean test install" />
+          <param name="maven.home" value="" />
+          <param name="mavenSelection" value="mavenSelection:default" />
+          <param name="pomLocation" value="pom.xml" />
+          <param name="target.jdk.home" value="%env.JDK_18%" />
+          <param name="teamcity.step.mode" value="default" />
+          <param name="userSettingsPath" value="" />
+          <param name="userSettingsSelection" value="settings.xml" />
+        </parameters>
+      </runner>
+      <runner id="RUNNER_5" name="" type="SBT">
+        <parameters>
+          <param name="jvmArgs" value="-Xmx512m -XX:MaxPermSize=256m -XX:ReservedCodeCacheSize=128m -Dsbt.log.noformat=true -Dsbt.log.format=false -Dsbt.version=0.13.7" />
+          <param name="sbt.args" value="clean compile test" />
+          <param name="sbt.installationMode" value="auto" />
+          <param name="target.jdk.home" value="%env.JDK_18%" />
+          <param name="teamcity.build.workingDir" value="geoide-viewer" />
+          <param name="teamcity.step.mode" value="default" />
+        </parameters>
+      </runner>
+    </build-runners>
+    <vcs-settings>
+      <vcs-entry-ref root-id="GeoideCommons_HttpsGithubComIDgisGeoideCommonsGitPullRequestsMerge" />
+    </vcs-settings>
+    <requirements />
+    <build-triggers>
+      <build-trigger id="vcsTrigger" type="vcsTrigger">
+        <parameters>
+          <param name="branchFilter"><![CDATA[+:*
+-:<default>]]></param>
+          <param name="groupCheckinsByCommitter" value="true" />
+          <param name="perCheckinTriggering" value="true" />
+          <param name="quietPeriodMode" value="DO_NOT_USE" />
+        </parameters>
+      </build-trigger>
+    </build-triggers>
+    <build-extensions>
+      <extension id="BUILD_EXT_2" type="teamcity.github.status">
+        <parameters>
+          <param name="github_report_on" value="on start and finish" />
+          <param name="guthub_authentication_type" value="token" />
+          <param name="guthub_context" value="continuous-integration/teamcity" />
+          <param name="guthub_host" value="https://api.github.com" />
+          <param name="guthub_owner" value="IDgis" />
+          <param name="guthub_repo" value="geoide-commons" />
+          <param name="secure:github_access_token" value="zxxb125b7f95dfcfeb68986d5ca65300ab781fa24bb7b17e71ba08935458304070a3487a2938754be50775d03cbe80d301b" />
+        </parameters>
+      </extension>
+    </build-extensions>
+    <cleanup />
+  </settings>
+</build-type>
+
