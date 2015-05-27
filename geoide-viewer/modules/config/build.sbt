@@ -31,3 +31,11 @@ libraryDependencies ++= Seq(
 
 // Use IDgis repositories:
 resolvers ++= Common.resolvers
+
+publishTo := {
+	val nexus = "http://nexus.idgis.eu/content/repositories/"
+	if (isSnapshot.value)
+		Some ("idgis-restricted-snapshots" at nexus + "restricted-snapshots")
+	else
+		Some ("idgis-restricted-releases" at nexus + "restricted-releases")
+}
