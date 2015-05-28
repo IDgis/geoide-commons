@@ -1,4 +1,4 @@
-package nl.idgis.geoide.commons.services.main;
+package nl.idgis.geoide.commons.main;
 
 import java.io.File;
 
@@ -19,7 +19,7 @@ public class GeoideServiceMain implements AutoCloseable {
 	final AnnotationConfigApplicationContext applicationContext;
 	
 	@Configuration
-	@ComponentScan (basePackageClasses = nl.idgis.geoide.commons.services.config.Package.class)
+	@ComponentScan (basePackageClasses = nl.idgis.geoide.commons.config.Package.class)
 	public static class MainConfig {
 		
 		/**

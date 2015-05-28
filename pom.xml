@@ -21,6 +21,8 @@
     	<module>geoide-map</module>
     	<module>geoide-remote</module>
     	<module>geoide-main</module>
+    	<module>geoide-config</module>
+    	<module>geoide-app</module>
 	</modules>
 
 	<scm>
@@ -176,6 +178,16 @@
 			<dependency>
 				<groupId>nl.idgis.geoide</groupId>
 				<artifactId>geoide-map</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>nl.idgis.geoide</groupId>
+				<artifactId>geoide-main</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>nl.idgis.geoide</groupId>
+				<artifactId>geoide-config-akka</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 		
