@@ -21,13 +21,13 @@ public class SvgRenderer {
 	}
 	
 	public void svg (final XMLStreamWriter writer, final double minX, final double minY, final double width, final double height, final RenderCallback content) throws XMLStreamException {
-		svg (writer, minX, minY, width, height, (w) -> {
+		svg2 (writer, minX, minY, width, height, (w) -> {
 			content.render (w);
 			return true;
 		});
 	}
 	
-	public <T> T svg (final XMLStreamWriter writer, final double minX, final double minY, final double width, final double height, final RenderFunction<T> content) throws XMLStreamException {
+	public <T> T svg2 (final XMLStreamWriter writer, final double minX, final double minY, final double width, final double height, final RenderFunction<T> content) throws XMLStreamException {
 		writer.writeStartDocument ();
 
 		writer.writeStartElement ("svg");
@@ -41,6 +41,8 @@ public class SvgRenderer {
 		writer.writeEndElement ();	// svg
 		
 		writer.writeEndDocument ();
+		
+
 		
 		return result;
 	}

@@ -66,7 +66,7 @@ public class OverlayRenderer extends SvgRenderer {
 	}
 
 	public PositionedTextOverlay textOverlay (final XMLStreamWriter writer, final OverlayFeature feature) throws XMLStreamException {
-		return svg (writer, envelope.getMinX (), envelope.getMinY (), envelope.getMaxX () - envelope.getMinX (), envelope.getMaxY () - envelope.getMinY (), (RenderFunction<PositionedTextOverlay>) (w) -> {
+		return svg2 (writer, envelope.getMinX (), envelope.getMinY (), envelope.getMaxX () - envelope.getMinX (), envelope.getMaxY () - envelope.getMinY (), (RenderFunction<PositionedTextOverlay>) (w) -> {
 			if (feature == null) {
 				return (PositionedTextOverlay) null;
 			}
