@@ -20,7 +20,7 @@
 		<module>geoide-http-client</module>
     	<module>geoide-map</module>
     	<module>geoide-remote</module>
-    	<module>geoide-services</module>
+    	<module>geoide-main</module>
 	</modules>
 
 	<scm>
