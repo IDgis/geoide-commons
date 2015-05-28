@@ -1,6 +1,9 @@
 package nl.idgis.geoide.documentcache.service;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.junit.Assert.assertEquals;
 import static play.test.Helpers.fakeApplication;
 import static play.test.Helpers.running;
@@ -8,6 +11,9 @@ import static play.test.Helpers.running;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import nl.idgis.geoide.commons.http.client.HttpClient;
 import nl.idgis.geoide.commons.http.client.service.DefaultHttpClient;
@@ -78,8 +84,8 @@ public class TestHttpDocumentStore {
 				
 				final Document document;
 				try {
-					document = store.fetch (new URI ("http://localhost:8089/resource")).get (1000);
-				} catch (URISyntaxException e) {
+					document = store.fetch (new URI ("http://localhost:8089/resource")).get (1000, TimeUnit.MILLISECONDS);
+				} catch (URISyntaxException | InterruptedException | ExecutionException | TimeoutException e) {
 					throw new RuntimeException (e);
 				}
 				
@@ -113,8 +119,8 @@ public class TestHttpDocumentStore {
 				
 				final Document document;
 				try {
-					document = store.fetch (new URI ("http://localhost:8089/resource?a=%3CStyledLayerDescriptor")).get (1000);
-				} catch (URISyntaxException e) {
+					document = store.fetch (new URI ("http://localhost:8089/resource?a=%3CStyledLayerDescriptor")).get (1000, TimeUnit.MILLISECONDS);
+				} catch (URISyntaxException | InterruptedException | ExecutionException | TimeoutException e) {
 					throw new RuntimeException (e);
 				}
 				
@@ -152,8 +158,8 @@ public class TestHttpDocumentStore {
 				
 				final Document document;
 				try {
-					document = store.fetch (new URI ("http://localhost:8089/resource")).get (1000);
-				} catch (URISyntaxException e) {
+					document = store.fetch (new URI ("http://localhost:8089/resource")).get (1000, TimeUnit.MILLISECONDS);
+				} catch (URISyntaxException | InterruptedException | ExecutionException | TimeoutException e) {
 					throw new RuntimeException (e);
 				}
 				

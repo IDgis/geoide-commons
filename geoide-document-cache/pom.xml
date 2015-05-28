@@ -36,6 +36,10 @@
 			<groupId>org.reactivestreams</groupId>
 			<artifactId>reactive-streams</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>nl.idgis.geoide</groupId>
+			<artifactId>geoide-util</artifactId>
+		</dependency>
 
 		<!-- Test dependencies: -->		
 		<dependency>

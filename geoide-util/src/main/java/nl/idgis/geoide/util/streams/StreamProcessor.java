@@ -1,11 +1,11 @@
 package nl.idgis.geoide.util.streams;
 
 import java.io.InputStream;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.BiFunction;
 
 import org.reactivestreams.Publisher;
 
-import play.libs.F.Function2;
-import play.libs.F.Promise;
 import akka.util.ByteString;
 
 /**
@@ -30,7 +30,7 @@ public interface StreamProcessor {
 	 * @param reducer The reducer function to invoke for each pair of values. Cannot be null.
 	 * @return The result of reducing all elements in the stream, or initialValue if the producer didn't produce any elements.
 	 */
-	<T> Promise<T> reduce (Publisher<T> publisher, T initialValue, Function2<T, T, T> reducer);
+	<T> CompletableFuture<T> reduce (Publisher<T> publisher, T initialValue, BiFunction<T, T, T> reducer);
 	
 	/**
 	 * Creates a publisher that when subscribed to always produces a stream containing a single value.

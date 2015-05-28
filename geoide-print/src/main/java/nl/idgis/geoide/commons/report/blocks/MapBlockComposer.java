@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
@@ -22,6 +23,7 @@ import nl.idgis.geoide.documentcache.DocumentCache;
 import nl.idgis.geoide.map.MapView;
 import nl.idgis.geoide.service.LayerServiceType;
 import nl.idgis.geoide.service.ServiceType;
+import nl.idgis.geoide.util.Futures;
 import nl.idgis.ogc.util.MimeContentType;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
@@ -29,9 +31,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import play.libs.F.Function;
-import play.libs.F.Promise;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -71,9 +70,9 @@ public class MapBlockComposer implements BlockComposer<MapBlockInfo> {
 	 */
 	
 	@Override
-	public Promise<Block> compose (Element blockElement, MapBlockInfo mapInfo, DocumentCache documentCache) throws Throwable {
+	public CompletableFuture<Block> compose (Element blockElement, MapBlockInfo mapInfo, DocumentCache documentCache) throws Throwable {
 		
-		final List<Promise<nl.idgis.geoide.documentcache.Document>> documentPromises = new ArrayList<> ();
+		final List<CompletableFuture<nl.idgis.geoide.documentcache.Document>> documentPromises = new ArrayList<> ();
 		
 		String mapCss = createMapCss(mapInfo);
 		
@@ -157,16 +156,9 @@ public class MapBlockComposer implements BlockComposer<MapBlockInfo> {
 		
 		final Block mapBlock = new Block(blockElement, mapCssUri);
 		
-		return Promise
-			.sequence (documentPromises)
-			.map (new Function<List<nl.idgis.geoide.documentcache.Document>, Block> () {
-				@Override
-				public Block apply (
-						final List<nl.idgis.geoide.documentcache.Document> documents)
-						throws Throwable {
-					return mapBlock;
-				}
-			});
+		return Futures
+			.all (documentPromises)
+			.thenApply ((final List<nl.idgis.geoide.documentcache.Document> documents) -> mapBlock);
 	};
 
 	private Element createOverlayElement (final Element mapRow, final double width, final double height, final int zIndex, final String uri) {

@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import nl.idgis.geoide.commons.http.client.HttpRequest.Method;
-import nl.idgis.geoide.commons.http.client.HttpResponse;
 import nl.idgis.geoide.commons.http.client.HttpRequestBuilder;
+import nl.idgis.geoide.commons.http.client.HttpResponse;
 
 import org.reactivestreams.Publisher;
 
-import play.libs.F.Promise;
 import akka.util.ByteString;
 
 /**
@@ -140,7 +140,7 @@ public class DefaultHttpRequestBuilder implements HttpRequestBuilder {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Promise<HttpResponse> execute (final Method method) {
+	public CompletableFuture<HttpResponse> execute (final Method method) {
 		return setMethod (method).execute ();
 	}
 
@@ -148,7 +148,7 @@ public class DefaultHttpRequestBuilder implements HttpRequestBuilder {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Promise<HttpResponse> execute () {
+	public CompletableFuture<HttpResponse> execute () {
 		final DefaultHttpRequest request = new DefaultHttpRequest (
 				client, 
 				method, 
@@ -167,7 +167,7 @@ public class DefaultHttpRequestBuilder implements HttpRequestBuilder {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Promise<HttpResponse> get () {
+	public CompletableFuture<HttpResponse> get () {
 		return execute (Method.GET);
 	}
 
@@ -175,7 +175,7 @@ public class DefaultHttpRequestBuilder implements HttpRequestBuilder {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Promise<HttpResponse> post () {
+	public CompletableFuture<HttpResponse> post () {
 		return execute (Method.POST);
 	}
 
@@ -183,7 +183,7 @@ public class DefaultHttpRequestBuilder implements HttpRequestBuilder {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Promise<HttpResponse> post (final Publisher<ByteString> body) {
+	public CompletableFuture<HttpResponse> post (final Publisher<ByteString> body) {
 		return setBody (body).execute (Method.POST);
 	}
 }

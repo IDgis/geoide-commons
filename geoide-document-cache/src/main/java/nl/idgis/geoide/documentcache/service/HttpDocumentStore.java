@@ -4,21 +4,20 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
+import java.util.concurrent.CompletableFuture;
 
 import nl.idgis.geoide.commons.http.client.HttpClient;
 import nl.idgis.geoide.commons.http.client.HttpRequestBuilder;
-import nl.idgis.geoide.commons.http.client.HttpResponse;
 import nl.idgis.geoide.documentcache.Document;
 import nl.idgis.geoide.documentcache.DocumentCache;
 import nl.idgis.geoide.documentcache.DocumentCacheException;
 import nl.idgis.geoide.documentcache.DocumentStore;
+import nl.idgis.geoide.util.Futures;
 import nl.idgis.ogc.util.MimeContentType;
 
 import org.reactivestreams.Publisher;
 
 import play.Logger;
-import play.libs.F.Function;
-import play.libs.F.Promise;
 import akka.util.ByteString;
 
 /**
@@ -63,17 +62,17 @@ public class HttpDocumentStore implements DocumentStore {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Promise<Document> fetch (final URI uri) {
+	public CompletableFuture<Document> fetch (final URI uri) {
 		if (!"http".equals (uri.getScheme ()) && !"https".equals (uri.getScheme ())) {
 			Logger.debug ("Bad scheme: " + uri.toString ());
-			return Promise.throwing (new DocumentCacheException.DocumentNotFoundException (uri)); 
+			return Futures.throwing (new DocumentCacheException.DocumentNotFoundException (uri)); 
 		}
 
 		final URI shortUri;
 		try {
 			shortUri = new URI (uri.getScheme (), uri.getUserInfo (), uri.getHost (), uri.getPort (), uri.getPath (), null, null);
 		} catch (URISyntaxException e) {
-			return Promise.throwing (e);
+			return Futures.throwing (e);
 		}
 		HttpRequestBuilder builder = httpClient
 			.url (shortUri.toString ())
@@ -91,7 +90,7 @@ public class HttpDocumentStore implements DocumentStore {
 				try {
 					value = URLDecoder.decode (rawValue, "UTF-8");
 				} catch (UnsupportedEncodingException e) {
-					return Promise.throwing (e);
+					return Futures.throwing (e);
 				}
 				
 				builder = builder.setParameter (key, value);
@@ -100,34 +99,31 @@ public class HttpDocumentStore implements DocumentStore {
 
 		return builder
 			.get ()
-			.map (new Function<HttpResponse, Document> () {
-				@Override
-				public Document apply (final HttpResponse response) throws Throwable {
-					if (response.getStatus () < 200 || response.getStatus () >= 300) {
-						Logger.debug ("Document not found: " + response.getStatus () + " " + response.getStatusText ());
-						throw new DocumentCacheException.DocumentNotFoundException (uri);
-					}
-
-					final MimeContentType contentType = new MimeContentType (response.getHeader ("Content-Type"));
-					final Publisher<ByteString> body = response.getBody ();
-					
-					return new Document () {
-						@Override
-						public URI getUri () {
-							return uri;
-						}
-						
-						@Override
-						public MimeContentType getContentType () {
-							return contentType;
-						}
-						
-						@Override
-						public Publisher<ByteString> getBody () {
-							return body;
-						}
-					};
+			.thenApply ((response) -> {
+				if (response.getStatus () < 200 || response.getStatus () >= 300) {
+					Logger.debug ("Document not found: " + response.getStatus () + " " + response.getStatusText ());
+					throw new DocumentCacheException.DocumentNotFoundException (uri);
 				}
+
+				final MimeContentType contentType = new MimeContentType (response.getHeader ("Content-Type"));
+				final Publisher<ByteString> body = response.getBody ();
+				
+				return (Document)new Document () {
+					@Override
+					public URI getUri () {
+						return uri;
+					}
+					
+					@Override
+					public MimeContentType getContentType () {
+						return contentType;
+					}
+					
+					@Override
+					public Publisher<ByteString> getBody () {
+						return body;
+					}
+				};
 			});
 	}
 }

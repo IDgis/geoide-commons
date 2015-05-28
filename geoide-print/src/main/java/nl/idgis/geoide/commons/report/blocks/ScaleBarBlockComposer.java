@@ -3,6 +3,7 @@ package nl.idgis.geoide.commons.report.blocks;
 import java.net.URI;
 import java.util.Locale;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import nl.idgis.geoide.documentcache.DocumentCache;
 import nl.idgis.ogc.util.MimeContentType;
@@ -10,12 +11,10 @@ import nl.idgis.ogc.util.MimeContentType;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import play.libs.F.Promise;
-
 public class ScaleBarBlockComposer implements BlockComposer<ScaleBarBlockInfo> {
 
 	@Override
-	public Promise<Block> compose(Element blockElement, ScaleBarBlockInfo barinfo,	DocumentCache documentCache) throws Throwable {
+	public CompletableFuture<Block> compose(Element blockElement, ScaleBarBlockInfo barinfo,	DocumentCache documentCache) throws Throwable {
 		//create svg file
 		URI scaleBarUri = new URI ("stored://" + UUID.randomUUID ().toString ());
 		Document scaleBarDoc = new Document(scaleBarUri.toString());
@@ -62,12 +61,12 @@ public class ScaleBarBlockComposer implements BlockComposer<ScaleBarBlockInfo> {
 						.attr("style", "left:0;top:0;width:" + barinfo.getTotalWidthmm()  + "mm;height:10mm;")
 						.attr("data", scaleBarUri.toString());
 		
-		Promise<nl.idgis.geoide.documentcache.Document> scaleBarPromise = documentCache.store(scaleBarUri, new MimeContentType ("image/svg+xml"), scaleBarDoc.toString().getBytes());
+		CompletableFuture<nl.idgis.geoide.documentcache.Document> scaleBarPromise = documentCache.store(scaleBarUri, new MimeContentType ("image/svg+xml"), scaleBarDoc.toString().getBytes());
 	
 		final Block scaleBarBlock = new Block(blockElement, null);
 		
 		return scaleBarPromise 
-				.map ((d) -> scaleBarBlock);
+				.thenApply ((d) -> scaleBarBlock);
 					
 		
 	}

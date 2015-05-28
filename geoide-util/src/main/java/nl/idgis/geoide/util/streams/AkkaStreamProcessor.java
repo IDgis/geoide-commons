@@ -7,13 +7,13 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.BiFunction;
 
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
-import play.libs.F.Function2;
-import play.libs.F.Promise;
+import scala.concurrent.ExecutionContext;
 import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
 import akka.actor.ActorRef;
@@ -89,8 +89,8 @@ public class AkkaStreamProcessor implements StreamProcessor, Closeable {
 	 * @see StreamProcessor#reduce(Publisher, Object, Function2)
 	 */
 	@Override
-	public <T> Promise<T> reduce (final Publisher<T> publisher, final T initialValue, final Function2<T, T, T> reducer) {
-        final scala.concurrent.Promise<T> scalaPromise = scala.concurrent.Promise$.MODULE$.<T>apply ();
+	public <T> CompletableFuture<T> reduce (final Publisher<T> publisher, final T initialValue, final BiFunction<T, T, T> reducer) {
+        final CompletableFuture<T> future = new CompletableFuture<> ();
         final long n = 1;
         
         publisher.subscribe (new Subscriber<T> () {
@@ -109,7 +109,8 @@ public class AkkaStreamProcessor implements StreamProcessor, Closeable {
 				try {
 					data = reducer.apply (data, t);
 				} catch (Throwable cause) {
-					scalaPromise.failure (cause);
+					future.completeExceptionally (cause);
+					return;
 				}
 				if (requestSize > 0) {
 					-- requestSize;
@@ -119,12 +120,12 @@ public class AkkaStreamProcessor implements StreamProcessor, Closeable {
 
 			@Override
 			public void onError (final Throwable t) {
-				scalaPromise.failure (t);
+				future.completeExceptionally (t);
 			}
 
 			@Override
 			public void onComplete () {
-				scalaPromise.success (data);
+				future.complete (data);
 			}
 			
 			private void request () {
@@ -137,7 +138,7 @@ public class AkkaStreamProcessor implements StreamProcessor, Closeable {
 			}
 		});
         
-        return Promise.wrap (scalaPromise.future ());
+        return future;
 	}
 
 	/**
@@ -188,7 +189,7 @@ public class AkkaStreamProcessor implements StreamProcessor, Closeable {
 		);
 		
 		try {
-			return new ByteStringInputStream (actorPromise, timeoutInMillis);
+			return new ByteStringInputStream (actorPromise, timeoutInMillis, actorRefFactory.dispatcher ());
 		} catch (TimeoutException | ExecutionException | InterruptedException e) {
 			throw new RuntimeException (e);
 		}
@@ -228,6 +229,23 @@ public class AkkaStreamProcessor implements StreamProcessor, Closeable {
 		return future;
 	}
 	
+	private static <T> CompletableFuture<T> wrapFuture (final Future<T> future, final ExecutionContext context) {
+		final CompletableFuture<T> completableFuture = new CompletableFuture<> ();
+		
+		future.onComplete (new OnComplete<T> () {
+			@Override
+			public void onComplete (final Throwable t, final T value) throws Throwable {
+				if (t != null) {
+					completableFuture.completeExceptionally (t);
+				} else {
+					completableFuture.complete (value);
+				}
+			}
+		}, context);
+		
+		return completableFuture;
+	}
+	
 	/**
 	 * An InputStream implementation that reads from an Akka actor that in turn wraps a reactive
 	 * streams publisher.
@@ -235,10 +253,12 @@ public class AkkaStreamProcessor implements StreamProcessor, Closeable {
 	private final static class ByteStringInputStream extends InputStream {
 		private final ActorRef actor;
 		private final long timeout;
+		private final ExecutionContext context;
 		
-		public ByteStringInputStream (final CompletableFuture<ActorRef> actorPromise, final long timeout) throws TimeoutException, InterruptedException, ExecutionException {
+		public ByteStringInputStream (final CompletableFuture<ActorRef> actorPromise, final long timeout, final ExecutionContext context) throws TimeoutException, InterruptedException, ExecutionException {
 			this.actor = actorPromise.get (timeout, TimeUnit.MILLISECONDS);
 			this.timeout = timeout;
+			this.context = context;
 		}
 
 		@Override
@@ -269,7 +289,7 @@ public class AkkaStreamProcessor implements StreamProcessor, Closeable {
 	        }
 			
 	        try {
-	        	final Object response = Promise.wrap (Patterns.ask (actor, Integer.valueOf (len), timeout)).get (timeout);
+	        	final Object response = wrapFuture (Patterns.ask (actor, Integer.valueOf (len), timeout), context).get (timeout, TimeUnit.MILLISECONDS);
 	        	
 	        	if (response instanceof ByteString) {
 	        		final ByteString byteString = (ByteString) response;

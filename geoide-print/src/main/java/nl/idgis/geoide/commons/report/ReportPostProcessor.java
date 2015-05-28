@@ -4,6 +4,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import nl.idgis.geoide.commons.print.common.DocumentReference;
 import nl.idgis.geoide.commons.print.common.PrintRequest;
@@ -12,8 +13,6 @@ import nl.idgis.geoide.commons.report.template.TemplateDocument;
 import nl.idgis.geoide.documentcache.Document;
 import nl.idgis.geoide.documentcache.DocumentCache;
 import nl.idgis.ogc.util.MimeContentType;
-import play.libs.F.Function;
-import play.libs.F.Promise;
 
 public class ReportPostProcessor {
 	private final PrintService printService;
@@ -44,7 +43,7 @@ public class ReportPostProcessor {
 	 * @param template		the report to print ( a "filled" template document)
 	 * @return 				a pdf Document
 	 */
-	public Promise<Document> process (TemplateDocument template, ReportData reportData) throws Throwable {
+	public CompletableFuture<Document> process (TemplateDocument template, ReportData reportData) throws Throwable {
 		
 
 		final URI documentUri = template.getDocumentUri();
@@ -68,17 +67,20 @@ public class ReportPostProcessor {
 		
 		return documentCache
 				.store(documentUri, new MimeContentType ("text/html"), template.asString().getBytes())
-				.flatMap(new Function<Document, Promise<Document>> () {
-					public Promise<Document> apply (final Document a) throws Throwable {
-						return printService.print (
-								new PrintRequest (
-										new DocumentReference (new MimeContentType ("text/html"), documentUri), 
-										new MimeContentType ("application/pdf"), 
-										makeBaseUri (template.getUri ()),
-										layoutParameters
-								)
-							);
-				}});
+				.thenCompose ((final Document a) -> {
+						try {
+							return printService.print (
+									new PrintRequest (
+											new DocumentReference (new MimeContentType ("text/html"), documentUri), 
+											new MimeContentType ("application/pdf"), 
+											makeBaseUri (template.getUri ()),
+											layoutParameters
+									)
+								);
+						} catch (Exception e) {
+							throw new RuntimeException (e);
+						}
+				});
 	}
 
 	private URI makeBaseUri (final URI uri) throws URISyntaxException {

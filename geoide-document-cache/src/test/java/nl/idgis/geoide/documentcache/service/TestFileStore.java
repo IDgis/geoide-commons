@@ -1,9 +1,9 @@
 package nl.idgis.geoide.documentcache.service;
 
 
+import static org.junit.Assert.assertEquals;
 import static play.test.Helpers.fakeApplication;
 import static play.test.Helpers.running;
-import static org.junit.Assert.assertEquals;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -11,6 +11,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import nl.idgis.geoide.documentcache.Document;
 import nl.idgis.geoide.util.streams.AkkaStreamProcessor;
@@ -77,8 +80,8 @@ public class TestFileStore {
 			
 				final Document document;
 				try {
-					document = fileStore.fetch (new URI ("template:///test.txt")).get (1000);
-				} catch (URISyntaxException e) {
+					document = fileStore.fetch (new URI ("template:///test.txt")).get (1000, TimeUnit.MILLISECONDS);
+				} catch (URISyntaxException | InterruptedException | ExecutionException | TimeoutException e) {
 					throw new RuntimeException (e);
 				}
 				assertEquals (new MimeContentType ("text/plain"), document.getContentType ());
@@ -107,8 +110,8 @@ public class TestFileStore {
 			
 				final Document document;
 				try {
-					document = fileStore.fetch (new URI ("template:///test/../test.txt")).get (1000);
-				} catch (URISyntaxException e) {
+					document = fileStore.fetch (new URI ("template:///test/../test.txt")).get (1000, TimeUnit.MILLISECONDS);
+				} catch (URISyntaxException | InterruptedException | ExecutionException | TimeoutException e) {
 					throw new RuntimeException (e);
 				}
 				assertEquals (new MimeContentType ("text/plain"), document.getContentType ());

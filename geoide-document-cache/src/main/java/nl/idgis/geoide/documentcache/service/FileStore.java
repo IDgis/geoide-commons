@@ -8,10 +8,12 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.util.concurrent.CompletableFuture;
 
 import nl.idgis.geoide.documentcache.Document;
 import nl.idgis.geoide.documentcache.DocumentCacheException;
 import nl.idgis.geoide.documentcache.DocumentStore;
+import nl.idgis.geoide.util.Futures;
 import nl.idgis.geoide.util.streams.StreamProcessor;
 import nl.idgis.ogc.util.MimeContentType;
 
@@ -19,7 +21,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.reactivestreams.Publisher;
 
 import play.Logger;
-import play.libs.F.Promise;
 import akka.util.ByteString;
 
 
@@ -63,18 +64,18 @@ public class FileStore implements DocumentStore {
 	 */
 	
 	@Override
-	public Promise<Document> fetch (URI fileUri) {
+	public CompletableFuture<Document> fetch (URI fileUri) {
 				
 		if (!protocol.equals (fileUri.getScheme ())) {
 			Logger.debug ("Bad scheme: " + fileUri.toString ());
-			return Promise.throwing (new DocumentCacheException.DocumentNotFoundException (fileUri)); 
+			return Futures.throwing (new DocumentCacheException.DocumentNotFoundException (fileUri)); 
 		}
 		
 		final File file = new File (basePath, fileUri.getPath ());
 		
 		if (!file.getAbsolutePath().startsWith(basePath.getAbsolutePath())) {
 			Logger.debug ("file: " + fileUri.getPath() + " is not on the basepath: " + basePath);
-			return Promise.throwing (new DocumentCacheException.IOError(null));
+			return Futures.throwing (new DocumentCacheException.IOError(null));
 		}
 		
 		String contentType;
@@ -92,7 +93,7 @@ public class FileStore implements DocumentStore {
 			
 		} catch (IOException e) {
 			Logger.debug ("Cannot determine contentType from file: " + file.getAbsolutePath());
-			return Promise.throwing (e); 
+			return Futures.throwing (e); 
 		}
 		
 		String contType = contentType;
@@ -103,7 +104,7 @@ public class FileStore implements DocumentStore {
 			body = streamProcessor.publishInputStream(new FileInputStream(file), 1024, 30000);
 		} catch (FileNotFoundException e) {
 			Logger.debug ("Cannot find file on filePath: " + file.getAbsolutePath());
-	    	return Promise.throwing (e);
+	    	return Futures.throwing (e);
 		}
 		
 		
@@ -124,7 +125,7 @@ public class FileStore implements DocumentStore {
 				}
 			};
 		
-		return Promise.pure(document);	
+		return CompletableFuture.completedFuture (document);	
 
 	}
 	

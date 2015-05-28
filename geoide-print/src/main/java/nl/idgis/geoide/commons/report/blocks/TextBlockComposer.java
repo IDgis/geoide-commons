@@ -1,11 +1,11 @@
 package nl.idgis.geoide.commons.report.blocks;
 
 
+import java.util.concurrent.CompletableFuture;
+
 import nl.idgis.geoide.documentcache.DocumentCache;
 
 import org.jsoup.nodes.Element;
-
-import play.libs.F.Promise;
 
 public class TextBlockComposer implements BlockComposer {
 
@@ -29,11 +29,11 @@ public class TextBlockComposer implements BlockComposer {
 	 **/
 	
 	@Override
-	public Promise<Block> compose (Element blockElement, BlockInfo info, DocumentCache documentCache) throws Throwable {
+	public CompletableFuture<Block> compose (Element blockElement, BlockInfo info, DocumentCache documentCache) throws Throwable {
 		Element block = getInnerChild(blockElement);
 		block.append (((TextBlockInfo) info).getText());
 		Block textBlock = new Block(blockElement, null);
-		return Promise.pure(textBlock);
+		return CompletableFuture.completedFuture(textBlock);
 	}
 	
 	private Element getInnerChild(Element block) {

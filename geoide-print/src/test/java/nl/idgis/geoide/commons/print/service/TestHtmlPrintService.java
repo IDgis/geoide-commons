@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 
@@ -191,7 +192,7 @@ public class TestHtmlPrintService {
 				parameters
 			);
 		
-		return service.print (printRequest).get (30000);
+		return service.print (printRequest).get (30000, TimeUnit.MILLISECONDS);
 	}
 	
 	private byte[] testPng () throws IOException {
@@ -217,6 +218,6 @@ public class TestHtmlPrintService {
 	}
 	
 	private void store (final String uri, final String contentType, final byte[] data) throws Throwable {
-		documentCache.store (new URI (uri), new MimeContentType (contentType), new ByteArrayInputStream (data)).get (10000);
+		documentCache.store (new URI (uri), new MimeContentType (contentType), new ByteArrayInputStream (data)).get (10000, TimeUnit.MILLISECONDS);
 	}
 }

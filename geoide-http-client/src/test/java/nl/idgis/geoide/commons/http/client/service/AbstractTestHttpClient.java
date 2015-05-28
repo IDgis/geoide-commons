@@ -9,6 +9,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static play.test.Helpers.fakeApplication;
 import static play.test.Helpers.running;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 import nl.idgis.geoide.commons.http.client.HttpClient;
 import nl.idgis.geoide.commons.http.client.HttpResponse;
 import nl.idgis.geoide.util.streams.AkkaStreamProcessor;
@@ -20,7 +25,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.reactivestreams.Publisher;
 
-import play.libs.F.Function2;
 import akka.actor.ActorRefFactory;
 import akka.actor.ActorSystem;
 import akka.testkit.JavaTestKit;
@@ -96,27 +100,31 @@ public abstract class AbstractTestHttpClient {
 		running (fakeApplication (), new Runnable () {
 			@Override
 			public void run () {
-				final HttpResponse response = client.url ("http://localhost:8089/resource").get ().get (1000);
+				final HttpResponse response;
+				try {
+					response = client.url ("http://localhost:8089/resource").get ().get (1000, TimeUnit.MILLISECONDS);
+				} catch (InterruptedException | ExecutionException | TimeoutException e) {
+					throw new RuntimeException (e);
+				}
 				
 				assertEquals (200, response.getStatus ());
 				assertNotNull (response.getStatusText ());
 				assertEquals ("application/binary", response.getHeader ("Content-Type"));
-				assertArrayEquals (bytes, readBody (response.getBody ()));
+				try {
+					assertArrayEquals (bytes, readBody (response.getBody ()));
+				} catch (Throwable e) {
+					throw new RuntimeException (e);
+				}
 			}
 		});
 	}
 
-	private byte[] readBody (final Publisher<ByteString> body) {
+	private byte[] readBody (final Publisher<ByteString> body) throws Throwable {
 		if (body == null) {
 			return new byte[0];
 		}
 		
-		return streamProcessor.reduce (body, ByteStrings.empty (), new Function2<ByteString, ByteString, ByteString> () {
-			@Override
-			public ByteString apply(ByteString a, ByteString b) throws Throwable {
-				return a.concat (b);
-			}
-		}).get (1000).toArray ();
+		return streamProcessor.reduce (body, ByteStrings.empty (), (ByteString a, ByteString b) -> a.concat (b)).get (1000, TimeUnit.MILLISECONDS).toArray ();
 	}
 	
 	private byte[] generateBytes (final int length) {

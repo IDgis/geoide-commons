@@ -1,8 +1,7 @@
 package nl.idgis.geoide.documentcache;
 
 import java.net.URI;
-
-import play.libs.F.Promise;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * A document store provides access to documents that are identified by a unique URI. The DocumentStore
@@ -18,5 +17,5 @@ public interface DocumentStore {
 	 * @return 		A promise that resolves to the document, or raises a {@link DocumentCacheException} if the document
 	 * 				couldn't be found or if an error occured during retrieval.
 	 */
-	Promise<Document> fetch (final URI uri);
+	CompletableFuture<Document> fetch (final URI uri);
 }

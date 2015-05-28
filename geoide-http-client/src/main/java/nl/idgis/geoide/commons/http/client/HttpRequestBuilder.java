@@ -1,8 +1,9 @@
 package nl.idgis.geoide.commons.http.client;
 
+import java.util.concurrent.CompletableFuture;
+
 import org.reactivestreams.Publisher;
 
-import play.libs.F.Promise;
 import akka.util.ByteString;
 
 /**
@@ -72,14 +73,14 @@ public interface HttpRequestBuilder {
 	 * @param method The HTTP method to perform.
 	 * @return A promise that returns the HTTP response when it becomes available, or raises an exception in case of an error.
 	 */
-	Promise<HttpResponse> execute (HttpRequest.Method method);
+	CompletableFuture<HttpResponse> execute (HttpRequest.Method method);
 	
 	/**
 	 * Executes the request described in this builder.
 	 * 
 	 * @return A promise that returns the HTTP response when it becomes available, or raises an exception in case of an error.
 	 */
-	Promise<HttpResponse> execute ();
+	CompletableFuture<HttpResponse> execute ();
 	
 	/**
 	 * Executes the request described in this builder using the GET method. This
@@ -88,7 +89,7 @@ public interface HttpRequestBuilder {
 	 * 
 	 * @return A promise that returns the HTTP response when it becomes available, or raises an exception in case of an error.
 	 */
-	Promise<HttpResponse> get ();
+	CompletableFuture<HttpResponse> get ();
 	
 	/**
 	 * Executes the request described in this builder using the POST method. This
@@ -97,7 +98,7 @@ public interface HttpRequestBuilder {
 	 * 
 	 * @return A promise that returns the HTTP response when it becomes available, or raises an exception in case of an error.
 	 */
-	Promise<HttpResponse> post ();
+	CompletableFuture<HttpResponse> post ();
 	
 	/**
 	 * Executes the request described in this builder using the POST method with given body. This
@@ -106,5 +107,5 @@ public interface HttpRequestBuilder {
 	 * 
 	 * @return A promise that returns the HTTP response when it becomes available, or raises an exception in case of an error.
 	 */
-	Promise<HttpResponse> post (Publisher<ByteString> body);
+	CompletableFuture<HttpResponse> post (Publisher<ByteString> body);
 }

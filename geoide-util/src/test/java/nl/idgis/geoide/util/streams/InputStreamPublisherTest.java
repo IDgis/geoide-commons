@@ -3,6 +3,8 @@ package nl.idgis.geoide.util.streams;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
 
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
@@ -14,7 +16,6 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import play.libs.F.Function2;
 import akka.actor.ActorSystem;
 import akka.testkit.JavaTestKit;
 import akka.util.ByteString;
@@ -88,13 +89,13 @@ public class InputStreamPublisherTest extends PublisherVerification<ByteString> 
 	 * Verifies that the content of the stream matches the original.
 	 */
 	@Test
-	public void testStreamContent () {
-		final byte[] data = streamProcessor.reduce (createPublisher (10), ByteStrings.empty ().compact (), new Function2<ByteString, ByteString, ByteString> () {
+	public void testStreamContent () throws Throwable {
+		final byte[] data = streamProcessor.reduce (createPublisher (10), ByteStrings.empty ().compact (), new BiFunction<ByteString, ByteString, ByteString> () {
 			@Override
-			public ByteString apply (final ByteString a, final ByteString b) throws Throwable {
+			public ByteString apply (final ByteString a, final ByteString b) {
 				return a.concat (b).compact ();
 			}
-		}).get (1000).toArray ();
+		}).get (1000, TimeUnit.MILLISECONDS).toArray ();
 		
 		Assert.assertEquals (testBytes (BLOCK_SIZE, 10), data);
 	}
