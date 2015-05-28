@@ -110,7 +110,7 @@ public class TestDefaultDocumentCache {
 	 */
 	@Test (expected = DocumentNotFoundException.class)
 	public void testFetchReadThroughNotFound () throws Throwable {
-		cacheReadThrough.fetch (new URI ("http://idgis.nl/a")).get (1000, TimeUnit.MILLISECONDS);
+		Futures.get (cacheReadThrough.fetch (new URI ("http://idgis.nl/a")), 1000);
 		assertEquals (0, store.count);
 	}
 

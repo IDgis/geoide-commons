@@ -2,6 +2,9 @@ package nl.idgis.geoide.util;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 public final class Futures {
@@ -42,5 +45,21 @@ public final class Futures {
 				.stream ()
 				.map ((f) -> f.getNow (null))
 				.collect (Collectors.toList ()));
+	}
+	
+	public static <T> T get (final CompletableFuture<T> future, final long timeoutInMillis) throws Throwable {
+		final T value;
+		
+		try {
+			value = future.get (timeoutInMillis, TimeUnit.MILLISECONDS);
+		} catch (InterruptedException e) {
+			throw e;
+		} catch (ExecutionException e) {
+			throw e.getCause ();
+		} catch (TimeoutException e) {
+			throw e;
+		}
+		
+		return value;
 	}
 }

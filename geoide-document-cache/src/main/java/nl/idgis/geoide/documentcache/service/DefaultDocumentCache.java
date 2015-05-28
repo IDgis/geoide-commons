@@ -358,16 +358,19 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 			} else if (message instanceof StoreAndNotify) {
 				final StoreAndNotify san = (StoreAndNotify) message;
 				final Object response;
+				final URI uri;
 				
 				if (san.getDocument () != null) {
 					cache.put (san.getDocument ().getUri (), san.getDocument ());
 					response = new DocumentStored (createDocument (san.getDocument ()));
+					uri = san.getDocument().getUri ();
 				} else {
 					response = san.getMessage ();
+					uri = san.getUri ();
 				}
 				
 				// Notify all waiters that the document has arrived in the cache:
-				notifyWaiters (san.getDocument ().getUri (), response, self ());
+				notifyWaiters (uri, response, self ());
 				
 				// Signal the original sender:
 				san.getSender ().tell (response, self ());
@@ -409,19 +412,20 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 			});
 
 			promise.handle ((body, throwable) -> {
-				if (throwable != null) {
+				if (throwable == null) {
 					try {
 						self.tell (new StoreAndNotify (
 								sender,
 								null,
-								new ByteStringCachedDocument (document.getUri (), document.getContentType ().original (), body.compact ())
+								new ByteStringCachedDocument (document.getUri (), document.getContentType ().original (), body.compact ()),
+								document.getUri ()
 							), self);
 					} catch (Exception e) {
 						throw new RuntimeException (e);
 					}
 				} else {
 					try {
-						self.tell (new StoreAndNotify (sender, new CacheMiss (document.getUri (), throwable), null), self);
+						self.tell (new StoreAndNotify (sender, new CacheMiss (document.getUri (), throwable), null, document.getUri ()), self);
 					} catch (Exception e) {
 						throw new RuntimeException (e);
 					}
@@ -493,11 +497,13 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 		private final ActorRef sender;
 		private final Object message;
 		private final ByteStringCachedDocument document;
+		private final URI uri;
 		
-		public StoreAndNotify (final ActorRef sender, final Object message, final ByteStringCachedDocument document) {
+		public StoreAndNotify (final ActorRef sender, final Object message, final ByteStringCachedDocument document, final URI uri) {
 			this.sender = sender;
 			this.message = message;
 			this.document = document;
+			this.uri = uri;
 		}
 
 		public ActorRef getSender() {
@@ -510,6 +516,10 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 		
 		public ByteStringCachedDocument getDocument () {
 			return document;
+		}
+		
+		public URI getUri () {
+			return uri;
 		}
 	}
 	
