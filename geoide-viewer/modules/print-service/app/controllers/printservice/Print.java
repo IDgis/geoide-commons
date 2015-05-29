@@ -11,6 +11,7 @@ import nl.idgis.geoide.commons.print.common.PrintRequest;
 import nl.idgis.geoide.commons.print.service.PrintService;
 import nl.idgis.geoide.documentcache.Document;
 import nl.idgis.geoide.documentcache.DocumentCache;
+import nl.idgis.geoide.util.Promises;
 import nl.idgis.geoide.util.streams.StreamProcessor;
 import nl.idgis.ogc.util.MimeContentType;
 import play.Logger;
@@ -72,8 +73,8 @@ public class Print extends Controller {
 		final RawBuffer buffer = body.asRaw ();
 		final File file = buffer.asFile ();
 		
-		return documentCache
-			.store (documentUri, new MimeContentType ("text/html"), new FileInputStream (file))
+		return Promises.asPromise (documentCache
+			.store (documentUri, new MimeContentType ("text/html"), new FileInputStream (file)))
 			.flatMap (new Function<Document, Promise<Result>> () {
 				@Override
 				public Promise<Result> apply (final Document a) throws Throwable {
@@ -84,11 +85,11 @@ public class Print extends Controller {
 	
 	private Promise<Result> doPrint (final URI documentUri, final URI sourceUri) throws Throwable {
 		
-		final Promise<Document> documentPromise = printService.print (new PrintRequest (
+		final Promise<Document> documentPromise = Promises.asPromise (printService.print (new PrintRequest (
 				new DocumentReference (new MimeContentType ("text/html"), documentUri), 
 				new MimeContentType ("application/pdf"), 
 				getBaseUri (sourceUri)
-			));
+			)));
 
 		return documentPromise.map (new Function<Document, Result> () {
 			@Override
