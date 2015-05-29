@@ -20,6 +20,7 @@ import nl.idgis.geoide.commons.report.layout.less.LessCompilationException;
 import nl.idgis.geoide.documentcache.Document;
 import nl.idgis.geoide.documentcache.DocumentCache;
 import nl.idgis.geoide.documentcache.service.DefaultDocumentCache;
+import nl.idgis.geoide.util.Futures;
 import nl.idgis.geoide.util.streams.AkkaStreamProcessor;
 import nl.idgis.geoide.util.streams.StreamProcessor;
 import nl.idgis.ogc.util.MimeContentType;
@@ -192,7 +193,7 @@ public class TestHtmlPrintService {
 				parameters
 			);
 		
-		return service.print (printRequest).get (30000, TimeUnit.MILLISECONDS);
+		return Futures.get (service.print (printRequest), 30000);
 	}
 	
 	private byte[] testPng () throws IOException {
