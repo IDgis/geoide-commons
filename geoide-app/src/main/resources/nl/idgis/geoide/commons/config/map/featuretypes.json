@@ -1,0 +1,11 @@
+{
+	"featureTypes": [
+		{
+			"id": "ft-lpg",
+			"label": "LPG",
+			"name": "p_LPG",
+			"service": "test-wfs"
+		}
+		
+	]
+}	

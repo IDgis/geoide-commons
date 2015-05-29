@@ -1,0 +1,23 @@
+{
+	"serviceLayers": [
+		{
+			"id": "test-service-1-brtachtergrondkaart",
+			"label": "BRT achtergrondkaart",
+			"name": "brtachtergrondkaart",
+			"service": "test-service-1"
+		},
+		{
+			"id": "test-service-1-natura2000",
+			"label": "GBKN",
+			"name": "natura2000",
+			"service": "test-service-1"
+		},
+		{
+			"id": "test-service-2-p_LPG",
+			"label": "LPG",
+			"name": "p_LPG",
+			"service": "test-service-2",
+			"featureType": "ft-lpg"
+		}
+	]
+}

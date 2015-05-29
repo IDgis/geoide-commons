@@ -12,6 +12,9 @@
 	<modules>
 		<module>geoide-config-akka</module>
 		<module>geoide-config-http</module>
+		<module>geoide-config-print</module>
+		<module>geoide-config-map</module>
+		<module>geoide-config-providers</module>
 	</modules>
 	
 	<dependencies>

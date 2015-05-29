@@ -1,0 +1,171 @@
+{ "services": [
+		{
+			"id": "test-service-1",
+			"label": "TMS nationaal georegister",
+			"identification": {
+				"serviceType": "TMS",
+				"serviceEndpoint": "http://geodata.nationaalgeoregister.nl/tms/1.0.0",
+				"serviceVersion": "1.0.0"
+			}
+		},
+		{
+			"id": "test-service-2",
+			"label": "Risicokaart pub WMS",
+			"identification": {
+				"serviceType": "WMS",
+				"serviceEndpoint": "http://servicespub.risicokaart.nl/rk_services_pub/services/WMS-risicokaart",
+				"serviceVersion": "1.1.1"
+			}
+		},
+		{
+			"id": "test-wfs",
+			"label": "Risicokaart pub WFS",
+			"identification": {
+				"serviceType": "WFS",
+				"serviceEndpoint": "http://servicespub.risicokaart.nl/rk_services_pub/services/WFS-risicokaart",
+				"serviceVersion": "1.1.0"
+			}
+		},
+		{
+			"id": "service-crs-wms",
+			"label": "CoSurvey WMS",
+			"identification": {
+				"serviceType": "WMS",
+				"serviceEndpoint": "http://localhost:8080/crs-deegree-webservices/services/crs2_wms",
+				"serviceVersion": "1.3.0"
+			}
+		},
+		{
+			"id": "service-crs-wfs",
+			"label": "CoSurvey WFS",
+			"identification": {
+				"serviceType": "WFS",
+				"serviceEndpoint": "http://localhost:8080/crs-deegree-webservices/services/crs2_wfs",
+				"serviceVersion": "1.1.0"
+			}
+		}
+	],
+	
+	"featureTypes": [
+		{
+			"id": "ft-lpg",
+			"label": "LPG",
+			"name": "p_LPG",
+			"service": "test-wfs"
+		},
+		{
+			"id": "ft-afdelingen-test",
+			"label": "Afdelingen",
+			"name": "afdelingen_test",
+			"service": "service-crs-wfs"
+		}
+		
+	],
+	
+ 	"serviceLayers": [
+		{
+			"id": "test-service-1-brtachtergrondkaart",
+			"label": "BRT achtergrondkaart",
+			"name": "brtachtergrondkaart",
+			"service": "test-service-1"
+		},
+		{
+			"id": "test-service-1-natura2000",
+			"label": "GBKN",
+			"name": "natura2000",
+			"service": "test-service-1"
+		},
+		{
+			"id": "test-service-2-p_LPG",
+			"label": "LPG",
+			"name": "p_LPG",
+			"service": "test-service-2",
+			"featureType": "ft-lpg"
+		},
+		{
+			"id": "afdelingen-test",
+			"label": "Afdelingen",
+			"name": "afdelingen_test",
+			"service": "service-crs-wms",
+			"featureType": "ft-afdelingen-test"
+		}
+		
+	],
+	
+	"layers": [ 
+		{
+			"id": "layer-1",
+			"layerType": "default",
+			"serviceLayers": [ "test-service-1-brtachtergrondkaart", "test-service-1-natura2000" ]			
+		},
+		{
+		"id": "layer-2",
+		"layerType": "default",
+		"label": "LPG",
+		"serviceLayers": [ "test-service-2-p_LPG" ]
+		}
+	],
+	"maps": [ 
+		{
+			"id": "afdelingen",
+			"label": "Afdelingen",
+			"initial-extent": {
+				"minx" : 3000,
+				"miny" : 306000,
+				"maxx" : 283000,
+				"maxy" : 617000
+			},
+			"maplayers": [			
+				{
+					"id": "afd-group-layer",
+					"label": "Group",
+					"maplayers": [
+						{
+							"id": "afd-group2-layer",
+							"label": "Group2",
+							"maplayers": [ 
+								{
+									"id": "afd-layer-1",
+									"layer": "layer-1",
+									"label": "BRT achtergrondkaart",
+									"state": {
+										"visible" : true
+									}
+									
+								},
+								{
+									"id": "afd-layer-2",
+									"layer": "layer-2",
+									"label": "LPG"
+								}		
+							]
+						},
+						{
+							"id": "afd-layer-4",
+							"layer": "layer-2",
+							"label": "LPG2",
+							"state": {
+								"visible" : true
+							}
+						}
+						
+					]
+				},
+				{
+					"id": "afd-layer-3",
+					"layer": "layer-2",
+					"label": "LPG3333",
+					"state": {
+						"visible" : false
+					}
+				},
+				{
+				"id": "afdelingen-test",
+				"layerType": "default",
+				"label": "Afdelingen",
+				"serviceLayers": [ "afdelingen-test" ]
+				}
+			]
+		}
+	]
+}
