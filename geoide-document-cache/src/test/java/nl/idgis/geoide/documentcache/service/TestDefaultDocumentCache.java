@@ -86,7 +86,7 @@ public class TestDefaultDocumentCache {
 	 */
 	@Test (expected = DocumentNotFoundException.class)
 	public void testFetchNotFound () throws Throwable {
-		cache.fetch (new URI ("http://idgis.nl/favicon.ico")).get (1000, TimeUnit.MILLISECONDS);
+		Futures.get (cache.fetch (new URI ("http://idgis.nl/favicon.ico")), 1000);
 	}
 
 	/**
@@ -120,7 +120,7 @@ public class TestDefaultDocumentCache {
 	 */
 	@Test (expected = DocumentNotFoundException.class)
 	public void testStoreDocumentNotFound () throws Throwable {
-		cache.store (new URI ("http://idgis.nl/favicon.icon")).get (1000, TimeUnit.MILLISECONDS);
+		Futures.get (cache.store (new URI ("http://idgis.nl/favicon.icon")), 1000);
 	}
 
 	/**
@@ -143,7 +143,7 @@ public class TestDefaultDocumentCache {
 	 */
 	@Test (expected = DocumentNotFoundException.class)
 	public void testStoreDocumentReadThroughNotFound () throws Throwable {
-		cacheReadThrough.store (new URI ("http://idgis.nl/a")).get (1000, TimeUnit.MILLISECONDS);
+		Futures.get (cacheReadThrough.store (new URI ("http://idgis.nl/a")), 1000);
 		assertEquals (0, store.count);
 	}
 	
@@ -218,7 +218,7 @@ public class TestDefaultDocumentCache {
 		
 		Thread.sleep (2000);
 		
-		final Document document =  cache.fetch (new URI ("http://idgis.nl")).get (1000, TimeUnit.MILLISECONDS);
+		final Document document =  Futures.get (cache.fetch (new URI ("http://idgis.nl")), 1000);
 		
 		assertEquals (new MimeContentType ("text/plain"), document.getContentType());
 		assertContent ("Hello, World!", document, streamProcessor);
