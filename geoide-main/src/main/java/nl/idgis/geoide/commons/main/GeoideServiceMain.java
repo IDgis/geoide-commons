@@ -2,8 +2,11 @@ package nl.idgis.geoide.commons.main;
 
 import java.io.File;
 
+import nl.idgis.geoide.util.ConfigWrapper;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -52,6 +55,12 @@ public class GeoideServiceMain implements AutoCloseable {
 			}
 
 			return resourceConfig;
+		}
+		
+		@Bean
+		@Autowired
+		public ConfigWrapper configWrapper (final Config config) {
+			return new ConfigWrapper (config);
 		}
 	}
 	

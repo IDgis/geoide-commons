@@ -21,6 +21,10 @@
 			<groupId>com.typesafe</groupId>
 			<artifactId>config</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>nl.idgis.geoide</groupId>
+			<artifactId>geoide-util</artifactId>
+		</dependency>
 	</dependencies>
 	
 </project>

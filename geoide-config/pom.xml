@@ -11,6 +11,7 @@
 	<name>Geoide Commons - Config</name>
 	<modules>
 		<module>geoide-config-akka</module>
+		<module>geoide-config-http</module>
 	</modules>
 	
 	<dependencies>

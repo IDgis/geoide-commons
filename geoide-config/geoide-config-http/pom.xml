@@ -3,34 +3,21 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>nl.idgis.geoide</groupId>
-		<artifactId>geoide-commons</artifactId>
+		<artifactId>geoide-config</artifactId>
 		<version>0.1.8-SNAPSHOT</version>
 	</parent>
-	<artifactId>geoide-app</artifactId>
-	<name>Geoide - Main application</name>
+	<artifactId>geoide-config-http</artifactId>
+	<name>Geoide Commons - Config - Http</name>
 	
 	<dependencies>
 		<dependency>
 			<groupId>nl.idgis.geoide</groupId>
-			<artifactId>geoide-main</artifactId>
+			<artifactId>geoide-http-client</artifactId>
 		</dependency>
-		
-		<!-- Configuration: -->
-		<dependency>
-			<groupId>nl.idgis.geoide</groupId>
-			<artifactId>geoide-config-akka</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>nl.idgis.geoide</groupId>
-			<artifactId>geoide-config-http</artifactId>
-		</dependency>
-
-		<!-- Additional components: -->		
 		<dependency>
 			<groupId>com.typesafe.play</groupId>
 			<artifactId>play-java-ws_${scala.abi.version}</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		
 	</dependencies>
 </project>

@@ -190,6 +190,11 @@
 				<artifactId>geoide-config-akka</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>nl.idgis.geoide</groupId>
+				<artifactId>geoide-config-http</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 		
 			<dependency>
 				<groupId>nl.idgis.commons</groupId>
