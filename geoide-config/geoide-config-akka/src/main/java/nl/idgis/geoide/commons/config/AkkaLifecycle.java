@@ -8,6 +8,10 @@ import org.springframework.stereotype.Component;
 
 import akka.actor.ActorSystem;
 
+/**
+ * Component that manages the lifecycle of the Akka actorsystem. Implements the DisposableBean interface
+ * to close the actorsystem when the application context is closed.
+ */
 @Component
 public class AkkaLifecycle implements DisposableBean {
 
@@ -19,7 +23,10 @@ public class AkkaLifecycle implements DisposableBean {
 	public AkkaLifecycle (final ActorSystem actorSystem) {
 		this.actorSystem = actorSystem;
 	}
-	
+
+	/**
+	 * Stops the akka actorsystem and awaits termination.
+	 */
 	@Override
 	public void destroy () throws Exception {
 		log.info ("Shutting down Akka actorsystem");

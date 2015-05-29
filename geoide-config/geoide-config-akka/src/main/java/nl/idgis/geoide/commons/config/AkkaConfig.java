@@ -12,6 +12,9 @@ import akka.actor.ActorSystem;
 
 import com.typesafe.config.Config;
 
+/**
+ * Provides implementations of components that use an Akka actorsystem as backing.
+ */
 @Configuration
 public class AkkaConfig {
 
