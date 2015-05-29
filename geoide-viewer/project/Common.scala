@@ -10,6 +10,7 @@ object Common {
 	val geoideCommonsVersion = "0.1.8-SNAPSHOT"
 	
 	val resolvers = Seq[Resolver] (
+		Resolver.mavenLocal,
 		"idgis-public" at "http://nexus.idgis.eu/content/groups/public/",
 		"idgis-thirdparty" at "http://nexus.idgis.eu/content/repositories/thirdparty/",
 		"idgis-restricted" at "http://nexus.idgis.eu/content/groups/restricted/"	
