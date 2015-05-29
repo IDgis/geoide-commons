@@ -1,6 +1,7 @@
 package controllers.printservice;
 
 import nl.idgis.geoide.commons.report.template.HtmlTemplateDocumentProvider;
+import nl.idgis.geoide.util.Promises;
 import play.libs.F.Promise;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -21,7 +22,7 @@ public class Template extends Controller {
 		
 	public	 Promise<Result> getTemplates () throws Throwable {
 
-		final Promise<JsonNode> templatePromise = this.templateProvider.getTemplates();
+		final Promise<JsonNode> templatePromise = Promises.asPromise (this.templateProvider.getTemplates());
 		
 		return templatePromise.map((templates) -> {
 			return ok(templates);

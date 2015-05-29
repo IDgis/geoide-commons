@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 
@@ -19,6 +20,7 @@ import nl.idgis.geoide.commons.report.layout.less.LessCompilationException;
 import nl.idgis.geoide.documentcache.Document;
 import nl.idgis.geoide.documentcache.DocumentCache;
 import nl.idgis.geoide.documentcache.service.DefaultDocumentCache;
+import nl.idgis.geoide.util.Futures;
 import nl.idgis.geoide.util.streams.AkkaStreamProcessor;
 import nl.idgis.geoide.util.streams.StreamProcessor;
 import nl.idgis.ogc.util.MimeContentType;
@@ -191,7 +193,7 @@ public class TestHtmlPrintService {
 				parameters
 			);
 		
-		return service.print (printRequest).get (30000);
+		return Futures.get (service.print (printRequest), 30000);
 	}
 	
 	private byte[] testPng () throws IOException {
@@ -217,6 +219,6 @@ public class TestHtmlPrintService {
 	}
 	
 	private void store (final String uri, final String contentType, final byte[] data) throws Throwable {
-		documentCache.store (new URI (uri), new MimeContentType (contentType), new ByteArrayInputStream (data)).get (10000);
+		documentCache.store (new URI (uri), new MimeContentType (contentType), new ByteArrayInputStream (data)).get (10000, TimeUnit.MILLISECONDS);
 	}
 }

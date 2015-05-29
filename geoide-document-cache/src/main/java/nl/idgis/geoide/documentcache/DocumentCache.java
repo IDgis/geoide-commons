@@ -2,12 +2,12 @@ package nl.idgis.geoide.documentcache;
 
 import java.io.InputStream;
 import java.net.URI;
+import java.util.concurrent.CompletableFuture;
 
 import nl.idgis.ogc.util.MimeContentType;
 
 import org.reactivestreams.Publisher;
 
-import play.libs.F.Promise;
 import akka.util.ByteString;
 
 /**
@@ -26,7 +26,7 @@ public interface DocumentCache extends DocumentStore {
 	 * 
 	 * @return A promise that resolves to the cache TTL in milliseconds.
 	 */
-	Promise<Long> getTtl ();
+	CompletableFuture<Long> getTtl ();
 	
 	/**
 	 * Stores a document with the given URI in the cache. This method only works if the cache implementation
@@ -38,7 +38,7 @@ public interface DocumentCache extends DocumentStore {
 	 * @return A promise that resolves to the stored document, or a {@link DocumentCacheException} if the
 	 * 	document couldn't be fetched or storing the document failed.
 	 */
-	Promise<Document> store (URI uri);
+	CompletableFuture<Document> store (URI uri);
 	
 	/**
 	 * Stores a document in the cache by providing a byte array containing the document body. If a document
@@ -50,7 +50,7 @@ public interface DocumentCache extends DocumentStore {
 	 * @return				A promise that resolves to the stored document, or raises a {@link DocumentCacheException} if the
 	 * 						document couldn't be stored.
 	 */
-	Promise<Document> store (URI uri, MimeContentType contentType, byte[] data);
+	CompletableFuture<Document> store (URI uri, MimeContentType contentType, byte[] data);
 	
 	/**
 	 * Stores a document in the cache by providing an InputStream containing the document body. If a document
@@ -63,7 +63,7 @@ public interface DocumentCache extends DocumentStore {
 	 * @return				A promise that resolves to the stored document, or raises a {@link DocumentCacheException} if the
 	 * 						document couldn't be stored.
 	 */
-	Promise<Document> store (URI uri, MimeContentType contentType, InputStream inputStream);
+	CompletableFuture<Document> store (URI uri, MimeContentType contentType, InputStream inputStream);
 	
 	/**
 	 * Stores a document in the cache by providing an publisher that produces ByteStrings containing the document body. If a document
@@ -76,5 +76,5 @@ public interface DocumentCache extends DocumentStore {
 	 * @return				A promise that resolves to the stored document, or raises a {@link DocumentCacheException} if the
 	 * 						document couldn't be stored.
 	 */
-	Promise<Document> store (URI uri, MimeContentType contentType, Publisher<ByteString> body);
+	CompletableFuture<Document> store (URI uri, MimeContentType contentType, Publisher<ByteString> body);
 }

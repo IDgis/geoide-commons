@@ -1,5 +1,4 @@
 // import play.PlayImport.PlayKeys.playPackageAssets
-
 name := """geoide-viewer"""
 
 // Include common settings:
@@ -67,3 +66,10 @@ publishTo := {
 	else
 		Some ("idgis-restricted-releases" at nexus + "restricted-releases")
 }
+
+// Configure eclipse plugin:
+import com.typesafe.sbteclipse.core.EclipsePlugin.EclipseKeys
+
+EclipseKeys.classpathTransformerFactories := EclipseKeys.classpathTransformerFactories.value.init
+
+EclipseKeys.preTasks := Seq()

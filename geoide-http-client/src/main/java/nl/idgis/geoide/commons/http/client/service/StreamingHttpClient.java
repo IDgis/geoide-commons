@@ -2,6 +2,7 @@ package nl.idgis.geoide.commons.http.client.service;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 
 import nl.idgis.geoide.commons.http.client.HttpClient;
 import nl.idgis.geoide.commons.http.client.HttpRequest;
@@ -19,8 +20,6 @@ import org.apache.http.nio.IOControl;
 import org.apache.http.nio.protocol.HttpAsyncRequestProducer;
 import org.apache.http.nio.protocol.HttpAsyncResponseConsumer;
 import org.apache.http.protocol.HttpContext;
-
-import play.libs.F.Promise;
 
 /**
  * EXPERIMENTAL
@@ -59,7 +58,7 @@ public class StreamingHttpClient implements HttpClient, Closeable {
 	}
 
 	@Override
-	public Promise<HttpResponse> request (final HttpRequest request) {
+	public CompletableFuture<HttpResponse> request (final HttpRequest request) {
 		final HttpAsyncRequestProducer requestProducer = new HttpAsyncRequestProducer () {
 			@Override
 			public void close() throws IOException {

@@ -1,11 +1,11 @@
 package nl.idgis.geoide.commons.report.blocks;
 
 
+import java.util.concurrent.CompletableFuture;
+
 import nl.idgis.geoide.documentcache.DocumentCache;
 
 import org.jsoup.nodes.Element;
-
-import play.libs.F.Promise;
 
 /**
  * Interface for a specialized report composer component. 
@@ -26,7 +26,7 @@ public interface BlockComposer<T extends BlockInfo> {
 	**/
 
 	
-	Promise<Block> compose(Element blockElement, T info,
+	CompletableFuture<Block> compose(Element blockElement, T info,
 			DocumentCache documentCache) throws Throwable;
 
 

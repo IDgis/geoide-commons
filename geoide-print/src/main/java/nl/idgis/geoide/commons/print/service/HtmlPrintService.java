@@ -17,9 +17,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLOutputFactory;
@@ -35,6 +38,7 @@ import nl.idgis.geoide.commons.report.layout.less.LessCompiler;
 import nl.idgis.geoide.documentcache.Document;
 import nl.idgis.geoide.documentcache.DocumentCache;
 import nl.idgis.geoide.documentcache.DocumentCacheException;
+import nl.idgis.geoide.util.Futures;
 import nl.idgis.geoide.util.streams.StreamProcessor;
 import nl.idgis.ogc.util.MimeContentType;
 
@@ -50,8 +54,6 @@ import org.xhtmlrenderer.pdf.ITextOutputDevice;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 import org.xhtmlrenderer.pdf.ITextReplacedElementFactory;
 import org.xhtmlrenderer.pdf.ITextUserAgent;
-
-import play.libs.F.Promise;
 
 /**
  * Print service implementation that converts HTML + several linked media to
@@ -153,15 +155,15 @@ public class HtmlPrintService implements PrintService, Closeable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Promise<Document> print (final PrintRequest printRequest) {
+	public CompletableFuture<Document> print (final PrintRequest printRequest) {
 		if (!"text".equals (printRequest.getInputDocument().getContentType ().type ()) 
 				|| !"html".equals (printRequest.getInputDocument().getContentType ().subType ())
 				|| !"application".equals (printRequest.getOutputFormat ().type ())
 				|| !"pdf".equals (printRequest.getOutputFormat ().subType ())) {
-			return Promise.throwing (new PrintException.UnsupportedFormat (printRequest.getInputDocument ().getContentType (), printRequest.getOutputFormat ()));
+			return Futures.throwing (new PrintException.UnsupportedFormat (printRequest.getInputDocument ().getContentType (), printRequest.getOutputFormat ()));
 		}
 		
-        final scala.concurrent.Promise<Document> scalaPromise = scala.concurrent.Promise$.MODULE$.<Document>apply ();
+		final CompletableFuture<Document> future = new CompletableFuture<> ();
 
         executor.execute (new Runnable () {
 			@Override
@@ -170,7 +172,7 @@ public class HtmlPrintService implements PrintService, Closeable {
 					log.debug ("Printing document: " + printRequest.getInputDocument ().getUri ().toString ());
 					
 					// Load the input document:
-					final Document cachedDocument = documentCache.fetch (printRequest.getInputDocument ().getUri ()).get (cacheTimeoutMillis);
+					final Document cachedDocument = documentCache.fetch (printRequest.getInputDocument ().getUri ()).get (cacheTimeoutMillis, TimeUnit.MILLISECONDS);
 					
 					// Create the parameters map for less:
 					final Map<String, String> lessParameters = new HashMap<> ();
@@ -228,16 +230,16 @@ public class HtmlPrintService implements PrintService, Closeable {
 					os.close ();
 					final URI resultUri = new URI ("generated://" + UUID.randomUUID ().toString () + ".pdf");
 					log.debug ("Storing result for " + printRequest.getInputDocument ().getUri ().toString () + " as " + resultUri.toString ());
-					final Document resultDocument = documentCache.store (resultUri, new MimeContentType ("application/pdf"), os.toByteArray ()).get (cacheTimeoutMillis);
+					final Document resultDocument = documentCache.store (resultUri, new MimeContentType ("application/pdf"), os.toByteArray ()).get (cacheTimeoutMillis, TimeUnit.MILLISECONDS);
 					
-					scalaPromise.success (resultDocument);
+					future.complete (resultDocument);
 				} catch (Throwable t) {
-					scalaPromise.failure (t);
+					future.completeExceptionally (t);
 				}
 			}
 		});
         
-		return Promise.wrap (scalaPromise.future ());
+		return future;
 	}
 
 	/**
@@ -247,7 +249,7 @@ public class HtmlPrintService implements PrintService, Closeable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Promise<Capabilities> getCapabilities () {
+	public CompletableFuture<Capabilities> getCapabilities () {
 		final List<MimeContentType> supportedLinkedMedia = new ArrayList<> ();
 		
 		supportedLinkedMedia.add (new MimeContentType ("image/jpeg"));
@@ -266,7 +268,7 @@ public class HtmlPrintService implements PrintService, Closeable {
 				supportedLinkedMedia, outputFormats
 			));
 		
-		return Promise.pure (new Capabilities (
+		return CompletableFuture.completedFuture (new Capabilities (
 				inputFormats, 
 				workQueue.size ()
 			));
@@ -387,9 +389,9 @@ public class HtmlPrintService implements PrintService, Closeable {
 				(filename, directory) -> {
 					log.debug ("Importing less script: " + filename);
 					try {
-						final Document lessDocument = documentCache.fetch (new URI (filename)).get (cacheTimeoutMillis);
+						final Document lessDocument = documentCache.fetch (new URI (filename)).get (cacheTimeoutMillis, TimeUnit.MILLISECONDS);
 						return Optional.of (readInputStream (streamProcessor.asInputStream (lessDocument.getBody (), cacheTimeoutMillis)));
-					} catch (DocumentCacheException | URISyntaxException e) {
+					} catch (DocumentCacheException | URISyntaxException | TimeoutException | ExecutionException | InterruptedException e) {
 						return Optional.<String>empty ();
 					}
 				});
@@ -428,9 +430,9 @@ public class HtmlPrintService implements PrintService, Closeable {
 
 			 try {
 				 // Attempt to load cached resources:
-				 final Document document = cache.fetch (new URI (uri)).get (timeout);
+				 final Document document = cache.fetch (new URI (uri)).get (timeout, TimeUnit.MILLISECONDS);
 				 return streamProcessor.asInputStream (document.getBody (), timeout);
-			 } catch (URISyntaxException | DocumentCacheException e) {
+			 } catch (URISyntaxException | DocumentCacheException | InterruptedException | ExecutionException | TimeoutException e) {
 				 // Fall back to the default user agent for other requests:
 				 log.warn ("Unable to resolve related document " + uri.toString () + ", falling back to default implementation");
 				 return super.resolveAndOpenStream (uri);

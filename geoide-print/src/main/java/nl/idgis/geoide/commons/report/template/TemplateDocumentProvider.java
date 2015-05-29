@@ -1,20 +1,19 @@
 package nl.idgis.geoide.commons.report.template;
 
 import java.io.IOException;
-
-import play.libs.F.Promise;
+import java.util.concurrent.CompletableFuture;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 
 public interface TemplateDocumentProvider {
 
-	Promise<TemplateDocument> getTemplateDocument(String templateUrl) throws IOException;
+	CompletableFuture<TemplateDocument> getTemplateDocument(String templateUrl) throws IOException;
 	
-	Promise<JsonNode> getTemplates();
+	CompletableFuture<JsonNode> getTemplates();
 	
 
-	Promise<JsonNode> getTemplateProperties(String templateName,
-			Promise<TemplateDocument> html);
+	CompletableFuture<JsonNode> getTemplateProperties(String templateName,
+			CompletableFuture<TemplateDocument> html);
 	
 }

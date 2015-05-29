@@ -19,7 +19,11 @@
 		<module>geoide-document-cache</module>
 		<module>geoide-http-client</module>
     	<module>geoide-map</module>
-  </modules>
+    	<module>geoide-remote</module>
+    	<module>geoide-main</module>
+    	<module>geoide-config</module>
+    	<module>geoide-app</module>
+	</modules>
 
 	<scm>
 		<connection>scm:git:git@github.com:IDgis/geoide-commons.git</connection>
@@ -40,10 +44,13 @@
 		<jsoup.version>1.8.1</jsoup.version>
 		<mapdb.version>1.0.6</mapdb.version>
 		<wiremock.version>1.53</wiremock.version>
-		<reactive-streams.version>1.0.0.RC1</reactive-streams.version>
+		<reactive-streams.version>1.0.0</reactive-streams.version>
 		<httpcomponents-asyncclient.version>4.0.2</httpcomponents-asyncclient.version>
 		<lesscss.version>2.3.1</lesscss.version>
 		<geoapi.version>3.0.0</geoapi.version>
+		<mockito.version>1.10.19</mockito.version>
+		<logback.version>1.1.3</logback.version>
+		<typesafe-config.version>1.3.0-M3</typesafe-config.version>
 		
 		<!-- These versions should match the versions that are in use by the Play framework: -->
 		<scala.version>2.11.1</scala.version>
@@ -112,6 +119,23 @@
 			</dependency>
 			
 			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-classic</artifactId>
+				<version>${logback.version}</version>
+			</dependency>	
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-core</artifactId>
+				<version>${logback.version}</version>
+			</dependency>	
+			
+			<dependency>
+				<groupId>com.typesafe</groupId>
+				<artifactId>config</artifactId>
+				<version>${typesafe-config.version}</version>
+			</dependency>
+			
+			<dependency>
 				<groupId>nl.idgis.geoide</groupId>
 				<artifactId>geoide-util</artifactId>
 				<version>${project.version}</version>
@@ -154,6 +178,16 @@
 			<dependency>
 				<groupId>nl.idgis.geoide</groupId>
 				<artifactId>geoide-map</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>nl.idgis.geoide</groupId>
+				<artifactId>geoide-main</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>nl.idgis.geoide</groupId>
+				<artifactId>geoide-config-akka</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 		
@@ -368,6 +402,13 @@
 				<version>${lesscss.version}</version>
 			</dependency>
 			
+			<dependency>
+			    <groupId>org.mockito</groupId>
+			    <artifactId>mockito-core</artifactId>
+			    <version>${mockito.version}</version>
+			    <scope>test</scope>
+			</dependency>
+
 			<!-- Conflicting dependencies introduced by idgis-commons: -->
 			<dependency>
 				<groupId>org.slf4j</groupId>

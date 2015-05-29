@@ -1,6 +1,6 @@
 package nl.idgis.geoide.commons.http.client;
 
-import play.libs.F.Promise;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Generic HTTP client interface. An implementation of this interface is
@@ -31,5 +31,5 @@ public interface HttpClient {
 	 * @param request The request to execute.
 	 * @return A promise that returns the response when it becomes available, or raises an exception in case of error.
 	 */
-	Promise<HttpResponse> request (HttpRequest request);
+	CompletableFuture<HttpResponse> request (HttpRequest request);
 }

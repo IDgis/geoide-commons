@@ -22,6 +22,8 @@
 			<artifactId>akka-actor_${scala.abi.version}</artifactId>
 			<scope>provided</scope>
 		</dependency>
+		
+		<!-- Optional dependency on the Play! framework: -->
 		<dependency>
 			<groupId>com.typesafe.play</groupId>
 			<artifactId>play-java-ws_${scala.abi.version}</artifactId>

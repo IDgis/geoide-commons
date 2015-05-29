@@ -1,9 +1,10 @@
 package nl.idgis.geoide.commons.print.service;
 
+import java.util.concurrent.CompletableFuture;
+
 import nl.idgis.geoide.commons.print.common.Capabilities;
 import nl.idgis.geoide.commons.print.common.PrintRequest;
 import nl.idgis.geoide.documentcache.Document;
-import play.libs.F.Promise;
 
 /**
  * Interface for a print service. A print service processes print requests which instruct
@@ -20,12 +21,12 @@ public interface PrintService {
 	 * @param printRequest The print request to execute.
 	 * @return A promise that will resolve to the resulting document, or raise a {@link PrintException}.
 	 */
-	Promise<Document> print (PrintRequest printRequest);
+	CompletableFuture<Document> print (PrintRequest printRequest);
 	
 	/**
 	 * Returns the capabilities of the print service.
 	 * 
 	 * @return A promise that will resolve to the capabilities of the service, or raise a {@link PrintException}.
 	 */
-	Promise<Capabilities> getCapabilities ();
+	CompletableFuture<Capabilities> getCapabilities ();
 }

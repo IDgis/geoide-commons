@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import nl.idgis.geoide.commons.print.service.HtmlPrintService;
 import nl.idgis.geoide.commons.report.blocks.Block;
@@ -23,14 +24,13 @@ import nl.idgis.geoide.commons.report.template.TemplateDocumentProvider;
 import nl.idgis.geoide.documentcache.Document;
 import nl.idgis.geoide.documentcache.DocumentCache;
 import nl.idgis.geoide.map.MapView;
+import nl.idgis.geoide.util.Futures;
 
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import play.libs.F.Function;
-import play.libs.F.Promise;
 import play.libs.F.Tuple;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -78,21 +78,25 @@ public class ReportComposer {
 	 * @param clientInfo 	client information in the form of a Json Node. 
 	 * @return a promise of a report document (html)
 	 */
-	public Promise<Document> compose (JsonNode clientInfo) throws Throwable {
+	public CompletableFuture<Document> compose (JsonNode clientInfo) throws Throwable {
 
 		final JsonNode templateInfo = clientInfo.findPath("template");
 	
 		final String templateUrl = templateInfo.path ("id").asText();
 		
-		Promise<TemplateDocument> doc = templateProvider.getTemplateDocument(templateUrl);
+		CompletableFuture<TemplateDocument> doc = templateProvider.getTemplateDocument(templateUrl);
 		
-		return doc.flatMap((d) -> composeTemplate(d, clientInfo));
-		
-	
+		return doc.thenCompose((d) -> {
+			try { 
+				return composeTemplate (d, clientInfo);
+			} catch (Throwable e) { 
+				throw new RuntimeException (e);
+			}
+		});
 	}
 		
 		
-	private Promise<Document> composeTemplate (TemplateDocument template, JsonNode clientInfo) throws Throwable {	
+	private CompletableFuture<Document> composeTemplate (TemplateDocument template, JsonNode clientInfo) throws Throwable {	
 		//parse templateInfo
 		final JsonNode templateInfo = clientInfo.findPath("template");
 		final JsonNode viewerStates = clientInfo.findPath("viewerstates");	
@@ -108,7 +112,7 @@ public class ReportComposer {
 				
 		Elements blockElements = template.getBlocks();
 		
-		final List<Promise<Tuple<Element, Block>>> promises = new ArrayList<> (blockElements.size ());
+		final List<CompletableFuture<Tuple<Element, Block>>> promises = new ArrayList<> (blockElements.size ());
 		final List<Tuple<Tuple<Element,Element>, BlockInfo>> preparedBlocks = new ArrayList<> (blockElements.size ());
 		final Map <String, MapBlockInfo> mapBlockInfoMap = new HashMap<String, MapBlockInfo>();
 		
@@ -181,46 +185,40 @@ public class ReportComposer {
 			
 		}
 		
-		return Promise
-			.sequence(promises)
-			.flatMap (new Function<List<Tuple<Element, Block>>, Promise<Document>> () {
-				@Override
-				public Promise<Document> apply (final List<Tuple<Element, Block>> blocks) throws Throwable {
+		return Futures
+			.all (promises)
+			.thenCompose ((final List<Tuple<Element, Block>> blocks) -> {
+				for (final Tuple<Element, Block> tuple: blocks) {
+					final Element sourceElement = tuple._1;
+					final Block block = tuple._2;
+					final URI cssUri = block.getCssUri ();
 					
-					for (final Tuple<Element, Block> tuple: blocks) {
-						final Element sourceElement = tuple._1;
-						final Block block = tuple._2;
-						final URI cssUri = block.getCssUri ();
-						
-						sourceElement.replaceWith (block.getBlock ());
-						
-						if (cssUri == null) {
-							continue;
-						}
-						
-						template
-							.getDocument().head ()
-							.appendElement ("link")
-							.attr ("rel", "stylesheet")
-							.attr ("href", cssUri.toString ())
-							.attr ("type", "text/css");
+					sourceElement.replaceWith (block.getBlock ());
+					
+					if (cssUri == null) {
+						continue;
 					}
 					
-					log.debug("html template :"  + template);
-					
+					template
+						.getDocument().head ()
+						.appendElement ("link")
+						.attr ("rel", "stylesheet")
+						.attr ("href", cssUri.toString ())
+						.attr ("type", "text/css");
+				}
+				
+				log.debug("html template :"  + template);
+				
+				try {
 					return processor.process (template, reportData);
+				} catch (Throwable t) {
+					throw new RuntimeException (t);
 				}
 			});
 	}
 	
-	private Promise<Tuple<Element, Block>> processBlock (final Element sourceElement, final Promise<Block> promise) {
+	private CompletableFuture<Tuple<Element, Block>> processBlock (final Element sourceElement, final CompletableFuture<Block> promise) {
 		return promise
-			.map (new Function<Block, Tuple<Element, Block>> () {
-				@Override
-				public Tuple<Element, Block> apply (final Block block)
-						throws Throwable {
-					return new Tuple<> (sourceElement, block);
-				}
-			});
+			.thenApply ((final Block block) -> new Tuple<> (sourceElement, block));
 	}
 }

@@ -6,6 +6,7 @@ import java.net.URI;
 import nl.idgis.geoide.commons.report.ReportComposer;
 import nl.idgis.geoide.documentcache.Document;
 import nl.idgis.geoide.documentcache.DocumentCache;
+import nl.idgis.geoide.util.Promises;
 import nl.idgis.geoide.util.streams.StreamProcessor;
 import play.libs.Json;
 import play.libs.F.Function;
@@ -42,7 +43,7 @@ public class Report extends Controller {
 	public Promise<Result> fetchReport (final String u) throws Throwable {
 		
 		URI uri = new URI(u);
-		final Promise<Document> documentPromise = documentCache.fetch(uri);
+		final Promise<Document> documentPromise = Promises.asPromise (documentCache.fetch(uri));
 		
 		return documentPromise.map (new Function<Document, Result> () {
 			//@Override
@@ -59,7 +60,7 @@ public class Report extends Controller {
 	
 	private Promise<Result> doCompose (final JsonNode reportJson) throws Throwable {
 
-		final Promise<Document> documentPromise = composer.compose(reportJson);
+		final Promise<Document> documentPromise = Promises.asPromise (composer.compose(reportJson));
 		
 		return documentPromise.map (new Function<Document, Result> () {
 			//@Override
