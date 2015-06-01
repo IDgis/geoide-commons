@@ -15,6 +15,10 @@
 			<artifactId>akka-actor_${scala.abi.version}</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.typesafe.akka</groupId>
+			<artifactId>akka-remote_${scala.abi.version}</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>nl.idgis.geoide</groupId>
 			<artifactId>geoide-util</artifactId>
 		</dependency>

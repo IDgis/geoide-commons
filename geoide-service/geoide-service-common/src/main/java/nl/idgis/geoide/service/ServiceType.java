@@ -2,6 +2,7 @@ package nl.idgis.geoide.service;
 
 import java.util.Set;
 
+import play.libs.ws.WSClient;
 import nl.idgis.geoide.commons.domain.ServiceIdentification;
 import akka.actor.ActorRef;
 import akka.actor.Props;
@@ -24,5 +25,5 @@ public abstract class ServiceType {
 		return new ServiceIdentification (getTypeName (), normalizeEndpoint (endpoint), version);
 	}
 	
-	public abstract Props createServiceActorProps (ActorRef serviceManager, ServiceIdentification identification);
+	public abstract Props createServiceActorProps (ActorRef serviceManager, WSClient wsClient, ServiceIdentification identification);
 }

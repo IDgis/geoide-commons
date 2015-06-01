@@ -16,6 +16,6 @@ public class TestDefaultHttpClient extends AbstractTestHttpClient {
 	 */
 	@Override
 	protected HttpClient createHttpClient (final ActorRefFactory actorSystem, final StreamProcessor streamProcessor) {
-		return new DefaultHttpClient (streamProcessor, 10, 1000);
+		return new DefaultHttpClient (streamProcessor, DefaultHttpClient.createWSClient (), 10, 1000);
 	}
 }

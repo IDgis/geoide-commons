@@ -23,6 +23,7 @@ import play.Logger;
 import play.libs.F.Callback;
 import play.libs.F.Function;
 import play.libs.F.Promise;
+import play.libs.ws.WSClient;
 import play.libs.ws.WSRequestHolder;
 import play.libs.ws.WSResponse;
 import akka.actor.ActorRef;
@@ -35,6 +36,7 @@ public abstract class Service extends UntypedActor {
 	protected final static int DEFAULT_CAPABILITIES_TIMEOUT = 5000;
 	protected final static int DEFAULT_REQUEST_TIMEOUT = 5000;
 	
+	private final WSClient wsClient;
 	private final ActorRef serviceManager;
 	private final ServiceIdentification identification;
 	
@@ -42,7 +44,10 @@ public abstract class Service extends UntypedActor {
 	private final int capabilitiesTimeout;
 	private final int requestTimeout;
 	
-	public Service (final ActorRef serviceManager, final ServiceIdentification identification, final long cacheLifetime, final int capabilitiesTimeout, final int requestTimeout) {
+	public Service (final ActorRef serviceManager, final WSClient wsClient, final ServiceIdentification identification, final long cacheLifetime, final int capabilitiesTimeout, final int requestTimeout) {
+		if (wsClient == null) {
+			throw new NullPointerException ("wsClient cannot be null");
+		}
 		if (serviceManager == null) {
 			throw new NullPointerException ("serviceManager cannot be null");
 		}
@@ -50,6 +55,7 @@ public abstract class Service extends UntypedActor {
 			throw new NullPointerException ("identification cannot be null");
 		}
 		
+		this.wsClient = wsClient;
 		this.serviceManager = serviceManager;
 		this.identification = identification;
 		this.cacheLifetime = cacheLifetime;
@@ -57,6 +63,10 @@ public abstract class Service extends UntypedActor {
 		this.requestTimeout = requestTimeout;
 	}
 
+	protected WSClient wsClient () {
+		return wsClient;
+	}
+	
 	protected ActorRef serviceManager () {
 		return serviceManager;
 	}

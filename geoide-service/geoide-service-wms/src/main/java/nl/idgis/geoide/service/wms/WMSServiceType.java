@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import play.libs.ws.WSClient;
 import nl.idgis.geoide.commons.domain.ParameterizedServiceLayer;
 import nl.idgis.geoide.commons.domain.Service;
 import nl.idgis.geoide.commons.domain.ServiceIdentification;
@@ -162,8 +163,8 @@ public class WMSServiceType extends ServiceType implements LayerServiceType {
 	
 	
 	@Override
-	public Props createServiceActorProps (final ActorRef serviceManager, final ServiceIdentification identification) {
-		return WMS.mkProps (serviceManager, identification);
+	public Props createServiceActorProps (final ActorRef serviceManager, final WSClient wsClient, final ServiceIdentification identification) {
+		return WMS.mkProps (serviceManager, wsClient, identification);
 	}
 	
 	@JsonInclude (Include.NON_NULL)

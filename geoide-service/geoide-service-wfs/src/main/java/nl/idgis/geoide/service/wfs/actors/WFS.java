@@ -23,6 +23,7 @@ import nl.idgis.services.Capabilities;
 import play.Logger;
 import play.libs.F.Callback;
 import play.libs.F.Promise;
+import play.libs.ws.WSClient;
 import play.libs.ws.WSRequestHolder;
 import play.libs.ws.WSResponse;
 import akka.actor.ActorRef;
@@ -31,12 +32,12 @@ import akka.pattern.Patterns;
 
 public class WFS extends OGCService {
 
-	public WFS (final ActorRef serviceManager, final ServiceIdentification identification) {
-		super(serviceManager, identification, DEFAULT_CACHE_LIFETIME, DEFAULT_CAPABILITIES_TIMEOUT, DEFAULT_REQUEST_TIMEOUT);
+	public WFS (final ActorRef serviceManager, final WSClient wsClient, final ServiceIdentification identification) {
+		super(serviceManager, wsClient, identification, DEFAULT_CACHE_LIFETIME, DEFAULT_CAPABILITIES_TIMEOUT, DEFAULT_REQUEST_TIMEOUT);
 	}
 	
-	public static Props mkProps (final ActorRef serviceManager, final ServiceIdentification identification) {
-		return Props.create (WFS.class, serviceManager, identification);
+	public static Props mkProps (final ActorRef serviceManager, final WSClient wsClient, final ServiceIdentification identification) {
+		return Props.create (WFS.class, serviceManager, wsClient, identification);
 	}
 
 	@Override

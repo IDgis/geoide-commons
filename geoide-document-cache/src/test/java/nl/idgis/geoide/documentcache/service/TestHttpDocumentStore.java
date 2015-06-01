@@ -51,7 +51,7 @@ public class TestHttpDocumentStore {
 	public void createHttpClient () {
 		actorSystem = ActorSystem.create ();
 		streamProcessor = new AkkaStreamProcessor (actorSystem);
-		httpClient = new DefaultHttpClient (streamProcessor, 10, 500);
+		httpClient = new DefaultHttpClient (streamProcessor, DefaultHttpClient.createWSClient (), 10, 500);
 	}
 	
 	/**

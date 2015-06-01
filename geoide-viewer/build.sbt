@@ -44,9 +44,9 @@ libraryDependencies ++= Seq(
   Common.Dependencies.akkaRemote,
   Common.Dependencies.geoideRemote,
   Common.Dependencies.geoideDomain,
+  Common.Dependencies.geoideUtil,
   
   Common.Dependencies.geoideDomainTest,
-  Common.Dependencies.geoideUtil,
   Common.Dependencies.geoideServiceCommon,
   Common.Dependencies.geoideServiceTms,
   Common.Dependencies.geoideServiceWms,

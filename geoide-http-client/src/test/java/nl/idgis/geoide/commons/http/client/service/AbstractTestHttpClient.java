@@ -59,7 +59,8 @@ public abstract class AbstractTestHttpClient {
 	public void createClient () {
 		actorSystem = ActorSystem.create ();
 		streamProcessor = new AkkaStreamProcessor (actorSystem);
-		client = createHttpClient (actorSystem, streamProcessor); new DefaultHttpClient (streamProcessor, 10, 1000);
+		client = createHttpClient (actorSystem, streamProcessor);
+		new DefaultHttpClient (streamProcessor, DefaultHttpClient.createWSClient (), 10, 1000);
 	}
 
 	/**

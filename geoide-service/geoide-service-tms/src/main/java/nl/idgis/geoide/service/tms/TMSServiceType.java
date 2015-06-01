@@ -16,6 +16,7 @@ import nl.idgis.geoide.service.LayerServiceType;
 import nl.idgis.geoide.service.ServiceRequestContext;
 import nl.idgis.geoide.service.ServiceType;
 import nl.idgis.geoide.service.tms.actors.TMS;
+import play.libs.ws.WSClient;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 
@@ -154,8 +155,8 @@ public class TMSServiceType extends ServiceType implements LayerServiceType {
 	
 
 	@Override
-	public Props createServiceActorProps (final ActorRef serviceManager, final ServiceIdentification identification) {
-		return TMS.mkProps (serviceManager, identification);
+	public Props createServiceActorProps (final ActorRef serviceManager, final WSClient wsClient, final ServiceIdentification identification) {
+		return TMS.mkProps (serviceManager, wsClient, identification);
 	}
 	
 
