@@ -32,6 +32,8 @@ object Common {
 	)
 	
 	object Dependencies {
+		val akkaRemote = "com.typesafe.akka" %% "akka-remote" % "2.3.4"
+		
 		val geoideDomain = "nl.idgis.geoide" % "geoide-domain" % "0.1.8-SNAPSHOT"
 		val geoideDomainTest = "nl.idgis.geoide" % "geoide-domain-test" % "0.1.8-SNAPSHOT"
 		val geoideUtil = "nl.idgis.geoide" % "geoide-util" % "0.1.8-SNAPSHOT"
@@ -44,6 +46,7 @@ object Common {
 		val geoidePrint = "nl.idgis.geoide" % "geoide-print" % "0.1.8-SNAPSHOT"
 		val geoideHttpClient = "nl.idgis.geoide" % "geoide-http-client" % "0.1.8-SNAPSHOT"
 		val geoideMap = "nl.idgis.geoide" % "geoide-map" % "0.1.8-SNAPSHOT"
+		val geoideRemote = "nl.idgis.geoide" % "geoide-remote" % "0.1.8-SNAPSHOT"
 		
 		val webjarsPlay = "org.webjars" %% "webjars-play" % "2.3.0"
   		val webjarsBootstrap = "org.webjars" % "bootstrap" % "3.2.0"

@@ -40,7 +40,11 @@ libraryDependencies ++= Seq(
   javaEbean,
   cache,
   javaWs,
+  
+  Common.Dependencies.akkaRemote,
+  Common.Dependencies.geoideRemote,
   Common.Dependencies.geoideDomain,
+  
   Common.Dependencies.geoideDomainTest,
   Common.Dependencies.geoideUtil,
   Common.Dependencies.geoideServiceCommon,
