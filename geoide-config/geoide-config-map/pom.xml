@@ -3,46 +3,45 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>nl.idgis.geoide</groupId>
-		<artifactId>geoide-commons</artifactId>
+		<artifactId>geoide-config</artifactId>
 		<version>0.1.8-SNAPSHOT</version>
 	</parent>
-	<artifactId>geoide-app</artifactId>
-	<name>Geoide - Main application</name>
+	<artifactId>geoide-config-map</artifactId>
+	<name>Geoide Commons - Config - Map</name>
 	
 	<dependencies>
 		<dependency>
 			<groupId>nl.idgis.geoide</groupId>
-			<artifactId>geoide-main</artifactId>
-		</dependency>
-		
-		<!-- Configuration: -->
-		<dependency>
-			<groupId>nl.idgis.geoide</groupId>
-			<artifactId>geoide-config-akka</artifactId>
+			<artifactId>geoide-domain</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>nl.idgis.geoide</groupId>
-			<artifactId>geoide-config-http</artifactId>
+			<artifactId>geoide-layer-common</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>nl.idgis.geoide</groupId>
-			<artifactId>geoide-config-print</artifactId>
+			<artifactId>geoide-layer-default</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>nl.idgis.geoide</groupId>
-			<artifactId>geoide-config-map</artifactId>
+			<artifactId>geoide-service-wms</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>nl.idgis.geoide</groupId>
-			<artifactId>geoide-config-providers</artifactId>
+			<artifactId>geoide-service-tms</artifactId>
 		</dependency>
-
-		<!-- Additional components: -->		
 		<dependency>
-			<groupId>com.typesafe.play</groupId>
-			<artifactId>play-java-ws_${scala.abi.version}</artifactId>
-			<scope>provided</scope>
+			<groupId>nl.idgis.geoide</groupId>
+			<artifactId>geoide-service-common</artifactId>
 		</dependency>
-		
+		<dependency>
+			<groupId>nl.idgis.geoide</groupId>
+			<artifactId>geoide-service-wfs</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>nl.idgis.geoide</groupId>
+			<artifactId>geoide-map</artifactId>
+		</dependency>
 	</dependencies>
+	
 </project>

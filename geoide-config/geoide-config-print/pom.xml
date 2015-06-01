@@ -3,27 +3,25 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>nl.idgis.geoide</groupId>
-		<artifactId>geoide-commons</artifactId>
+		<artifactId>geoide-config</artifactId>
 		<version>0.1.8-SNAPSHOT</version>
 	</parent>
-	<artifactId>geoide-main</artifactId>
-
-	<dependencies>	
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.typesafe</groupId>
-			<artifactId>config</artifactId>
-		</dependency>
+	<artifactId>geoide-config-print</artifactId>
+	<name>Geoide Commons - Config - Print</name>
+	
+	<dependencies>
 		<dependency>
 			<groupId>nl.idgis.geoide</groupId>
-			<artifactId>geoide-util</artifactId>
+			<artifactId>geoide-print</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.typesafe.akka</groupId>
+			<artifactId>akka-actor_${scala.abi.version}</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.typesafe.play</groupId>
+			<artifactId>play-java-ws_${scala.abi.version}</artifactId>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 	

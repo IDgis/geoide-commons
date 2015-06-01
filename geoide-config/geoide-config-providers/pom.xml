@@ -3,28 +3,28 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>nl.idgis.geoide</groupId>
-		<artifactId>geoide-commons</artifactId>
+		<artifactId>geoide-config</artifactId>
 		<version>0.1.8-SNAPSHOT</version>
 	</parent>
-	<artifactId>geoide-main</artifactId>
-
-	<dependencies>	
+	<artifactId>geoide-config-providers</artifactId>
+	<name>Geoide Commons - Config - Providers</name>
+	
+	<dependencies>
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.typesafe</groupId>
-			<artifactId>config</artifactId>
+			<groupId>nl.idgis.geoide</groupId>
+			<artifactId>geoide-domain</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>nl.idgis.geoide</groupId>
 			<artifactId>geoide-util</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>nl.idgis.geoide</groupId>
+			<artifactId>geoide-map</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
 	</dependencies>
-	
 </project>

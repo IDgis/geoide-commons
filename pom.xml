@@ -190,6 +190,46 @@
 				<artifactId>geoide-config-akka</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>nl.idgis.geoide</groupId>
+				<artifactId>geoide-config-http</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>nl.idgis.geoide</groupId>
+				<artifactId>geoide-config-print</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>nl.idgis.geoide</groupId>
+				<artifactId>geoide-print</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>nl.idgis.geoide</groupId>
+				<artifactId>geoide-config-map</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>nl.idgis.geoide</groupId>
+				<artifactId>geoide-service-wms</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>nl.idgis.geoide</groupId>
+				<artifactId>geoide-service-wfs</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>nl.idgis.geoide</groupId>
+				<artifactId>geoide-service-tms</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>nl.idgis.geoide</groupId>
+				<artifactId>geoide-config-providers</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 		
 			<dependency>
 				<groupId>nl.idgis.commons</groupId>
