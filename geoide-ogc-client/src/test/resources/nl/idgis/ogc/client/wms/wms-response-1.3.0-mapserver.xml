@@ -1,0 +1,1037 @@
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<WMS_Capabilities version="1.3.0" xmlns="http://www.opengis.net/wms" xmlns:sld="http://www.opengis.net/sld" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ms="http://mapserver.gis.umn.edu/mapserver" xsi:schemaLocation="http://www.opengis.net/wms http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd  http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/sld_capabilities.xsd  http://mapserver.gis.umn.edu/mapserver https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;service=WMS&amp;version=1.3.0&amp;request=GetSchemaExtension">
+
+<!-- MapServer version 6.2-beta4 OUTPUT=GIF OUTPUT=PNG OUTPUT=JPEG OUTPUT=KML SUPPORTS=PROJ SUPPORTS=GD SUPPORTS=AGG SUPPORTS=FREETYPE SUPPORTS=CAIRO SUPPORTS=ICONV SUPPORTS=FRIBIDI SUPPORTS=WMS_SERVER SUPPORTS=WMS_CLIENT SUPPORTS=WFS_SERVER SUPPORTS=WFS_CLIENT SUPPORTS=WCS_SERVER SUPPORTS=SOS_SERVER SUPPORTS=FASTCGI SUPPORTS=THREADS SUPPORTS=GEOS INPUT=JPEG INPUT=POSTGIS INPUT=OGR INPUT=GDAL INPUT=SHAPEFILE -->
+
+<Service>
+  <Name>WMS</Name>
+  <Title>Bestemmingsplan</Title>
+  <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;"/>
+  <ContactInformation>
+  </ContactInformation>
+  <MaxWidth>100000</MaxWidth>
+  <MaxHeight>100000</MaxHeight>
+</Service>
+
+<Capability>
+  <Request>
+    <GetCapabilities>
+      <Format>text/xml</Format>
+      <DCPType>
+        <HTTP>
+          <Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;"/></Get>
+          <Post><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;"/></Post>
+        </HTTP>
+      </DCPType>
+    </GetCapabilities>
+    <GetMap>
+      <Format>image/gif</Format>
+      <Format>image/png</Format>
+      <Format>image/jpeg</Format>
+      <Format>image/png; mode=8bit</Format>
+      <Format>application/x-pdf</Format>
+      <Format>image/svg+xml</Format>
+      <Format>image/tiff</Format>
+      <Format>application/vnd.google-earth.kml+xml</Format>
+      <Format>application/vnd.google-earth.kmz</Format>
+      <DCPType>
+        <HTTP>
+          <Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;"/></Get>
+          <Post><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;"/></Post>
+        </HTTP>
+      </DCPType>
+    </GetMap>
+    <GetFeatureInfo>
+      <Format>text/plain</Format>
+      <Format>application/vnd.ogc.gml</Format>
+      <DCPType>
+        <HTTP>
+          <Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;"/></Get>
+          <Post><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;"/></Post>
+        </HTTP>
+      </DCPType>
+    </GetFeatureInfo>
+    <sld:DescribeLayer>
+      <Format>text/xml</Format>
+      <DCPType>
+        <HTTP>
+          <Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;"/></Get>
+          <Post><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;"/></Post>
+        </HTTP>
+      </DCPType>
+    </sld:DescribeLayer>
+    <sld:GetLegendGraphic>
+      <Format>image/gif</Format>
+      <Format>image/png</Format>
+      <Format>image/jpeg</Format>
+      <Format>image/png; mode=8bit</Format>
+      <DCPType>
+        <HTTP>
+          <Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;"/></Get>
+          <Post><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;"/></Post>
+        </HTTP>
+      </DCPType>
+    </sld:GetLegendGraphic>
+    <ms:GetStyles>
+      <Format>text/xml</Format>
+      <DCPType>
+        <HTTP>
+          <Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;"/></Get>
+          <Post><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;"/></Post>
+        </HTTP>
+      </DCPType>
+    </ms:GetStyles>
+  </Request>
+  <Exception>
+    <Format>XML</Format>
+    <Format>INIMAGE</Format>
+    <Format>BLANK</Format>
+  </Exception>
+  <sld:UserDefinedSymbolization SupportSLD="1" UserLayer="0" UserStyle="1" RemoteWFS="0" InlineFeature="0" RemoteWCS="0"/>
+  <Layer>
+    <Name>NLIMRO9928DOSx2011x0000029IP-VA01</Name>
+    <Title>Bestemmingsplan</Title>
+    <Abstract>NLIMRO9928DOSx2011x0000029IP-VA01</Abstract>
+    <CRS>EPSG:28992</CRS>
+    <CRS>EPSG:4326</CRS>
+    <CRS>EPSG:900913</CRS>
+    <EX_GeographicBoundingBox>
+        <westBoundLongitude>4.55033</westBoundLongitude>
+        <eastBoundLongitude>4.58288</eastBoundLongitude>
+        <southBoundLatitude>51.8574</southBoundLatitude>
+        <northBoundLatitude>51.8711</northBoundLatitude>
+    </EX_GeographicBoundingBox>
+    <BoundingBox CRS="EPSG:28992" minx="97366" miny="430204" maxx="99591" maxy="431697"/>
+    <Layer>
+      <Name>enkelbestemming</Name>
+      <Title>enkelbestemming</Title>
+      <Abstract>enkelbestemming</Abstract>
+    <Style>
+       <Name>default</Name>
+       <Title>default</Title>
+       <LegendURL width="181" height="117">
+          <Format>image/png</Format>
+          <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=enkelbestemming&amp;format=image/png&amp;STYLE=default"/>
+       </LegendURL>
+    </Style>
+      <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>e_e7</Name>
+        <Title>Groen</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.55558</westBoundLongitude>
+            <eastBoundLongitude>4.58288</eastBoundLongitude>
+            <southBoundLatitude>51.8575</southBoundLatitude>
+            <northBoundLatitude>51.8711</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="97727.5" miny="430209" maxx="99590.8" maxy="431696"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="61" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=e_e7&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+      <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>e_e12</Name>
+        <Title>Bedrijf - Nutsvoorziening</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.5612</westBoundLongitude>
+            <eastBoundLongitude>4.56305</eastBoundLongitude>
+            <southBoundLatitude>51.8663</southBoundLatitude>
+            <northBoundLatitude>51.8672</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="98109.4" miny="431186" maxx="98235.8" maxy="431280"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="181" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=e_e12&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+      <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>e_e11</Name>
+        <Title>Bedrijventerrein</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.55779</westBoundLongitude>
+            <eastBoundLongitude>4.58186</eastBoundLongitude>
+            <southBoundLatitude>51.858</southBoundLatitude>
+            <northBoundLatitude>51.8709</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="97879.2" miny="430262" maxx="99521.6" maxy="431674"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="127" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=e_e11&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+      <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>e_e9</Name>
+        <Title>Horeca</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.556</westBoundLongitude>
+            <eastBoundLongitude>4.55886</eastBoundLongitude>
+            <southBoundLatitude>51.8662</southBoundLatitude>
+            <northBoundLatitude>51.8682</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="97752.9" miny="431182" maxx="97947.5" maxy="431394"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="67" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=e_e9&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+      <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>e_e8</Name>
+        <Title>Gemengd</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.56345</westBoundLongitude>
+            <eastBoundLongitude>4.56491</eastBoundLongitude>
+            <southBoundLatitude>51.8615</southBoundLatitude>
+            <northBoundLatitude>51.8624</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="98258.4" miny="430643" maxx="98357.9" maxy="430752"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="73" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=e_e8&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+      <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>e_e13</Name>
+        <Title>Verkeer</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.55036</westBoundLongitude>
+            <eastBoundLongitude>4.58214</eastBoundLongitude>
+            <southBoundLatitude>51.8587</southBoundLatitude>
+            <northBoundLatitude>51.8706</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="97367.1" miny="430343" maxx="99541.5" maxy="431649"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="73" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=e_e13&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+      <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>e_e10</Name>
+        <Title>Water</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.55801</westBoundLongitude>
+            <eastBoundLongitude>4.58284</eastBoundLongitude>
+            <southBoundLatitude>51.8575</southBoundLatitude>
+            <northBoundLatitude>51.871</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="97894.9" miny="430204" maxx="99588.2" maxy="431689"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="61" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=e_e10&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+    </Layer>
+    <Layer>
+      <Name>dubbelbestemming</Name>
+      <Title>dubbelbestemming</Title>
+      <Abstract>dubbelbestemming</Abstract>
+    <Style>
+       <Name>default</Name>
+       <Title>default</Title>
+       <LegendURL width="175" height="53">
+          <Format>image/png</Format>
+          <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=dubbelbestemming&amp;format=image/png&amp;STYLE=default"/>
+       </LegendURL>
+    </Style>
+      <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>d_d0</Name>
+        <Title>Waarde - Archeologie</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.55035</westBoundLongitude>
+            <eastBoundLongitude>4.58288</eastBoundLongitude>
+            <southBoundLatitude>51.8574</southBoundLatitude>
+            <northBoundLatitude>51.8711</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="97367.1" miny="430204" maxx="99590.8" maxy="431696"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="151" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=d_d0&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+      <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>d_d1</Name>
+        <Title>Waterstaat - Waterkering</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.55451</westBoundLongitude>
+            <eastBoundLongitude>4.56968</eastBoundLongitude>
+            <southBoundLatitude>51.8574</southBoundLatitude>
+            <northBoundLatitude>51.868</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="97649.4" miny="430204" maxx="98681.9" maxy="431362"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="175" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=d_d1&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+      <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>d_d2</Name>
+        <Title>Leiding - Gas</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.55145</westBoundLongitude>
+            <eastBoundLongitude>4.57451</eastBoundLongitude>
+            <southBoundLatitude>51.8591</southBoundLatitude>
+            <northBoundLatitude>51.8693</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="97440.9" miny="430387" maxx="99016.6" maxy="431511"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="109" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=d_d2&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+    </Layer>
+    <Layer>
+      <Name>bouwvlak</Name>
+      <Title>bouwvlak</Title>
+      <Abstract>bouwvlak</Abstract>
+    <Style>
+       <Name>default</Name>
+       <Title>default</Title>
+       <LegendURL width="79" height="21">
+          <Format>image/png</Format>
+          <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=bouwvlak&amp;format=image/png&amp;STYLE=default"/>
+       </LegendURL>
+    </Style>
+      <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>b_32</Name>
+        <Title>bouwvlak</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.55598</westBoundLongitude>
+            <eastBoundLongitude>4.58162</eastBoundLongitude>
+            <southBoundLatitude>51.8582</southBoundLatitude>
+            <northBoundLatitude>51.8708</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="97754.4" miny="430285" maxx="99505.1" maxy="431667"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="79" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=b_32&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+    </Layer>
+    <Layer>
+      <Name>maatvoering</Name>
+      <Title>maatvoering</Title>
+      <Abstract>maatvoering</Abstract>
+    <Style>
+       <Name>default</Name>
+       <Title>default</Title>
+       <LegendURL width="223" height="69">
+          <Format>image/png</Format>
+          <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=maatvoering&amp;format=image/png&amp;STYLE=default"/>
+       </LegendURL>
+    </Style>
+      <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>m_m14</Name>
+        <Title>maximale bouwhoogte (m)</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.55598</westBoundLongitude>
+            <eastBoundLongitude>4.58162</eastBoundLongitude>
+            <southBoundLatitude>51.8582</southBoundLatitude>
+            <northBoundLatitude>51.8708</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="97754.4" miny="430285" maxx="99505.1" maxy="431667"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="169" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=m_m14&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+      <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>m_m17</Name>
+        <Title>maximum bebouwingspercentage (%)</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.55598</westBoundLongitude>
+            <eastBoundLongitude>4.58162</eastBoundLongitude>
+            <southBoundLatitude>51.8582</southBoundLatitude>
+            <northBoundLatitude>51.8708</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="97754.4" miny="430285" maxx="99505.1" maxy="431667"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="223" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=m_m17&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+      <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>m_m15</Name>
+        <Title>maximum aantal rijstroken</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.55041</westBoundLongitude>
+            <eastBoundLongitude>4.56036</eastBoundLongitude>
+            <southBoundLatitude>51.864</southBoundLatitude>
+            <northBoundLatitude>51.8679</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="97367.1" miny="430941" maxx="98048" maxy="431362"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="181" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=m_m15&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+      <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>m_m16</Name>
+        <Title>maximale goot- en bouwhoogte (m)</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.55733</westBoundLongitude>
+            <eastBoundLongitude>4.5645</eastBoundLongitude>
+            <southBoundLatitude>51.8618</southBoundLatitude>
+            <northBoundLatitude>51.8668</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="97842.4" miny="430686" maxx="98330.4" maxy="431234"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="223" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=m_m16&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+    </Layer>
+    <Layer>
+      <Name>functieaanduiding</Name>
+      <Title>functieaanduiding</Title>
+      <Abstract>functieaanduiding</Abstract>
+    <Style>
+       <Name>default</Name>
+       <Title>default</Title>
+       <LegendURL width="223" height="149">
+          <Format>image/png</Format>
+          <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=functieaanduiding&amp;format=image/png&amp;STYLE=default"/>
+       </LegendURL>
+    </Style>
+      <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>f_f22</Name>
+        <Title>parkeerterrein uitgesloten</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.55784</westBoundLongitude>
+            <eastBoundLongitude>4.57359</eastBoundLongitude>
+            <southBoundLatitude>51.858</southBoundLatitude>
+            <northBoundLatitude>51.8683</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="97879.2" miny="430262" maxx="98951.4" maxy="431399"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="187" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=f_f22&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+      <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>f_f23</Name>
+        <Title>ontsluiting</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.57209</westBoundLongitude>
+            <eastBoundLongitude>4.57886</eastBoundLongitude>
+            <southBoundLatitude>51.8589</southBoundLatitude>
+            <northBoundLatitude>51.8636</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="98855.2" miny="430347" maxx="99315.8" maxy="430875"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="97" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=f_f23&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+      <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>f_f20</Name>
+        <Title>water</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.55787</westBoundLongitude>
+            <eastBoundLongitude>4.57068</eastBoundLongitude>
+            <southBoundLatitude>51.8575</southBoundLatitude>
+            <northBoundLatitude>51.866</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="97878.3" miny="430209" maxx="98750.6" maxy="431138"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="61" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=f_f20&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+      <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>f_f19</Name>
+        <Title>windturbine</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.56509</westBoundLongitude>
+            <eastBoundLongitude>4.57629</eastBoundLongitude>
+            <southBoundLatitude>51.8661</southBoundLatitude>
+            <northBoundLatitude>51.8668</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="98377.1" miny="431154" maxx="99147.9" maxy="431223"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="97" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=f_f19&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+      <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>f_f25</Name>
+        <Title>bedrijf tot en met categorie 3.1</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.56403</westBoundLongitude>
+            <eastBoundLongitude>4.56593</eastBoundLongitude>
+            <southBoundLatitude>51.8617</southBoundLatitude>
+            <northBoundLatitude>51.863</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="98299.4" miny="430669" maxx="98428.3" maxy="430816"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="223" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=f_f25&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+      <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>f_f26</Name>
+        <Title>cultuurhistorische waarden</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.55733</westBoundLongitude>
+            <eastBoundLongitude>4.5645</eastBoundLongitude>
+            <southBoundLatitude>51.8618</southBoundLatitude>
+            <northBoundLatitude>51.8668</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="97842.4" miny="430686" maxx="98330.4" maxy="431234"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="187" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=f_f26&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+      <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>f_f21</Name>
+        <Title>bedrijf tot en met categorie 4.1</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.55786</westBoundLongitude>
+            <eastBoundLongitude>4.58127</eastBoundLongitude>
+            <southBoundLatitude>51.8585</southBoundLatitude>
+            <northBoundLatitude>51.8673</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="97879.2" miny="430316" maxx="99481.4" maxy="431279"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="223" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=f_f21&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+      <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>f_f18</Name>
+        <Title>bedrijf tot en met categorie 3.2</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.56351</westBoundLongitude>
+            <eastBoundLongitude>4.58186</eastBoundLongitude>
+            <southBoundLatitude>51.858</southBoundLatitude>
+            <northBoundLatitude>51.8661</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="98267.2" miny="430262" maxx="99521.6" maxy="431143"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="223" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=f_f18&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+      <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>f_f24</Name>
+        <Title>bedrijf tot en met categorie 4.2</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.55811</westBoundLongitude>
+            <eastBoundLongitude>4.57955</eastBoundLongitude>
+            <southBoundLatitude>51.8598</southBoundLatitude>
+            <northBoundLatitude>51.8708</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="97900.9" miny="430459" maxx="99364.5" maxy="431674"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="223" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=f_f24&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+    </Layer>
+    <Layer>
+      <Name>bouwaanduiding</Name>
+      <Title>bouwaanduiding</Title>
+      <Abstract>bouwaanduiding</Abstract>
+    <Style>
+       <Name>default</Name>
+       <Title>default</Title>
+       <LegendURL width="331" height="85">
+          <Format>image/png</Format>
+          <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=bouwaanduiding&amp;format=image/png&amp;STYLE=default"/>
+       </LegendURL>
+    </Style>
+      <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>b_bo31</Name>
+        <Title>onderdoorgang</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.56925</westBoundLongitude>
+            <eastBoundLongitude>4.57049</eastBoundLongitude>
+            <southBoundLatitude>51.8654</southBoundLatitude>
+            <northBoundLatitude>51.866</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="98662.4" miny="431080" maxx="98747.3" maxy="431140"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="109" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=b_bo31&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+      <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>b_bo27</Name>
+        <Title>specifieke bouwaanduiding uitgesloten - bebouwing</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.56057</westBoundLongitude>
+            <eastBoundLongitude>4.57682</eastBoundLongitude>
+            <southBoundLatitude>51.8602</southBoundLatitude>
+            <northBoundLatitude>51.8699</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="98069.6" miny="430501" maxx="99176.7" maxy="431567"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="325" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=b_bo27&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+      <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>b_bo28</Name>
+        <Title>specifieke bouwaanduiding - 1</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.5609</westBoundLongitude>
+            <eastBoundLongitude>4.57156</eastBoundLongitude>
+            <southBoundLatitude>51.8582</southBoundLatitude>
+            <northBoundLatitude>51.8654</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="98086.6" miny="430285" maxx="98811.9" maxy="431070"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="205" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=b_bo28&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+      <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>b_bo29</Name>
+        <Title>specifieke bouwaanduiding - overhangende bouwdelen</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.56133</westBoundLongitude>
+            <eastBoundLongitude>4.58081</eastBoundLongitude>
+            <southBoundLatitude>51.8657</southBoundLatitude>
+            <northBoundLatitude>51.8665</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="98117.7" miny="431118" maxx="99458.5" maxy="431194"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="331" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=b_bo29&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+      <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>b_bo30</Name>
+        <Title>specifieke bouwaanduiding - 2</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.55979</westBoundLongitude>
+            <eastBoundLongitude>4.5816</eastBoundLongitude>
+            <southBoundLatitude>51.8594</southBoundLatitude>
+            <northBoundLatitude>51.8708</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="98016.8" miny="430415" maxx="99505.1" maxy="431667"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="205" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=b_bo30&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+    </Layer>
+    <Layer>
+      <Name>figuur</Name>
+      <Title>figuur</Title>
+      <Abstract>figuur</Abstract>
+    <Style>
+       <Name>default</Name>
+       <Title>default</Title>
+       <LegendURL width="163" height="37">
+          <Format>image/png</Format>
+          <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=figuur&amp;format=image/png&amp;STYLE=default"/>
+       </LegendURL>
+    </Style>
+      <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>f_fg33</Name>
+        <Title>dwarsprofiel</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.56438</westBoundLongitude>
+            <eastBoundLongitude>4.57641</eastBoundLongitude>
+            <southBoundLatitude>51.8609</southBoundLatitude>
+            <northBoundLatitude>51.8688</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="98330.3" miny="430580" maxx="99149.1" maxy="431445"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="103" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=f_fg33&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+      <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>f_fg34</Name>
+        <Title>hartlijn leiding - gas</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.5527</westBoundLongitude>
+            <eastBoundLongitude>4.57445</eastBoundLongitude>
+            <southBoundLatitude>51.8591</southBoundLatitude>
+            <northBoundLatitude>51.8693</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="97526.5" miny="430391" maxx="99012.5" maxy="431508"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="163" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=f_fg34&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+    </Layer>
+    <Layer>
+      <Name>gebiedsaanduiding</Name>
+      <Title>gebiedsaanduiding</Title>
+      <Abstract>gebiedsaanduiding</Abstract>
+    <Style>
+       <Name>default</Name>
+       <Title>default</Title>
+       <LegendURL width="205" height="53">
+          <Format>image/png</Format>
+          <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=gebiedsaanduiding&amp;format=image/png&amp;STYLE=default"/>
+       </LegendURL>
+    </Style>
+      <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>g_g5</Name>
+        <Title>vrijwaringszone - weg</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.55417</westBoundLongitude>
+            <eastBoundLongitude>4.58273</eastBoundLongitude>
+            <southBoundLatitude>51.8658</southBoundLatitude>
+            <northBoundLatitude>51.8703</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="97628.9" miny="431133" maxx="99590.8" maxy="431608"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="157" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=g_g5&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+      <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>g_g3</Name>
+        <Title>veiligheidszone - windturbine</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.56454</westBoundLongitude>
+            <eastBoundLongitude>4.57685</eastBoundLongitude>
+            <southBoundLatitude>51.8657</southBoundLatitude>
+            <northBoundLatitude>51.8671</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="98339.4" miny="431116" maxx="99185.7" maxy="431260"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="205" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=g_g3&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+      <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>g_g4</Name>
+        <Title>wro-zone - wijzigingsgebied 1</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.55782</westBoundLongitude>
+            <eastBoundLongitude>4.56038</eastBoundLongitude>
+            <southBoundLatitude>51.8662</southBoundLatitude>
+            <northBoundLatitude>51.869</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="97879.2" miny="431176" maxx="98052.2" maxy="431487"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="205" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=g_g4&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+    </Layer>
+    <Layer>
+      <Name>labels</Name>
+      <Title>labels</Title>
+      <Abstract>labels</Abstract>
+    <Style>
+       <Name>default</Name>
+       <Title>default</Title>
+       <LegendURL width="91" height="85">
+          <Format>image/png</Format>
+          <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=labels&amp;format=image/png&amp;STYLE=default"/>
+       </LegendURL>
+    </Style>
+      <Layer queryable="0" opaque="0" cascaded="0">
+        <Name>lb</Name>
+        <Title>labels</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.55033</westBoundLongitude>
+            <eastBoundLongitude>4.58288</eastBoundLongitude>
+            <southBoundLatitude>51.8574</southBoundLatitude>
+            <northBoundLatitude>51.8711</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="97366" miny="430204" maxx="99591" maxy="431697"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="67" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=lb&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+      <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>s104</Name>
+        <Title>s104</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.55033</westBoundLongitude>
+            <eastBoundLongitude>4.58288</eastBoundLongitude>
+            <southBoundLatitude>51.8574</southBoundLatitude>
+            <northBoundLatitude>51.8711</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="97366" miny="430204" maxx="99591" maxy="431697"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="55" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=s104&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+      <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>s109</Name>
+        <Title>s109</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.55033</westBoundLongitude>
+            <eastBoundLongitude>4.58288</eastBoundLongitude>
+            <southBoundLatitude>51.8574</southBoundLatitude>
+            <northBoundLatitude>51.8711</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="97366" miny="430204" maxx="99591" maxy="431697"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="55" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=s109&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+      <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>s111</Name>
+        <Title>s111</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.55033</westBoundLongitude>
+            <eastBoundLongitude>4.58288</eastBoundLongitude>
+            <southBoundLatitude>51.8574</southBoundLatitude>
+            <northBoundLatitude>51.8711</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="97366" miny="430204" maxx="99591" maxy="431697"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="55" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=s111&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+      <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>ap</Name>
+        <Title>aanpijling</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.55033</westBoundLongitude>
+            <eastBoundLongitude>4.58288</eastBoundLongitude>
+            <southBoundLatitude>51.8574</southBoundLatitude>
+            <northBoundLatitude>51.8711</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="97366" miny="430204" maxx="99591" maxy="431697"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="91" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=ap&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+    </Layer>
+    <Layer>
+      <Name>plangebied</Name>
+      <Title>plangebied</Title>
+      <Abstract>plangebied</Abstract>
+    <Style>
+       <Name>default</Name>
+       <Title>default</Title>
+       <LegendURL width="91" height="21">
+          <Format>image/png</Format>
+          <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=plangebied&amp;format=image/png&amp;STYLE=default"/>
+       </LegendURL>
+    </Style>
+      <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>bestemmingsplangebied</Name>
+        <Title>plangebied</Title>
+        <CRS>EPSG:28992</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>4.55033</westBoundLongitude>
+            <eastBoundLongitude>4.58288</eastBoundLongitude>
+            <southBoundLatitude>51.8574</southBoundLatitude>
+            <northBoundLatitude>51.8711</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:28992" minx="97366" miny="430204" maxx="99591" maxy="431697"/>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="91" height="21">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoproxy.tercera-ro.nl/9928_ev/proxy?map=%2Fmapserver%2Fms4w%2FApache%2Fhtdocs%2F9928%2FNLIMRO9928DOSx2011x0000029IP-VA01_rp.map&amp;=wms&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=bestemmingsplangebied&amp;format=image/png&amp;STYLE=default"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+    </Layer>
+  </Layer>
+</Capability>
+</WMS_Capabilities>

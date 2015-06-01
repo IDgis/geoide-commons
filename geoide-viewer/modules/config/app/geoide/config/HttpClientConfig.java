@@ -18,6 +18,7 @@ public class HttpClientConfig {
 	public HttpClient httpClient (final StreamProcessor streamProcessor) {
 		return new DefaultHttpClient (
 				streamProcessor,
+				DefaultHttpClient.createWSClient (),
 				Play.application ().configuration ().getInt ("geoide.services.httpClient.streamBlockSizeInBytes", 2048).intValue (),
 				Play.application ().configuration ().getLong ("geoide.services.httpClient.streamTimeoutInMillis", 30000l).longValue ()
 			);

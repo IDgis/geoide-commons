@@ -25,8 +25,8 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>nl.idgis.commons</groupId>
-			<artifactId>commons-ogc-client</artifactId>
+			<groupId>nl.idgis.geoide</groupId>
+			<artifactId>geoide-ogc-client</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.mapdb</groupId>

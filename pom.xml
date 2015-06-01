@@ -23,6 +23,7 @@
     	<module>geoide-main</module>
     	<module>geoide-config</module>
     	<module>geoide-app</module>
+    	<module>geoide-ogc-client</module>
 	</modules>
 
 	<scm>
@@ -35,7 +36,6 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		
-		<idgis-commons.version>0.0.14-SNAPSHOT</idgis-commons.version>
 		<deegree3.version>3.4-pre17</deegree3.version>
 		<jts.version>1.13</jts.version>
 		<batik.version>1.7</batik.version>
@@ -230,19 +230,12 @@
 				<artifactId>geoide-config-providers</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-		
 			<dependency>
-				<groupId>nl.idgis.commons</groupId>
-				<artifactId>commons-ogc-client</artifactId>
-				<version>${idgis-commons.version}</version>
-				<exclusions>
-					<exclusion>
-						<artifactId>jsr173_api</artifactId>
-						<groupId>javax.xml.bind</groupId>
-					</exclusion>
-				</exclusions>
-			</dependency>	
-			
+				<groupId>nl.idgis.geoide</groupId>
+				<artifactId>geoide-ogc-client</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+		
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
 				<artifactId>jackson-databind</artifactId>

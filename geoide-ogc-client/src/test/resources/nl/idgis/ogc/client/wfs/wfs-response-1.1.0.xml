@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WFS_Capabilities version="1.1.0" xmlns="http://www.opengis.net/wfs" xmlns:ows="http://www.opengis.net/ows" xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
+  <ows:ServiceIdentification>
+    <ows:Title>INSPIRE Download service voor Beschermde Gebieden van de gezamenlijke provincies</ows:Title>
+    <ows:Abstract>Deze Download service is gebaseerd op de geharmoniseerde provinciale datasets voor Beschermde Gebieden. Onderdeel van deze Download service zijn datasets voor Aardkundige Waarden, Ecologische Hoofdstructuur, Provinciale Monumenten, Nationale Landschappen, Stiltegebieden en WAV gebieden</ows:Abstract>
+    <ows:Keywords>
+      <ows:Keyword>infoFeatureAccessService</ows:Keyword>
+      <ows:Type codeSpace="ISO">infoFeatureAccessService</ows:Type>
+    </ows:Keywords>
+    <ows:Keywords>
+      <ows:Keyword>Beschermde gebieden</ows:Keyword>
+      <ows:Type codeSpace="GEMET - INSPIRE themes, version 1.0">Beschermde gebieden</ows:Type>
+    </ows:Keywords>
+    <ows:ServiceType>WFS</ows:ServiceType>
+    <ows:ServiceTypeVersion>2.0.0</ows:ServiceTypeVersion>
+    <ows:ServiceTypeVersion>1.1.0</ows:ServiceTypeVersion>
+    <ows:Fees>none</ows:Fees>
+    <ows:AccessConstraints>anders</ows:AccessConstraints>
+  </ows:ServiceIdentification>
+  <ows:ServiceProvider>
+    <ows:ProviderName>GBO provincies</ows:ProviderName>
+    <ows:ProviderSite xlink:href="http://www.gbo-provincies.nl"/>
+    <ows:ServiceContact>
+      <ows:IndividualName>Functioneel beheerder CDS INSPIRE</ows:IndividualName>
+      <ows:PositionName>pointOfContact</ows:PositionName>
+      <ows:ContactInfo>
+        <ows:Phone>
+          <ows:Voice/>
+          <ows:Facsimile/>
+        </ows:Phone>
+        <ows:Address>
+          <ows:DeliveryPoint/>
+          <ows:City/>
+          <ows:AdministrativeArea/>
+          <ows:PostalCode/>
+          <ows:Country/>
+          <ows:ElectronicMailAddress>inspire@gbo-provincies.nl</ows:ElectronicMailAddress>
+        </ows:Address>
+        <ows:HoursOfService/>
+        <ows:ContactInstructions/>
+      </ows:ContactInfo>
+      <ows:Role>PointOfContact</ows:Role>
+    </ows:ServiceContact>
+  </ows:ServiceProvider>
+  <ows:OperationsMetadata>
+    <ows:Operation name="DescribeFeatureType">
+      <ows:DCP>
+        <ows:HTTP>
+          <ows:Get xlink:href="http://services.inspire-provincies.nl/ProtectedSites/services/download_PS?"/>
+          <ows:Post xlink:href="http://services.inspire-provincies.nl/ProtectedSites/services/download_PS"/>
+        </ows:HTTP>
+      </ows:DCP>
+      <ows:Parameter name="outputFormat">
+        <ows:Value>application/gml+xml; version=3.2</ows:Value>
+        <ows:Value>text/xml; subtype=gml/3.2.1</ows:Value>
+        <ows:Value>text/xml; subtype=gml/3.1.1</ows:Value>
+      </ows:Parameter>
+    </ows:Operation>
+    <ows:Operation name="GetCapabilities">
+      <ows:DCP>
+        <ows:HTTP>
+          <ows:Get xlink:href="http://services.inspire-provincies.nl/ProtectedSites/services/download_PS?"/>
+          <ows:Post xlink:href="http://services.inspire-provincies.nl/ProtectedSites/services/download_PS"/>
+        </ows:HTTP>
+      </ows:DCP>
+      <ows:Parameter name="AcceptVersions">
+        <ows:Value>2.0.0</ows:Value>
+        <ows:Value>1.1.0</ows:Value>
+      </ows:Parameter>
+      <ows:Parameter name="AcceptFormats">
+        <ows:Value>text/xml</ows:Value>
+      </ows:Parameter>
+    </ows:Operation>
+    <ows:Operation name="GetFeature">
+      <ows:DCP>
+        <ows:HTTP>
+          <ows:Get xlink:href="http://services.inspire-provincies.nl/ProtectedSites/services/download_PS?"/>
+          <ows:Post xlink:href="http://services.inspire-provincies.nl/ProtectedSites/services/download_PS"/>
+        </ows:HTTP>
+      </ows:DCP>
+      <ows:Parameter name="resultType">
+        <ows:Value>results</ows:Value>
+        <ows:Value>hits</ows:Value>
+      </ows:Parameter>
+      <ows:Parameter name="outputFormat">
+        <ows:Value>application/gml+xml; version=3.2</ows:Value>
+        <ows:Value>text/xml; subtype=gml/3.2.1</ows:Value>
+        <ows:Value>text/xml; subtype=gml/3.1.1</ows:Value>
+      </ows:Parameter>
+    </ows:Operation>
+    <ows:Operation name="GetGmlObject">
+      <ows:DCP>
+        <ows:HTTP>
+          <ows:Get xlink:href="http://services.inspire-provincies.nl/ProtectedSites/services/download_PS?"/>
+          <ows:Post xlink:href="http://services.inspire-provincies.nl/ProtectedSites/services/download_PS"/>
+        </ows:HTTP>
+      </ows:DCP>
+      <ows:Parameter name="outputFormat">
+        <ows:Value>application/gml+xml; version=3.2</ows:Value>
+        <ows:Value>text/xml; subtype=gml/3.2.1</ows:Value>
+        <ows:Value>text/xml; subtype=gml/3.1.1</ows:Value>
+      </ows:Parameter>
+    </ows:Operation>
+    <ows:ExtendedCapabilities xmlns="urn:cds-inspire:deegree-extension:metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ows="http://www.opengis.net/ows">
+      <inspire_dls:ExtendedCapabilities xmlns:inspire_common="http://inspire.ec.europa.eu/schemas/common/1.0" xmlns:inspire_dls="http://inspire.ec.europa.eu/schemas/inspire_dls/1.0" xsi:schemaLocation="http://inspire.ec.europa.eu/schemas/common/1.0 http://inspire.ec.europa.eu/schemas/common/1.0/common.xsd http://inspire.ec.europa.eu/schemas/inspire_dls/1.0 http://inspire.ec.europa.eu/schemas/inspire_dls/1.0/inspire_dls.xsd">
+        <inspire_common:MetadataUrl>
+          <inspire_common:URL>http://www.nationaalgeoregister.nl/geonetwork/srv/dut/csw?Service=CSW&amp;Request=GetRecordById&amp;Version=2.0.2&amp;id=c04fc102-1bb3-497f-83b2-427ddca70cff&amp;outputSchema=http://www.isotc211.org/2005/gmd&amp;elementSetName=full</inspire_common:URL>
+          <inspire_common:MediaType>application/vnd.iso.19139+xml</inspire_common:MediaType>
+        
+        </inspire_common:MetadataUrl>
+        <inspire_common:SupportedLanguages>
+          <inspire_common:DefaultLanguage>
+            <inspire_common:Language>dut</inspire_common:Language>
+          
+          </inspire_common:DefaultLanguage>
+        
+        </inspire_common:SupportedLanguages>
+        <inspire_common:ResponseLanguage>
+          <inspire_common:Language>dut</inspire_common:Language>
+        
+        </inspire_common:ResponseLanguage>
+        <inspire_dls:SpatialDataSetIdentifier>
+          <inspire_common:Code>dummy</inspire_common:Code>
+          <inspire_common:Namespace>dummy</inspire_common:Namespace>
+        
+        </inspire_dls:SpatialDataSetIdentifier>
+      
+      </inspire_dls:ExtendedCapabilities>
+    
+    </ows:ExtendedCapabilities>
+  </ows:OperationsMetadata>
+  <FeatureTypeList>
+    <FeatureType>
+      <Name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">gn:NamedPlace</Name>
+      <Title>gn:NamedPlace</Title>
+      <DefaultSRS>urn:ogc:def:crs:EPSG::28992</DefaultSRS>
+      <OtherSRS>urn:ogc:def:crs:EPSG::4326</OtherSRS>
+      <OtherSRS>urn:ogc:def:crs:EPSG::4258</OtherSRS>
+      <OtherSRS>urn:ogc:def:crs:EPSG::900913</OtherSRS>
+      <OtherSRS>urn:ogc:def:crs:EPSG::3035</OtherSRS>
+      <OtherSRS>urn:ogc:def:crs:EPSG::3034</OtherSRS>
+      <OtherSRS>urn:ogc:def:crs:EPSG::25830</OtherSRS>
+      <OtherSRS>urn:ogc:def:crs:EPSG::25831</OtherSRS>
+      <OtherSRS>urn:ogc:def:crs:EPSG::25832</OtherSRS>
+      <OutputFormats>
+        <Format>application/gml+xml; version=3.2</Format>
+        <Format>text/xml; subtype=gml/3.2.1</Format>
+        <Format>text/xml; subtype=gml/3.1.1</Format>
+      </OutputFormats>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>-180.000000 -90.000000</ows:LowerCorner>
+        <ows:UpperCorner>180.000000 90.000000</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+    </FeatureType>
+    <FeatureType>
+      <Name xmlns:ps="urn:x-inspire:specification:gmlas:ProtectedSites:3.0">ps:ProtectedSite</Name>
+      <Title>ps:ProtectedSite</Title>
+      <DefaultSRS>urn:ogc:def:crs:EPSG::28992</DefaultSRS>
+      <OtherSRS>urn:ogc:def:crs:EPSG::4326</OtherSRS>
+      <OtherSRS>urn:ogc:def:crs:EPSG::4258</OtherSRS>
+      <OtherSRS>urn:ogc:def:crs:EPSG::900913</OtherSRS>
+      <OtherSRS>urn:ogc:def:crs:EPSG::3035</OtherSRS>
+      <OtherSRS>urn:ogc:def:crs:EPSG::3034</OtherSRS>
+      <OtherSRS>urn:ogc:def:crs:EPSG::25830</OtherSRS>
+      <OtherSRS>urn:ogc:def:crs:EPSG::25831</OtherSRS>
+      <OtherSRS>urn:ogc:def:crs:EPSG::25832</OtherSRS>
+      <OutputFormats>
+        <Format>application/gml+xml; version=3.2</Format>
+        <Format>text/xml; subtype=gml/3.2.1</Format>
+        <Format>text/xml; subtype=gml/3.1.1</Format>
+      </OutputFormats>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>3.205199 50.733392</ows:LowerCorner>
+        <ows:UpperCorner>7.225561 53.582675</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+    </FeatureType>
+  </FeatureTypeList>
+  <ogc:Filter_Capabilities>
+    <ogc:Spatial_Capabilities>
+      <ogc:GeometryOperands xmlns:gml="http://www.opengis.net/gml">
+        <ogc:GeometryOperand>gml:Envelope</ogc:GeometryOperand>
+        <ogc:GeometryOperand>gml:Point</ogc:GeometryOperand>
+        <ogc:GeometryOperand>gml:LineString</ogc:GeometryOperand>
+        <ogc:GeometryOperand>gml:Polygon</ogc:GeometryOperand>
+        <ogc:GeometryOperand>gml:ArcByCenterPoint</ogc:GeometryOperand>
+        <ogc:GeometryOperand>gml:CircleByCenterPoint</ogc:GeometryOperand>
+        <ogc:GeometryOperand>gml:Arc</ogc:GeometryOperand>
+        <ogc:GeometryOperand>gml:Circle</ogc:GeometryOperand>
+        <ogc:GeometryOperand>gml:ArcByBulge</ogc:GeometryOperand>
+      </ogc:GeometryOperands>
+      <ogc:SpatialOperators>
+        <ogc:SpatialOperator name="BBOX"/>
+        <ogc:SpatialOperator name="Equals"/>
+        <ogc:SpatialOperator name="Disjoint"/>
+        <ogc:SpatialOperator name="Intersects"/>
+        <ogc:SpatialOperator name="Touches"/>
+        <ogc:SpatialOperator name="Crosses"/>
+        <ogc:SpatialOperator name="Within"/>
+        <ogc:SpatialOperator name="Contains"/>
+        <ogc:SpatialOperator name="Overlaps"/>
+        <ogc:SpatialOperator name="Beyond"/>
+        <ogc:SpatialOperator name="DWithin"/>
+      </ogc:SpatialOperators>
+    </ogc:Spatial_Capabilities>
+    <ogc:Scalar_Capabilities>
+      <ogc:LogicalOperators/>
+      <ogc:ComparisonOperators>
+        <ogc:ComparisonOperator>LessThan</ogc:ComparisonOperator>
+        <ogc:ComparisonOperator>GreaterThan</ogc:ComparisonOperator>
+        <ogc:ComparisonOperator>LessThanEqualTo</ogc:ComparisonOperator>
+        <ogc:ComparisonOperator>GreaterThanEqualTo</ogc:ComparisonOperator>
+        <ogc:ComparisonOperator>EqualTo</ogc:ComparisonOperator>
+        <ogc:ComparisonOperator>NotEqualTo</ogc:ComparisonOperator>
+        <ogc:ComparisonOperator>Like</ogc:ComparisonOperator>
+        <ogc:ComparisonOperator>Between</ogc:ComparisonOperator>
+        <ogc:ComparisonOperator>NullCheck</ogc:ComparisonOperator>
+      </ogc:ComparisonOperators>
+      <ogc:ArithmeticOperators>
+        <ogc:SimpleArithmetic/>
+        <ogc:Functions>
+          <ogc:FunctionNames>
+            <ogc:FunctionName nArgs="1">Area</ogc:FunctionName>
+            <ogc:FunctionName nArgs="1">Centroid</ogc:FunctionName>
+            <ogc:FunctionName nArgs="1">ExtraProp</ogc:FunctionName>
+            <ogc:FunctionName nArgs="2">GeometryFromWKT</ogc:FunctionName>
+            <ogc:FunctionName nArgs="0">GetCurrentScale</ogc:FunctionName>
+            <ogc:FunctionName nArgs="2">IDiv</ogc:FunctionName>
+            <ogc:FunctionName nArgs="2">IMod</ogc:FunctionName>
+            <ogc:FunctionName nArgs="1">InteriorPoint</ogc:FunctionName>
+            <ogc:FunctionName nArgs="1">IsCurve</ogc:FunctionName>
+            <ogc:FunctionName nArgs="1">IsPoint</ogc:FunctionName>
+            <ogc:FunctionName nArgs="1">IsSurface</ogc:FunctionName>
+            <ogc:FunctionName nArgs="1">Length</ogc:FunctionName>
+            <ogc:FunctionName nArgs="1">Lower</ogc:FunctionName>
+            <ogc:FunctionName nArgs="1">MoveGeometry</ogc:FunctionName>
+            <ogc:FunctionName nArgs="1">Upper</ogc:FunctionName>
+          </ogc:FunctionNames>
+        </ogc:Functions>
+      </ogc:ArithmeticOperators>
+    </ogc:Scalar_Capabilities>
+    <ogc:Id_Capabilities>
+      <ogc:EID/>
+      <ogc:FID/>
+    </ogc:Id_Capabilities>
+  </ogc:Filter_Capabilities>
+</WFS_Capabilities>
