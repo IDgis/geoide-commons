@@ -3,6 +3,7 @@ package nl.idgis.geoide.commons.main;
 import java.io.File;
 
 import nl.idgis.geoide.util.ConfigWrapper;
+import nl.idgis.geoide.util.GeoideScheduler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,6 +77,16 @@ public class GeoideServiceMain implements AutoCloseable {
 	}
 	
 	public void start () {
+		Runtime
+			.getRuntime ()
+			.addShutdownHook (new Thread (() -> {
+				log.info ("Shutting down service");
+				applicationContext.close ();
+			}));
+		
+		log.info ("Starting service scheduler");
+		final GeoideScheduler scheduler = applicationContext.getBean (GeoideScheduler.class);
+		scheduler.waitForCompletion ();
 	}
 	
 	public static void main (final String[] args) {
