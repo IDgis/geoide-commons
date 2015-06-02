@@ -23,7 +23,7 @@ import nl.idgis.geoide.commons.report.template.TemplateDocument;
 import nl.idgis.geoide.commons.report.template.TemplateDocumentProvider;
 import nl.idgis.geoide.documentcache.Document;
 import nl.idgis.geoide.documentcache.DocumentCache;
-import nl.idgis.geoide.map.MapView;
+import nl.idgis.geoide.map.DefaultMapView;
 import nl.idgis.geoide.util.Futures;
 
 import org.jsoup.nodes.Element;
@@ -63,7 +63,7 @@ public class ReportComposer {
 	 * 
 	 */
 	
-	public ReportComposer (ReportPostProcessor processor, TemplateDocumentProvider templateProvider, MapView mapView, DocumentCache documentCache) {
+	public ReportComposer (ReportPostProcessor processor, TemplateDocumentProvider templateProvider, DefaultMapView mapView, DocumentCache documentCache) {
 		this.processor =  processor;
 		this.templateProvider = templateProvider;
 		this.textBlockComposer = new TextBlockComposer();

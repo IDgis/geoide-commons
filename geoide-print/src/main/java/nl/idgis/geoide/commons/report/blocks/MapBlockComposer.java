@@ -20,7 +20,7 @@ import nl.idgis.geoide.commons.report.render.OverlayRenderer;
 import nl.idgis.geoide.commons.report.render.OverlayRenderer.PositionedTextOverlay;
 import nl.idgis.geoide.commons.report.render.SvgRenderer.SvgPoint;
 import nl.idgis.geoide.documentcache.DocumentCache;
-import nl.idgis.geoide.map.MapView;
+import nl.idgis.geoide.map.DefaultMapView;
 import nl.idgis.geoide.service.LayerServiceType;
 import nl.idgis.geoide.service.ServiceType;
 import nl.idgis.geoide.util.Futures;
@@ -42,7 +42,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 
 public class MapBlockComposer implements BlockComposer<MapBlockInfo> {
-	final MapView mapView;
+	final DefaultMapView mapView;
 	private URI mapCssUri;
 	private static Logger log = LoggerFactory.getLogger (HtmlPrintService.class);
 	
@@ -54,7 +54,7 @@ public class MapBlockComposer implements BlockComposer<MapBlockInfo> {
 	 * @param documentCache	a documentCache object to (tempory) store the css and svg files.
 	 */
 	
-	public MapBlockComposer(MapView mapView) {
+	public MapBlockComposer(DefaultMapView mapView) {
 		this.mapView = mapView;
 	}
 

@@ -10,9 +10,10 @@ import nl.idgis.geoide.commons.domain.Layer;
 import nl.idgis.geoide.commons.domain.ParameterizedServiceLayer;
 import nl.idgis.geoide.commons.domain.Service;
 import nl.idgis.geoide.commons.domain.ServiceRequest;
+import nl.idgis.geoide.commons.domain.api.MapView;
+import nl.idgis.geoide.commons.domain.layer.LayerState;
 import nl.idgis.geoide.commons.domain.provider.LayerProvider;
 import nl.idgis.geoide.commons.domain.traits.Traits;
-import nl.idgis.geoide.commons.layer.LayerState;
 import nl.idgis.geoide.commons.layer.LayerType;
 import nl.idgis.geoide.commons.layer.LayerTypeRegistry;
 import nl.idgis.geoide.service.LayerServiceType;
@@ -22,17 +23,21 @@ import nl.idgis.geoide.service.ServiceTypeRegistry;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-public class MapView {
+public class DefaultMapView implements MapView {
 	private final LayerTypeRegistry layerTypeRegistry;
 	private final ServiceTypeRegistry serviceTypeRegistry;
 	private final LayerProvider layerProvider;
 	
-	public MapView (final LayerTypeRegistry layerTypeRegistry, final ServiceTypeRegistry serviceTypeRegistry, final LayerProvider layerProvider) {
+	public DefaultMapView (final LayerTypeRegistry layerTypeRegistry, final ServiceTypeRegistry serviceTypeRegistry, final LayerProvider layerProvider) {
 		this.layerTypeRegistry = layerTypeRegistry;
 		this.serviceTypeRegistry = serviceTypeRegistry;
 		this.layerProvider = layerProvider;
 	}
 
+	/* (non-Javadoc)
+	 * @see nl.idgis.geoide.map.MapView#getServiceRequests(java.util.List)
+	 */
+	@Override
 	public List<ServiceRequest> getServiceRequests (final List<Traits<LayerState>> layerStates) {
 		
 		// Turn the list of layers in a list of service layers:
@@ -94,6 +99,10 @@ public class MapView {
 		return serviceLayers;
 	}
 	
+	/* (non-Javadoc)
+	 * @see nl.idgis.geoide.map.MapView#flattenLayerList(com.fasterxml.jackson.databind.JsonNode)
+	 */
+	@Override
 	public List<Traits<LayerState>> flattenLayerList (final JsonNode viewerState) {
 		return flattenLayerList (viewerState, Collections.emptyList ());
 	}

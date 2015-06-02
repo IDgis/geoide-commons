@@ -14,7 +14,7 @@ import nl.idgis.geoide.documentcache.service.DefaultDocumentCache;
 import nl.idgis.geoide.documentcache.service.DelegatingStore;
 import nl.idgis.geoide.documentcache.service.FileStore;
 import nl.idgis.geoide.documentcache.service.HttpDocumentStore;
-import nl.idgis.geoide.map.MapView;
+import nl.idgis.geoide.map.DefaultMapView;
 import nl.idgis.geoide.util.ConfigWrapper;
 import nl.idgis.geoide.util.streams.StreamProcessor;
 
@@ -108,7 +108,7 @@ public class PrintConfig {
 	@Bean
 	@Qualifier ("reportComposer")
 	@Autowired
-	public ReportComposer reportComposer (final @Qualifier ("reportPostProcessor") ReportPostProcessor reportPostProcessor, HtmlTemplateDocumentProvider templateProvider, MapView mapView, final @Qualifier ("printDocumentCache") DocumentCache documentCache) {
+	public ReportComposer reportComposer (final @Qualifier ("reportPostProcessor") ReportPostProcessor reportPostProcessor, HtmlTemplateDocumentProvider templateProvider, DefaultMapView mapView, final @Qualifier ("printDocumentCache") DocumentCache documentCache) {
 		return new ReportComposer (
 				reportPostProcessor,
 				templateProvider, 

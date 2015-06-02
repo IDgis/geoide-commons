@@ -1,4 +1,4 @@
-package nl.idgis.geoide.commons.layer;
+package nl.idgis.geoide.commons.domain.layer;
 
 import java.util.List;
 

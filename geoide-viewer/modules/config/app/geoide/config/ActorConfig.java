@@ -26,7 +26,6 @@ public class ActorConfig {
 		final ActorSelection selection = Akka.system ().actorSelection (Play.application().configuration ().getString ("geoide.web.actors.serviceManager"));
 		final ActorRef actorRef = AkkaFutures.asCompletableFuture (selection.resolveOne (new FiniteDuration (10000, TimeUnit.MILLISECONDS)), Akka.system ().dispatcher ()).get (10000, TimeUnit.MILLISECONDS);
 		
-		// return Akka.system ().actorOf (ServiceManager.mkProps (serviceTypeRegistry), "serviceManager");
 		return actorRef;
 	}
 }

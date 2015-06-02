@@ -7,9 +7,12 @@ libraryDependencies ++= Seq(
   javaEbean,
   cache,
   javaWs,
+  
   Common.Dependencies.geoideDomain,
-  Common.Dependencies.geoideDomainTest,
+  Common.Dependencies.geoideRemote,
   Common.Dependencies.geoideUtil,
+  
+  Common.Dependencies.geoideDomainTest,
   Common.Dependencies.geoideServiceCommon,
   Common.Dependencies.geoideServiceTms,
   Common.Dependencies.geoideServiceWms,
