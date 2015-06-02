@@ -45,7 +45,6 @@ object Common {
 		val geoideLayerDefault = "nl.idgis.geoide" % "geoide-layer-default" % "0.1.8-SNAPSHOT"
 		val geoidePrint = "nl.idgis.geoide" % "geoide-print" % "0.1.8-SNAPSHOT"
 		val geoideHttpClient = "nl.idgis.geoide" % "geoide-http-client" % "0.1.8-SNAPSHOT"
-		val geoideMap = "nl.idgis.geoide" % "geoide-map" % "0.1.8-SNAPSHOT"
 		val geoideRemote = "nl.idgis.geoide" % "geoide-remote" % "0.1.8-SNAPSHOT"
 		
 		val webjarsPlay = "org.webjars" %% "webjars-play" % "2.3.0"

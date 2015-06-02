@@ -20,7 +20,6 @@ libraryDependencies ++= Seq(
   Common.Dependencies.geoideLayerCommon,
   Common.Dependencies.geoideLayerDefault,
   Common.Dependencies.geoidePrint,
-  Common.Dependencies.geoideMap,
   Common.Dependencies.geoideHttpClient,
   Common.Dependencies.webjarsPlay,
   Common.Dependencies.webjarsBootstrap,
