@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import nl.idgis.geoide.commons.domain.api.DocumentCache;
+import nl.idgis.geoide.commons.domain.document.Document;
 import nl.idgis.geoide.commons.print.service.HtmlPrintService;
 import nl.idgis.geoide.commons.report.blocks.Block;
 import nl.idgis.geoide.commons.report.blocks.BlockInfo;
@@ -21,8 +23,6 @@ import nl.idgis.geoide.commons.report.blocks.TextBlockComposer;
 import nl.idgis.geoide.commons.report.blocks.TextBlockInfo;
 import nl.idgis.geoide.commons.report.template.TemplateDocument;
 import nl.idgis.geoide.commons.report.template.TemplateDocumentProvider;
-import nl.idgis.geoide.documentcache.Document;
-import nl.idgis.geoide.documentcache.DocumentCache;
 import nl.idgis.geoide.map.DefaultMapView;
 import nl.idgis.geoide.util.Futures;
 

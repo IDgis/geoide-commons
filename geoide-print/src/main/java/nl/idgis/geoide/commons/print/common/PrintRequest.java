@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import nl.idgis.ogc.util.MimeContentType;
+import nl.idgis.geoide.commons.domain.MimeContentType;
 
 /**
  * Contains a request to convert an input document (e.g. HTML), optionally containing references to other

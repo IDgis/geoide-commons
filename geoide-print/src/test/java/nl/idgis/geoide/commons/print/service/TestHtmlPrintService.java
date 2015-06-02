@@ -14,16 +14,16 @@ import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 
+import nl.idgis.geoide.commons.domain.MimeContentType;
+import nl.idgis.geoide.commons.domain.api.DocumentCache;
+import nl.idgis.geoide.commons.domain.document.Document;
 import nl.idgis.geoide.commons.print.common.DocumentReference;
 import nl.idgis.geoide.commons.print.common.PrintRequest;
 import nl.idgis.geoide.commons.report.layout.less.LessCompilationException;
-import nl.idgis.geoide.documentcache.Document;
-import nl.idgis.geoide.documentcache.DocumentCache;
 import nl.idgis.geoide.documentcache.service.DefaultDocumentCache;
 import nl.idgis.geoide.util.Futures;
 import nl.idgis.geoide.util.streams.AkkaStreamProcessor;
 import nl.idgis.geoide.util.streams.StreamProcessor;
-import nl.idgis.ogc.util.MimeContentType;
 
 import org.junit.After;
 import org.junit.Before;

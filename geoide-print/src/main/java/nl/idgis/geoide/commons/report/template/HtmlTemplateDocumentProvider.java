@@ -11,7 +11,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import nl.idgis.geoide.commons.domain.JsonFactory;
-import nl.idgis.geoide.documentcache.Document;
+import nl.idgis.geoide.commons.domain.document.Document;
 import nl.idgis.geoide.documentcache.service.DelegatingStore;
 import nl.idgis.geoide.documentcache.service.FileStore;
 import nl.idgis.geoide.util.Futures;

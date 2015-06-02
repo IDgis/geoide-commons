@@ -1,10 +1,11 @@
-package nl.idgis.geoide.documentcache;
+package nl.idgis.geoide.commons.domain.api;
 
 import java.io.InputStream;
 import java.net.URI;
 import java.util.concurrent.CompletableFuture;
 
-import nl.idgis.ogc.util.MimeContentType;
+import nl.idgis.geoide.commons.domain.MimeContentType;
+import nl.idgis.geoide.commons.domain.document.Document;
 
 import org.reactivestreams.Publisher;
 

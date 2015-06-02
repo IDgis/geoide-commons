@@ -11,13 +11,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
+import nl.idgis.geoide.commons.domain.MimeContentType;
+import nl.idgis.geoide.commons.domain.document.Document;
 import nl.idgis.geoide.commons.print.common.Capabilities;
 import nl.idgis.geoide.commons.print.common.Capabilities.InputFormat;
 import nl.idgis.geoide.commons.print.common.PrintRequest;
 import nl.idgis.geoide.commons.print.service.PrintException.UnsupportedFormat;
-import nl.idgis.geoide.documentcache.Document;
 import nl.idgis.geoide.util.Futures;
-import nl.idgis.ogc.util.MimeContentType;
 
 /**
  * A print service implementation that delegates each request to one of the contained service references.

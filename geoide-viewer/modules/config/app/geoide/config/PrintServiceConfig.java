@@ -1,21 +1,9 @@
 package geoide.config;
 
-import java.io.File;
-import java.io.IOException;
-
-import nl.idgis.geoide.commons.domain.api.MapView;
-import nl.idgis.geoide.commons.http.client.HttpClient;
-import nl.idgis.geoide.commons.print.service.HtmlPrintService;
-import nl.idgis.geoide.commons.report.ReportComposer;
-import nl.idgis.geoide.commons.report.ReportPostProcessor;
-import nl.idgis.geoide.commons.report.template.HtmlTemplateDocumentProvider;
+import nl.idgis.geoide.commons.print.service.PrintService;
+import nl.idgis.geoide.commons.remote.RemoteMethodClient;
+import nl.idgis.geoide.commons.remote.RemoteServiceFactory;
 import nl.idgis.geoide.documentcache.DocumentCache;
-import nl.idgis.geoide.documentcache.DocumentStore;
-import nl.idgis.geoide.documentcache.service.DefaultDocumentCache;
-import nl.idgis.geoide.documentcache.service.DelegatingStore;
-import nl.idgis.geoide.documentcache.service.FileStore;
-import nl.idgis.geoide.documentcache.service.HttpDocumentStore;
-import nl.idgis.geoide.util.streams.StreamProcessor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,11 +11,24 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import play.Play;
-import play.libs.Akka;
 
 @Configuration
 public class PrintServiceConfig {
 
+	@Bean
+	@Autowired
+	@Qualifier ("printDocumentCache")
+	public DocumentCache printDocumentCache (final RemoteServiceFactory factory, final RemoteMethodClient client) {
+		return factory.createServiceReference (client, DocumentCache.class, Play.application ().configuration().getString ("geoide.web.print.documentCacheQualifier"));
+	}
+	
+	@Bean
+	@Autowired
+	public PrintService htmlPrintService (final RemoteServiceFactory factory, final RemoteMethodClient client) {
+		return factory.createServiceReference (client, PrintService.class);
+	}
+	
+	/*
 	@Bean
 	@Qualifier ("printHttpDocumentStore")
 	@Autowired
@@ -108,6 +109,6 @@ public class PrintServiceConfig {
 				documentCache
 			);
 	}
-	
 
+	*/
 }

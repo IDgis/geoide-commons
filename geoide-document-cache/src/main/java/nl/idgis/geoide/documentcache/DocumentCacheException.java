@@ -3,6 +3,9 @@ package nl.idgis.geoide.documentcache;
 import java.io.IOException;
 import java.net.URI;
 
+import nl.idgis.geoide.commons.domain.api.DocumentCache;
+import nl.idgis.geoide.commons.domain.api.DocumentStore;
+
 /**
  * Base exception class for exceptions raised on error conditions from the {@link DocumentCache} or {@link DocumentStore}.
  */

@@ -1,9 +1,11 @@
-package nl.idgis.geoide.documentcache;
+package nl.idgis.geoide.commons.domain.document;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import nl.idgis.ogc.util.MimeContentType;
+import nl.idgis.geoide.commons.domain.MimeContentType;
+import nl.idgis.geoide.commons.domain.api.DocumentCache;
+import nl.idgis.geoide.commons.domain.api.DocumentStore;
 
 import org.reactivestreams.Publisher;
 

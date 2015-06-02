@@ -6,14 +6,14 @@ import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.util.concurrent.CompletableFuture;
 
+import nl.idgis.geoide.commons.domain.MimeContentType;
+import nl.idgis.geoide.commons.domain.api.DocumentCache;
+import nl.idgis.geoide.commons.domain.api.DocumentStore;
+import nl.idgis.geoide.commons.domain.document.Document;
 import nl.idgis.geoide.commons.http.client.HttpClient;
 import nl.idgis.geoide.commons.http.client.HttpRequestBuilder;
-import nl.idgis.geoide.documentcache.Document;
-import nl.idgis.geoide.documentcache.DocumentCache;
 import nl.idgis.geoide.documentcache.DocumentCacheException;
-import nl.idgis.geoide.documentcache.DocumentStore;
 import nl.idgis.geoide.util.Futures;
-import nl.idgis.ogc.util.MimeContentType;
 
 import org.reactivestreams.Publisher;
 

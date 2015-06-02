@@ -1,6 +1,6 @@
 package nl.idgis.geoide.commons.print.service;
 
-import nl.idgis.ogc.util.MimeContentType;
+import nl.idgis.geoide.commons.domain.MimeContentType;
 
 /**
  * A print exception is raised by print services when performing print requests or requesting capabilities. 

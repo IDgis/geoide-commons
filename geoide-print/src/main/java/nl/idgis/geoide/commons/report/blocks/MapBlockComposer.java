@@ -13,7 +13,9 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.geoide.commons.domain.ServiceRequest;
+import nl.idgis.geoide.commons.domain.api.DocumentCache;
 import nl.idgis.geoide.commons.domain.feature.FeatureOverlay;
 import nl.idgis.geoide.commons.domain.feature.Overlay;
 import nl.idgis.geoide.commons.domain.feature.OverlayFeature;
@@ -22,12 +24,10 @@ import nl.idgis.geoide.commons.print.service.HtmlPrintService;
 import nl.idgis.geoide.commons.report.render.OverlayRenderer;
 import nl.idgis.geoide.commons.report.render.OverlayRenderer.PositionedTextOverlay;
 import nl.idgis.geoide.commons.report.render.SvgRenderer.SvgPoint;
-import nl.idgis.geoide.documentcache.DocumentCache;
 import nl.idgis.geoide.map.DefaultMapView;
 import nl.idgis.geoide.service.LayerServiceType;
 import nl.idgis.geoide.service.ServiceType;
 import nl.idgis.geoide.util.Futures;
-import nl.idgis.ogc.util.MimeContentType;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.jsoup.nodes.Document;
@@ -81,7 +81,7 @@ public class MapBlockComposer implements BlockComposer<MapBlockInfo> {
 		return mapView
 			.flattenLayerList (mapInfo.getClientInfo ())
 			.thenCompose ((layerStates) -> mapView.getServiceRequests (layerStates).thenCompose ((serviceRequests) -> {
-				final List<CompletableFuture<nl.idgis.geoide.documentcache.Document>> documentPromises = new ArrayList<> ();
+				final List<CompletableFuture<nl.idgis.geoide.commons.domain.document.Document>> documentPromises = new ArrayList<> ();
 				
 				String mapCss = createMapCss(mapInfo);
 				
@@ -163,7 +163,7 @@ public class MapBlockComposer implements BlockComposer<MapBlockInfo> {
 				
 				return Futures
 					.all (documentPromises)
-					.thenApply ((final List<nl.idgis.geoide.documentcache.Document> documents) -> mapBlock);
+					.thenApply ((final List<nl.idgis.geoide.commons.domain.document.Document> documents) -> mapBlock);
 			}));
 	}
 	

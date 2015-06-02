@@ -3,13 +3,13 @@ package nl.idgis.geoide.commons.config;
 import java.io.File;
 import java.io.IOException;
 
+import nl.idgis.geoide.commons.domain.api.DocumentCache;
+import nl.idgis.geoide.commons.domain.api.DocumentStore;
 import nl.idgis.geoide.commons.http.client.HttpClient;
 import nl.idgis.geoide.commons.print.service.HtmlPrintService;
 import nl.idgis.geoide.commons.report.ReportComposer;
 import nl.idgis.geoide.commons.report.ReportPostProcessor;
 import nl.idgis.geoide.commons.report.template.HtmlTemplateDocumentProvider;
-import nl.idgis.geoide.documentcache.DocumentCache;
-import nl.idgis.geoide.documentcache.DocumentStore;
 import nl.idgis.geoide.documentcache.service.DefaultDocumentCache;
 import nl.idgis.geoide.documentcache.service.DelegatingStore;
 import nl.idgis.geoide.documentcache.service.FileStore;

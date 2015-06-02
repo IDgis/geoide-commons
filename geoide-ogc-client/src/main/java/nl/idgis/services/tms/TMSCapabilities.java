@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import nl.idgis.ogc.util.MimeContentType;
+import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.services.Capabilities;
 import nl.idgis.services.Capabilities.BoundingBox;
 import nl.idgis.services.Capabilities.Point;

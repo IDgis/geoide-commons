@@ -10,6 +10,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.geoide.commons.domain.ServiceIdentification;
 import nl.idgis.geoide.service.messages.GetServiceCapabilities;
 import nl.idgis.geoide.service.messages.OGCServiceRequest;
@@ -19,7 +20,6 @@ import nl.idgis.geoide.service.messages.ServiceError;
 import nl.idgis.geoide.service.messages.ServiceErrorType;
 import nl.idgis.geoide.service.messages.ServiceMessage;
 import nl.idgis.geoide.service.messages.ServiceMessageContext;
-import nl.idgis.ogc.util.MimeContentType;
 import nl.idgis.services.Capabilities;
 import nl.idgis.services.OGCCapabilities;
 import nl.idgis.services.OGCCapabilities.Operation;

@@ -3,7 +3,7 @@ package nl.idgis.geoide.commons.print.common;
 import java.io.Serializable;
 import java.net.URI;
 
-import nl.idgis.ogc.util.MimeContentType;
+import nl.idgis.geoide.commons.domain.MimeContentType;
 
 /**
  * Describes a document for a print service.

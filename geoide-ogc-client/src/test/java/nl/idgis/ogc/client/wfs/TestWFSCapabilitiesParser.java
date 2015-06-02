@@ -2,7 +2,7 @@ package nl.idgis.ogc.client.wfs;
 
 import java.io.InputStream;
 
-import nl.idgis.ogc.util.MimeContentType;
+import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.ogc.wfs.WFSCapabilities;
 import nl.idgis.ogc.wfs.WFSCapabilities.OperationType;
 

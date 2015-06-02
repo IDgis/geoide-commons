@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.geoide.commons.domain.ServiceIdentification;
 import nl.idgis.geoide.service.actors.OGCService;
 import nl.idgis.geoide.service.messages.OGCServiceRequest;
@@ -20,7 +21,6 @@ import nl.idgis.geoide.service.messages.ServiceMessageContext;
 import nl.idgis.geoide.service.messages.ServiceRequest;
 import nl.idgis.ogc.client.wms.WMSCapabilitiesParser;
 import nl.idgis.ogc.client.wms.WMSCapabilitiesParser.ParseException;
-import nl.idgis.ogc.util.MimeContentType;
 import nl.idgis.ogc.wms.WMSCapabilities;
 import nl.idgis.services.Capabilities;
 import nl.idgis.services.OGCCapabilities;

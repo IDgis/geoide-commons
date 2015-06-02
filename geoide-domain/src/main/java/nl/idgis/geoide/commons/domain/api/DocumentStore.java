@@ -1,7 +1,9 @@
-package nl.idgis.geoide.documentcache;
+package nl.idgis.geoide.commons.domain.api;
 
 import java.net.URI;
 import java.util.concurrent.CompletableFuture;
+
+import nl.idgis.geoide.commons.domain.document.Document;
 
 /**
  * A document store provides access to documents that are identified by a unique URI. The DocumentStore

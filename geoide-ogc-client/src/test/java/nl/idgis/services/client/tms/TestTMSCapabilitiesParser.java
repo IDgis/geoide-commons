@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import java.io.InputStream;
 
-import nl.idgis.ogc.util.MimeContentType;
+import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.services.tms.TMSCapabilities;
 
 import org.junit.Test;

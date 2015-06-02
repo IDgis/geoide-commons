@@ -25,10 +25,6 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>nl.idgis.geoide</groupId>
-			<artifactId>geoide-ogc-client</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.mapdb</groupId>
 			<artifactId>mapdb</artifactId>
 		</dependency>
@@ -39,6 +35,10 @@
 		<dependency>
 			<groupId>nl.idgis.geoide</groupId>
 			<artifactId>geoide-util</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>nl.idgis.geoide</groupId>
+			<artifactId>geoide-domain</artifactId>
 		</dependency>
 
 		<!-- Test dependencies: -->		

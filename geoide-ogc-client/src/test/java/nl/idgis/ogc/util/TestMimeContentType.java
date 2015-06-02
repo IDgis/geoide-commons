@@ -1,6 +1,7 @@
 package nl.idgis.ogc.util;
 
 import static org.junit.Assert.*;
+import nl.idgis.geoide.commons.domain.MimeContentType;
 
 import org.junit.Test;
 

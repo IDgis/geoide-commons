@@ -10,13 +10,13 @@ import org.deegree.cs.coordinatesystems.ICRS;
 import org.deegree.geometry.io.WKBWriter;
 
 import play.Logger;
+import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.geoide.commons.domain.QName;
 import nl.idgis.geoide.commons.domain.geometry.Srs;
 import nl.idgis.geoide.commons.domain.geometry.wkb.WkbGeometry;
 import nl.idgis.geoide.service.messages.ProducerMessage;
 import nl.idgis.ogc.client.wfs.Feature;
 import nl.idgis.ogc.client.wfs.FeatureCollectionReader;
-import nl.idgis.ogc.util.MimeContentType;
 import scala.concurrent.duration.FiniteDuration;
 import akka.actor.ActorRef;
 import akka.actor.Cancellable;

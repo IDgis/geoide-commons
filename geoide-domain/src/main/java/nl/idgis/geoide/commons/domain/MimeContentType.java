@@ -1,4 +1,4 @@
-package nl.idgis.ogc.util;
+package nl.idgis.geoide.commons.domain;
 
 import java.util.Collections;
 import java.util.HashMap;

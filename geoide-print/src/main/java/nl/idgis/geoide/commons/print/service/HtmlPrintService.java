@@ -29,18 +29,18 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import nl.idgis.geoide.commons.domain.MimeContentType;
+import nl.idgis.geoide.commons.domain.api.DocumentCache;
+import nl.idgis.geoide.commons.domain.document.Document;
 import nl.idgis.geoide.commons.print.common.Capabilities;
 import nl.idgis.geoide.commons.print.common.PrintRequest;
 import nl.idgis.geoide.commons.print.svg.ChainedReplacedElementFactory;
 import nl.idgis.geoide.commons.print.svg.SVGReplacedElementFactory;
 import nl.idgis.geoide.commons.report.layout.less.LessCompilationException;
 import nl.idgis.geoide.commons.report.layout.less.LessCompiler;
-import nl.idgis.geoide.documentcache.Document;
-import nl.idgis.geoide.documentcache.DocumentCache;
 import nl.idgis.geoide.documentcache.DocumentCacheException;
 import nl.idgis.geoide.util.Futures;
 import nl.idgis.geoide.util.streams.StreamProcessor;
-import nl.idgis.ogc.util.MimeContentType;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Attribute;

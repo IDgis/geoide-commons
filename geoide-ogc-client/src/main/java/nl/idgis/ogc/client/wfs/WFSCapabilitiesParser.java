@@ -12,7 +12,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import nl.idgis.ogc.util.MimeContentType;
+import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.ogc.wfs.WFSCapabilities;
 import nl.idgis.ogc.wfs.WFSCapabilities.FeatureType;
 import nl.idgis.ogc.wfs.WFSCapabilities.Operation;

@@ -78,6 +78,10 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>nl.idgis.geoide</groupId>
+			<artifactId>geoide-domain</artifactId>
+		</dependency>
 	</dependencies>
 		
 </project>

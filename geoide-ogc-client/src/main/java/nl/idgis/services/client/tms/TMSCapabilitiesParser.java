@@ -11,7 +11,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import nl.idgis.ogc.util.MimeContentType;
+import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.services.Capabilities.BoundingBox;
 import nl.idgis.services.Capabilities.Point;
 import nl.idgis.services.tms.TMSCapabilities;

@@ -2,6 +2,7 @@ package nl.idgis.geoide.service.wfs.actors;
 
 import java.util.Map;
 
+import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.geoide.commons.domain.QName;
 import nl.idgis.geoide.commons.domain.ServiceIdentification;
 import nl.idgis.geoide.service.actors.OGCService;
@@ -17,7 +18,6 @@ import nl.idgis.geoide.service.messages.ServiceRequest;
 import nl.idgis.geoide.service.wfs.WFSRequestParameters;
 import nl.idgis.ogc.client.wfs.WFSCapabilitiesParser;
 import nl.idgis.ogc.client.wfs.WFSCapabilitiesParser.ParseException;
-import nl.idgis.ogc.util.MimeContentType;
 import nl.idgis.ogc.wfs.WFSCapabilities;
 import nl.idgis.services.Capabilities;
 import play.Logger;

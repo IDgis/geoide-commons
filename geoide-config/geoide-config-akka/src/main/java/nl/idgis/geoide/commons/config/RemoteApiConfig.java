@@ -1,5 +1,6 @@
 package nl.idgis.geoide.commons.config;
 
+import nl.idgis.geoide.commons.domain.api.DocumentCache;
 import nl.idgis.geoide.commons.domain.api.MapView;
 import nl.idgis.geoide.commons.remote.RemoteMethodServer;
 import nl.idgis.geoide.commons.remote.RemoteServiceFactory;
@@ -10,6 +11,7 @@ import nl.idgis.geoide.util.ConfigWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -61,14 +63,16 @@ public class RemoteApiConfig {
 			final RemoteServiceFactory factory,
 			final AkkaTransport transport,
 			final ConfigWrapper config,
-			final MapView mapView) {
+			final MapView mapView,
+			final @Qualifier ("printDocumentCache") DocumentCache printDocumentCache) {
 		
 		final String serverName = config.getString ("geoide.service.components.remoteMethodServer.apiServerName", "api");
 		
 		log.info ("Creating server for remote API access: " + serverName);
 		
 		final RemoteMethodServer server = factory.createRemoteMethodServer (
-				new ServiceRegistration<MapView> (MapView.class, mapView, null)
+				new ServiceRegistration<MapView> (MapView.class, mapView, null),
+				new ServiceRegistration<DocumentCache> (DocumentCache.class, printDocumentCache, config.getString ("geoide.service.components.print.cacheName", "geoide-print"))
 			);
 		
 		transport.listen (server, serverName);

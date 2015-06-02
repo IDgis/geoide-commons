@@ -2,9 +2,9 @@ package nl.idgis.geoide.commons.print.service;
 
 import java.util.concurrent.CompletableFuture;
 
+import nl.idgis.geoide.commons.domain.document.Document;
 import nl.idgis.geoide.commons.print.common.Capabilities;
 import nl.idgis.geoide.commons.print.common.PrintRequest;
-import nl.idgis.geoide.documentcache.Document;
 
 /**
  * Interface for a print service. A print service processes print requests which instruct

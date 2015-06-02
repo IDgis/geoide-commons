@@ -3,7 +3,7 @@ package nl.idgis.geoide.commons.report.blocks;
 
 import java.util.concurrent.CompletableFuture;
 
-import nl.idgis.geoide.documentcache.DocumentCache;
+import nl.idgis.geoide.commons.domain.api.DocumentCache;
 
 import org.jsoup.nodes.Element;
 

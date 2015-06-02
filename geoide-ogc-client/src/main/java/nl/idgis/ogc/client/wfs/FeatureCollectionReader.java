@@ -15,7 +15,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import nl.idgis.ogc.util.MimeContentType;
+import nl.idgis.geoide.commons.domain.MimeContentType;
 
 import org.deegree.commons.tom.datetime.Date;
 import org.deegree.commons.tom.datetime.DateTime;

@@ -9,6 +9,7 @@ import nl.idgis.geoide.commons.layer.LayerTypeRegistry;
 import nl.idgis.geoide.commons.print.service.PrintService;
 import nl.idgis.geoide.commons.report.ReportComposer;
 import nl.idgis.geoide.commons.report.template.HtmlTemplateDocumentProvider;
+import nl.idgis.geoide.documentcache.DocumentCache;
 import nl.idgis.geoide.documentcache.service.DefaultDocumentCache;
 import nl.idgis.geoide.service.ServiceTypeRegistry;
 import nl.idgis.geoide.util.streams.StreamProcessor;
@@ -71,7 +72,7 @@ public class ControllerConfig {
 	@Autowired
 	public Print printServiceController (
 			final PrintService printService, 
-			final @Qualifier ("printDocumentCache") DefaultDocumentCache documentCache,
+			final @Qualifier ("printDocumentCache") DocumentCache documentCache,
 			final StreamProcessor streamProcessor) {
 		return new Print (printService, documentCache, streamProcessor);
 	}

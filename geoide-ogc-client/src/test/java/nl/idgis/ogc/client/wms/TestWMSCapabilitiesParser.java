@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import java.io.InputStream;
 
-import nl.idgis.ogc.util.MimeContentType;
+import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.ogc.wms.WMSCapabilities;
 import nl.idgis.ogc.wms.WMSCapabilities.RequestType;
 
