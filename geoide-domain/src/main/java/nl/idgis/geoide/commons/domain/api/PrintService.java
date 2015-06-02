@@ -1,10 +1,12 @@
-package nl.idgis.geoide.commons.print.service;
+package nl.idgis.geoide.commons.domain.api;
 
 import java.util.concurrent.CompletableFuture;
 
+import javax.print.PrintException;
+
 import nl.idgis.geoide.commons.domain.document.Document;
-import nl.idgis.geoide.commons.print.common.Capabilities;
-import nl.idgis.geoide.commons.print.common.PrintRequest;
+import nl.idgis.geoide.commons.domain.print.Capabilities;
+import nl.idgis.geoide.commons.domain.print.PrintRequest;
 
 /**
  * Interface for a print service. A print service processes print requests which instruct

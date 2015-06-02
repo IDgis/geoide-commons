@@ -1,4 +1,4 @@
-package nl.idgis.geoide.commons.print.common;
+package nl.idgis.geoide.commons.domain.print;
 
 import java.io.Serializable;
 import java.net.URI;

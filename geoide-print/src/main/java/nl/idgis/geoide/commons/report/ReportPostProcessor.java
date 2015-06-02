@@ -8,10 +8,10 @@ import java.util.concurrent.CompletableFuture;
 
 import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.geoide.commons.domain.api.DocumentCache;
+import nl.idgis.geoide.commons.domain.api.PrintService;
 import nl.idgis.geoide.commons.domain.document.Document;
-import nl.idgis.geoide.commons.print.common.DocumentReference;
-import nl.idgis.geoide.commons.print.common.PrintRequest;
-import nl.idgis.geoide.commons.print.service.PrintService;
+import nl.idgis.geoide.commons.domain.print.DocumentReference;
+import nl.idgis.geoide.commons.domain.print.PrintRequest;
 import nl.idgis.geoide.commons.report.template.TemplateDocument;
 
 public class ReportPostProcessor {

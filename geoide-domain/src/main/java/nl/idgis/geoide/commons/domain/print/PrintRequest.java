@@ -1,4 +1,4 @@
-package nl.idgis.geoide.commons.print.common;
+package nl.idgis.geoide.commons.domain.print;
 
 import java.io.Serializable;
 import java.net.URI;
@@ -6,7 +6,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import nl.idgis.geoide.commons.domain.JsonFactory;
 import nl.idgis.geoide.commons.domain.MimeContentType;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Contains a request to convert an input document (e.g. HTML), optionally containing references to other
@@ -49,9 +52,27 @@ public final class PrintRequest implements Serializable {
 		this.inputDocument = inputDocument;
 		this.outputFormat = outputFormat;
 		this.baseUri = baseUri;
-		this.layoutParameters = layoutParameters != null && !layoutParameters.isEmpty ()
-				? new HashMap<String, Object> (layoutParameters)
-				: Collections.<String, Object>emptyMap ();
+		this.layoutParameters = externalizeParameters (layoutParameters);
+	}
+	
+	private Map<String, Object> externalizeParameters (final Map<String, Object> parameters) {
+		if (parameters == null || parameters.isEmpty ()) {
+			return Collections.emptyMap ();
+		}
+		
+		final Map<String, Object> result = new HashMap<> ();
+		
+		for (final Map.Entry<String, Object> entry: parameters.entrySet ()) {
+			if (entry.getValue () == null) {
+				result.put (entry.getKey (), null);
+			} else if (entry.getValue () instanceof JsonNode) {
+				result.put (entry.getKey (), JsonFactory.externalize ((JsonNode) entry.getValue ()));
+			} else {
+				result.put (entry.getKey (), entry.getValue ());
+			}
+		}
+		
+		return result;
 	}
 
 	/**
