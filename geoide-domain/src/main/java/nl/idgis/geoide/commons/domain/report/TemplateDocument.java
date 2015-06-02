@@ -3,7 +3,6 @@ package nl.idgis.geoide.commons.domain.report;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 

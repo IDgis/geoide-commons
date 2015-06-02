@@ -4,6 +4,7 @@ import nl.idgis.geoide.commons.domain.api.DocumentCache;
 import nl.idgis.geoide.commons.domain.api.MapView;
 import nl.idgis.geoide.commons.domain.api.PrintService;
 import nl.idgis.geoide.commons.domain.api.ReportComposer;
+import nl.idgis.geoide.commons.domain.api.TemplateDocumentProvider;
 import nl.idgis.geoide.commons.remote.RemoteMethodServer;
 import nl.idgis.geoide.commons.remote.RemoteServiceFactory;
 import nl.idgis.geoide.commons.remote.ServiceRegistration;
@@ -68,7 +69,8 @@ public class RemoteApiConfig {
 			final MapView mapView,
 			final @Qualifier ("printDocumentCache") DocumentCache printDocumentCache,
 			final PrintService printService,
-			final ReportComposer reportComposer) {
+			final ReportComposer reportComposer,
+			final TemplateDocumentProvider templateDocumentProvider) {
 		
 		final String serverName = config.getString ("geoide.service.components.remoteMethodServer.apiServerName", "api");
 		
@@ -78,7 +80,8 @@ public class RemoteApiConfig {
 				new ServiceRegistration<MapView> (MapView.class, mapView, null),
 				new ServiceRegistration<DocumentCache> (DocumentCache.class, printDocumentCache, config.getString ("geoide.service.components.print.cacheName", "geoide-print")),
 				new ServiceRegistration<PrintService> (PrintService.class, printService, null),
-				new ServiceRegistration<ReportComposer> (ReportComposer.class, reportComposer, null)
+				new ServiceRegistration<ReportComposer> (ReportComposer.class, reportComposer, null),
+				new ServiceRegistration<TemplateDocumentProvider> (TemplateDocumentProvider.class, templateDocumentProvider, null)
 			);
 		
 		transport.listen (server, serverName);

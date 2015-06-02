@@ -5,6 +5,7 @@ import nl.idgis.geoide.commons.domain.api.PrintService;
 import nl.idgis.geoide.commons.domain.api.ReportComposer;
 import nl.idgis.geoide.commons.remote.RemoteMethodClient;
 import nl.idgis.geoide.commons.remote.RemoteServiceFactory;
+import nl.idgis.geoide.commons.report.template.TemplateDocumentProvider;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -33,5 +34,11 @@ public class PrintServiceConfig {
 	@Autowired
 	public ReportComposer reportComposer (final RemoteServiceFactory factory, final RemoteMethodClient client) {
 		return factory.createServiceReference (client, ReportComposer.class);
+	}
+	
+	@Bean
+	@Autowired
+	public TemplateDocumentProvider templateDocumentProvider (final RemoteServiceFactory factory, final RemoteMethodClient client) {
+		return factory.createServiceReference (client, TemplateDocumentProvider.class);
 	}
 }
