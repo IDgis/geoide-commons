@@ -5,9 +5,10 @@ import java.io.IOException;
 
 import nl.idgis.geoide.commons.domain.api.DocumentCache;
 import nl.idgis.geoide.commons.domain.api.DocumentStore;
+import nl.idgis.geoide.commons.domain.api.ReportComposer;
 import nl.idgis.geoide.commons.http.client.HttpClient;
 import nl.idgis.geoide.commons.print.service.HtmlPrintService;
-import nl.idgis.geoide.commons.report.ReportComposer;
+import nl.idgis.geoide.commons.report.DefaultReportComposer;
 import nl.idgis.geoide.commons.report.ReportPostProcessor;
 import nl.idgis.geoide.commons.report.template.HtmlTemplateDocumentProvider;
 import nl.idgis.geoide.documentcache.service.DefaultDocumentCache;
@@ -109,7 +110,7 @@ public class PrintConfig {
 	@Qualifier ("reportComposer")
 	@Autowired
 	public ReportComposer reportComposer (final @Qualifier ("reportPostProcessor") ReportPostProcessor reportPostProcessor, HtmlTemplateDocumentProvider templateProvider, DefaultMapView mapView, final @Qualifier ("printDocumentCache") DocumentCache documentCache) {
-		return new ReportComposer (
+		return new DefaultReportComposer (
 				reportPostProcessor,
 				templateProvider, 
 				mapView,

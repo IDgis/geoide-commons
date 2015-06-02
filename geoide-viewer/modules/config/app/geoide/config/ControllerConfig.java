@@ -1,16 +1,15 @@
 package geoide.config;
 
+import nl.idgis.geoide.commons.domain.api.DocumentCache;
 import nl.idgis.geoide.commons.domain.api.MapView;
+import nl.idgis.geoide.commons.domain.api.PrintService;
+import nl.idgis.geoide.commons.domain.api.ReportComposer;
 import nl.idgis.geoide.commons.domain.provider.LayerProvider;
 import nl.idgis.geoide.commons.domain.provider.MapProvider;
 import nl.idgis.geoide.commons.domain.provider.ServiceLayerProvider;
 import nl.idgis.geoide.commons.domain.provider.ServiceProvider;
 import nl.idgis.geoide.commons.layer.LayerTypeRegistry;
-import nl.idgis.geoide.commons.print.service.PrintService;
-import nl.idgis.geoide.commons.report.ReportComposer;
-import nl.idgis.geoide.commons.report.template.HtmlTemplateDocumentProvider;
-import nl.idgis.geoide.documentcache.DocumentCache;
-import nl.idgis.geoide.documentcache.service.DefaultDocumentCache;
+import nl.idgis.geoide.commons.report.template.TemplateDocumentProvider;
 import nl.idgis.geoide.service.ServiceTypeRegistry;
 import nl.idgis.geoide.util.streams.StreamProcessor;
 
@@ -82,7 +81,7 @@ public class ControllerConfig {
 	public Report reportController (
 			final  @Qualifier ("reportComposer") ReportComposer composer,
 			final StreamProcessor streamProcessor,
-			final @Qualifier ("printDocumentCache") DefaultDocumentCache documentCache
+			final @Qualifier ("printDocumentCache") DocumentCache documentCache
 			) {
 		return new Report (composer, streamProcessor, documentCache);
 	}
@@ -90,7 +89,7 @@ public class ControllerConfig {
 	@Bean
 	@Autowired
 	public Template templateController (
-			final  @Qualifier ("templateDocumentProvider") HtmlTemplateDocumentProvider templateDocumentProvider
+			final TemplateDocumentProvider templateDocumentProvider
 			) {
 		return new Template (templateDocumentProvider);
 	}

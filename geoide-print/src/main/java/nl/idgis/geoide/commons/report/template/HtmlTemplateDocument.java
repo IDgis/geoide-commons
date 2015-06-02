@@ -3,6 +3,8 @@ package nl.idgis.geoide.commons.report.template;
 
 import java.net.URI;
 
+import nl.idgis.geoide.commons.domain.report.TemplateDocument;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;

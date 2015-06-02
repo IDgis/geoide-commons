@@ -12,7 +12,7 @@ import nl.idgis.geoide.commons.domain.api.PrintService;
 import nl.idgis.geoide.commons.domain.document.Document;
 import nl.idgis.geoide.commons.domain.print.DocumentReference;
 import nl.idgis.geoide.commons.domain.print.PrintRequest;
-import nl.idgis.geoide.commons.report.template.TemplateDocument;
+import nl.idgis.geoide.commons.domain.report.TemplateDocument;
 
 public class ReportPostProcessor {
 	private final PrintService printService;

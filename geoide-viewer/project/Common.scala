@@ -43,7 +43,6 @@ object Common {
 		val geoideServiceWfs = "nl.idgis.geoide" % "geoide-service-wfs" % "0.1.8-SNAPSHOT"
 		val geoideLayerCommon = "nl.idgis.geoide" % "geoide-layer-common" % "0.1.8-SNAPSHOT"
 		val geoideLayerDefault = "nl.idgis.geoide" % "geoide-layer-default" % "0.1.8-SNAPSHOT"
-		val geoidePrint = "nl.idgis.geoide" % "geoide-print" % "0.1.8-SNAPSHOT"
 		val geoideHttpClient = "nl.idgis.geoide" % "geoide-http-client" % "0.1.8-SNAPSHOT"
 		val geoideRemote = "nl.idgis.geoide" % "geoide-remote" % "0.1.8-SNAPSHOT"
 		

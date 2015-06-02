@@ -8,8 +8,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import nl.idgis.geoide.commons.domain.ExternalizableJsonNode;
 import nl.idgis.geoide.commons.domain.api.DocumentCache;
+import nl.idgis.geoide.commons.domain.api.ReportComposer;
 import nl.idgis.geoide.commons.domain.document.Document;
+import nl.idgis.geoide.commons.domain.report.TemplateDocument;
 import nl.idgis.geoide.commons.print.service.HtmlPrintService;
 import nl.idgis.geoide.commons.report.blocks.Block;
 import nl.idgis.geoide.commons.report.blocks.BlockInfo;
@@ -21,8 +24,7 @@ import nl.idgis.geoide.commons.report.blocks.ScaleBarBlockInfo;
 import nl.idgis.geoide.commons.report.blocks.ScaleTextBlockInfo;
 import nl.idgis.geoide.commons.report.blocks.TextBlockComposer;
 import nl.idgis.geoide.commons.report.blocks.TextBlockInfo;
-import nl.idgis.geoide.commons.report.template.TemplateDocument;
-import nl.idgis.geoide.commons.report.template.TemplateDocumentProvider;
+import nl.idgis.geoide.commons.report.template.HtmlTemplateDocumentProvider;
 import nl.idgis.geoide.map.DefaultMapView;
 import nl.idgis.geoide.util.Futures;
 
@@ -44,9 +46,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * This component holds several specialized composers that are responsible for their own task (p.e. mapcomposer)
  */
 
-public class ReportComposer {
+public class DefaultReportComposer implements ReportComposer {
 	private final ReportPostProcessor processor;
-	private final TemplateDocumentProvider templateProvider;
+	private final HtmlTemplateDocumentProvider templateProvider;
 	private final TextBlockComposer textBlockComposer;
 	private final MapBlockComposer mapBlockComposer;
 	private final ScaleBarBlockComposer scaleBarBlockComposer;
@@ -63,7 +65,7 @@ public class ReportComposer {
 	 * 
 	 */
 	
-	public ReportComposer (ReportPostProcessor processor, TemplateDocumentProvider templateProvider, DefaultMapView mapView, DocumentCache documentCache) {
+	public DefaultReportComposer (ReportPostProcessor processor, HtmlTemplateDocumentProvider templateProvider, DefaultMapView mapView, DocumentCache documentCache) {
 		this.processor =  processor;
 		this.templateProvider = templateProvider;
 		this.textBlockComposer = new TextBlockComposer();
@@ -72,13 +74,11 @@ public class ReportComposer {
 		this.documentCache = documentCache;
 	}
 	
-	/**
-	 * Composes a report for printing and sends the composed report to the postprocessor.
-	 * 
-	 * @param clientInfo 	client information in the form of a Json Node. 
-	 * @return a promise of a report document (html)
+	/* (non-Javadoc)
+	 * @see nl.idgis.geoide.commons.report.ReportComposer#compose(com.fasterxml.jackson.databind.JsonNode)
 	 */
-	public CompletableFuture<Document> compose (JsonNode clientInfo) throws Throwable {
+	@Override
+	public CompletableFuture<Document> compose (final ExternalizableJsonNode clientInfo) throws Throwable {
 
 		final JsonNode templateInfo = clientInfo.findPath("template");
 	
