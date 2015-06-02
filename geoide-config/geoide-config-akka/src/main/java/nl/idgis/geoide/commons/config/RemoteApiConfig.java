@@ -2,6 +2,7 @@ package nl.idgis.geoide.commons.config;
 
 import nl.idgis.geoide.commons.domain.api.DocumentCache;
 import nl.idgis.geoide.commons.domain.api.MapView;
+import nl.idgis.geoide.commons.domain.api.PrintService;
 import nl.idgis.geoide.commons.remote.RemoteMethodServer;
 import nl.idgis.geoide.commons.remote.RemoteServiceFactory;
 import nl.idgis.geoide.commons.remote.ServiceRegistration;
@@ -64,7 +65,8 @@ public class RemoteApiConfig {
 			final AkkaTransport transport,
 			final ConfigWrapper config,
 			final MapView mapView,
-			final @Qualifier ("printDocumentCache") DocumentCache printDocumentCache) {
+			final @Qualifier ("printDocumentCache") DocumentCache printDocumentCache,
+			final PrintService printService) {
 		
 		final String serverName = config.getString ("geoide.service.components.remoteMethodServer.apiServerName", "api");
 		
@@ -72,7 +74,8 @@ public class RemoteApiConfig {
 		
 		final RemoteMethodServer server = factory.createRemoteMethodServer (
 				new ServiceRegistration<MapView> (MapView.class, mapView, null),
-				new ServiceRegistration<DocumentCache> (DocumentCache.class, printDocumentCache, config.getString ("geoide.service.components.print.cacheName", "geoide-print"))
+				new ServiceRegistration<DocumentCache> (DocumentCache.class, printDocumentCache, config.getString ("geoide.service.components.print.cacheName", "geoide-print")),
+				new ServiceRegistration<PrintService> (PrintService.class, printService, null)
 			);
 		
 		transport.listen (server, serverName);
