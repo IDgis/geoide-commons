@@ -61,22 +61,7 @@ public final class DefaultLayerType extends LayerType {
 		final List<Traits<LayerState>> parents = parentStates.isEmpty () || parentStates == null ? Collections.emptyList () : new ArrayList<> (parentStates);
 		final boolean visible = state.path ("visible").asBoolean ();
 		
-		return Traits.create (new LayerState () {
-			@Override
-			public boolean isVisible () {
-				return visible;
-			}
-
-			@Override
-			public Layer getLayer () {
-				return layer;
-			}
-
-			@Override
-			public List<Traits<LayerState>> getParents() {
-				return Collections.unmodifiableList (parents);
-			}
-		});
+		return Traits.create (new DefaultLayerState (layer, visible, parents));
 	}
 	
 	private boolean isEffectiveVisible (final Traits<LayerState> layerState) {
@@ -91,5 +76,34 @@ public final class DefaultLayerType extends LayerType {
 		}
 		
 		return true;
+	}
+	
+	private final static class DefaultLayerState implements LayerState {
+		private static final long serialVersionUID = 6615228214406163900L;
+		
+		private final Layer layer;
+		private final List<Traits<LayerState>> parents;
+		private final boolean visible;
+		
+		public DefaultLayerState (final Layer layer, final boolean visible, final List<Traits<LayerState>> parents) {
+			this.layer = layer;
+			this.visible = visible;
+			this.parents = new ArrayList<> (parents);
+		}
+		
+		@Override
+		public Layer getLayer () {
+			return layer;
+		}
+
+		@Override
+		public boolean isVisible () {
+			return visible;
+		}
+
+		@Override
+		public List<Traits<LayerState>> getParents () {
+			return Collections.unmodifiableList (parents);
+		}
 	}
 }

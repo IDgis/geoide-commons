@@ -5,6 +5,7 @@ import geoide.config.ControllerConfig;
 import geoide.config.HttpClientConfig;
 import geoide.config.LayerTypeConfig;
 import geoide.config.PrintServiceConfig;
+import geoide.config.RemoteConfig;
 import geoide.config.ServiceTypeConfig;
 import geoide.config.StreamConfig;
 import geoide.config.MapViewConfig;
@@ -40,7 +41,8 @@ import controllers.viewer.Viewer;
 	PrintServiceConfig.class,
 	StreamConfig.class,
 	HttpClientConfig.class,
-	MapViewConfig.class
+	MapViewConfig.class,
+	RemoteConfig.class
 })
 public class ViewerConfig {
 	@Autowired

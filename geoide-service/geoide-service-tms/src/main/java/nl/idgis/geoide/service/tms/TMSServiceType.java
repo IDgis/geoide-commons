@@ -1,5 +1,6 @@
 package nl.idgis.geoide.service.tms;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -160,7 +161,9 @@ public class TMSServiceType extends ServiceType implements LayerServiceType {
 	}
 	
 
-	public static class TMSRequestParameters {
+	public static class TMSRequestParameters implements Serializable {
+		private static final long serialVersionUID = 5824460737314719140L;
+		
 		private final String layer;
 		
 		public TMSRequestParameters (final String layer) {

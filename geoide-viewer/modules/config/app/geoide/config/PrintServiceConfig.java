@@ -3,6 +3,7 @@ package geoide.config;
 import java.io.File;
 import java.io.IOException;
 
+import nl.idgis.geoide.commons.domain.api.MapView;
 import nl.idgis.geoide.commons.http.client.HttpClient;
 import nl.idgis.geoide.commons.print.service.HtmlPrintService;
 import nl.idgis.geoide.commons.report.ReportComposer;
@@ -14,7 +15,6 @@ import nl.idgis.geoide.documentcache.service.DefaultDocumentCache;
 import nl.idgis.geoide.documentcache.service.DelegatingStore;
 import nl.idgis.geoide.documentcache.service.FileStore;
 import nl.idgis.geoide.documentcache.service.HttpDocumentStore;
-import nl.idgis.geoide.map.MapView;
 import nl.idgis.geoide.util.streams.StreamProcessor;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,7 +104,7 @@ public class PrintServiceConfig {
 		return new ReportComposer (
 				reportPostProcessor,
 				templateProvider, 
-				mapView,
+				null,//mapView,
 				documentCache
 			);
 	}

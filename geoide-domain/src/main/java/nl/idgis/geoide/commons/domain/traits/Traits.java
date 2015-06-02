@@ -1,5 +1,6 @@
 package nl.idgis.geoide.commons.domain.traits;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -7,7 +8,8 @@ import java.util.List;
 
 import nl.idgis.geoide.util.Assert;
 
-public final class Traits<T> {
+public final class Traits<T> implements Serializable {
+	private static final long serialVersionUID = -2234911362621554206L;
 	
 	private final T object;
 	private final List<Trait<T>> traits;

@@ -22,6 +22,22 @@ public class JsonFactory {
 		return mapper;
 	}
 	
+	public static JsonNode asJson (final Object object) {
+		if (object instanceof JsonNode) {
+			return externalize ((JsonNode) object);
+		} else {
+			return externalize (mapper ().valueToTree (object));
+		}
+	}
+	
+	public static ExternalizableJsonNode externalize (final JsonNode node) {
+		if (node instanceof ExternalizableJsonNode) {
+			return (ExternalizableJsonNode) node;
+		} else {
+			return new ExternalizableJsonNode (node);
+		}
+	}
+	
 	public static ServiceIdentification serviceIdentification (final String json) {
 		return serviceIdentification (parse (json));
 	}

@@ -1,6 +1,7 @@
 package nl.idgis.geoide.commons.domain.api;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import nl.idgis.geoide.commons.domain.ServiceRequest;
 import nl.idgis.geoide.commons.domain.layer.LayerState;
@@ -10,8 +11,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public interface MapView {
 
-	List<ServiceRequest> getServiceRequests(List<Traits<LayerState>> layerStates);
+	CompletableFuture<List<ServiceRequest>> getServiceRequests (List<Traits<LayerState>> layerStates);
 
-	List<Traits<LayerState>> flattenLayerList(JsonNode viewerState);
+	CompletableFuture<List<Traits<LayerState>>> flattenLayerList (JsonNode viewerState);
 
 }

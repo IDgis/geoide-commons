@@ -1,9 +1,8 @@
 package geoide.config;
 
-import nl.idgis.geoide.commons.domain.provider.LayerProvider;
-import nl.idgis.geoide.commons.layer.LayerTypeRegistry;
-import nl.idgis.geoide.map.MapView;
-import nl.idgis.geoide.service.ServiceTypeRegistry;
+import nl.idgis.geoide.commons.domain.api.MapView;
+import nl.idgis.geoide.commons.remote.RemoteMethodClient;
+import nl.idgis.geoide.commons.remote.RemoteServiceFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -15,12 +14,7 @@ public class MapViewConfig {
 
 	@Bean
 	@Autowired
-	public MapView mapView (LayerTypeRegistry layerTypeRegistry, ServiceTypeRegistry serviceTypeRegistry, LayerProvider layerProvider) {
-		return new MapView  (
-				layerTypeRegistry,
-				serviceTypeRegistry,
-				layerProvider
-			);
+	public MapView mapView (final RemoteServiceFactory factory, final RemoteMethodClient client) {
+		return factory.createServiceReference (client, MapView.class);
 	}
-	
 }

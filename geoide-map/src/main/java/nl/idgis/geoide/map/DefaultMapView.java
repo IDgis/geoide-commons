@@ -3,6 +3,7 @@ package nl.idgis.geoide.map;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -38,13 +39,13 @@ public class DefaultMapView implements MapView {
 	 * @see nl.idgis.geoide.map.MapView#getServiceRequests(java.util.List)
 	 */
 	@Override
-	public List<ServiceRequest> getServiceRequests (final List<Traits<LayerState>> layerStates) {
+	public CompletableFuture<List<ServiceRequest>> getServiceRequests (final List<Traits<LayerState>> layerStates) {
 		
 		// Turn the list of layers in a list of service layers:
 		final List<ParameterizedServiceLayer<?>> serviceLayers = createServiceLayerList (layerStates);
 
 		// Merge the service layer list into a list of concrete requests for the client to execute.
-		return createServiceRequests (serviceLayers);
+		return CompletableFuture.completedFuture (createServiceRequests (serviceLayers));
 	}
 	
 	
@@ -103,8 +104,8 @@ public class DefaultMapView implements MapView {
 	 * @see nl.idgis.geoide.map.MapView#flattenLayerList(com.fasterxml.jackson.databind.JsonNode)
 	 */
 	@Override
-	public List<Traits<LayerState>> flattenLayerList (final JsonNode viewerState) {
-		return flattenLayerList (viewerState, Collections.emptyList ());
+	public CompletableFuture<List<Traits<LayerState>>> flattenLayerList (final JsonNode viewerState) {
+		return CompletableFuture.completedFuture (flattenLayerList (viewerState, Collections.emptyList ()));
 	}
 	
 	private List<Traits<LayerState>> flattenLayerList (final JsonNode viewerState, final List<Traits<LayerState>> parents) {

@@ -1,6 +1,7 @@
 package nl.idgis.geoide.service.wms;
 
 
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -168,7 +169,8 @@ public class WMSServiceType extends ServiceType implements LayerServiceType {
 	}
 	
 	@JsonInclude (Include.NON_NULL)
-	public static class WMSRequestParameters {
+	public static class WMSRequestParameters implements Serializable{
+		private static final long serialVersionUID = 1290295196776190101L;
 		
 		private final String layers;
 		private final Boolean transparent;

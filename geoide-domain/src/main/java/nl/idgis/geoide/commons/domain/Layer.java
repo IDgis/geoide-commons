@@ -44,8 +44,26 @@ public class Layer extends Entity {
 		this.label = label;
 		this.layers = layers == null ? Collections.<Layer>emptyList () : new ArrayList<> (layers);
 		this.serviceLayers = serviceLayers == null ? Collections.<ServiceLayer>emptyList () : new ArrayList<> (serviceLayers);
-		this.state = state == null ? Collections.<String, JsonNode>emptyMap() : new HashMap<String, JsonNode> (state); 
-		this.properties = properties == null ? Collections.<String, JsonNode>emptyMap() : new HashMap<String, JsonNode> (properties); 
+		this.state = externalizeProperties (state); 
+		this.properties = externalizeProperties (properties); 
+	}
+	
+	private static Map<String, JsonNode> externalizeProperties (final Map<String, JsonNode> input) {
+		if (input == null || input.isEmpty ()) {
+			return Collections.emptyMap ();
+		}
+		
+		final Map<String, JsonNode> result = new HashMap<> ();
+		
+		for (final Map.Entry<String, JsonNode> entry: input.entrySet ()) {
+			if (entry.getValue () == null) {
+				result.put (entry.getKey (), null);
+			} else {
+				result.put (entry.getKey (), JsonFactory.externalize (entry.getValue ()));
+			}
+		}
+
+		return result;
 	}
 	
 	@JsonValue
