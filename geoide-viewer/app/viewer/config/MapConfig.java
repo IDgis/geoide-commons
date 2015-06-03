@@ -18,7 +18,5 @@ public class MapConfig {
 					Play.application().resourceAsStream ("viewer/featuretypes.json"),
 					Play.application().resourceAsStream ("viewer/servicelayers.json"),
 					Play.application().resourceAsStream ("viewer/layers.json"));
-		
-		//return new StaticMapProvider (Play.application().resourceAsStream ("viewer/map-definition.json"));
 	}
 }

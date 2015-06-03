@@ -7,10 +7,8 @@ import nl.idgis.geoide.commons.domain.api.ReportComposer;
 import nl.idgis.geoide.commons.domain.api.TemplateDocumentProvider;
 import nl.idgis.geoide.commons.domain.provider.LayerProvider;
 import nl.idgis.geoide.commons.domain.provider.MapProvider;
-import nl.idgis.geoide.commons.domain.provider.ServiceLayerProvider;
 import nl.idgis.geoide.commons.domain.provider.ServiceProvider;
 import nl.idgis.geoide.commons.layer.LayerTypeRegistry;
-import nl.idgis.geoide.service.ServiceTypeRegistry;
 import nl.idgis.geoide.util.streams.StreamProcessor;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,8 +61,8 @@ public class ControllerConfig {
 	
 	@Bean
 	@Autowired
-	public Symbol symbolController (final ServiceLayerProvider serviceLayerProvider, final ServiceTypeRegistry serviceTypeRegistry) {
-		return new Symbol (serviceLayerProvider, serviceTypeRegistry);
+	public Symbol symbolController () {
+		return new Symbol ();
 	}
 	
 	@Bean
