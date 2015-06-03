@@ -1,9 +1,10 @@
-package nl.idgis.geoide.commons.layer.toc;
+package nl.idgis.geoide.commons.domain.toc;
 
 import nl.idgis.geoide.commons.domain.Layer;
-import nl.idgis.geoide.commons.domain.toc.TOCItemTrait;
 
 public final class TOCItemLayerTrait implements TOCItemTrait {
+	private static final long serialVersionUID = 5042289564333777461L;
+	
 	private final Layer layer; 
 	
 	public TOCItemLayerTrait(Layer layer) {

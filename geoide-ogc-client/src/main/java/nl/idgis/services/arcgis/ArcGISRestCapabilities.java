@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import nl.idgis.services.Capabilities;
+import nl.idgis.geoide.commons.domain.service.Capabilities;
 
 public class ArcGISRestCapabilities extends Capabilities {
 	private static final long serialVersionUID = 1488053156053325012L;

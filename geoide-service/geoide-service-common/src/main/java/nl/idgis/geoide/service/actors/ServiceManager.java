@@ -9,13 +9,13 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import nl.idgis.geoide.commons.domain.ServiceIdentification;
+import nl.idgis.geoide.commons.domain.service.messages.ServiceError;
+import nl.idgis.geoide.commons.domain.service.messages.ServiceMessage;
 import nl.idgis.geoide.commons.domain.traits.Traits;
 import nl.idgis.geoide.service.ServiceType;
 import nl.idgis.geoide.service.ServiceTypeRegistry;
 import nl.idgis.geoide.service.messages.LogResponse;
 import nl.idgis.geoide.service.messages.RequestLog;
-import nl.idgis.geoide.service.messages.ServiceError;
-import nl.idgis.geoide.service.messages.ServiceMessage;
 import play.Logger;
 import play.libs.ws.WSClient;
 import scala.concurrent.duration.Duration;

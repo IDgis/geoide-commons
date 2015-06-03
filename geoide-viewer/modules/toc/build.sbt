@@ -4,9 +4,7 @@ Common.settings
 
 libraryDependencies ++= Seq(
   Common.Dependencies.geoideDomain,
-  Common.Dependencies.geoideUtil,
-  Common.Dependencies.geoideServiceCommon,
-  Common.Dependencies.geoideLayerCommon
+  Common.Dependencies.geoideUtil
 )
 
 // Use IDgis repositories:

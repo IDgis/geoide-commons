@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 import nl.idgis.geoide.commons.domain.MimeContentType;
-import nl.idgis.services.Capabilities;
+import nl.idgis.geoide.commons.domain.service.Capabilities;
 import nl.idgis.services.OGCCapabilities;
 
 public final class WMSCapabilities extends OGCCapabilities {

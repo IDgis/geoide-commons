@@ -9,8 +9,6 @@ libraryDependencies ++= Seq(
   javaWs,
   Common.Dependencies.geoideDomain,
   Common.Dependencies.geoideUtil,
-  Common.Dependencies.geoideServiceCommon,
-  Common.Dependencies.geoideLayerCommon,
   Common.Dependencies.webjarsPlay,
   Common.Dependencies.webjarsBootstrap,
   Common.Dependencies.webjarsDojoBase,

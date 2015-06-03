@@ -1,4 +1,4 @@
-package nl.idgis.geoide.service.messages;
+package nl.idgis.geoide.commons.domain.service.messages;
 
 import java.io.Serializable;
 

@@ -4,9 +4,9 @@ import java.util.Map;
 
 import nl.idgis.geoide.commons.domain.Service;
 import nl.idgis.geoide.commons.domain.provider.ServiceProvider;
-import nl.idgis.geoide.service.messages.ServiceError;
-import nl.idgis.geoide.service.messages.ServiceRequest;
-import nl.idgis.geoide.service.messages.ServiceResponse;
+import nl.idgis.geoide.commons.domain.service.messages.ServiceError;
+import nl.idgis.geoide.commons.domain.service.messages.ServiceRequest;
+import nl.idgis.geoide.commons.domain.service.messages.ServiceResponse;
 import play.libs.F.Function;
 import play.libs.F.Promise;
 import play.mvc.Controller;

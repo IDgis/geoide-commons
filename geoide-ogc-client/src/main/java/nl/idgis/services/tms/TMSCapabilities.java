@@ -11,9 +11,9 @@ import java.util.Map;
 import java.util.Set;
 
 import nl.idgis.geoide.commons.domain.MimeContentType;
-import nl.idgis.services.Capabilities;
-import nl.idgis.services.Capabilities.BoundingBox;
-import nl.idgis.services.Capabilities.Point;
+import nl.idgis.geoide.commons.domain.service.Capabilities;
+import nl.idgis.geoide.commons.domain.service.Capabilities.BoundingBox;
+import nl.idgis.geoide.commons.domain.service.Capabilities.Point;
 
 public class TMSCapabilities  {
 

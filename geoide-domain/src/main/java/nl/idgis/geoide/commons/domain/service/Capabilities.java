@@ -1,4 +1,4 @@
-package nl.idgis.services;
+package nl.idgis.geoide.commons.domain.service;
 
 import java.io.Serializable;
 import java.util.Collection;

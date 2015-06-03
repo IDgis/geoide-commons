@@ -14,7 +14,7 @@ import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.geoide.commons.domain.QName;
 import nl.idgis.geoide.commons.domain.geometry.Srs;
 import nl.idgis.geoide.commons.domain.geometry.wkb.WkbGeometry;
-import nl.idgis.geoide.service.messages.ProducerMessage;
+import nl.idgis.geoide.commons.domain.service.messages.ProducerMessage;
 import nl.idgis.ogc.client.wfs.Feature;
 import nl.idgis.ogc.client.wfs.FeatureCollectionReader;
 import scala.concurrent.duration.FiniteDuration;

@@ -1,7 +1,7 @@
-package nl.idgis.geoide.service.messages;
+package nl.idgis.geoide.commons.domain.service.messages;
 
-import akka.actor.ActorRef;
 import nl.idgis.geoide.commons.domain.ServiceIdentification;
+import akka.actor.ActorRef;
 
 public class QueryFeaturesResponse extends ServiceMessage {
 	private static final long serialVersionUID = -6147986331229927464L;

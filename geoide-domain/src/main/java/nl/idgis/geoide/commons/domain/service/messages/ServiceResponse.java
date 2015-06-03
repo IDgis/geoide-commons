@@ -1,12 +1,12 @@
-package nl.idgis.geoide.service.messages;
+package nl.idgis.geoide.commons.domain.service.messages;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import nl.idgis.geoide.commons.domain.ServiceIdentification;
+import nl.idgis.geoide.commons.domain.service.Capabilities;
 import nl.idgis.geoide.util.Assert;
-import nl.idgis.services.Capabilities;
 import akka.util.ByteString;
 
 public class ServiceResponse extends ServiceMessage {

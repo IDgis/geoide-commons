@@ -14,13 +14,13 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import nl.idgis.geoide.commons.domain.MimeContentType;
+import nl.idgis.geoide.commons.domain.service.Capabilities.BoundingBox;
 import nl.idgis.ogc.wms.WMSCapabilities;
 import nl.idgis.ogc.wms.WMSCapabilities.Layer;
 import nl.idgis.ogc.wms.WMSCapabilities.Request;
 import nl.idgis.ogc.wms.WMSCapabilities.RequestType;
 import nl.idgis.ogc.wms.WMSCapabilities.Service;
 import nl.idgis.ogc.wms.WMSCapabilities.Style;
-import nl.idgis.services.Capabilities.BoundingBox;
 
 public class WMSCapabilitiesParser {
 

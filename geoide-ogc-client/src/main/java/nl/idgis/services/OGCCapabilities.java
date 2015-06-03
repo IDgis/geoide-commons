@@ -3,6 +3,8 @@ package nl.idgis.services;
 import java.io.Serializable;
 import java.util.Collection;
 
+import nl.idgis.geoide.commons.domain.service.Capabilities;
+
 public abstract class OGCCapabilities extends Capabilities {
 	private static final long serialVersionUID = -3092853516309523737L;
 
