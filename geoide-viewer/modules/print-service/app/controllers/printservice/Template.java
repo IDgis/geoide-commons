@@ -1,6 +1,6 @@
 package controllers.printservice;
 
-import nl.idgis.geoide.commons.report.template.TemplateDocumentProvider;
+import nl.idgis.geoide.commons.domain.api.TemplateDocumentProvider;
 import nl.idgis.geoide.util.Promises;
 import play.libs.F.Promise;
 import play.mvc.Controller;

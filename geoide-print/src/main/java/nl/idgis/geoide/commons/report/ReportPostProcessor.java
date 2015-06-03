@@ -43,7 +43,7 @@ public class ReportPostProcessor {
 	 * @param template		the report to print ( a "filled" template document)
 	 * @return 				a pdf Document
 	 */
-	public CompletableFuture<Document> process (TemplateDocument template, ReportData reportData) throws Throwable {
+	public CompletableFuture<Document> process (TemplateDocument template, final org.jsoup.nodes.Document html, ReportData reportData) throws Throwable {
 		
 
 		final URI documentUri = template.getDocumentUri();
@@ -66,7 +66,7 @@ public class ReportPostProcessor {
 		
 		
 		return documentCache
-				.store(documentUri, new MimeContentType ("text/html"), template.asString().getBytes())
+				.store(documentUri, new MimeContentType ("text/html"), html.child(0).html().getBytes())
 				.thenCompose ((final Document a) -> {
 						try {
 							return printService.print (

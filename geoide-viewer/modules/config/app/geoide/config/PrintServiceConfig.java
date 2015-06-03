@@ -3,9 +3,9 @@ package geoide.config;
 import nl.idgis.geoide.commons.domain.api.DocumentCache;
 import nl.idgis.geoide.commons.domain.api.PrintService;
 import nl.idgis.geoide.commons.domain.api.ReportComposer;
+import nl.idgis.geoide.commons.domain.api.TemplateDocumentProvider;
 import nl.idgis.geoide.commons.remote.RemoteMethodClient;
 import nl.idgis.geoide.commons.remote.RemoteServiceFactory;
-import nl.idgis.geoide.commons.report.template.TemplateDocumentProvider;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

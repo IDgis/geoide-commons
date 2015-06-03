@@ -24,6 +24,7 @@ public final class TemplateDocument implements Serializable {
 	private final String template;
 	private final String description;
 	private final List<TemplateVariable> variables;
+	private final String content;
 
 	public TemplateDocument (
 		final URI uri,
@@ -40,7 +41,8 @@ public final class TemplateDocument implements Serializable {
 		final double gutterV,
 		final String template,
 		final String description,
-		final List<TemplateVariable> variables) {
+		final List<TemplateVariable> variables,
+		final String content) {
 		
 		this.uri = uri;
 		this.rightMargin = rightMargin;
@@ -57,6 +59,7 @@ public final class TemplateDocument implements Serializable {
 		this.template = template;
 		this.description = description;
 		this.variables = variables == null || variables.isEmpty () ? Collections.emptyList () : new ArrayList<> (variables);
+		this.content = content;
 	}
 	
 	public static Builder build () {
@@ -122,6 +125,10 @@ public final class TemplateDocument implements Serializable {
 	public List<TemplateVariable> getVariables () {
 		return Collections.unmodifiableList (variables);
 	}
+	
+	public String getContent () {
+		return content;
+	}
 
 	public final static class Builder {
 		private URI uri;
@@ -139,9 +146,10 @@ public final class TemplateDocument implements Serializable {
 		private String template;
 		private String description;
 		private List<TemplateVariable> variables;
+		private String content;
 		
 		public TemplateDocument create () {
-			return new TemplateDocument (uri, rightMargin, leftMargin, topMargin, bottomMargin, pageFormat, pageOrientation, documentUri, colCount, rowCount, gutterH, gutterV, template, description, variables); 
+			return new TemplateDocument (uri, rightMargin, leftMargin, topMargin, bottomMargin, pageFormat, pageOrientation, documentUri, colCount, rowCount, gutterH, gutterV, template, description, variables, content); 
 		}
 		
 		public Builder setUri(URI uri) {
@@ -200,6 +208,10 @@ public final class TemplateDocument implements Serializable {
 			this.description = description;
 			return this;
 		}
+		public Builder setContent (final String content) {
+			this.content = content;
+			return this;
+		}
 		
 		public Builder addVariable (final String name, final String defaultValue, final int maxwidth) {
 			variables.add (new TemplateVariable (name, defaultValue, maxwidth));
@@ -250,6 +262,9 @@ public final class TemplateDocument implements Serializable {
 		}
 		public List<TemplateVariable> getVariables () {
 			return variables;
+		}
+		public String getContent () {
+			return content;
 		}
 	}
 }

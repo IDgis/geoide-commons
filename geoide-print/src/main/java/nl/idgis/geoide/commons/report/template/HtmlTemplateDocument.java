@@ -1,15 +1,10 @@
 package nl.idgis.geoide.commons.report.template;
 
 
-import java.net.URI;
 
-import nl.idgis.geoide.commons.domain.report.TemplateDocument;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
-
-public class HtmlTemplateDocument implements TemplateDocument {
+public class HtmlTemplateDocument { /*implements TemplateDocument {
+	
+	
 	private final URI baseUri;
 	private final URI templateUri;
 	private final Document html; 
@@ -138,7 +133,5 @@ public class HtmlTemplateDocument implements TemplateDocument {
 		}
 	}
 	
-
-	
-
+	*/
 }

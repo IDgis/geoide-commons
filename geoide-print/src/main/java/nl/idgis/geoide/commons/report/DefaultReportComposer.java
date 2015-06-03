@@ -28,6 +28,7 @@ import nl.idgis.geoide.commons.report.template.HtmlTemplateDocumentProvider;
 import nl.idgis.geoide.map.DefaultMapView;
 import nl.idgis.geoide.util.Futures;
 
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
@@ -110,7 +111,9 @@ public class DefaultReportComposer implements ReportComposer {
 		PaperFormat format = PaperFormat.valueOf(template.getPageFormat() + template.getPageOrientation());
 		ReportData reportData = new ReportData(format, template.getLeftMargin() ,template.getRightMargin(), template.getTopMargin(), template.getBottomMargin(), template.getGutterH(), template.getGutterV(), template.getRowCount(), template.getColCount());
 				
-		Elements blockElements = template.getBlocks();
+		final org.jsoup.nodes.Document html = Jsoup.parse (template.getContent (), template.getDocumentUri ().toString ());
+		
+		Elements blockElements = html.getElementsByClass ("block");
 		
 		final List<CompletableFuture<Tuple<Element, Block>>> promises = new ArrayList<> (blockElements.size ());
 		final List<Tuple<Tuple<Element,Element>, BlockInfo>> preparedBlocks = new ArrayList<> (blockElements.size ());
@@ -199,8 +202,8 @@ public class DefaultReportComposer implements ReportComposer {
 						continue;
 					}
 					
-					template
-						.getDocument().head ()
+					html
+						.head ()
 						.appendElement ("link")
 						.attr ("rel", "stylesheet")
 						.attr ("href", cssUri.toString ())
@@ -210,7 +213,7 @@ public class DefaultReportComposer implements ReportComposer {
 				log.debug("html template :"  + template);
 				
 				try {
-					return processor.process (template, reportData);
+					return processor.process (template, html, reportData);
 				} catch (Throwable t) {
 					throw new RuntimeException (t);
 				}
