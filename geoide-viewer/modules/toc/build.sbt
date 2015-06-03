@@ -4,7 +4,6 @@ Common.settings
 
 libraryDependencies ++= Seq(
   Common.Dependencies.geoideDomain,
-  Common.Dependencies.geoideDomainTest,
   Common.Dependencies.geoideUtil,
   Common.Dependencies.geoideServiceCommon,
   Common.Dependencies.geoideLayerCommon

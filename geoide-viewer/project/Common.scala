@@ -35,15 +35,15 @@ object Common {
 		val akkaRemote = "com.typesafe.akka" %% "akka-remote" % "2.3.4"
 		
 		val geoideDomain = "nl.idgis.geoide" % "geoide-domain" % "0.1.8-SNAPSHOT"
-		val geoideDomainTest = "nl.idgis.geoide" % "geoide-domain-test" % "0.1.8-SNAPSHOT"
 		val geoideUtil = "nl.idgis.geoide" % "geoide-util" % "0.1.8-SNAPSHOT"
+		val geoideRemote = "nl.idgis.geoide" % "geoide-remote" % "0.1.8-SNAPSHOT"
+		
 		val geoideServiceCommon = "nl.idgis.geoide" % "geoide-service-common" % "0.1.8-SNAPSHOT"
 		val geoideServiceTms = "nl.idgis.geoide" % "geoide-service-tms" % "0.1.8-SNAPSHOT"
 		val geoideServiceWms = "nl.idgis.geoide" % "geoide-service-wms" % "0.1.8-SNAPSHOT"
 		val geoideServiceWfs = "nl.idgis.geoide" % "geoide-service-wfs" % "0.1.8-SNAPSHOT"
 		val geoideLayerCommon = "nl.idgis.geoide" % "geoide-layer-common" % "0.1.8-SNAPSHOT"
 		val geoideLayerDefault = "nl.idgis.geoide" % "geoide-layer-default" % "0.1.8-SNAPSHOT"
-		val geoideRemote = "nl.idgis.geoide" % "geoide-remote" % "0.1.8-SNAPSHOT"
 		
 		val webjarsPlay = "org.webjars" %% "webjars-play" % "2.3.0"
   		val webjarsBootstrap = "org.webjars" % "bootstrap" % "3.2.0"

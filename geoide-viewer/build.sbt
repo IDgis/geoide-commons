@@ -46,7 +46,6 @@ libraryDependencies ++= Seq(
   Common.Dependencies.geoideDomain,
   Common.Dependencies.geoideUtil,
   
-  Common.Dependencies.geoideDomainTest,
   Common.Dependencies.geoideServiceCommon,
   Common.Dependencies.geoideServiceTms,
   Common.Dependencies.geoideServiceWms,

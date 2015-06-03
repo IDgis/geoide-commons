@@ -8,7 +8,6 @@ libraryDependencies ++= Seq(
   cache,
   javaWs,
   Common.Dependencies.geoideDomain,
-  Common.Dependencies.geoideDomainTest,
   Common.Dependencies.geoideUtil,
   Common.Dependencies.geoideServiceCommon,
   Common.Dependencies.geoideLayerCommon,
