@@ -36,10 +36,7 @@ lazy val geoidePrintService = (project in file("./modules/print-service"))
 	.dependsOn(geoideCore)
 	
 libraryDependencies ++= Seq(
-  javaJdbc,
-  javaEbean,
   cache,
-  javaWs,
   
   Common.Dependencies.akkaRemote,
   

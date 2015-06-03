@@ -3,10 +3,7 @@ name := """geoide-viewerconfig"""
 Common.settings
 
 libraryDependencies ++= Seq(
-  javaJdbc,
-  javaEbean,
   cache,
-  javaWs,
   
   Common.Dependencies.geoideDomain,
   Common.Dependencies.geoideRemote,

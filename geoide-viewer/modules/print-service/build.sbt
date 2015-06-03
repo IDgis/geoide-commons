@@ -3,10 +3,7 @@ name := """geoide-print-service"""
 Common.settings
 
 libraryDependencies ++= Seq(
-  javaJdbc,
-  javaEbean,
-  cache,
-  javaWs
+  cache
 )
 
 // Use IDgis repositories:
