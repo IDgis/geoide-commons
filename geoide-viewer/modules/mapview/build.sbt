@@ -6,12 +6,7 @@ libraryDependencies ++= Seq(
   javaJdbc,
   javaEbean,
   cache,
-  javaWs,
-  Common.Dependencies.geoideDomain,
-  Common.Dependencies.geoideUtil,
-  Common.Dependencies.springContext,
-  Common.Dependencies.springAop,
-  Common.Dependencies.springTest
+  javaWs
 )
 
 // Use IDgis repositories:

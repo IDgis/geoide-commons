@@ -3,8 +3,6 @@ name := """geoide-toc"""
 Common.settings
 
 libraryDependencies ++= Seq(
-  Common.Dependencies.geoideDomain,
-  Common.Dependencies.geoideUtil
 )
 
 // Use IDgis repositories:

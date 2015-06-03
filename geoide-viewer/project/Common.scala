@@ -47,6 +47,5 @@ object Common {
   		
 		val springContext = "org.springframework" % "spring-context" % "4.0.3.RELEASE"
 		val springAop = "org.springframework" % "spring-aop" % "4.0.3.RELEASE"
-		val springTest = "org.springframework" % "spring-test" % "4.0.3.RELEASE" % "test"
 	}
 }

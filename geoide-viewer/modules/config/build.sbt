@@ -13,8 +13,7 @@ libraryDependencies ++= Seq(
   Common.Dependencies.geoideUtil,
   
   Common.Dependencies.springContext,
-  Common.Dependencies.springAop,
-  Common.Dependencies.springTest
+  Common.Dependencies.springAop
 )
 
 // Use IDgis repositories:

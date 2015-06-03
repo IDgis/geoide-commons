@@ -42,9 +42,11 @@ libraryDependencies ++= Seq(
   javaWs,
   
   Common.Dependencies.akkaRemote,
-  Common.Dependencies.geoideRemote,
-  Common.Dependencies.geoideDomain,
-  Common.Dependencies.geoideUtil,
+  
+  Common.Dependencies.webjarsBootstrap,
+  Common.Dependencies.webjarsDojoBase,
+  Common.Dependencies.webjarsPutSelector,
+  Common.Dependencies.webjarsFontAwesome,
   
   "it.innove" % "play2-pdf" % "1.1.1"
 )
