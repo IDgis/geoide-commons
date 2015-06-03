@@ -1,4 +1,4 @@
-package nl.idgis.geoide.service.wfs;
+package nl.idgis.geoide.commons.domain.service;
 
 import java.io.Serializable;
 import java.util.Collections;

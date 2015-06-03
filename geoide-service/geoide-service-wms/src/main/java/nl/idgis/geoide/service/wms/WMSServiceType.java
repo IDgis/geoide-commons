@@ -1,12 +1,10 @@
 package nl.idgis.geoide.service.wms;
 
 
-import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +15,8 @@ import nl.idgis.geoide.commons.domain.ParameterizedServiceLayer;
 import nl.idgis.geoide.commons.domain.Service;
 import nl.idgis.geoide.commons.domain.ServiceIdentification;
 import nl.idgis.geoide.commons.domain.ServiceRequest;
+import nl.idgis.geoide.commons.domain.service.WMSLayerParameters;
+import nl.idgis.geoide.commons.domain.service.WMSRequestParameters;
 import nl.idgis.geoide.service.LayerServiceType;
 import nl.idgis.geoide.service.ServiceRequestContext;
 import nl.idgis.geoide.service.ServiceType;
@@ -24,9 +24,6 @@ import nl.idgis.geoide.service.wms.actors.WMS;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -166,37 +163,5 @@ public class WMSServiceType extends ServiceType implements LayerServiceType {
 	@Override
 	public Props createServiceActorProps (final ActorRef serviceManager, final WSClient wsClient, final ServiceIdentification identification) {
 		return WMS.mkProps (serviceManager, wsClient, identification);
-	}
-	
-	@JsonInclude (Include.NON_NULL)
-	public static class WMSRequestParameters implements Serializable{
-		private static final long serialVersionUID = 1290295196776190101L;
-		
-		private final String layers;
-		private final Boolean transparent;
-		private final Map<String, String> vendorParameters;
-		
-		public WMSRequestParameters (final String layers, final Boolean transparent) {
-			this (layers, transparent, null);
-		}
-		
-		public WMSRequestParameters (final String layers, final Boolean transparent, final Map<String, String> vendorParameters) {
-			this.layers = layers;
-			this.transparent = transparent;
-			this.vendorParameters = vendorParameters != null ? new HashMap<String, String> (vendorParameters) : Collections.<String, String>emptyMap ();
-		}
-		
-		public String getLayers () {
-			return layers;
-		}
-		
-		public Boolean getTransparent () {
-			return transparent;
-		}
-		
-		@JsonAnyGetter
-		public Map<String, String> getVendorParameters () {
-			return Collections.unmodifiableMap (vendorParameters);
-		}
 	}
 }

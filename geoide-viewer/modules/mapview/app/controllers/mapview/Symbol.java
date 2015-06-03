@@ -6,7 +6,7 @@ import play.mvc.Result;
 
 public class Symbol extends Controller {
 	
-	public Promise<Result> legendSymbol (final String serviceLayerId) {
+	public static Promise<Result> legendSymbol (final String serviceLayerId) {
 		return Promise.pure ((Result) ok ());
 	}
 }

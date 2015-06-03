@@ -59,12 +59,6 @@ public class ControllerConfig {
 	
 	@Bean
 	@Autowired
-	public Symbol symbolController () {
-		return new Symbol ();
-	}
-	
-	@Bean
-	@Autowired
 	public Print printServiceController (
 			final PrintService printService, 
 			final @Qualifier ("printDocumentCache") DocumentCache documentCache,

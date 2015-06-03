@@ -9,7 +9,7 @@ GET		/services/:serviceId/:layerName/*parameters		@controllers.mapview.Services.
 POST	/query											@controllers.mapview.Query.query()
 
 # Legend symbol:
-GET		/symbol/:serviceLayerId							@controllers.mapview.Symbol.legendSymbol(serviceLayerId: String)
+GET		/symbol/:serviceLayerId							controllers.mapview.Symbol.legendSymbol(serviceLayerId: String)
 
 # JavaScript routes:
 GET		/map/routes										controllers.mapview.JavaScript.javascriptRoutes()

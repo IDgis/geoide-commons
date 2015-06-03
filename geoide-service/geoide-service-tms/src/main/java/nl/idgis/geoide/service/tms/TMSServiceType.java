@@ -1,6 +1,5 @@
 package nl.idgis.geoide.service.tms;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,6 +12,7 @@ import nl.idgis.geoide.commons.domain.ParameterizedServiceLayer;
 import nl.idgis.geoide.commons.domain.Service;
 import nl.idgis.geoide.commons.domain.ServiceIdentification;
 import nl.idgis.geoide.commons.domain.ServiceRequest;
+import nl.idgis.geoide.commons.domain.service.TMSRequestParameters;
 import nl.idgis.geoide.service.LayerServiceType;
 import nl.idgis.geoide.service.ServiceRequestContext;
 import nl.idgis.geoide.service.ServiceType;
@@ -161,21 +161,6 @@ public class TMSServiceType extends ServiceType implements LayerServiceType {
 	}
 	
 
-	public static class TMSRequestParameters implements Serializable {
-		private static final long serialVersionUID = 5824460737314719140L;
-		
-		private final String layer;
-		
-		public TMSRequestParameters (final String layer) {
-			this.layer = layer;
-		}
-
-		public String getLayer () {
-			return layer;
-		}
-	}
-	
-	
 	public static class TilingProperties {
 		
 		//TODO getTilingProperties from Capabilities
