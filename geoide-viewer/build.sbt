@@ -45,6 +45,9 @@ libraryDependencies ++= Seq(
   Common.Dependencies.webjarsPutSelector,
   Common.Dependencies.webjarsFontAwesome,
   
+  Common.Dependencies.springContext,
+  Common.Dependencies.springAop,
+  
   "it.innove" % "play2-pdf" % "1.1.1"
 )
 

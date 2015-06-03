@@ -5,9 +5,9 @@ import nl.idgis.geoide.commons.domain.api.MapQuery;
 import nl.idgis.geoide.commons.domain.api.MapView;
 import nl.idgis.geoide.commons.domain.api.PrintService;
 import nl.idgis.geoide.commons.domain.api.ReportComposer;
+import nl.idgis.geoide.commons.domain.api.ServiceProviderApi;
 import nl.idgis.geoide.commons.domain.api.TemplateDocumentProvider;
 import nl.idgis.geoide.commons.domain.provider.MapProvider;
-import nl.idgis.geoide.commons.domain.provider.ServiceProvider;
 import nl.idgis.geoide.util.streams.StreamProcessor;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,6 @@ import akka.actor.ActorRef;
 import controllers.core.MapConfiguration;
 import controllers.mapview.Query;
 import controllers.mapview.Services;
-import controllers.mapview.Symbol;
 import controllers.mapview.View;
 import controllers.printservice.Print;
 import controllers.printservice.Report;
@@ -45,7 +44,7 @@ public class ControllerConfig {
 	
 	@Bean
 	@Autowired
-	public Services serviceController (final ServiceProvider serviceProvider, final @Qualifier("serviceManagerActor") ActorRef serviceManagerActor) {
+	public Services serviceController (final ServiceProviderApi serviceProvider, final @Qualifier("serviceManagerActor") ActorRef serviceManagerActor) {
 		return new Services (serviceProvider, serviceManagerActor);
 	}
 	

@@ -11,6 +11,7 @@ import play.Play;
 @Configuration
 public class MapConfig {
 	
+	/*
 	@Bean
 	public MapProvider mapProvider () {
 		return new StaticMapProvider (Play.application().resourceAsStream ("viewer/maps.json"),
@@ -19,4 +20,5 @@ public class MapConfig {
 					Play.application().resourceAsStream ("viewer/servicelayers.json"),
 					Play.application().resourceAsStream ("viewer/layers.json"));
 	}
+	*/
 }

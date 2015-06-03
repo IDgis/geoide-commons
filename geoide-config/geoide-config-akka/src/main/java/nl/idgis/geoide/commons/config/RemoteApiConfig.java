@@ -5,6 +5,7 @@ import nl.idgis.geoide.commons.domain.api.MapQuery;
 import nl.idgis.geoide.commons.domain.api.MapView;
 import nl.idgis.geoide.commons.domain.api.PrintService;
 import nl.idgis.geoide.commons.domain.api.ReportComposer;
+import nl.idgis.geoide.commons.domain.api.ServiceProviderApi;
 import nl.idgis.geoide.commons.domain.api.TableOfContents;
 import nl.idgis.geoide.commons.domain.api.TemplateDocumentProvider;
 import nl.idgis.geoide.commons.remote.RemoteMethodServer;
@@ -74,7 +75,8 @@ public class RemoteApiConfig {
 			final ReportComposer reportComposer,
 			final TemplateDocumentProvider templateDocumentProvider,
 			final MapQuery mapQuery,
-			final TableOfContents toc) {
+			final TableOfContents toc,
+			final ServiceProviderApi serviceProviderApi) {
 		
 		final String serverName = config.getString ("geoide.service.components.remoteMethodServer.apiServerName", "api");
 		
@@ -87,7 +89,8 @@ public class RemoteApiConfig {
 				new ServiceRegistration<ReportComposer> (ReportComposer.class, reportComposer, null),
 				new ServiceRegistration<TemplateDocumentProvider> (TemplateDocumentProvider.class, templateDocumentProvider, null),
 				new ServiceRegistration<MapQuery> (MapQuery.class, mapQuery, null),
-				new ServiceRegistration<TableOfContents> (TableOfContents.class, toc, null)
+				new ServiceRegistration<TableOfContents> (TableOfContents.class, toc, null),
+				new ServiceRegistration<ServiceProviderApi> (ServiceProviderApi.class, serviceProviderApi, null)
 			);
 		
 		transport.listen (server, serverName);
