@@ -1,13 +1,13 @@
 package geoide.config;
 
 import nl.idgis.geoide.commons.domain.api.DocumentCache;
+import nl.idgis.geoide.commons.domain.api.MapProviderApi;
 import nl.idgis.geoide.commons.domain.api.MapQuery;
 import nl.idgis.geoide.commons.domain.api.MapView;
 import nl.idgis.geoide.commons.domain.api.PrintService;
 import nl.idgis.geoide.commons.domain.api.ReportComposer;
 import nl.idgis.geoide.commons.domain.api.ServiceProviderApi;
 import nl.idgis.geoide.commons.domain.api.TemplateDocumentProvider;
-import nl.idgis.geoide.commons.domain.provider.MapProvider;
 import nl.idgis.geoide.util.streams.StreamProcessor;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ public class ControllerConfig {
 
 	@Bean
 	@Autowired
-	public MapConfiguration mapConfigurationController (final MapProvider mapProvider) {
+	public MapConfiguration mapConfigurationController (final MapProviderApi mapProvider) {
 		return new MapConfiguration (mapProvider);
 	}
 	
