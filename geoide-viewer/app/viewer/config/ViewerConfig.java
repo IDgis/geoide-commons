@@ -2,13 +2,12 @@ package viewer.config;
 
 import geoide.config.ActorConfig;
 import geoide.config.ControllerConfig;
-import geoide.config.HttpClientConfig;
 import geoide.config.LayerTypeConfig;
+import geoide.config.MapViewConfig;
 import geoide.config.PrintServiceConfig;
 import geoide.config.RemoteConfig;
 import geoide.config.ServiceTypeConfig;
 import geoide.config.StreamConfig;
-import geoide.config.MapViewConfig;
 import nl.idgis.geoide.commons.domain.provider.MapProvider;
 import nl.idgis.geoide.commons.domain.traits.spring.TypedTrait;
 import nl.idgis.geoide.commons.layer.DefaultLayerType;
@@ -40,7 +39,6 @@ import controllers.viewer.Viewer;
 	TOCConfig.class,
 	PrintServiceConfig.class,
 	StreamConfig.class,
-	HttpClientConfig.class,
 	MapViewConfig.class,
 	RemoteConfig.class
 })
