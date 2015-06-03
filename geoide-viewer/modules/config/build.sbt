@@ -14,7 +14,7 @@ libraryDependencies ++= Seq(
 )
 
 // Use IDgis repositories:
-resolvers ++= Common.resolvers
+resolvers := Common.resolvers ++ resolvers.value
 
 publishTo := {
 	val nexus = "http://nexus.idgis.eu/content/repositories/"
