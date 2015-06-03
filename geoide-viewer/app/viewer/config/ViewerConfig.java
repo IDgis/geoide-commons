@@ -7,7 +7,6 @@ import geoide.config.RemoteConfig;
 import geoide.config.StreamConfig;
 import nl.idgis.geoide.commons.domain.api.MapProviderApi;
 import nl.idgis.geoide.commons.domain.api.TableOfContents;
-import nl.idgis.geoide.commons.domain.provider.MapProvider;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
