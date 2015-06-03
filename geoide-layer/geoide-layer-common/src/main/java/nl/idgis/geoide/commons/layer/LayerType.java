@@ -1,6 +1,7 @@
 package nl.idgis.geoide.commons.layer;
 
 import java.util.List;
+import java.util.Optional;
 
 import nl.idgis.geoide.commons.domain.FeatureQuery;
 import nl.idgis.geoide.commons.domain.Layer;
@@ -31,6 +32,6 @@ public abstract class LayerType  {
 	public abstract String getTypeName ();
 	
 	public abstract List<ParameterizedServiceLayer<?>> getServiceLayers (final Traits<LayerState> state);
-	public abstract List<ParameterizedFeatureType<?>> getFeatureTypes (final Layer layer, final FeatureQuery query, final JsonNode state);
+	public abstract List<ParameterizedFeatureType<?>> getFeatureTypes (final Layer layer, final Optional<FeatureQuery> query, final JsonNode state);
 	public abstract Traits<LayerState> createLayerState (Layer layer, JsonNode state, List<Traits<LayerState>> parents);
 }

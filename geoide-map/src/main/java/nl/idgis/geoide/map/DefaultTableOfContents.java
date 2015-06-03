@@ -1,29 +1,29 @@
-package controllers.toc;
+package nl.idgis.geoide.map;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import nl.idgis.geoide.commons.domain.Layer;
 import nl.idgis.geoide.commons.domain.MapDefinition;
+import nl.idgis.geoide.commons.domain.api.TableOfContents;
 import nl.idgis.geoide.commons.domain.toc.TOCItem;
 import nl.idgis.geoide.commons.domain.traits.Traits;
 import nl.idgis.geoide.commons.layer.LayerType;
 import nl.idgis.geoide.commons.layer.LayerTypeRegistry;
 import nl.idgis.geoide.commons.layer.toc.TOCLayerTypeTrait;
 
-public class TOC  {
-
+public class DefaultTableOfContents implements TableOfContents {
 
 	private final LayerTypeRegistry layerTypeRegistry;
-
 	
-	public TOC (final LayerTypeRegistry layerTypeRegistry) {
+	public DefaultTableOfContents (final LayerTypeRegistry layerTypeRegistry) {
 		this.layerTypeRegistry = layerTypeRegistry;
 	}
 	
-	
-	public List<Traits<TOCItem>> getItems (final MapDefinition mapDefinition) {
+	@Override
+	public CompletableFuture<List<Traits<TOCItem>>> getItems (final MapDefinition mapDefinition) {
 		List<Traits<TOCItem>> tocItems = new ArrayList<>();
 		List <Layer> rootLayers = mapDefinition.getRootLayers();
 		for (Layer rootLayer : rootLayers){
@@ -34,10 +34,8 @@ public class TOC  {
 		}
 		
 		List<Traits<TOCItem>> parentList = new ArrayList<>();
-		return Collections.unmodifiableList(revertItems(tocItems, parentList));
-		
+		return CompletableFuture.completedFuture (Collections.unmodifiableList(revertItems(tocItems, parentList)));
 	}
-	
 
 	private List<Traits<TOCItem>> revertItems (List<Traits<TOCItem>> tocItems, List<Traits<TOCItem>> parentList) {
 		for(int n = tocItems.size() - 1; n >= 0; n--){
@@ -50,4 +48,5 @@ public class TOC  {
 		}
 		return parentList;
 	}
+	
 }

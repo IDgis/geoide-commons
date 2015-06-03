@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import nl.idgis.geoide.commons.domain.FeatureQuery;
 import nl.idgis.geoide.commons.domain.Layer;
@@ -12,7 +13,6 @@ import nl.idgis.geoide.commons.domain.ParameterizedServiceLayer;
 import nl.idgis.geoide.commons.domain.ServiceLayer;
 import nl.idgis.geoide.commons.domain.layer.LayerState;
 import nl.idgis.geoide.commons.domain.traits.Traits;
-import nl.idgis.geoide.commons.layer.LayerType;
 import nl.idgis.geoide.service.ServiceTypeRegistry;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -42,7 +42,7 @@ public final class DefaultLayerType extends LayerType {
 	}
 
 	@Override
-	public List<ParameterizedFeatureType<?>> getFeatureTypes (final Layer layer, final FeatureQuery query, final JsonNode state) {
+	public List<ParameterizedFeatureType<?>> getFeatureTypes (final Layer layer, final Optional<FeatureQuery> query, final JsonNode state) {
 		final List<ParameterizedFeatureType<?>> result = new ArrayList<> ();
 		
 		for (final ServiceLayer serviceLayer: layer.getServiceLayers ()) {

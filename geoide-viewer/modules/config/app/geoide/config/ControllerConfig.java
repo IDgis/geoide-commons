@@ -1,14 +1,13 @@
 package geoide.config;
 
 import nl.idgis.geoide.commons.domain.api.DocumentCache;
+import nl.idgis.geoide.commons.domain.api.MapQuery;
 import nl.idgis.geoide.commons.domain.api.MapView;
 import nl.idgis.geoide.commons.domain.api.PrintService;
 import nl.idgis.geoide.commons.domain.api.ReportComposer;
 import nl.idgis.geoide.commons.domain.api.TemplateDocumentProvider;
-import nl.idgis.geoide.commons.domain.provider.LayerProvider;
 import nl.idgis.geoide.commons.domain.provider.MapProvider;
 import nl.idgis.geoide.commons.domain.provider.ServiceProvider;
-import nl.idgis.geoide.commons.layer.LayerTypeRegistry;
 import nl.idgis.geoide.util.streams.StreamProcessor;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,10 +52,9 @@ public class ControllerConfig {
 	@Bean
 	@Autowired
 	public Query queryController (
-			final LayerTypeRegistry layerTypeRegistry, 
-			final LayerProvider layerProvider,
+			final MapQuery mapQuery,
 			final @Qualifier("serviceManagerActor") ActorRef serviceManagerActor) {
-		return new Query (layerTypeRegistry, layerProvider, serviceManagerActor);
+		return new Query (mapQuery, serviceManagerActor);
 	}
 	
 	@Bean
