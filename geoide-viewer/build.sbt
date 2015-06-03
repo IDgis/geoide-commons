@@ -46,7 +46,6 @@ libraryDependencies ++= Seq(
   Common.Dependencies.geoideDomain,
   Common.Dependencies.geoideUtil,
   
-  Common.Dependencies.webjarsOpenLayers,
   "it.innove" % "play2-pdf" % "1.1.1"
 )
 

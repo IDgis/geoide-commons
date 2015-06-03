@@ -12,11 +12,6 @@ libraryDependencies ++= Seq(
   Common.Dependencies.geoideRemote,
   Common.Dependencies.geoideUtil,
   
-  Common.Dependencies.webjarsPlay,
-  Common.Dependencies.webjarsBootstrap,
-  Common.Dependencies.webjarsDojoBase,
-  Common.Dependencies.webjarsOpenLayers,
-  Common.Dependencies.webjarsPutSelector,
   Common.Dependencies.springContext,
   Common.Dependencies.springAop,
   Common.Dependencies.springTest
