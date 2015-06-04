@@ -38,9 +38,7 @@ libraryDependencies ++= Seq(
   Common.Dependencies.webjarsBootstrap,
   Common.Dependencies.webjarsDojoBase,
   Common.Dependencies.webjarsPutSelector,
-  Common.Dependencies.webjarsFontAwesome,
-  
-  "it.innove" % "play2-pdf" % "1.1.1"
+  Common.Dependencies.webjarsFontAwesome
 )
 
 // Also deploy the assets:
