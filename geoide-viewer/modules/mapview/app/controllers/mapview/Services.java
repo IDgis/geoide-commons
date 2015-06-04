@@ -2,6 +2,8 @@ package controllers.mapview;
 
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import nl.idgis.geoide.commons.domain.api.ServiceProviderApi;
 import nl.idgis.geoide.commons.domain.service.messages.ServiceError;
 import nl.idgis.geoide.commons.domain.service.messages.ServiceRequest;
@@ -19,6 +21,7 @@ public class Services extends Controller {
 	private final ServiceProviderApi serviceProvider;
 	private final ActorRef serviceManager;
 	
+	@Inject
 	public Services (final ServiceProviderApi serviceProvider, final ActorRef serviceManager) {
 		this.serviceProvider = serviceProvider;
 		this.serviceManager = serviceManager;

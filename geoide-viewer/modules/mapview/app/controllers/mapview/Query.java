@@ -8,6 +8,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 import nl.idgis.geoide.commons.domain.FeatureQuery;
 import nl.idgis.geoide.commons.domain.FeatureType;
 import nl.idgis.geoide.commons.domain.JsonFactory;
@@ -44,6 +46,7 @@ public class Query extends Controller {
 	private final MapQuery mapQuery;
 	private final ActorRef serviceManager;
 	
+	@Inject
 	public Query (final MapQuery mapQuery, final ActorRef serviceManager) {
 		this.mapQuery = mapQuery;
 		this.serviceManager = serviceManager;

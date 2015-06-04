@@ -1,5 +1,7 @@
 package controllers.mapview;
 
+import javax.inject.Inject;
+
 import nl.idgis.geoide.commons.domain.JsonFactory;
 import nl.idgis.geoide.commons.domain.api.MapView;
 import nl.idgis.geoide.util.Promises;
@@ -14,7 +16,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class View extends Controller {
 	private final MapView mapView;
 	
-
+	@Inject
 	public View (final MapView mapView) {
 		this.mapView = mapView;
 	}

@@ -1,5 +1,7 @@
 package controllers.printservice;
 
+import javax.inject.Inject;
+
 import nl.idgis.geoide.commons.domain.api.TemplateDocumentProvider;
 import nl.idgis.geoide.util.Promises;
 import play.libs.F.Promise;
@@ -11,6 +13,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 public class Template extends Controller {
 	private final TemplateDocumentProvider templateProvider;
 	
+	@Inject
 	public Template(TemplateDocumentProvider templateProvider) {
 		this.templateProvider = templateProvider;
 		

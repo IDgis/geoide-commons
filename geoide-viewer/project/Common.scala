@@ -19,7 +19,7 @@ object Common {
 	val settings: Seq[Setting[_]] = Seq (
 		organization := "nl.idgis.geoide",
 		version := geoideCommonsVersion,
-		scalaVersion := "2.11.1",
+		scalaVersion := "2.11.6",
 		
 		// Set the Java version:
 		javacOptions in Compile ++= Seq("-source", "1.8", "-target", "1.8"),
@@ -44,8 +44,5 @@ object Common {
   		val webjarsOpenLayers = "org.webjars" % "openlayers" % "3.4.0"
   		val webjarsPutSelector = "org.webjars" % "put-selector" % "0.3.5"
   		val webjarsFontAwesome = "org.webjars" % "font-awesome" % "4.2.0"
-  		
-		val springContext = "org.springframework" % "spring-context" % "4.0.3.RELEASE"
-		val springAop = "org.springframework" % "spring-aop" % "4.0.3.RELEASE"
 	}
 }

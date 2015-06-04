@@ -7,11 +7,10 @@ Common.settings
 // Submodules:
 lazy val viewer = (project in file("."))
 	.enablePlugins(PlayJava)
-	.aggregate(mapView, toc, geoidePrintService, geoideConfig, geoideCore)
+	.aggregate(mapView, toc, geoidePrintService, geoideCore)
 	.dependsOn(mapView)
 	.dependsOn(toc)
 	.dependsOn(geoidePrintService)
-	.dependsOn(geoideConfig)
 	.dependsOn(geoideCore)
 
 lazy val mapView = (project in file("./modules/mapview"))
@@ -22,12 +21,6 @@ lazy val toc = (project in file("./modules/toc"))
 	.enablePlugins(PlayJava)
 	.dependsOn(geoideCore)
 
-lazy val geoideConfig = (project in file("./modules/config"))
-	.enablePlugins(PlayJava)
-	.dependsOn(mapView)
-	.dependsOn(geoidePrintService)
-	.dependsOn(geoideCore)
-	
 lazy val geoideCore = (project in file("./modules/core"))
 	.enablePlugins(PlayJava)
 
@@ -39,14 +32,13 @@ libraryDependencies ++= Seq(
   cache,
   
   Common.Dependencies.akkaRemote,
+  Common.Dependencies.geoideRemote,
+  Common.Dependencies.geoideDomain,
   
   Common.Dependencies.webjarsBootstrap,
   Common.Dependencies.webjarsDojoBase,
   Common.Dependencies.webjarsPutSelector,
   Common.Dependencies.webjarsFontAwesome,
-  
-  Common.Dependencies.springContext,
-  Common.Dependencies.springAop,
   
   "it.innove" % "play2-pdf" % "1.1.1"
 )
@@ -65,9 +57,7 @@ publishTo := {
 		Some ("idgis-restricted-releases" at nexus + "restricted-releases")
 }
 
-// Configure eclipse plugin:
-import com.typesafe.sbteclipse.core.EclipsePlugin.EclipseKeys
-
-EclipseKeys.classpathTransformerFactories := EclipseKeys.classpathTransformerFactories.value.init
-
-EclipseKeys.preTasks := Seq()
+// Setup Eclipse:
+EclipseKeys.projectFlavor := EclipseProjectFlavor.Java           // Java project. Don't expect Scala IDE
+EclipseKeys.createSrc := EclipseCreateSrc.ValueSet(EclipseCreateSrc.ManagedClasses, EclipseCreateSrc.ManagedResources)  // Use .class files instead of generated .scala files for views and routes 
+EclipseKeys.preTasks := Seq(compile in Compile)                  // Compile the project before generating Eclipse files, so that .class files for views and routes are present

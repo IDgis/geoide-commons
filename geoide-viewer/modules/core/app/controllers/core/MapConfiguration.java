@@ -1,6 +1,8 @@
 package controllers.core;
 
 
+import javax.inject.Inject;
+
 import nl.idgis.geoide.commons.domain.api.MapProviderApi;
 import nl.idgis.geoide.util.Promises;
 import play.libs.F.Promise;
@@ -16,6 +18,7 @@ public class MapConfiguration extends Controller {
 	
 	private final MapProviderApi mapProvider;
 	
+	@Inject
 	public MapConfiguration (final MapProviderApi mapProvider) {
 		this.mapProvider = mapProvider;
 	}

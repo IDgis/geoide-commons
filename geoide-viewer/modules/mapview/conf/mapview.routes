@@ -15,4 +15,4 @@ GET		/symbol/:serviceLayerId							controllers.mapview.Symbol.legendSymbol(servi
 GET		/map/routes										controllers.mapview.JavaScript.javascriptRoutes()
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               					controllers.mapview.Assets.at(path="/public", file)
+GET     /assets/*file               					@controllers.mapview.Assets.at(path="/public", file)

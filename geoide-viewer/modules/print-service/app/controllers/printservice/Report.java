@@ -3,6 +3,8 @@ package controllers.printservice;
 
 import java.net.URI;
 
+import javax.inject.Inject;
+
 import nl.idgis.geoide.commons.domain.JsonFactory;
 import nl.idgis.geoide.commons.domain.api.DocumentCache;
 import nl.idgis.geoide.commons.domain.api.ReportComposer;
@@ -25,7 +27,7 @@ public class Report extends Controller {
 	private final StreamProcessor streamProcessor;
 	private final DocumentCache documentCache;
 
-
+	@Inject
 	public Report(ReportComposer reportComposer, StreamProcessor streamProcessor, DocumentCache documentCache) {
 		if (reportComposer == null) {
 			throw new NullPointerException ("reportComposer cannot be null");

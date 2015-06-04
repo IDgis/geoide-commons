@@ -6,6 +6,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.UUID;
 
+import javax.inject.Inject;
+
 import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.geoide.commons.domain.api.DocumentCache;
 import nl.idgis.geoide.commons.domain.api.PrintService;
@@ -29,6 +31,7 @@ public class Print extends Controller {
 	private final DocumentCache documentCache;
 	private final StreamProcessor streamProcessor;
 	
+	@Inject
 	public Print (final PrintService printService, final DocumentCache documentCache, final StreamProcessor streamProcessor) {
 		if (printService == null) {
 			throw new NullPointerException ("printService cannot be null");

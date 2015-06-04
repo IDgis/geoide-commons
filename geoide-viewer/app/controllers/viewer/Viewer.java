@@ -4,6 +4,8 @@ import it.innove.play.pdf.PdfGenerator;
 
 import java.util.Collections;
 
+import javax.inject.Inject;
+
 import nl.idgis.geoide.commons.domain.api.MapProviderApi;
 import nl.idgis.geoide.commons.domain.api.TableOfContents;
 import nl.idgis.geoide.util.Promises;
@@ -17,7 +19,7 @@ public class Viewer extends Controller {
 	private final TableOfContents toc;
 	private final MapProviderApi mapProvider;
 	
-	
+	@Inject
 	public Viewer(MapProviderApi mapProvider, final TableOfContents toc){
 		this.mapProvider = mapProvider;
 		this.toc = toc;
