@@ -40,6 +40,10 @@
 			<groupId>nl.idgis.geoide</groupId>
 			<artifactId>geoide-domain</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+		</dependency>
 
 		<!-- Test dependencies: -->		
 		<dependency>
