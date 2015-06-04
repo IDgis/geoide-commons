@@ -9,10 +9,10 @@ GET		/services/:serviceId/:layerName/*parameters		@controllers.mapview.Services.
 POST	/query											@controllers.mapview.Query.query()
 
 # Legend symbol:
-GET		/symbol/:serviceLayerId							@controllers.mapview.Symbol.legendSymbol(serviceLayerId: String)
+GET		/symbol/:serviceLayerId							controllers.mapview.Symbol.legendSymbol(serviceLayerId: String)
 
 # JavaScript routes:
 GET		/map/routes										controllers.mapview.JavaScript.javascriptRoutes()
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               					controllers.mapview.Assets.at(path="/public", file)
+GET     /assets/*file               					@controllers.mapview.Assets.at(path="/public", file)

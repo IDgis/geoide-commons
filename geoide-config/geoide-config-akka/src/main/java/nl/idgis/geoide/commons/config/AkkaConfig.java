@@ -26,7 +26,7 @@ public class AkkaConfig {
 	@Bean
 	@Autowired
 	public ActorSystem actorSystem (final Config config) {
-		return ActorSystem.create ("service", config.atPath ("geoide.service.akka"));
+		return ActorSystem.create ("service", config.getConfig ("geoide.service"));
 	}
 	
 	/**

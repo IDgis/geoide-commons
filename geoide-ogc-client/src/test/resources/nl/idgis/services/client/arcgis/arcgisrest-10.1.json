@@ -1,0 +1,322 @@
+{
+ "currentVersion": 10.11,
+ "serviceDescription": "",
+ "mapName": "Layers",
+ "description": "",
+ "copyrightText": "",
+ "supportsDynamicLayers": false,
+ "layers": [
+  {
+   "id": 0,
+   "name": "Ondergrond in kleur",
+   "parentLayerId": -1,
+   "defaultVisibility": true,
+   "subLayerIds": [
+    1,
+    6,
+    16,
+    21,
+    24,
+    25
+   ],
+   "minScale": 0,
+   "maxScale": 0
+  },
+  {
+   "id": 1,
+   "name": "Administratieve grenzen",
+   "parentLayerId": 0,
+   "defaultVisibility": true,
+   "subLayerIds": [
+    2,
+    3,
+    4,
+    5
+   ],
+   "minScale": 0,
+   "maxScale": 0
+  },
+  {
+   "id": 2,
+   "name": "Provinciegrens Gelderland",
+   "parentLayerId": 1,
+   "defaultVisibility": true,
+   "subLayerIds": null,
+   "minScale": 0,
+   "maxScale": 250001
+  },
+  {
+   "id": 3,
+   "name": "Afdeklaag buiten Gelderland",
+   "parentLayerId": 1,
+   "defaultVisibility": true,
+   "subLayerIds": null,
+   "minScale": 0,
+   "maxScale": 0
+  },
+  {
+   "id": 4,
+   "name": "Gemeenten",
+   "parentLayerId": 1,
+   "defaultVisibility": true,
+   "subLayerIds": null,
+   "minScale": 800000,
+   "maxScale": 2000
+  },
+  {
+   "id": 5,
+   "name": "Gemeentegrenzen_Gelderland",
+   "parentLayerId": 1,
+   "defaultVisibility": true,
+   "subLayerIds": null,
+   "minScale": 250000,
+   "maxScale": 2000
+  },
+  {
+   "id": 6,
+   "name": "Topografie 1:10.000",
+   "parentLayerId": 0,
+   "defaultVisibility": true,
+   "subLayerIds": [
+    7,
+    10,
+    11,
+    12
+   ],
+   "minScale": 0,
+   "maxScale": 0
+  },
+  {
+   "id": 7,
+   "name": "Infrastructuur",
+   "parentLayerId": 6,
+   "defaultVisibility": true,
+   "subLayerIds": [
+    8,
+    9
+   ],
+   "minScale": 0,
+   "maxScale": 0
+  },
+  {
+   "id": 8,
+   "name": "Spoorbaan",
+   "parentLayerId": 7,
+   "defaultVisibility": true,
+   "subLayerIds": null,
+   "minScale": 25000,
+   "maxScale": 0
+  },
+  {
+   "id": 9,
+   "name": "Hoogspanningsleidingen",
+   "parentLayerId": 7,
+   "defaultVisibility": true,
+   "subLayerIds": null,
+   "minScale": 25000,
+   "maxScale": 0
+  },
+  {
+   "id": 10,
+   "name": "Straatnamen",
+   "parentLayerId": 6,
+   "defaultVisibility": true,
+   "subLayerIds": null,
+   "minScale": 10000,
+   "maxScale": 1
+  },
+  {
+   "id": 11,
+   "name": "Huizen",
+   "parentLayerId": 6,
+   "defaultVisibility": true,
+   "subLayerIds": null,
+   "minScale": 25000,
+   "maxScale": 1
+  },
+  {
+   "id": 12,
+   "name": "Bodemgebruik",
+   "parentLayerId": 6,
+   "defaultVisibility": true,
+   "subLayerIds": [
+    13,
+    14,
+    15
+   ],
+   "minScale": 0,
+   "maxScale": 0
+  },
+  {
+   "id": 13,
+   "name": "Wegvak uitgesplits",
+   "parentLayerId": 12,
+   "defaultVisibility": true,
+   "subLayerIds": null,
+   "minScale": 25000,
+   "maxScale": 1
+  },
+  {
+   "id": 14,
+   "name": "Terrein",
+   "parentLayerId": 12,
+   "defaultVisibility": true,
+   "subLayerIds": null,
+   "minScale": 25000,
+   "maxScale": 1
+  },
+  {
+   "id": 15,
+   "name": "Water",
+   "parentLayerId": 12,
+   "defaultVisibility": true,
+   "subLayerIds": null,
+   "minScale": 25000,
+   "maxScale": 1
+  },
+  {
+   "id": 16,
+   "name": "Topografie 1:50.000",
+   "parentLayerId": 0,
+   "defaultVisibility": true,
+   "subLayerIds": [
+    17,
+    18,
+    19,
+    20
+   ],
+   "minScale": 0,
+   "maxScale": 0
+  },
+  {
+   "id": 17,
+   "name": "Infrastructuur_1",
+   "parentLayerId": 16,
+   "defaultVisibility": true,
+   "subLayerIds": null,
+   "minScale": 70000,
+   "maxScale": 25001
+  },
+  {
+   "id": 18,
+   "name": "Infrastructuur_2",
+   "parentLayerId": 16,
+   "defaultVisibility": true,
+   "subLayerIds": null,
+   "minScale": 70000,
+   "maxScale": 25001
+  },
+  {
+   "id": 19,
+   "name": "Infrastructuur_3",
+   "parentLayerId": 16,
+   "defaultVisibility": true,
+   "subLayerIds": null,
+   "minScale": 50000,
+   "maxScale": 25001
+  },
+  {
+   "id": 20,
+   "name": "Bodemgebruik",
+   "parentLayerId": 16,
+   "defaultVisibility": true,
+   "subLayerIds": null,
+   "minScale": 70000,
+   "maxScale": 25001
+  },
+  {
+   "id": 21,
+   "name": "Topografie 1:250.000",
+   "parentLayerId": 0,
+   "defaultVisibility": true,
+   "subLayerIds": [
+    22,
+    23
+   ],
+   "minScale": 0,
+   "maxScale": 0
+  },
+  {
+   "id": 22,
+   "name": "Infrastructuur",
+   "parentLayerId": 21,
+   "defaultVisibility": true,
+   "subLayerIds": null,
+   "minScale": 0,
+   "maxScale": 70001
+  },
+  {
+   "id": 23,
+   "name": "Vlakken",
+   "parentLayerId": 21,
+   "defaultVisibility": true,
+   "subLayerIds": null,
+   "minScale": 0,
+   "maxScale": 70001
+  },
+  {
+   "id": 24,
+   "name": "Plaatsnamen",
+   "parentLayerId": 0,
+   "defaultVisibility": true,
+   "subLayerIds": null,
+   "minScale": 0,
+   "maxScale": 0
+  },
+  {
+   "id": 25,
+   "name": "Bebouwde kommen",
+   "parentLayerId": 0,
+   "defaultVisibility": true,
+   "subLayerIds": null,
+   "minScale": 0,
+   "maxScale": 25001
+  }
+ ],
+ "tables": [],
+ "spatialReference": {
+  "wkid": 28992,
+  "latestWkid": 28992
+ },
+ "singleFusedMapCache": false,
+ "initialExtent": {
+  "xmin": 116578.98104389946,
+  "ymin": 441064.4526677602,
+  "xmax": 268622.8088184758,
+  "ymax": 520762.4745766774,
+  "spatialReference": {
+   "wkid": 28992,
+   "latestWkid": 28992
+  }
+ },
+ "fullExtent": {
+  "xmin": -100746.037999999,
+  "ymin": 262806.063000001,
+  "xmax": 472203.601,
+  "ymax": 664685.43,
+  "spatialReference": {
+   "wkid": 28992,
+   "latestWkid": 28992
+  }
+ },
+ "minScale": 0,
+ "maxScale": 0,
+ "units": "esriMeters",
+ "supportedImageFormatTypes": "PNG32,PNG24,PNG,JPG,DIB,TIFF,EMF,PS,PDF,GIF,SVG,SVGZ,BMP",
+ "documentInfo": {
+  "Title": "ondergrond",
+  "Author": "abrekelm",
+  "Comments": "",
+  "Subject": "",
+  "Category": "",
+  "AntialiasingMode": "None",
+  "TextAntialiasingMode": "Force",
+  "Keywords": ""
+ },
+ "capabilities": "Map,Query,Data",
+ "supportedQueryFormats": "JSON, AMF",
+ "hasVersionedData": true,
+ "maxRecordCount": 1000,
+ "maxImageHeight": 2048,
+ "maxImageWidth": 2048
+}

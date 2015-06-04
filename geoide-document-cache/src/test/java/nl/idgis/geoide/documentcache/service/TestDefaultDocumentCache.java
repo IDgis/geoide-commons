@@ -12,14 +12,14 @@ import java.net.URI;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
-import nl.idgis.geoide.documentcache.Document;
+import nl.idgis.geoide.commons.domain.MimeContentType;
+import nl.idgis.geoide.commons.domain.api.DocumentStore;
+import nl.idgis.geoide.commons.domain.document.Document;
 import nl.idgis.geoide.documentcache.DocumentCacheException;
 import nl.idgis.geoide.documentcache.DocumentCacheException.DocumentNotFoundException;
-import nl.idgis.geoide.documentcache.DocumentStore;
 import nl.idgis.geoide.util.Futures;
 import nl.idgis.geoide.util.streams.AkkaStreamProcessor;
 import nl.idgis.geoide.util.streams.StreamProcessor;
-import nl.idgis.ogc.util.MimeContentType;
 
 import org.junit.After;
 import org.junit.Before;

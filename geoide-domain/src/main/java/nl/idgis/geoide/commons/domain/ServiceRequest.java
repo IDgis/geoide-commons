@@ -28,9 +28,9 @@ public final class ServiceRequest extends Entity {
 
 		obj.put ("id", getId ());
 		obj.put ("serviceId", getService ().getId ());
-		obj.put ("serviceIdentification", JsonFactory.mapper ().valueToTree (getService ().getIdentification ()));
+		obj.put ("serviceIdentification", JsonFactory.asJson (getService ().getIdentification ()));
 		if (getParameters () != null) {
-			obj.put ("parameters", JsonFactory.mapper ().valueToTree (getParameters ()));
+			obj.put ("parameters", JsonFactory.asJson (getParameters ()));
 		}
 		
 		return obj;

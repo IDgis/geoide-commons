@@ -5,6 +5,8 @@ import nl.idgis.geoide.util.Assert;
 
 
 public class TOCItemExtentTrait implements TOCItemTrait{
+	private static final long serialVersionUID = -4194656596666309081L;
+	
 	private final Envelope extent;
 	
 	public TOCItemExtentTrait (final Envelope extent) {

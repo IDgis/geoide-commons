@@ -2,27 +2,28 @@ package nl.idgis.geoide.service.wfs.actors;
 
 import java.util.Map;
 
+import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.geoide.commons.domain.QName;
 import nl.idgis.geoide.commons.domain.ServiceIdentification;
+import nl.idgis.geoide.commons.domain.service.Capabilities;
+import nl.idgis.geoide.commons.domain.service.WFSRequestParameters;
+import nl.idgis.geoide.commons.domain.service.messages.QueryFeatures;
+import nl.idgis.geoide.commons.domain.service.messages.QueryFeaturesResponse;
+import nl.idgis.geoide.commons.domain.service.messages.ServiceError;
+import nl.idgis.geoide.commons.domain.service.messages.ServiceErrorType;
+import nl.idgis.geoide.commons.domain.service.messages.ServiceMessage;
+import nl.idgis.geoide.commons.domain.service.messages.ServiceMessageContext;
+import nl.idgis.geoide.commons.domain.service.messages.ServiceRequest;
 import nl.idgis.geoide.service.actors.OGCService;
 import nl.idgis.geoide.service.messages.GetServiceCapabilities;
-import nl.idgis.geoide.service.messages.QueryFeatures;
-import nl.idgis.geoide.service.messages.QueryFeaturesResponse;
 import nl.idgis.geoide.service.messages.ServiceCapabilities;
-import nl.idgis.geoide.service.messages.ServiceError;
-import nl.idgis.geoide.service.messages.ServiceErrorType;
-import nl.idgis.geoide.service.messages.ServiceMessage;
-import nl.idgis.geoide.service.messages.ServiceMessageContext;
-import nl.idgis.geoide.service.messages.ServiceRequest;
-import nl.idgis.geoide.service.wfs.WFSRequestParameters;
 import nl.idgis.ogc.client.wfs.WFSCapabilitiesParser;
 import nl.idgis.ogc.client.wfs.WFSCapabilitiesParser.ParseException;
-import nl.idgis.ogc.util.MimeContentType;
 import nl.idgis.ogc.wfs.WFSCapabilities;
-import nl.idgis.services.Capabilities;
 import play.Logger;
 import play.libs.F.Callback;
 import play.libs.F.Promise;
+import play.libs.ws.WSClient;
 import play.libs.ws.WSRequestHolder;
 import play.libs.ws.WSResponse;
 import akka.actor.ActorRef;
@@ -31,12 +32,12 @@ import akka.pattern.Patterns;
 
 public class WFS extends OGCService {
 
-	public WFS (final ActorRef serviceManager, final ServiceIdentification identification) {
-		super(serviceManager, identification, DEFAULT_CACHE_LIFETIME, DEFAULT_CAPABILITIES_TIMEOUT, DEFAULT_REQUEST_TIMEOUT);
+	public WFS (final ActorRef serviceManager, final WSClient wsClient, final ServiceIdentification identification) {
+		super(serviceManager, wsClient, identification, DEFAULT_CACHE_LIFETIME, DEFAULT_CAPABILITIES_TIMEOUT, DEFAULT_REQUEST_TIMEOUT);
 	}
 	
-	public static Props mkProps (final ActorRef serviceManager, final ServiceIdentification identification) {
-		return Props.create (WFS.class, serviceManager, identification);
+	public static Props mkProps (final ActorRef serviceManager, final WSClient wsClient, final ServiceIdentification identification) {
+		return Props.create (WFS.class, serviceManager, wsClient, identification);
 	}
 
 	@Override

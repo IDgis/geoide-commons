@@ -7,6 +7,7 @@ import nl.idgis.geoide.commons.domain.Layer;
 import nl.idgis.geoide.commons.domain.ServiceLayer;
 import nl.idgis.geoide.commons.domain.toc.Symbol;
 import nl.idgis.geoide.commons.domain.toc.TOCItem;
+import nl.idgis.geoide.commons.domain.toc.TOCItemLayerTrait;
 import nl.idgis.geoide.commons.domain.traits.Traits;
 import nl.idgis.geoide.commons.layer.LayerType;
 import nl.idgis.geoide.service.ServiceType;

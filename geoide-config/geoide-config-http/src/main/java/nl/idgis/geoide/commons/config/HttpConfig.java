@@ -11,10 +11,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import play.libs.ws.WSClient;
+
 @Configuration
 public class HttpConfig {
 	
 	private final Logger log = LoggerFactory.getLogger (HttpConfig.class);
+	
+	@Bean
+	@Autowired
+	public WSClient wsClient (final ConfigWrapper config) {
+		
+		return DefaultHttpClient.createWSClient (config.getConfig ("geoide.service.components.wsClient"));
+	}
 
 	/**
 	 * Creates a default HTTP client for use by any component that needs to access remote HTTP
@@ -26,7 +35,7 @@ public class HttpConfig {
 	 */
 	@Bean
 	@Autowired
-	public HttpClient httpClient (final StreamProcessor streamProcessor, final ConfigWrapper config) {
+	public HttpClient httpClient (final StreamProcessor streamProcessor, final ConfigWrapper config, final WSClient wsClient) {
 		final int blockSize = config.getInt ("geoide.service.components.httpClient.streamBlockSizeInBytes", 2048);
 		final long timeout = config.getLong ("geoide.service.components.httpClient.streamTimeoutInMillis", 30000l);
 		
@@ -34,6 +43,7 @@ public class HttpConfig {
 		
 		return new DefaultHttpClient (
 				streamProcessor,
+				wsClient,
 				blockSize,
 				timeout
 			);

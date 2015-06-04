@@ -9,9 +9,5 @@
 # Map viewer:
 GET		/map/:mapId										@controllers.viewer.Viewer.viewerForMap(mapId)
 
-GET		/test.pdf										@controllers.viewer.Viewer.testPDF()
-
-
-
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               					controllers.viewer.Assets.at(path="/public", file)
+GET     /assets/*file               					@controllers.viewer.Assets.at(path="/public", file)

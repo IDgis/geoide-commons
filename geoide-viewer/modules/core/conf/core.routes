@@ -5,4 +5,4 @@ GET		/map/:mapId/structure.json						@controllers.core.MapConfiguration.mapStruc
 GET		/core/routes									controllers.core.JavaScript.javascriptRoutes()
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               					controllers.core.Assets.at(path="/public", file)
+GET     /assets/*file               					@controllers.core.Assets.at(path="/public", file)

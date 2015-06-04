@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TileMap version="1.0.0" tilemapservice="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0">
+  <Title>brtachtergrondkaart</Title>
+  <Abstract/>
+  <SRS>EPSG:25831</SRS>
+  <BoundingBox minx="-2404683.40738879" miny="3997657.58466454" maxx="4046516.592611209" maxy="8298457.5846645385"/>
+  <Origin x="-2404683.40738879" y="3997657.58466454"/>
+  <TileFormat width="256" height="256" mime-type="image/png" extension="png8"/>
+  <TileSets profile="local">
+    <TileSet href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/brtachtergrondkaart@EPSG%3A25831%3ARWS@png8/0" units-per-pixel="2799.9999999999995" order="0"/>
+    <TileSet href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/brtachtergrondkaart@EPSG%3A25831%3ARWS@png8/1" units-per-pixel="1399.9999999999998" order="1"/>
+    <TileSet href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/brtachtergrondkaart@EPSG%3A25831%3ARWS@png8/2" units-per-pixel="699.9999999999999" order="2"/>
+    <TileSet href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/brtachtergrondkaart@EPSG%3A25831%3ARWS@png8/3" units-per-pixel="280.0" order="3"/>
+    <TileSet href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/brtachtergrondkaart@EPSG%3A25831%3ARWS@png8/4" units-per-pixel="140.0" order="4"/>
+    <TileSet href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/brtachtergrondkaart@EPSG%3A25831%3ARWS@png8/5" units-per-pixel="70.0" order="5"/>
+    <TileSet href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/brtachtergrondkaart@EPSG%3A25831%3ARWS@png8/6" units-per-pixel="27.999999999999996" order="6"/>
+    <TileSet href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/brtachtergrondkaart@EPSG%3A25831%3ARWS@png8/7" units-per-pixel="20.999999999999996" order="7"/>
+    <TileSet href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/brtachtergrondkaart@EPSG%3A25831%3ARWS@png8/8" units-per-pixel="13.999999999999998" order="8"/>
+    <TileSet href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/brtachtergrondkaart@EPSG%3A25831%3ARWS@png8/9" units-per-pixel="6.999999999999999" order="9"/>
+    <TileSet href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/brtachtergrondkaart@EPSG%3A25831%3ARWS@png8/10" units-per-pixel="2.8" order="10"/>
+    <TileSet href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/brtachtergrondkaart@EPSG%3A25831%3ARWS@png8/11" units-per-pixel="1.4" order="11"/>
+  </TileSets>
+</TileMap>

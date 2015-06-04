@@ -15,12 +15,12 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import nl.idgis.geoide.commons.domain.MimeContentType;
+import nl.idgis.geoide.commons.domain.document.Document;
 import nl.idgis.geoide.commons.http.client.HttpClient;
 import nl.idgis.geoide.commons.http.client.service.DefaultHttpClient;
-import nl.idgis.geoide.documentcache.Document;
 import nl.idgis.geoide.util.streams.AkkaStreamProcessor;
 import nl.idgis.geoide.util.streams.StreamProcessor;
-import nl.idgis.ogc.util.MimeContentType;
 
 import org.junit.After;
 import org.junit.Before;
@@ -51,7 +51,7 @@ public class TestHttpDocumentStore {
 	public void createHttpClient () {
 		actorSystem = ActorSystem.create ();
 		streamProcessor = new AkkaStreamProcessor (actorSystem);
-		httpClient = new DefaultHttpClient (streamProcessor, 10, 500);
+		httpClient = new DefaultHttpClient (streamProcessor, DefaultHttpClient.createWSClient (), 10, 500);
 	}
 	
 	/**

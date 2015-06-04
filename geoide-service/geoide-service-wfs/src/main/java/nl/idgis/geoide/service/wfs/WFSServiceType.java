@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import play.libs.ws.WSClient;
 import nl.idgis.geoide.commons.domain.ServiceIdentification;
 import nl.idgis.geoide.service.FeatureServiceType;
 import nl.idgis.geoide.service.ServiceType;
@@ -46,7 +47,7 @@ public class WFSServiceType extends ServiceType implements FeatureServiceType {
 	}
 
 	@Override
-	public Props createServiceActorProps (final ActorRef serviceManager, final ServiceIdentification identification) {
-		return WFS.mkProps (serviceManager, identification);
+	public Props createServiceActorProps (final ActorRef serviceManager, final WSClient wsClient, final ServiceIdentification identification) {
+		return WFS.mkProps (serviceManager, wsClient, identification);
 	}
 }

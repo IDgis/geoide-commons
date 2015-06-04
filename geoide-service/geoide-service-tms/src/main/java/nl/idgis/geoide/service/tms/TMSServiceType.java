@@ -12,10 +12,12 @@ import nl.idgis.geoide.commons.domain.ParameterizedServiceLayer;
 import nl.idgis.geoide.commons.domain.Service;
 import nl.idgis.geoide.commons.domain.ServiceIdentification;
 import nl.idgis.geoide.commons.domain.ServiceRequest;
+import nl.idgis.geoide.commons.domain.service.TMSRequestParameters;
 import nl.idgis.geoide.service.LayerServiceType;
 import nl.idgis.geoide.service.ServiceRequestContext;
 import nl.idgis.geoide.service.ServiceType;
 import nl.idgis.geoide.service.tms.actors.TMS;
+import play.libs.ws.WSClient;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 
@@ -154,24 +156,11 @@ public class TMSServiceType extends ServiceType implements LayerServiceType {
 	
 
 	@Override
-	public Props createServiceActorProps (final ActorRef serviceManager, final ServiceIdentification identification) {
-		return TMS.mkProps (serviceManager, identification);
+	public Props createServiceActorProps (final ActorRef serviceManager, final WSClient wsClient, final ServiceIdentification identification) {
+		return TMS.mkProps (serviceManager, wsClient, identification);
 	}
 	
 
-	public static class TMSRequestParameters {
-		private final String layer;
-		
-		public TMSRequestParameters (final String layer) {
-			this.layer = layer;
-		}
-
-		public String getLayer () {
-			return layer;
-		}
-	}
-	
-	
 	public static class TilingProperties {
 		
 		//TODO getTilingProperties from Capabilities

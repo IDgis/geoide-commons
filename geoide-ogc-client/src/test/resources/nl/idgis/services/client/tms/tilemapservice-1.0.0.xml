@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TileMapService version="1.0.0" services="http://geodata.nationaalgeoregister.nl/tiles">
+  <Title>Tile Map Service</Title>
+  <Abstract>A Tile Map Service served by GeoWebCache</Abstract>
+  <TileMaps>
+    <TileMap title="brtachtergrondkaart" srs="EPSG:25831" profile="local" href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/brtachtergrondkaart@EPSG%3A25831%3ARWS@png"/>
+    <TileMap title="brtachtergrondkaart" srs="EPSG:25831" profile="local" href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/brtachtergrondkaart@EPSG%3A25831%3ARWS@png8"/>
+    <TileMap title="brtachtergrondkaart" srs="EPSG:28992" profile="local" href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/brtachtergrondkaart@EPSG%3A28992@png"/>
+    <TileMap title="brtachtergrondkaart" srs="EPSG:28992" profile="local" href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/brtachtergrondkaart@EPSG%3A28992@png8"/>
+    <TileMap title="top10nl" srs="EPSG:28992" profile="local" href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/top10nl@EPSG%3A28992@png8"/>
+    <TileMap title="kadastralekaart" srs="EPSG:28992" profile="local" href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/kadastralekaart@EPSG%3A28992@png"/>
+    <TileMap title="natura2000" srs="EPSG:28992" profile="local" href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/natura2000@EPSG%3A28992@png8"/>
+    <TileMap title="aan" srs="EPSG:28992" profile="local" href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/aan@EPSG%3A28992@png"/>
+    <TileMap title="top50vector" srs="EPSG:28992" profile="local" href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/top50vector@EPSG%3A28992@png8"/>
+    <TileMap title="bagviewer" srs="EPSG:28992" profile="local" href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/bagviewer@EPSG%3A28992@png"/>
+    <TileMap title="kadastralekaart_intern" srs="EPSG:28992" profile="local" href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/kadastralekaart_intern@EPSG%3A28992@png8"/>
+    <TileMap title="top25raster" srs="EPSG:28992" profile="local" href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/top25raster@EPSG%3A28992@png8"/>
+    <TileMap title="top50raster" srs="EPSG:28992" profile="local" href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/top50raster@EPSG%3A28992@png8"/>
+    <TileMap title="top250raster" srs="EPSG:28992" profile="local" href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/top250raster@EPSG%3A28992@png8"/>
+    <TileMap title="nok2011" srs="EPSG:28992" profile="local" href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/nok2011@EPSG%3A28992@png8"/>
+    <TileMap title="brkpilot" srs="EPSG:28992" profile="local" href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/brkpilot@EPSG%3A28992@png8"/>
+    <TileMap title="brpgewaspercelen" srs="EPSG:28992" profile="local" href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/brpgewaspercelen@EPSG%3A28992@png8"/>
+    <TileMap title="bgtstandaard" srs="EPSG:28992" profile="local" href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/bgtstandaard@EPSG%3A28992@png8"/>
+    <TileMap title="bgtlijngericht" srs="EPSG:28992" profile="local" href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/bgtlijngericht@EPSG%3A28992@png8"/>
+    <TileMap title="bgtachtergrond" srs="EPSG:28992" profile="local" href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/bgtachtergrond@EPSG%3A28992@png8"/>
+    <TileMap title="bgtomtrekgericht" srs="EPSG:28992" profile="local" href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/bgtomtrekgericht@EPSG%3A28992@png8"/>
+    <TileMap title="ahn1_100m" srs="EPSG:28992" profile="local" href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/ahn1_100m@EPSG%3A28992@png8"/>
+    <TileMap title="ahn1_25m" srs="EPSG:28992" profile="local" href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/ahn1_25m@EPSG%3A28992@png8"/>
+    <TileMap title="ahn1_5m" srs="EPSG:28992" profile="local" href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/ahn1_5m@EPSG%3A28992@png8"/>
+    <TileMap title="ahn2_5m" srs="EPSG:28992" profile="local" href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/ahn2_5m@EPSG%3A28992@png8"/>
+    <TileMap title="ahn2_05m_non" srs="EPSG:28992" profile="local" href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/ahn2_05m_non@EPSG%3A28992@png8"/>
+    <TileMap title="ahn2_05m_int" srs="EPSG:28992" profile="local" href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/ahn2_05m_int@EPSG%3A28992@png8"/>
+    <TileMap title="ahn2_05m_ruw" srs="EPSG:28992" profile="local" href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/ahn2_05m_ruw@EPSG%3A28992@png8"/>
+    <TileMap title="brkgeo" srs="EPSG:28992" profile="local" href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/brkgeo@EPSG%3A28992@png8"/>
+    <TileMap title="gbkn" srs="EPSG:28992" profile="local" href="http://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/gbkn@EPSG%3A28992@png8"/>
+  </TileMaps>
+</TileMapService>

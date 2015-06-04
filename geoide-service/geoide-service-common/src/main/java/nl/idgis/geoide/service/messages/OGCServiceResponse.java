@@ -1,6 +1,8 @@
 package nl.idgis.geoide.service.messages;
 
 import nl.idgis.geoide.commons.domain.ServiceIdentification;
+import nl.idgis.geoide.commons.domain.service.messages.ServiceMessage;
+import nl.idgis.geoide.commons.domain.service.messages.ServiceMessageContext;
 import nl.idgis.services.OGCCapabilities;
 import akka.util.ByteString;
 

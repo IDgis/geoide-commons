@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gml:FeatureCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation=" http://www.risicokaart.nl/schemas/rrgs http://rk-pub.idgis.nl/rk_services_pub/services/WFS-risicokaart?SERVICE=WFS&amp;VERSION=1.1.0&amp;REQUEST=DescribeFeatureType&amp;OUTPUTFORMAT=text%2Fxml%3B+subtype%3Dgml%2F2.1.2&amp;TYPENAME=rrgs:p_LPG&amp;NAMESPACE=xmlns(rrgs=http%3A%2F%2Fwww.risicokaart.nl%2Fschemas%2Frrgs)" xmlns:gml="http://www.opengis.net/gml">
+  <gml:boundedBy>
+    <gml:null>unknown</gml:null>
+  </gml:boundedBy>
+  <gml:featureMember>
+    <rrgs:p_LPG xmlns:rrgs="http://www.risicokaart.nl/schemas/rrgs" fid="RRGS_P_LPG_6738">
+      <gml:boundedBy>
+        <gml:Box srsName="urn:ogc:def:crs:EPSG::28992">
+          <gml:coordinates decimal="." cs="," ts=" ">136806.020,459204.636 136806.020,459204.636</gml:coordinates>
+        </gml:Box>
+      </gml:boundedBy>
+      <rrgs:geometrie>
+        <!--Inlined geometry 'RRGS_P_LPG_6738_RRGS_GEOMETRIE'-->
+        <gml:Point gid="RRGS_P_LPG_6738_RRGS_GEOMETRIE" srsName="urn:ogc:def:crs:EPSG::28992">
+          <gml:coord>
+            <gml:X>136806.020</gml:X>
+            <gml:Y>459204.636</gml:Y>
+          </gml:coord>
+        </gml:Point>
+      </rrgs:geometrie>
+      <rrgs:BEVOEGD_GEZAG>Gemeente UTRECHT</rrgs:BEVOEGD_GEZAG>
+      <rrgs:WM_VERGUNNING>nummer HW-4142</rrgs:WM_VERGUNNING>
+      <rrgs:DATE_CHANGED>31-03-2011</rrgs:DATE_CHANGED>
+      <rrgs:PEILDATUM>2010-03-30T00:00:00</rrgs:PEILDATUM>
+      <rrgs:POSTCODE>3562MA</rrgs:POSTCODE>
+      <rrgs:GEMEENTE>Utrecht</rrgs:GEMEENTE>
+      <rrgs:PLAATS>Utrecht</rrgs:PLAATS>
+      <rrgs:HUISNUMMER>12</rrgs:HUISNUMMER>
+      <rrgs:STRAAT>Albert Schweitzerdreef</rrgs:STRAAT>
+      <rrgs:AUTORISATIE_DT>31-03-2011</rrgs:AUTORISATIE_DT>
+      <rrgs:AOBJECTID>0344010000025118</rrgs:AOBJECTID>
+      <rrgs:URL>http://prdcrs.risicokaartinvoer.nl/CRS-Viewer/Viewer.aspx?Idx=1564&amp;argument=m2V1QIl0YrefqC-yKP36tUl9apKEad-atSfhZvrT1EE2I1l17TMPQrOhautd34cWq5YrEhDG-1pbrmQ0lK8GgVIhMJRt49pW</rrgs:URL>
+      <rrgs:REDEN_OPNAME>Registratiebesluit</rrgs:REDEN_OPNAME>
+      <rrgs:INDDFE>N</rrgs:INDDFE>
+      <rrgs:IND_BEVI_IRG>J</rrgs:IND_BEVI_IRG>
+      <rrgs:RRGS_ID>11292</rrgs:RRGS_ID>
+      <rrgs:NAAM_INRICHTING>BP Tankstation Albert Schweizerdreef </rrgs:NAAM_INRICHTING>
+    </rrgs:p_LPG>
+  </gml:featureMember>
+  <gml:featureMember>
+    <rrgs:p_LPG xmlns:rrgs="http://www.risicokaart.nl/schemas/rrgs" fid="RRGS_P_LPG_6739">
+      <gml:boundedBy>
+        <gml:Box srsName="urn:ogc:def:crs:EPSG::28992">
+          <gml:coordinates decimal="." cs="," ts=" ">136806.020,459204.636 136806.020,459204.636</gml:coordinates>
+        </gml:Box>
+      </gml:boundedBy>
+      <rrgs:geometrie>
+        <!--Inlined geometry 'RRGS_P_LPG_6738_RRGS_GEOMETRIE'-->
+        <gml:Point gid="RRGS_P_LPG_6739_RRGS_GEOMETRIE" srsName="urn:ogc:def:crs:EPSG::28992">
+          <gml:coord>
+            <gml:X>136806.020</gml:X>
+            <gml:Y>459204.636</gml:Y>
+          </gml:coord>
+        </gml:Point>
+      </rrgs:geometrie>
+      <rrgs:BEVOEGD_GEZAG>Gemeente UTRECHT</rrgs:BEVOEGD_GEZAG>
+      <rrgs:WM_VERGUNNING>nummer HW-4142</rrgs:WM_VERGUNNING>
+      <rrgs:DATE_CHANGED>31-03-2011</rrgs:DATE_CHANGED>
+      <rrgs:PEILDATUM>2010-03-30T00:00:00</rrgs:PEILDATUM>
+      <rrgs:POSTCODE>3562MA</rrgs:POSTCODE>
+      <rrgs:GEMEENTE>Utrecht</rrgs:GEMEENTE>
+      <rrgs:PLAATS>Utrecht</rrgs:PLAATS>
+      <rrgs:HUISNUMMER>12</rrgs:HUISNUMMER>
+      <rrgs:STRAAT>Albert Schweitzerdreef</rrgs:STRAAT>
+      <rrgs:AUTORISATIE_DT>31-03-2011</rrgs:AUTORISATIE_DT>
+      <rrgs:AOBJECTID>0344010000025118</rrgs:AOBJECTID>
+      <rrgs:URL>http://prdcrs.risicokaartinvoer.nl/CRS-Viewer/Viewer.aspx?Idx=1564&amp;argument=m2V1QIl0YrefqC-yKP36tUl9apKEad-atSfhZvrT1EE2I1l17TMPQrOhautd34cWq5YrEhDG-1pbrmQ0lK8GgVIhMJRt49pW</rrgs:URL>
+      <rrgs:REDEN_OPNAME>Registratiebesluit</rrgs:REDEN_OPNAME>
+      <rrgs:INDDFE>N</rrgs:INDDFE>
+      <rrgs:IND_BEVI_IRG>J</rrgs:IND_BEVI_IRG>
+      <rrgs:RRGS_ID>11292</rrgs:RRGS_ID>
+      <rrgs:NAAM_INRICHTING>BP Tankstation Albert Schweizerdreef </rrgs:NAAM_INRICHTING>
+    </rrgs:p_LPG>
+  </gml:featureMember>
+</gml:FeatureCollection>

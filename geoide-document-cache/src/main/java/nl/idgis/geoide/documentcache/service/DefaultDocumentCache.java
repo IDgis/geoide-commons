@@ -14,13 +14,13 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 
-import nl.idgis.geoide.documentcache.Document;
-import nl.idgis.geoide.documentcache.DocumentCache;
+import nl.idgis.geoide.commons.domain.MimeContentType;
+import nl.idgis.geoide.commons.domain.api.DocumentCache;
+import nl.idgis.geoide.commons.domain.api.DocumentStore;
+import nl.idgis.geoide.commons.domain.document.Document;
 import nl.idgis.geoide.documentcache.DocumentCacheException;
-import nl.idgis.geoide.documentcache.DocumentStore;
 import nl.idgis.geoide.util.Futures;
 import nl.idgis.geoide.util.streams.StreamProcessor;
-import nl.idgis.ogc.util.MimeContentType;
 
 import org.mapdb.DB;
 import org.mapdb.DBMaker;

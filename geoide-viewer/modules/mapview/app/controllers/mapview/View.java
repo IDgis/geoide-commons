@@ -1,11 +1,11 @@
 package controllers.mapview;
 
-import java.util.List;
+import javax.inject.Inject;
 
-import nl.idgis.geoide.commons.domain.ServiceRequest;
-import nl.idgis.geoide.commons.domain.traits.Traits;
-import nl.idgis.geoide.commons.layer.LayerState;
-import nl.idgis.geoide.map.MapView;
+import nl.idgis.geoide.commons.domain.JsonFactory;
+import nl.idgis.geoide.commons.domain.api.MapView;
+import nl.idgis.geoide.util.Promises;
+import play.libs.F.Promise;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -16,35 +16,29 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class View extends Controller {
 	private final MapView mapView;
 	
-
+	@Inject
 	public View (final MapView mapView) {
 		this.mapView = mapView;
 	}
 	
-	public Result buildView () {
-		final JsonNode viewerState = request ().body ().asJson ();
+	public Promise<Result> buildView () {
+		final JsonNode viewerState = JsonFactory.externalize (request ().body ().asJson ());
 		// Flatten the layer list in a depth-first fashion:
-		final List<Traits<LayerState>> layers;
 		try {
-			layers = mapView.flattenLayerList (viewerState);
+			return Promises.asPromise (mapView.flattenLayerList (viewerState))
+				.flatMap ((layers) -> Promises.asPromise (mapView.getServiceRequests (layers)).map ((serviceRequests) -> {
+					// Build response:
+					final ObjectNode result = Json.newObject ();
+					result.put ("result", "ok");
+					result.put ("serviceRequests", Json.toJson (serviceRequests));
+					
+					return (Result) ok (result);
+				}));
 		} catch (IllegalArgumentException e) {
 			final ObjectNode result = Json.newObject ();
 			result.put ("result", "failed");
 			result.put ("message", e.getMessage ());
-			return badRequest (result);
+			return Promise.pure (badRequest (result));
 		}
-		
-		// Merge the service layer list into a list of concrete requests for the client to execute.
-		final List<ServiceRequest> serviceRequests = mapView.getServiceRequests (layers);
-		
-		// Build response:
-		final ObjectNode result = Json.newObject ();
-		result.put ("result", "ok");
-		result.put ("serviceRequests", Json.toJson (serviceRequests));
-		
-		return ok (result);
 	}
-	
-	
-
 }

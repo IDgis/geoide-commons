@@ -1,29 +1,28 @@
 package controllers.mapview;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import nl.idgis.geoide.commons.domain.provider.LayerProvider;
+import javax.inject.Inject;
+
 import nl.idgis.geoide.commons.domain.FeatureQuery;
 import nl.idgis.geoide.commons.domain.FeatureType;
-import nl.idgis.geoide.commons.domain.Layer;
+import nl.idgis.geoide.commons.domain.JsonFactory;
 import nl.idgis.geoide.commons.domain.ParameterizedFeatureType;
-import nl.idgis.geoide.commons.domain.ParameterizedServiceLayer;
+import nl.idgis.geoide.commons.domain.api.MapQuery;
 import nl.idgis.geoide.commons.domain.feature.Feature;
 import nl.idgis.geoide.commons.domain.geometry.Envelope;
 import nl.idgis.geoide.commons.domain.geometry.Geometry;
-import nl.idgis.geoide.commons.domain.traits.Traits;
-import nl.idgis.geoide.commons.layer.LayerType;
-import nl.idgis.geoide.commons.layer.LayerTypeRegistry;
-import nl.idgis.geoide.service.messages.ProducerMessage;
-import nl.idgis.geoide.service.messages.QueryFeatures;
-import nl.idgis.geoide.service.messages.QueryFeaturesResponse;
-import nl.idgis.geoide.service.messages.ServiceError;
+import nl.idgis.geoide.commons.domain.service.messages.ProducerMessage;
+import nl.idgis.geoide.commons.domain.service.messages.QueryFeatures;
+import nl.idgis.geoide.commons.domain.service.messages.QueryFeaturesResponse;
+import nl.idgis.geoide.commons.domain.service.messages.ServiceError;
+import nl.idgis.geoide.util.Promises;
 import play.Logger;
 import play.libs.Akka;
 import play.libs.F.Function;
@@ -39,36 +38,35 @@ import akka.actor.Props;
 import akka.actor.UntypedActor;
 import akka.pattern.Patterns;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class Query extends Controller {
 	private final static long queryFeaturesTimeout = 20000;
 	
-	private final LayerTypeRegistry layerTypeRegistry;
-	private final LayerProvider layerProvider;
+	private final MapQuery mapQuery;
 	private final ActorRef serviceManager;
 	
-	public Query (final LayerTypeRegistry layerTypeRegistry, final LayerProvider layerProvider, final ActorRef serviceManager) {
-		this.layerTypeRegistry = layerTypeRegistry;
-		this.layerProvider = layerProvider;
+	@Inject
+	public Query (final MapQuery mapQuery, final ActorRef serviceManager) {
+		this.mapQuery = mapQuery;
 		this.serviceManager = serviceManager;
 	}
 	
 	public Promise<Result> query () {
-		final QueryInfo queryInfo = parseQueryInfo (request ().body ().asJson ());
-		
-		Logger.debug ("Querying " + queryInfo.layerInfos.size () + " layers");
-		
-		// Create a list of feature types:
-		final List<ParameterizedFeatureType<?>> featureTypes = createFeatureTypes (queryInfo.layerInfos);
-		
-		Logger.debug ("Querying " + featureTypes.size () + " feature types");
+		return Promises.asPromise (mapQuery.prepareQuery (JsonFactory.externalize (request ().body ().asJson ())))
+			.flatMap ((queryInfo) -> {
+				Logger.debug ("Querying " + queryInfo.getLayerInfos ().size () + " layers");
+				
+				return Promises.asPromise (mapQuery.prepareFeatureTypes (queryInfo))
+					.flatMap ((featureTypes) -> {
+						Logger.debug ("Querying " + featureTypes.size () + " feature types");
 
-		return queryFeatureTypes (queryInfo.query, featureTypes);
+						return queryFeatureTypes (queryInfo.getFeatureQuery (), featureTypes);
+					});
+			});
 	}
 	
-	private Promise<Result> queryFeatureTypes (final FeatureQuery query, final List<ParameterizedFeatureType<?>> featureTypes) {
+	private Promise<Result> queryFeatureTypes (final Optional<FeatureQuery> query, final List<ParameterizedFeatureType<?>> featureTypes) {
 		final List<Promise<Object>> promises = new ArrayList<> (featureTypes.size ());
 		
 		for (final ParameterizedFeatureType<?> featureType: featureTypes) {
@@ -119,93 +117,6 @@ public class Query extends Controller {
 				return ok (chunks).as ("application/json");
 			}
 		});
-	}
-	
-	private List<ParameterizedFeatureType<?>> createFeatureTypes (final List<LayerInfo> layerInfos) {
-		final List<ParameterizedFeatureType<?>> featureTypes = new ArrayList<> ();
-		
-		for (final LayerInfo layerInfo: layerInfos) {
-			final Traits<LayerType> layerType = layerTypeRegistry.getLayerType (layerInfo.layer);
-			
-			featureTypes.addAll (layerType.get ().getFeatureTypes (layerInfo.layer, layerInfo.query, layerInfo.state));
-		}
-		
-		return featureTypes;
-	}
-	
-	private QueryInfo parseQueryInfo (final JsonNode queryNode) {
-		return new QueryInfo (parseLayerInfos (queryNode.path ("layers")), parseQuery (queryNode.path ("query")));
-	}
-	
-	private List<LayerInfo> parseLayerInfos (final JsonNode layersNode) {
-		if (layersNode.isMissingNode () || !layersNode.isArray ()) {
-			return Collections.emptyList ();
-		}
-		
-		final List<LayerInfo> layerInfos = new ArrayList<LayerInfo> ();
-
-		for (final JsonNode layerNode: layersNode) {
-			layerInfos.add (parseLayerInfo (layerNode));
-		}
-		
-		return layerInfos;
-	}
-	
-	private LayerInfo parseLayerInfo (final JsonNode layerNode) {
-		return new LayerInfo (getLayer (layerNode.path ("id")), layerNode.path ("state"), parseQuery (layerNode.path ("query")));
-	}
-	
-	private FeatureQuery parseQuery (final JsonNode queryNode) {
-		if (queryNode.isMissingNode ()) {
-			return null;
-		}
-		
-		return new FeatureQuery ();
-	}
-	
-	private Layer getLayer (final JsonNode id) {
-		if (id == null) {
-			throw new IllegalArgumentException ("Missing layer ID");
-		}
-		
-		final Layer layer = layerProvider.getLayer (id.asText ());
-		if (layer == null) {
-			throw new IllegalArgumentException ("No layer found with ID " + id.asText ());
-		}
-		
-		return layer;
-	}
-	
-	public static class QueryInfo {
-		public final List<LayerInfo> layerInfos;
-		public final FeatureQuery query;
-		
-		public QueryInfo (final List<LayerInfo> layerInfos, final FeatureQuery query) {
-			this.layerInfos = new ArrayList<> (layerInfos);
-			this.query = query;
-		}
-	}
-	
-	public static class LayerInfo {
-		public final Layer layer;
-		public final JsonNode state;
-		public final FeatureQuery query;
-		
-		public LayerInfo (final Layer layer, final JsonNode state, final FeatureQuery query) {
-			this.layer = layer;
-			this.state = state;
-			this.query = query;
-		}
-	}
-	
-	public static class ServiceLayerInfo {
-		public final LayerInfo layerInfo;
-		public final ParameterizedServiceLayer<?> serviceLayer;
-		
-		public ServiceLayerInfo (final LayerInfo layerInfo, final ParameterizedServiceLayer<?> serviceLayer) {
-			this.layerInfo = layerInfo;
-			this.serviceLayer = serviceLayer;
-		}
 	}
 	
 	public final static class FeatureProducer {

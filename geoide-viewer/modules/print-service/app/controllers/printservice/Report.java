@@ -3,14 +3,17 @@ package controllers.printservice;
 
 import java.net.URI;
 
-import nl.idgis.geoide.commons.report.ReportComposer;
-import nl.idgis.geoide.documentcache.Document;
-import nl.idgis.geoide.documentcache.DocumentCache;
+import javax.inject.Inject;
+
+import nl.idgis.geoide.commons.domain.JsonFactory;
+import nl.idgis.geoide.commons.domain.api.DocumentCache;
+import nl.idgis.geoide.commons.domain.api.ReportComposer;
+import nl.idgis.geoide.commons.domain.document.Document;
 import nl.idgis.geoide.util.Promises;
 import nl.idgis.geoide.util.streams.StreamProcessor;
-import play.libs.Json;
 import play.libs.F.Function;
 import play.libs.F.Promise;
+import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 
@@ -24,7 +27,7 @@ public class Report extends Controller {
 	private final StreamProcessor streamProcessor;
 	private final DocumentCache documentCache;
 
-
+	@Inject
 	public Report(ReportComposer reportComposer, StreamProcessor streamProcessor, DocumentCache documentCache) {
 		if (reportComposer == null) {
 			throw new NullPointerException ("reportComposer cannot be null");
@@ -60,7 +63,7 @@ public class Report extends Controller {
 	
 	private Promise<Result> doCompose (final JsonNode reportJson) throws Throwable {
 
-		final Promise<Document> documentPromise = Promises.asPromise (composer.compose(reportJson));
+		final Promise<Document> documentPromise = Promises.asPromise (composer.compose(JsonFactory.externalize (reportJson)));
 		
 		return documentPromise.map (new Function<Document, Result> () {
 			//@Override

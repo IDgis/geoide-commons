@@ -9,14 +9,15 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import nl.idgis.geoide.commons.domain.ServiceIdentification;
+import nl.idgis.geoide.commons.domain.service.messages.ServiceError;
+import nl.idgis.geoide.commons.domain.service.messages.ServiceMessage;
 import nl.idgis.geoide.commons.domain.traits.Traits;
 import nl.idgis.geoide.service.ServiceType;
 import nl.idgis.geoide.service.ServiceTypeRegistry;
 import nl.idgis.geoide.service.messages.LogResponse;
 import nl.idgis.geoide.service.messages.RequestLog;
-import nl.idgis.geoide.service.messages.ServiceError;
-import nl.idgis.geoide.service.messages.ServiceMessage;
 import play.Logger;
+import play.libs.ws.WSClient;
 import scala.concurrent.duration.Duration;
 import akka.actor.ActorRef;
 import akka.actor.Cancellable;
@@ -30,6 +31,7 @@ public class ServiceManager extends UntypedActor {
 	private final static int MAX_LOG_LENGTH = 1000;
 	
 	private final ServiceTypeRegistry serviceTypeRegistry;
+	private final WSClient wsClient;
 	
 	private final Map<ActorRef, ServiceIdentification> actorRefs = new HashMap<> ();
 	private final Map<ServiceIdentification, ActorRef> serviceIdentifications = new HashMap<> ();
@@ -39,16 +41,20 @@ public class ServiceManager extends UntypedActor {
 
 	// public final static ActorRef instance = Akka.system ().actorOf (ServiceManager.mkPropsDefault ());
 
-	public ServiceManager (final ServiceTypeRegistry serviceTypeRegistry) {
+	public ServiceManager (final ServiceTypeRegistry serviceTypeRegistry, final WSClient wsClient) {
 		if (serviceTypeRegistry == null) {
 			throw new NullPointerException ("serviceTypeRegistry cannot be null");
 		}
+		if (wsClient == null) {
+			throw new NullPointerException ("wsClient cannot be null");
+		}
 		
 		this.serviceTypeRegistry = serviceTypeRegistry;
+		this.wsClient = wsClient;
 	}
 	
-	public static Props mkProps (final ServiceTypeRegistry serviceTypeRegistry) {
-		return Props.create (ServiceManager.class, serviceTypeRegistry);
+	public static Props mkProps (final ServiceTypeRegistry serviceTypeRegistry, final WSClient wsClient) {
+		return Props.create (ServiceManager.class, serviceTypeRegistry, wsClient);
 	}
 	
 	@Override
@@ -138,7 +144,7 @@ public class ServiceManager extends UntypedActor {
 				URLEncoder.encode (identification.getServiceVersion (), "UTF-8"), 
 				URLEncoder.encode (identification.getServiceEndpoint (), "UTF-8")
 			);
-		final ActorRef ref = getContext ().actorOf (serviceType.get ().createServiceActorProps (self (), identification), name);
+		final ActorRef ref = getContext ().actorOf (serviceType.get ().createServiceActorProps (self (), wsClient, identification), name);
 		
 		addService (identification, ref);
 		scheduleServiceTermination (identification);

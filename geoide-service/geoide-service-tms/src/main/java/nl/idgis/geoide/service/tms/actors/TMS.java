@@ -8,17 +8,17 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import nl.idgis.geoide.commons.domain.ServiceIdentification;
+import nl.idgis.geoide.commons.domain.service.Capabilities;
+import nl.idgis.geoide.commons.domain.service.messages.ServiceError;
+import nl.idgis.geoide.commons.domain.service.messages.ServiceErrorType;
+import nl.idgis.geoide.commons.domain.service.messages.ServiceMessage;
+import nl.idgis.geoide.commons.domain.service.messages.ServiceMessageContext;
+import nl.idgis.geoide.commons.domain.service.messages.ServiceRequest;
+import nl.idgis.geoide.commons.domain.service.messages.ServiceResponse;
 import nl.idgis.geoide.service.actors.CachedReference;
 import nl.idgis.geoide.service.actors.Service;
 import nl.idgis.geoide.service.messages.GetServiceCapabilities;
 import nl.idgis.geoide.service.messages.ServiceCapabilities;
-import nl.idgis.geoide.service.messages.ServiceError;
-import nl.idgis.geoide.service.messages.ServiceErrorType;
-import nl.idgis.geoide.service.messages.ServiceMessage;
-import nl.idgis.geoide.service.messages.ServiceMessageContext;
-import nl.idgis.geoide.service.messages.ServiceRequest;
-import nl.idgis.geoide.service.messages.ServiceResponse;
-import nl.idgis.services.Capabilities;
 import nl.idgis.services.client.tms.TMSCapabilitiesParser;
 import nl.idgis.services.client.tms.TMSCapabilitiesParser.ParseException;
 import nl.idgis.services.tms.TMSCapabilities;
@@ -29,7 +29,7 @@ import play.libs.F.Callback;
 import play.libs.F.Function;
 import play.libs.F.Function0;
 import play.libs.F.Promise;
-import play.libs.ws.WS;
+import play.libs.ws.WSClient;
 import play.libs.ws.WSRequestHolder;
 import play.libs.ws.WSResponse;
 import akka.actor.ActorRef;
@@ -43,12 +43,12 @@ public class TMS extends Service {
 	private final CachedReference<Promise<ServiceMessage>> serviceCapabilities = new CachedReference<> ();
 	private final ConcurrentMap<String, CachedReference<Promise<TileMapLayer>>> tileMapLayerCapabilities = new ConcurrentHashMap<> ();
 	
-	public TMS (final ActorRef serviceManager, final ServiceIdentification identification) {
-		super(serviceManager, identification, DEFAULT_CACHE_LIFETIME, DEFAULT_CAPABILITIES_TIMEOUT, DEFAULT_REQUEST_TIMEOUT);
+	public TMS (final ActorRef serviceManager, final WSClient wsClient, final ServiceIdentification identification) {
+		super(serviceManager, wsClient, identification, DEFAULT_CACHE_LIFETIME, DEFAULT_CAPABILITIES_TIMEOUT, DEFAULT_REQUEST_TIMEOUT);
 	}
 	
-	public static Props mkProps (final ActorRef serviceManager, final ServiceIdentification identification) {
-		return Props.create (TMS.class, serviceManager, identification);
+	public static Props mkProps (final ActorRef serviceManager, final WSClient wsClient, final ServiceIdentification identification) {
+		return Props.create (TMS.class, serviceManager, wsClient, identification);
 	}
 
 	@Override
@@ -154,7 +154,7 @@ public class TMS extends Service {
 		// Construct the url:
 		final String url = tileSet.href ().endsWith ("/") ? tileSet.href () : tileSet.href () + "/";
 		
-		final WSRequestHolder holder = WS
+		final WSRequestHolder holder = wsClient ()
 				.url (url + x + "/" + y + "." + tileMapLayer.tileFormat ().extension ())
 				.setTimeout (requestTimeout ());
 		
@@ -222,7 +222,7 @@ public class TMS extends Service {
 	private Promise<TileMapLayer> doGetTileMapLayer (final TMSCapabilities.TileMap tileMap, final ActorRef sender, final ActorRef self, final ServiceMessageContext context) throws Throwable {
 		Logger.debug ("Requesting tilemap: " + tileMap.href ());
 		
-		return WS
+		return wsClient ()
 			.url (tileMap.href ())
 			.setTimeout (requestTimeout ())
 			.get ()
@@ -263,7 +263,7 @@ public class TMS extends Service {
 	}
 	
 	private Promise<ServiceMessage> doGetCapabilities (final ActorRef self, final ActorRef sender, final ServiceMessageContext context) {
-		final WSRequestHolder holder = WS
+		final WSRequestHolder holder = wsClient ()
 				.url (identification ().getServiceEndpoint ())
 				.setTimeout (capabilitiesTimeout ());
 		

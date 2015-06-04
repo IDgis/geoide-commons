@@ -5,8 +5,8 @@ import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-import nl.idgis.geoide.documentcache.DocumentCache;
-import nl.idgis.ogc.util.MimeContentType;
+import nl.idgis.geoide.commons.domain.MimeContentType;
+import nl.idgis.geoide.commons.domain.api.DocumentCache;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -61,7 +61,7 @@ public class ScaleBarBlockComposer implements BlockComposer<ScaleBarBlockInfo> {
 						.attr("style", "left:0;top:0;width:" + barinfo.getTotalWidthmm()  + "mm;height:10mm;")
 						.attr("data", scaleBarUri.toString());
 		
-		CompletableFuture<nl.idgis.geoide.documentcache.Document> scaleBarPromise = documentCache.store(scaleBarUri, new MimeContentType ("image/svg+xml"), scaleBarDoc.toString().getBytes());
+		CompletableFuture<nl.idgis.geoide.commons.domain.document.Document> scaleBarPromise = documentCache.store(scaleBarUri, new MimeContentType ("image/svg+xml"), scaleBarDoc.toString().getBytes());
 	
 		final Block scaleBarBlock = new Block(blockElement, null);
 		

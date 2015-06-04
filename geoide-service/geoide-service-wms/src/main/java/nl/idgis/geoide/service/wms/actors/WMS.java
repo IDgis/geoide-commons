@@ -8,24 +8,25 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.geoide.commons.domain.ServiceIdentification;
+import nl.idgis.geoide.commons.domain.service.Capabilities;
+import nl.idgis.geoide.commons.domain.service.messages.ServiceError;
+import nl.idgis.geoide.commons.domain.service.messages.ServiceErrorType;
+import nl.idgis.geoide.commons.domain.service.messages.ServiceMessage;
+import nl.idgis.geoide.commons.domain.service.messages.ServiceMessageContext;
+import nl.idgis.geoide.commons.domain.service.messages.ServiceRequest;
 import nl.idgis.geoide.service.actors.OGCService;
 import nl.idgis.geoide.service.messages.OGCServiceRequest;
 import nl.idgis.geoide.service.messages.OGCServiceResponse;
 import nl.idgis.geoide.service.messages.ServiceCapabilities;
-import nl.idgis.geoide.service.messages.ServiceError;
-import nl.idgis.geoide.service.messages.ServiceErrorType;
-import nl.idgis.geoide.service.messages.ServiceMessage;
-import nl.idgis.geoide.service.messages.ServiceMessageContext;
-import nl.idgis.geoide.service.messages.ServiceRequest;
 import nl.idgis.ogc.client.wms.WMSCapabilitiesParser;
 import nl.idgis.ogc.client.wms.WMSCapabilitiesParser.ParseException;
-import nl.idgis.ogc.util.MimeContentType;
 import nl.idgis.ogc.wms.WMSCapabilities;
-import nl.idgis.services.Capabilities;
 import nl.idgis.services.OGCCapabilities;
 import play.Logger;
 import play.libs.F.Promise;
+import play.libs.ws.WSClient;
 import play.libs.ws.WSResponse;
 import akka.actor.ActorRef;
 import akka.actor.Props;
@@ -33,12 +34,12 @@ import akka.util.ByteString;
 
 public class WMS extends OGCService {
 	
-	public WMS (final ActorRef serviceManager, final ServiceIdentification identification) {
-		super(serviceManager, identification, DEFAULT_CACHE_LIFETIME, DEFAULT_CAPABILITIES_TIMEOUT, DEFAULT_REQUEST_TIMEOUT);
+	public WMS (final ActorRef serviceManager, final WSClient wsClient, final ServiceIdentification identification) {
+		super(serviceManager, wsClient, identification, DEFAULT_CACHE_LIFETIME, DEFAULT_CAPABILITIES_TIMEOUT, DEFAULT_REQUEST_TIMEOUT);
 	}
 	
-	public static Props mkProps (final ActorRef serviceManager, final ServiceIdentification identification) {
-		return Props.create (WMS.class, serviceManager, identification);
+	public static Props mkProps (final ActorRef serviceManager, final WSClient wsClient, final ServiceIdentification identification) {
+		return Props.create (WMS.class, serviceManager, wsClient, identification);
 	}
 
 	@Override

@@ -6,13 +6,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import nl.idgis.geoide.commons.print.common.DocumentReference;
-import nl.idgis.geoide.commons.print.common.PrintRequest;
-import nl.idgis.geoide.commons.print.service.PrintService;
-import nl.idgis.geoide.commons.report.template.TemplateDocument;
-import nl.idgis.geoide.documentcache.Document;
-import nl.idgis.geoide.documentcache.DocumentCache;
-import nl.idgis.ogc.util.MimeContentType;
+import nl.idgis.geoide.commons.domain.MimeContentType;
+import nl.idgis.geoide.commons.domain.api.DocumentCache;
+import nl.idgis.geoide.commons.domain.api.PrintService;
+import nl.idgis.geoide.commons.domain.document.Document;
+import nl.idgis.geoide.commons.domain.print.DocumentReference;
+import nl.idgis.geoide.commons.domain.print.PrintRequest;
+import nl.idgis.geoide.commons.domain.report.TemplateDocument;
 
 public class ReportPostProcessor {
 	private final PrintService printService;
@@ -43,7 +43,7 @@ public class ReportPostProcessor {
 	 * @param template		the report to print ( a "filled" template document)
 	 * @return 				a pdf Document
 	 */
-	public CompletableFuture<Document> process (TemplateDocument template, ReportData reportData) throws Throwable {
+	public CompletableFuture<Document> process (TemplateDocument template, final org.jsoup.nodes.Document html, ReportData reportData) throws Throwable {
 		
 
 		final URI documentUri = template.getDocumentUri();
@@ -66,7 +66,7 @@ public class ReportPostProcessor {
 		
 		
 		return documentCache
-				.store(documentUri, new MimeContentType ("text/html"), template.asString().getBytes())
+				.store(documentUri, new MimeContentType ("text/html"), html.child(0).html().getBytes())
 				.thenCompose ((final Document a) -> {
 						try {
 							return printService.print (

@@ -10,17 +10,17 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.geoide.commons.domain.ServiceIdentification;
+import nl.idgis.geoide.commons.domain.service.Capabilities;
+import nl.idgis.geoide.commons.domain.service.messages.ServiceError;
+import nl.idgis.geoide.commons.domain.service.messages.ServiceErrorType;
+import nl.idgis.geoide.commons.domain.service.messages.ServiceMessage;
+import nl.idgis.geoide.commons.domain.service.messages.ServiceMessageContext;
 import nl.idgis.geoide.service.messages.GetServiceCapabilities;
 import nl.idgis.geoide.service.messages.OGCServiceRequest;
 import nl.idgis.geoide.service.messages.OGCServiceResponse;
 import nl.idgis.geoide.service.messages.ServiceCapabilities;
-import nl.idgis.geoide.service.messages.ServiceError;
-import nl.idgis.geoide.service.messages.ServiceErrorType;
-import nl.idgis.geoide.service.messages.ServiceMessage;
-import nl.idgis.geoide.service.messages.ServiceMessageContext;
-import nl.idgis.ogc.util.MimeContentType;
-import nl.idgis.services.Capabilities;
 import nl.idgis.services.OGCCapabilities;
 import nl.idgis.services.OGCCapabilities.Operation;
 
@@ -33,6 +33,7 @@ import play.libs.F.Function;
 import play.libs.F.Function0;
 import play.libs.F.Promise;
 import play.libs.ws.WS;
+import play.libs.ws.WSClient;
 import play.libs.ws.WSRequestHolder;
 import play.libs.ws.WSResponse;
 import akka.actor.ActorRef;
@@ -43,8 +44,8 @@ public abstract class OGCService extends Service {
 	private final CachedReference<Promise<ServiceMessage>> serviceCapabilities = new CachedReference<> ();
 	private final XMLInputFactory xmlInputFactory;
 	
-	public OGCService (final ActorRef serviceManager, final ServiceIdentification identification, final long cacheLifetime, final int capabilitiesTimeout, final int requestTimeout) {
-		super (serviceManager, identification, cacheLifetime, capabilitiesTimeout, requestTimeout);
+	public OGCService (final ActorRef serviceManager, final WSClient wsClient, final ServiceIdentification identification, final long cacheLifetime, final int capabilitiesTimeout, final int requestTimeout) {
+		super (serviceManager, wsClient, identification, cacheLifetime, capabilitiesTimeout, requestTimeout);
 		
 		xmlInputFactory = XMLInputFactory.newInstance ();
 		xmlInputFactory.setProperty (XMLInputFactory.SUPPORT_DTD, false);
@@ -142,7 +143,7 @@ public abstract class OGCService extends Service {
 		}
 		
 		// Create the request holder:
-		WSRequestHolder holder = WS.url (url).setTimeout (requestTimeout ());
+		WSRequestHolder holder = wsClient ().url (url).setTimeout (requestTimeout ());
 		
 		// Add parameters from the endpoint:
 		if (!query.isEmpty ()) {
@@ -312,7 +313,7 @@ public abstract class OGCService extends Service {
 		}
 		
 		// Create the request holder:
-		WSRequestHolder holder = WS.url (url).setTimeout (timeout);
+		WSRequestHolder holder = wsClient ().url (url).setTimeout (timeout);
 		
 		// Add parameters from the endpoint:
 		if (!query.isEmpty ()) {

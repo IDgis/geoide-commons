@@ -1,0 +1,2677 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE WMT_MS_Capabilities SYSTEM "http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=DTD" [<!ELEMENT VendorSpecificCapabilities EMPTY>]>
+<WMT_MS_Capabilities version="1.1.1" updateSequence="0">
+  <Service>
+    <Name>OGC:WMS</Name>
+    <Title>RO-Online: De landelijke voorziening voor digitale ruimtelijke ordeningsplannen</Title>
+    <Abstract>Digitale ruimtelijke plannen die verplicht beschikbaar worden gesteld a.g.v. digitale aspecten van de nieuwe Wet ruimtelijke ordening (per 1/1/2010) en vrijwillig beschikbaar gesteld oudere plannen.</Abstract>
+    <KeywordList>
+      <Keyword>ruimtelijke ordening</Keyword>
+      <Keyword>planologie</Keyword>
+      <Keyword>bestemmingsplannen</Keyword>
+      <Keyword>structuurvisies</Keyword>
+      <Keyword>AMvB</Keyword>
+      <Keyword>provinciale verordeningen</Keyword>
+      <Keyword>wet ruimtelijke ordening</Keyword>
+      <Keyword>besluit ruimtelijke ordening</Keyword>
+      <Keyword>IMRO</Keyword>
+    </KeywordList>
+    <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://www.invrom.nl"/>
+    <ContactInformation>
+      <ContactPersonPrimary>
+        <ContactPerson>Postbus digitale plannen</ContactPerson>
+        <ContactOrganization>Ministerie van VROM</ContactOrganization>
+      </ContactPersonPrimary>
+      <ContactPosition></ContactPosition>
+      <ContactAddress>
+        <AddressType>postal</AddressType>
+        <Address>Rijnstraat 8</Address>
+        <City>Den Haag</City>
+        <StateOrProvince>ZH</StateOrProvince>
+        <PostCode>2515XP</PostCode>
+        <Country>The Netherlands</Country>
+      </ContactAddress>
+      <ContactVoiceTelephone>070 339 39 39</ContactVoiceTelephone>
+      <ContactFacsimileTelephone>nvt</ContactFacsimileTelephone>
+      <ContactElectronicMailAddress>digitale-plannen@minvrom.nl</ContactElectronicMailAddress>
+    </ContactInformation>
+    <Fees>none</Fees>
+    <AccessConstraints>none</AccessConstraints>
+  </Service>
+  <Capability>
+    <Request>
+      <GetCapabilities>
+        <Format>application/vnd.ogc.wms_xml</Format>
+        <DCPType>
+          <HTTP>
+            <Get>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?"/>
+            </Get>
+          </HTTP>
+        </DCPType>
+      </GetCapabilities>
+      <GetMap>
+        <Format>image/png</Format>
+        <Format>image/png; subtype=8bit</Format>
+        <Format>image/png; mode=8bit</Format>
+        <Format>image/gif</Format>
+        <Format>image/jpeg</Format>
+        <Format>image/tiff</Format>
+        <Format>image/x-ms-bmp</Format>
+        <DCPType>
+          <HTTP>
+            <Get>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?"/>
+            </Get>
+          </HTTP>
+        </DCPType>
+      </GetMap>
+      <GetFeatureInfo>
+        <Format>application/vnd.ogc.gml</Format>
+        <Format>text/xml</Format>
+        <Format>text/plain</Format>
+        <Format>text/html</Format>
+        <Format>application/gml+xml; version=2.1</Format>
+        <Format>application/gml+xml; version=3.0</Format>
+        <Format>application/gml+xml; version=3.1</Format>
+        <Format>application/gml+xml; version=3.2</Format>
+        <Format>text/xml; subtype=gml/2.1.2</Format>
+        <Format>text/xml; subtype=gml/3.0.1</Format>
+        <Format>text/xml; subtype=gml/3.1.1</Format>
+        <Format>text/xml; subtype=gml/3.2.1</Format>
+        <DCPType>
+          <HTTP>
+            <Get>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?"/>
+            </Get>
+          </HTTP>
+        </DCPType>
+      </GetFeatureInfo>
+      <GetLegendGraphic>
+        <Format>image/png</Format>
+        <Format>image/png; subtype=8bit</Format>
+        <Format>image/png; mode=8bit</Format>
+        <Format>image/gif</Format>
+        <Format>image/jpeg</Format>
+        <Format>image/tiff</Format>
+        <Format>image/x-ms-bmp</Format>
+        <DCPType>
+          <HTTP>
+            <Get>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?"/>
+            </Get>
+          </HTTP>
+        </DCPType>
+      </GetLegendGraphic>
+    </Request>
+    <Exception>
+      <Format>application/vnd.ogc.se_xml</Format>
+      <Format>application/vnd.ogc.se_inimage</Format>
+      <Format>application/vnd.ogc.se_blank</Format>
+    </Exception>
+    <Layer queryable="1">
+      <Title>RO-Online root layer</Title>
+      <SRS>EPSG:28992</SRS>
+      <SRS>EPSG:25832</SRS>
+      <SRS>EPSG:25831</SRS>
+      <SRS>EPSG:4258</SRS>
+      <SRS>EPSG:4326</SRS>
+      <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+      <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+      <SRS>CRS:84</SRS>
+      <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+      <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+      <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+      <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+      <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+      <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+      <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+      <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+      <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+      <Layer queryable="1">
+        <Name>BP:HuidigeBestemming</Name>
+        <Title>BP:HuidigeBestemming</Title>
+        <SRS>EPSG:28992</SRS>
+        <SRS>EPSG:25832</SRS>
+        <SRS>EPSG:25831</SRS>
+        <SRS>EPSG:4258</SRS>
+        <SRS>EPSG:4326</SRS>
+        <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+        <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+        <SRS>CRS:84</SRS>
+        <LatLonBoundingBox minx="3.1304085511910325" miny="50.68702662740638" maxx="7.397372470069329" maxy="53.6510870762265"/>
+        <BoundingBox SRS="EPSG:28992" minx="5707.0" miny="301817.0" maxx="287967.0" maxy="629509.0"/>
+        <BoundingBox SRS="EPSG:25832" minx="95686.35939457902" miny="5616895.3832717715" maxx="394035.15205588564" maxy="5958425.609713772"/>
+        <BoundingBox SRS="EPSG:25831" minx="508623.7590612486" miny="5615057.965983012" maxx="801477.7831635922" maxy="5951874.749505219"/>
+        <BoundingBox SRS="EPSG:4258" minx="3.1304085511910325" miny="50.68702662833078" maxx="7.397372470069329" maxy="53.6510870771266"/>
+        <BoundingBox SRS="EPSG:4326" minx="3.1304085511910333" miny="50.68702662740638" maxx="7.397372470069329" maxy="53.6510870762265"/>
+        <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.68702662833078" miny="3.1304085511910325" maxx="53.6510870771266" maxy="7.397372470069329"/>
+        <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.68702662740638" miny="3.1304085511910325" maxx="53.6510870762265" maxy="7.397372470069329"/>
+        <BoundingBox SRS="CRS:84" minx="3.1304085511910325" miny="50.68702662740638" maxx="7.397372470069329" maxy="53.6510870762265"/>
+        <MetadataURL type="ISO19115:2003">
+          <Format>application/xml</Format>
+          <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+        </MetadataURL>
+        <ScaleHint min="0.0" max="13.999999999999998"/>
+      </Layer>
+      <Layer queryable="1">
+        <Title>Algemene Maatregel van Bestuur</Title>
+        <SRS>EPSG:28992</SRS>
+        <SRS>EPSG:25832</SRS>
+        <SRS>EPSG:25831</SRS>
+        <SRS>EPSG:4258</SRS>
+        <SRS>EPSG:4326</SRS>
+        <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+        <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+        <SRS>CRS:84</SRS>
+        <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+        <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+        <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+        <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+        <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+        <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+        <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+        <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+        <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+        <Layer queryable="1">
+          <Name>AMB:Besluitgebied</Name>
+          <Title>AMB:Besluitgebied</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>AMB:Besluitgebied</Name>
+            <Title>AMB:Besluitgebied</Title>
+            <LegendURL width="114" height="108">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=AMB:Besluitgebied&amp;style=AMB:Besluitgebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="114" height="108">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=AMB:Besluitgebied&amp;style=AMB:Besluitgebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+        </Layer>
+        <Layer queryable="1">
+          <Name>AMB:Besluitsubvlak</Name>
+          <Title>AMB:Besluitsubvlak</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>AMB:Besluitsubvlak</Name>
+            <Title>AMB:Besluitsubvlak</Title>
+            <LegendURL width="119" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=AMB:Besluitsubvlak&amp;style=AMB:Besluitsubvlak&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="119" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=AMB:Besluitsubvlak&amp;style=AMB:Besluitsubvlak&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="209.99999999999997"/>
+        </Layer>
+        <Layer queryable="1">
+          <Name>AMB:Besluitvlak</Name>
+          <Title>AMB:Besluitvlak</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>AMB:Besluitvlak</Name>
+            <Title>AMB:Besluitvlak</Title>
+            <LegendURL width="98" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=AMB:Besluitvlak&amp;style=AMB:Besluitvlak&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="98" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=AMB:Besluitvlak&amp;style=AMB:Besluitvlak&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="209.99999999999997"/>
+        </Layer>
+      </Layer>
+      <Layer queryable="1">
+        <Title>AuthenticiteitInformatie</Title>
+        <SRS>EPSG:28992</SRS>
+        <SRS>EPSG:25832</SRS>
+        <SRS>EPSG:25831</SRS>
+        <SRS>EPSG:4258</SRS>
+        <SRS>EPSG:4326</SRS>
+        <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+        <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+        <SRS>CRS:84</SRS>
+        <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+        <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+        <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+        <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+        <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+        <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+        <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+        <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+        <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+        <Layer queryable="1">
+          <Name>DW:Plangebied</Name>
+          <Title>DW:Plangebied</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>DW:Plangebied</Name>
+            <Title>DW:Plangebied</Title>
+            <LegendURL width="101" height="27">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=DW:Plangebied&amp;style=DW:Plangebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="101" height="27">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=DW:Plangebied&amp;style=DW:Plangebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+        </Layer>
+        <Layer queryable="1">
+          <Name>DW:Onderdelen</Name>
+          <Title>DW:Onderdelen</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>DW:Onderdelen</Name>
+            <Title>DW:Onderdelen</Title>
+            <LegendURL width="106" height="27">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=DW:Onderdelen&amp;style=DW:Onderdelen&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="106" height="27">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=DW:Onderdelen&amp;style=DW:Onderdelen&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+        </Layer>
+      </Layer>
+      <Layer queryable="1">
+        <Title>Bestemmingsplan</Title>
+        <SRS>EPSG:28992</SRS>
+        <SRS>EPSG:25832</SRS>
+        <SRS>EPSG:25831</SRS>
+        <SRS>EPSG:4258</SRS>
+        <SRS>EPSG:4326</SRS>
+        <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+        <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+        <SRS>CRS:84</SRS>
+        <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+        <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+        <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+        <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+        <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+        <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+        <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+        <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+        <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+        <Layer queryable="1">
+          <Name>BP:Bestemmingsplangebied</Name>
+          <Title>BP:Bestemmingsplangebied</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>BP:Bestemmingsplangebied</Name>
+            <Title>BP:Bestemmingsplangebied</Title>
+            <LegendURL width="178" height="54">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=BP:Bestemmingsplangebied&amp;style=BP:Bestemmingsplangebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="178" height="54">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=BP:Bestemmingsplangebied&amp;style=BP:Bestemmingsplangebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="4200.0"/>
+        </Layer>
+        <Layer queryable="1">
+          <Name>BP:Enkelbestemming</Name>
+          <Title>BP:Enkelbestemming</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>BP:Enkelbestemming</Name>
+            <Title>BP:Enkelbestemming</Title>
+            <LegendURL width="181" height="675">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=BP:Enkelbestemming&amp;style=BP:Enkelbestemming&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="181" height="675">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=BP:Enkelbestemming&amp;style=BP:Enkelbestemming&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="13.999999999999998"/>
+        </Layer>
+        <Layer queryable="1">
+          <Name>BP:Dubbelbestemming</Name>
+          <Title>BP:Dubbelbestemming</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>BP:Dubbelbestemming</Name>
+            <Title>BP:Dubbelbestemming</Title>
+            <LegendURL width="328" height="432">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=BP:Dubbelbestemming&amp;style=BP:Dubbelbestemming&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="328" height="432">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=BP:Dubbelbestemming&amp;style=BP:Dubbelbestemming&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="13.999999999999998"/>
+        </Layer>
+        <Layer queryable="1">
+          <Name>BP:Functieaanduiding</Name>
+          <Title>BP:Functieaanduiding</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>BP:Functieaanduiding</Name>
+            <Title>BP:Functieaanduiding</Title>
+            <LegendURL width="142" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=BP:Functieaanduiding&amp;style=BP:Functieaanduiding&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="142" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=BP:Functieaanduiding&amp;style=BP:Functieaanduiding&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="13.999999999999998"/>
+        </Layer>
+        <Layer queryable="1">
+          <Name>BP:Figuur</Name>
+          <Title>BP:Figuur</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>BP:Figuur</Name>
+            <Title>BP:Figuur</Title>
+            <LegendURL width="32" height="405">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=BP:Figuur&amp;style=BP:Figuur&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="32" height="405">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=BP:Figuur&amp;style=BP:Figuur&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="13.999999999999998"/>
+        </Layer>
+        <Layer queryable="1">
+          <Name>BP:Gebiedsaanduiding</Name>
+          <Title>BP:Gebiedsaanduiding</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>BP:Gebiedsaanduiding</Name>
+            <Title>BP:Gebiedsaanduiding</Title>
+            <LegendURL width="195" height="1053">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=BP:Gebiedsaanduiding&amp;style=BP:Gebiedsaanduiding&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="195" height="1053">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=BP:Gebiedsaanduiding&amp;style=BP:Gebiedsaanduiding&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="13.999999999999998"/>
+        </Layer>
+        <Layer queryable="1">
+          <Name>BP:Gebiedsaanduiding_overzicht</Name>
+          <Title>BP:Gebiedsaanduiding_overzicht</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>BP:Gebiedsaanduiding_overzicht</Name>
+            <Title>BP:Gebiedsaanduiding_overzicht</Title>
+            <LegendURL width="195" height="1053">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=BP:Gebiedsaanduiding_overzicht&amp;style=BP:Gebiedsaanduiding_overzicht&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="195" height="1053">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=BP:Gebiedsaanduiding_overzicht&amp;style=BP:Gebiedsaanduiding_overzicht&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="41.99999999999999"/>
+        </Layer>
+        <Layer queryable="1">
+          <Name>BP:Wijzigingsplangebied</Name>
+          <Title>BP:Wijzigingsplangebied</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>BP:Wijzigingsplangebied</Name>
+            <Title>BP:Wijzigingsplangebied</Title>
+            <LegendURL width="160" height="54">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=BP:Wijzigingsplangebied&amp;style=BP:Wijzigingsplangebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="160" height="54">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=BP:Wijzigingsplangebied&amp;style=BP:Wijzigingsplangebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="4200.0"/>
+        </Layer>
+        <Layer queryable="1">
+          <Name>BP:Bouwaanduiding</Name>
+          <Title>BP:Bouwaanduiding</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>BP:Bouwaanduiding</Name>
+            <Title>BP:Bouwaanduiding</Title>
+            <LegendURL width="132" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=BP:Bouwaanduiding&amp;style=BP:Bouwaanduiding&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="132" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=BP:Bouwaanduiding&amp;style=BP:Bouwaanduiding&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="13.999999999999998"/>
+        </Layer>
+        <Layer queryable="1">
+          <Name>BP:Bouwvlak</Name>
+          <Title>BP:Bouwvlak</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>BP:Bouwvlak</Name>
+            <Title>BP:Bouwvlak</Title>
+            <LegendURL width="91" height="27">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=BP:Bouwvlak&amp;style=BP:Bouwvlak&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="91" height="27">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=BP:Bouwvlak&amp;style=BP:Bouwvlak&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="13.999999999999998"/>
+        </Layer>
+        <Layer queryable="1">
+          <Name>BP:Inpassingsplangebied</Name>
+          <Title>BP:Inpassingsplangebied</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>BP:Inpassingsplangebied</Name>
+            <Title>BP:Inpassingsplangebied</Title>
+            <LegendURL width="162" height="54">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=BP:Inpassingsplangebied&amp;style=BP:Inpassingsplangebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="162" height="54">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=BP:Inpassingsplangebied&amp;style=BP:Inpassingsplangebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="4200.0"/>
+        </Layer>
+        <Layer queryable="1">
+          <Name>BP:Lettertekenaanduiding</Name>
+          <Title>BP:Lettertekenaanduiding</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>BP:Lettertekenaanduiding</Name>
+            <Title>BP:Lettertekenaanduiding</Title>
+            <LegendURL width="167" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=BP:Lettertekenaanduiding&amp;style=BP:Lettertekenaanduiding&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="167" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=BP:Lettertekenaanduiding&amp;style=BP:Lettertekenaanduiding&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="13.999999999999998"/>
+        </Layer>
+        <Layer queryable="1">
+          <Name>BP:Maatvoering</Name>
+          <Title>BP:Maatvoering</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>BP:Maatvoering</Name>
+            <Title>BP:Maatvoering</Title>
+            <LegendURL width="108" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=BP:Maatvoering&amp;style=BP:Maatvoering&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="108" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=BP:Maatvoering&amp;style=BP:Maatvoering&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="13.999999999999998"/>
+        </Layer>
+        <Layer queryable="1">
+          <Name>BP:Rijksbestemmingsplangebied</Name>
+          <Title>BP:Rijksbestemmingsplangebied</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>BP:Rijksbestemmingsplangebied</Name>
+            <Title>BP:Rijksbestemmingsplangebied</Title>
+            <LegendURL width="207" height="54">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=BP:Rijksbestemmingsplangebied&amp;style=BP:Rijksbestemmingsplangebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="207" height="54">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=BP:Rijksbestemmingsplangebied&amp;style=BP:Rijksbestemmingsplangebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="4200.0"/>
+        </Layer>
+        <Layer queryable="1">
+          <Name>BP:Uitwerkingsplangebied</Name>
+          <Title>BP:Uitwerkingsplangebied</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>BP:Uitwerkingsplangebied</Name>
+            <Title>BP:Uitwerkingsplangebied</Title>
+            <LegendURL width="168" height="54">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=BP:Uitwerkingsplangebied&amp;style=BP:Uitwerkingsplangebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="168" height="54">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=BP:Uitwerkingsplangebied&amp;style=BP:Uitwerkingsplangebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="4200.0"/>
+        </Layer>
+      </Layer>
+      <Layer queryable="1">
+        <Title>Gemeentelijke structuurvisie</Title>
+        <SRS>EPSG:28992</SRS>
+        <SRS>EPSG:25832</SRS>
+        <SRS>EPSG:25831</SRS>
+        <SRS>EPSG:4258</SRS>
+        <SRS>EPSG:4326</SRS>
+        <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+        <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+        <SRS>CRS:84</SRS>
+        <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+        <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+        <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+        <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+        <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+        <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+        <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+        <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+        <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+        <Layer queryable="1">
+          <Name>GSV:Structuurvisieplangebied</Name>
+          <Title>GSV:Structuurvisieplangebied</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>GSV:Structuurvisieplangebied</Name>
+            <Title>GSV:Structuurvisieplangebied</Title>
+            <LegendURL width="178" height="108">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=GSV:Structuurvisieplangebied&amp;style=GSV:Structuurvisieplangebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="178" height="108">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=GSV:Structuurvisieplangebied&amp;style=GSV:Structuurvisieplangebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+        </Layer>
+        <Layer queryable="1">
+          <Name>GSV:Structuurvisiecomplex</Name>
+          <Title>GSV:Structuurvisiecomplex</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>GSV:Structuurvisiecomplex</Name>
+            <Title>GSV:Structuurvisiecomplex</Title>
+            <LegendURL width="164" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=GSV:Structuurvisiecomplex&amp;style=GSV:Structuurvisiecomplex&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="164" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=GSV:Structuurvisiecomplex&amp;style=GSV:Structuurvisiecomplex&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="209.99999999999997"/>
+        </Layer>
+        <Layer queryable="1">
+          <Name>GSV:Structuurvisiegebied</Name>
+          <Title>GSV:Structuurvisiegebied</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>GSV:Structuurvisiegebied</Name>
+            <Title>GSV:Structuurvisiegebied</Title>
+            <LegendURL width="153" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=GSV:Structuurvisiegebied&amp;style=GSV:Structuurvisiegebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="153" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=GSV:Structuurvisiegebied&amp;style=GSV:Structuurvisiegebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="209.99999999999997"/>
+        </Layer>
+      </Layer>
+      <Layer queryable="1">
+        <Title>Nationale plannen</Title>
+        <SRS>EPSG:28992</SRS>
+        <SRS>EPSG:25832</SRS>
+        <SRS>EPSG:25831</SRS>
+        <SRS>EPSG:4258</SRS>
+        <SRS>EPSG:4326</SRS>
+        <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+        <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+        <SRS>CRS:84</SRS>
+        <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+        <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+        <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+        <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+        <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+        <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+        <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+        <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+        <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+        <Layer queryable="1">
+          <Name>NP:NationaalPlangebied</Name>
+          <Title>NP:NationaalPlangebied</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>NP:NationaalPlangebied</Name>
+            <Title>NP:NationaalPlangebied</Title>
+            <LegendURL width="155" height="108">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=NP:NationaalPlangebied&amp;style=NP:NationaalPlangebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="155" height="108">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=NP:NationaalPlangebied&amp;style=NP:NationaalPlangebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+        </Layer>
+        <Layer queryable="1">
+          <Name>NP:NationaalComplex</Name>
+          <Title>NP:NationaalComplex</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>NP:NationaalComplex</Name>
+            <Title>NP:NationaalComplex</Title>
+            <LegendURL width="143" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=NP:NationaalComplex&amp;style=NP:NationaalComplex&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="143" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=NP:NationaalComplex&amp;style=NP:NationaalComplex&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="209.99999999999997"/>
+        </Layer>
+        <Layer queryable="1">
+          <Name>NP:NationaalVerbinding</Name>
+          <Title>NP:NationaalVerbinding</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>NP:NationaalVerbinding</Name>
+            <Title>NP:NationaalVerbinding</Title>
+            <LegendURL width="155" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=NP:NationaalVerbinding&amp;style=NP:NationaalVerbinding&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="155" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=NP:NationaalVerbinding&amp;style=NP:NationaalVerbinding&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="209.99999999999997"/>
+        </Layer>
+        <Layer queryable="1">
+          <Name>NP:NationaalGebied</Name>
+          <Title>NP:NationaalGebied</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>NP:NationaalGebied</Name>
+            <Title>NP:NationaalGebied</Title>
+            <LegendURL width="133" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=NP:NationaalGebied&amp;style=NP:NationaalGebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="133" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=NP:NationaalGebied&amp;style=NP:NationaalGebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="209.99999999999997"/>
+        </Layer>
+      </Layer>
+      <Layer queryable="1">
+        <Title>Plancontour en PDF</Title>
+        <SRS>EPSG:28992</SRS>
+        <SRS>EPSG:25832</SRS>
+        <SRS>EPSG:25831</SRS>
+        <SRS>EPSG:4258</SRS>
+        <SRS>EPSG:4326</SRS>
+        <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+        <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+        <SRS>CRS:84</SRS>
+        <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+        <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+        <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+        <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+        <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+        <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+        <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+        <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+        <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+        <Layer queryable="1">
+          <Name>PCP:Plangebied</Name>
+          <Title>PCP:Plangebied</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>PCP:Plangebied</Name>
+            <Title>PCP:Plangebied</Title>
+            <LegendURL width="32" height="54">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=PCP:Plangebied&amp;style=PCP:Plangebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="32" height="54">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=PCP:Plangebied&amp;style=PCP:Plangebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="4200.0"/>
+        </Layer>
+      </Layer>
+      <Layer queryable="1">
+        <Title>Provinciale Verordening</Title>
+        <SRS>EPSG:28992</SRS>
+        <SRS>EPSG:25832</SRS>
+        <SRS>EPSG:25831</SRS>
+        <SRS>EPSG:4258</SRS>
+        <SRS>EPSG:4326</SRS>
+        <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+        <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+        <SRS>CRS:84</SRS>
+        <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+        <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+        <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+        <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+        <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+        <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+        <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+        <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+        <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+        <Layer queryable="1">
+          <Name>PV:Besluitgebied</Name>
+          <Title>PV:Besluitgebied</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>PV:Besluitgebied</Name>
+            <Title>PV:Besluitgebied</Title>
+            <LegendURL width="114" height="108">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=PV:Besluitgebied&amp;style=PV:Besluitgebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="114" height="108">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=PV:Besluitgebied&amp;style=PV:Besluitgebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+        </Layer>
+        <Layer queryable="1">
+          <Name>PV:Besluitsubvlak</Name>
+          <Title>PV:Besluitsubvlak</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>PV:Besluitsubvlak</Name>
+            <Title>PV:Besluitsubvlak</Title>
+            <LegendURL width="119" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=PV:Besluitsubvlak&amp;style=PV:Besluitsubvlak&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="119" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=PV:Besluitsubvlak&amp;style=PV:Besluitsubvlak&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="209.99999999999997"/>
+        </Layer>
+        <Layer queryable="1">
+          <Name>PV:Besluitvlak</Name>
+          <Title>PV:Besluitvlak</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>PV:Besluitvlak</Name>
+            <Title>PV:Besluitvlak</Title>
+            <LegendURL width="98" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=PV:Besluitvlak&amp;style=PV:Besluitvlak&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="98" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=PV:Besluitvlak&amp;style=PV:Besluitvlak&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="209.99999999999997"/>
+        </Layer>
+      </Layer>
+      <Layer queryable="1">
+        <Title>Provinciale plannen</Title>
+        <SRS>EPSG:28992</SRS>
+        <SRS>EPSG:25832</SRS>
+        <SRS>EPSG:25831</SRS>
+        <SRS>EPSG:4258</SRS>
+        <SRS>EPSG:4326</SRS>
+        <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+        <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+        <SRS>CRS:84</SRS>
+        <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+        <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+        <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+        <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+        <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+        <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+        <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+        <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+        <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+        <Layer queryable="1">
+          <Name>PP:ProvinciaalPlangebied</Name>
+          <Title>PP:ProvinciaalPlangebied</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>PP:ProvinciaalPlangebied</Name>
+            <Title>PP:ProvinciaalPlangebied</Title>
+            <LegendURL width="162" height="27">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=PP:ProvinciaalPlangebied&amp;style=PP:ProvinciaalPlangebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="162" height="27">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=PP:ProvinciaalPlangebied&amp;style=PP:ProvinciaalPlangebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+        </Layer>
+        <Layer queryable="1">
+          <Name>PP:ProvinciaalComplex</Name>
+          <Title>PP:ProvinciaalComplex</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>PP:ProvinciaalComplex</Name>
+            <Title>PP:ProvinciaalComplex</Title>
+            <LegendURL width="150" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=PP:ProvinciaalComplex&amp;style=PP:ProvinciaalComplex&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="150" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=PP:ProvinciaalComplex&amp;style=PP:ProvinciaalComplex&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="209.99999999999997"/>
+        </Layer>
+        <Layer queryable="1">
+          <Name>PP:ProvinciaalVerbinding</Name>
+          <Title>PP:ProvinciaalVerbinding</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>PP:ProvinciaalVerbinding</Name>
+            <Title>PP:ProvinciaalVerbinding</Title>
+            <LegendURL width="162" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=PP:ProvinciaalVerbinding&amp;style=PP:ProvinciaalVerbinding&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="162" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=PP:ProvinciaalVerbinding&amp;style=PP:ProvinciaalVerbinding&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="209.99999999999997"/>
+        </Layer>
+        <Layer queryable="1">
+          <Name>PP:ProvinciaalGebied</Name>
+          <Title>PP:ProvinciaalGebied</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>PP:ProvinciaalGebied</Name>
+            <Title>PP:ProvinciaalGebied</Title>
+            <LegendURL width="140" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=PP:ProvinciaalGebied&amp;style=PP:ProvinciaalGebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="140" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=PP:ProvinciaalGebied&amp;style=PP:ProvinciaalGebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="209.99999999999997"/>
+        </Layer>
+      </Layer>
+      <Layer queryable="1">
+        <Title>Provinciale structuurvisie</Title>
+        <SRS>EPSG:28992</SRS>
+        <SRS>EPSG:25832</SRS>
+        <SRS>EPSG:25831</SRS>
+        <SRS>EPSG:4258</SRS>
+        <SRS>EPSG:4326</SRS>
+        <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+        <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+        <SRS>CRS:84</SRS>
+        <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+        <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+        <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+        <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+        <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+        <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+        <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+        <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+        <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+        <Layer queryable="1">
+          <Name>PSV:Structuurvisieplangebied</Name>
+          <Title>PSV:Structuurvisieplangebied</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>PSV:Structuurvisieplangebied</Name>
+            <Title>PSV:Structuurvisieplangebied</Title>
+            <LegendURL width="178" height="108">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=PSV:Structuurvisieplangebied&amp;style=PSV:Structuurvisieplangebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="178" height="108">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=PSV:Structuurvisieplangebied&amp;style=PSV:Structuurvisieplangebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+        </Layer>
+        <Layer queryable="1">
+          <Name>PSV:Structuurvisiecomplex</Name>
+          <Title>PSV:Structuurvisiecomplex</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>PSV:Structuurvisiecomplex</Name>
+            <Title>PSV:Structuurvisiecomplex</Title>
+            <LegendURL width="164" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=PSV:Structuurvisiecomplex&amp;style=PSV:Structuurvisiecomplex&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="164" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=PSV:Structuurvisiecomplex&amp;style=PSV:Structuurvisiecomplex&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="209.99999999999997"/>
+        </Layer>
+        <Layer queryable="1">
+          <Name>PSV:Structuurvisieverklaring</Name>
+          <Title>PSV:Structuurvisieverklaring</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>PSV:Structuurvisieverklaring</Name>
+            <Title>PSV:Structuurvisieverklaring</Title>
+            <LegendURL width="171" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=PSV:Structuurvisieverklaring&amp;style=PSV:Structuurvisieverklaring&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="171" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=PSV:Structuurvisieverklaring&amp;style=PSV:Structuurvisieverklaring&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="209.99999999999997"/>
+        </Layer>
+        <Layer queryable="1">
+          <Name>PSV:Structuurvisiegebied</Name>
+          <Title>PSV:Structuurvisiegebied</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>PSV:Structuurvisiegebied</Name>
+            <Title>PSV:Structuurvisiegebied</Title>
+            <LegendURL width="153" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=PSV:Structuurvisiegebied&amp;style=PSV:Structuurvisiegebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="153" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=PSV:Structuurvisiegebied&amp;style=PSV:Structuurvisiegebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="209.99999999999997"/>
+        </Layer>
+      </Layer>
+      <Layer queryable="1">
+        <Name>ROO:Plangebied</Name>
+        <Title>ROO:Plangebied</Title>
+        <SRS>EPSG:28992</SRS>
+        <SRS>EPSG:25832</SRS>
+        <SRS>EPSG:25831</SRS>
+        <SRS>EPSG:4258</SRS>
+        <SRS>EPSG:4326</SRS>
+        <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+        <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+        <SRS>CRS:84</SRS>
+        <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+        <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+        <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+        <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+        <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+        <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+        <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+        <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+        <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+        <MetadataURL type="ISO19115:2003">
+          <Format>application/xml</Format>
+          <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+        </MetadataURL>
+        <Style>
+          <Name>ROO:Plangebied</Name>
+          <Title>ROO:Plangebied</Title>
+          <LegendURL width="101" height="108">
+            <Format>image/png</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=ROO:Plangebied&amp;style=ROO:Plangebied&amp;format=image/png"/>
+          </LegendURL>
+        </Style>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="101" height="108">
+            <Format>image/png</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=ROO:Plangebied&amp;style=ROO:Plangebied&amp;format=image/png"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+      <Layer queryable="1">
+        <Title>Rijksstructuurvisie</Title>
+        <SRS>EPSG:28992</SRS>
+        <SRS>EPSG:25832</SRS>
+        <SRS>EPSG:25831</SRS>
+        <SRS>EPSG:4258</SRS>
+        <SRS>EPSG:4326</SRS>
+        <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+        <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+        <SRS>CRS:84</SRS>
+        <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+        <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+        <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+        <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+        <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+        <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+        <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+        <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+        <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+        <Layer queryable="1">
+          <Name>RSV:Structuurvisieplangebied</Name>
+          <Title>RSV:Structuurvisieplangebied</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>RSV:Structuurvisieplangebied</Name>
+            <Title>RSV:Structuurvisieplangebied</Title>
+            <LegendURL width="178" height="108">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=RSV:Structuurvisieplangebied&amp;style=RSV:Structuurvisieplangebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="178" height="108">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=RSV:Structuurvisieplangebied&amp;style=RSV:Structuurvisieplangebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+        </Layer>
+        <Layer queryable="1">
+          <Name>RSV:Structuurvisiecomplex</Name>
+          <Title>RSV:Structuurvisiecomplex</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>RSV:Structuurvisiecomplex</Name>
+            <Title>RSV:Structuurvisiecomplex</Title>
+            <LegendURL width="164" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=RSV:Structuurvisiecomplex&amp;style=RSV:Structuurvisiecomplex&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="164" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=RSV:Structuurvisiecomplex&amp;style=RSV:Structuurvisiecomplex&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="209.99999999999997"/>
+        </Layer>
+        <Layer queryable="1">
+          <Name>RSV:Structuurvisiegebied</Name>
+          <Title>RSV:Structuurvisiegebied</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>RSV:Structuurvisiegebied</Name>
+            <Title>RSV:Structuurvisiegebied</Title>
+            <LegendURL width="153" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=RSV:Structuurvisiegebied&amp;style=RSV:Structuurvisiegebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="153" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=RSV:Structuurvisiegebied&amp;style=RSV:Structuurvisiegebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="209.99999999999997"/>
+        </Layer>
+      </Layer>
+      <Layer queryable="1">
+        <Title>Gebiedsgerichte besluiten</Title>
+        <SRS>EPSG:28992</SRS>
+        <SRS>EPSG:25832</SRS>
+        <SRS>EPSG:25831</SRS>
+        <SRS>EPSG:4258</SRS>
+        <SRS>EPSG:4326</SRS>
+        <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+        <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+        <SRS>CRS:84</SRS>
+        <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+        <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+        <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+        <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+        <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+        <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+        <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+        <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+        <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+        <Layer queryable="1">
+          <Name>XGB:Aanwijzingsbesluitgebied</Name>
+          <Title>XGB:Aanwijzingsbesluitgebied</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>XGB:Aanwijzingsbesluitgebied</Name>
+            <Title>XGB:Aanwijzingsbesluitgebied</Title>
+            <LegendURL width="184" height="108">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=XGB:Aanwijzingsbesluitgebied&amp;style=XGB:Aanwijzingsbesluitgebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="184" height="108">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=XGB:Aanwijzingsbesluitgebied&amp;style=XGB:Aanwijzingsbesluitgebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+        </Layer>
+        <Layer queryable="1">
+          <Name>XGB:Beheersverordeninggebied</Name>
+          <Title>XGB:Beheersverordeninggebied</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>XGB:Beheersverordeninggebied</Name>
+            <Title>XGB:Beheersverordeninggebied</Title>
+            <LegendURL width="192" height="54">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=XGB:Beheersverordeninggebied&amp;style=XGB:Beheersverordeninggebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="192" height="54">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=XGB:Beheersverordeninggebied&amp;style=XGB:Beheersverordeninggebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="4200.0"/>
+        </Layer>
+        <Layer queryable="1">
+          <Name>XGB:BuitenToepassingVerklaringBeheersverordeninggebied</Name>
+          <Title>XGB:BuitenToepassingVerklaringBeheersverordeninggebied</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>XGB:BuitenToepassingVerklaringBeheersverordeninggebied</Name>
+            <Title>XGB:BuitenToepassingVerklaringBeheersverordeninggebied</Title>
+            <LegendURL width="352" height="54">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=XGB:BuitenToepassingVerklaringBeheersverordeninggebied&amp;style=XGB:BuitenToepassingVerklaringBeheersverordeninggebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="352" height="54">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=XGB:BuitenToepassingVerklaringBeheersverordeninggebied&amp;style=XGB:BuitenToepassingVerklaringBeheersverordeninggebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="4200.0"/>
+        </Layer>
+        <Layer queryable="1">
+          <Name>XGB:Projectbesluitgebied</Name>
+          <Title>XGB:Projectbesluitgebied</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>XGB:Projectbesluitgebied</Name>
+            <Title>XGB:Projectbesluitgebied</Title>
+            <LegendURL width="155" height="54">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=XGB:Projectbesluitgebied&amp;style=XGB:Projectbesluitgebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="155" height="54">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=XGB:Projectbesluitgebied&amp;style=XGB:Projectbesluitgebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="4200.0"/>
+        </Layer>
+        <Layer queryable="1">
+          <Name>XGB:ReactieveAanwijzinggebied</Name>
+          <Title>XGB:ReactieveAanwijzinggebied</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>XGB:ReactieveAanwijzinggebied</Name>
+            <Title>XGB:ReactieveAanwijzinggebied</Title>
+            <LegendURL width="194" height="108">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=XGB:ReactieveAanwijzinggebied&amp;style=XGB:ReactieveAanwijzinggebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="194" height="108">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=XGB:ReactieveAanwijzinggebied&amp;style=XGB:ReactieveAanwijzinggebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+        </Layer>
+        <Layer queryable="1">
+          <Name>XGB:Tijdelijkeontheffingbuitenplansgebied</Name>
+          <Title>XGB:Tijdelijkeontheffingbuitenplansgebied</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>XGB:Tijdelijkeontheffingbuitenplansgebied</Name>
+            <Title>XGB:Tijdelijkeontheffingbuitenplansgebied</Title>
+            <LegendURL width="256" height="54">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=XGB:Tijdelijkeontheffingbuitenplansgebied&amp;style=XGB:Tijdelijkeontheffingbuitenplansgebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="256" height="54">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=XGB:Tijdelijkeontheffingbuitenplansgebied&amp;style=XGB:Tijdelijkeontheffingbuitenplansgebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="4200.0"/>
+        </Layer>
+        <Layer queryable="1">
+          <Name>XGB:Voorbereidingsbesluitgebied</Name>
+          <Title>XGB:Voorbereidingsbesluitgebied</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>XGB:Voorbereidingsbesluitgebied</Name>
+            <Title>XGB:Voorbereidingsbesluitgebied</Title>
+            <LegendURL width="204" height="54">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=XGB:Voorbereidingsbesluitgebied&amp;style=XGB:Voorbereidingsbesluitgebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="204" height="54">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=XGB:Voorbereidingsbesluitgebied&amp;style=XGB:Voorbereidingsbesluitgebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="4200.0"/>
+        </Layer>
+        <Layer queryable="1">
+          <Name>XGB:Omgevingsvergunninggebied</Name>
+          <Title>XGB:Omgevingsvergunninggebied</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>XGB:Omgevingsvergunninggebied</Name>
+            <Title>XGB:Omgevingsvergunninggebied</Title>
+            <LegendURL width="203" height="54">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=XGB:Omgevingsvergunninggebied&amp;style=XGB:Omgevingsvergunninggebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="203" height="54">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=XGB:Omgevingsvergunninggebied&amp;style=XGB:Omgevingsvergunninggebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="4200.0"/>
+        </Layer>
+        <Layer queryable="1">
+          <Name>XGB:Exploitatieplangebied</Name>
+          <Title>XGB:Exploitatieplangebied</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>XGB:Exploitatieplangebied</Name>
+            <Title>XGB:Exploitatieplangebied</Title>
+            <LegendURL width="162" height="54">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=XGB:Exploitatieplangebied&amp;style=XGB:Exploitatieplangebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="162" height="54">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=XGB:Exploitatieplangebied&amp;style=XGB:Exploitatieplangebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="4200.0"/>
+        </Layer>
+        <Layer queryable="1">
+          <Name>XGB:Gerechtelijkeuitspraakgebied</Name>
+          <Title>XGB:Gerechtelijkeuitspraakgebied</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>XGB:Gerechtelijkeuitspraakgebied</Name>
+            <Title>XGB:Gerechtelijkeuitspraakgebied</Title>
+            <LegendURL width="207" height="54">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=XGB:Gerechtelijkeuitspraakgebied&amp;style=XGB:Gerechtelijkeuitspraakgebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="207" height="54">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=XGB:Gerechtelijkeuitspraakgebied&amp;style=XGB:Gerechtelijkeuitspraakgebied&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="4200.0"/>
+        </Layer>
+        <Layer queryable="1">
+          <Name>XGB:Besluitsubvlak</Name>
+          <Title>XGB:Besluitsubvlak</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>XGB:Besluitsubvlak</Name>
+            <Title>XGB:Besluitsubvlak</Title>
+            <LegendURL width="119" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=XGB:Besluitsubvlak&amp;style=XGB:Besluitsubvlak&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="119" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=XGB:Besluitsubvlak&amp;style=XGB:Besluitsubvlak&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="209.99999999999997"/>
+        </Layer>
+        <Layer queryable="1">
+          <Name>XGB:Besluitvlak</Name>
+          <Title>XGB:Besluitvlak</Title>
+          <SRS>EPSG:28992</SRS>
+          <SRS>EPSG:25832</SRS>
+          <SRS>EPSG:25831</SRS>
+          <SRS>EPSG:4258</SRS>
+          <SRS>EPSG:4326</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4258</SRS>
+          <SRS>urn:ogc:def:crs:EPSG::4326</SRS>
+          <SRS>CRS:84</SRS>
+          <LatLonBoundingBox minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <BoundingBox SRS="EPSG:28992" minx="-59874.0" miny="249043.0" maxx="316878.0" maxy="885500.0"/>
+          <BoundingBox SRS="EPSG:25832" minx="27522.11422777531" miny="5562797.301697116" maxx="435914.5312020555" maxy="6217760.326011872"/>
+          <BoundingBox SRS="EPSG:25831" minx="434618.52330375294" miny="5560217.426992306" maxx="832070.981312288" maxy="6208738.894870714"/>
+          <BoundingBox SRS="EPSG:4258" minx="1.9542700199613618" miny="50.19248482687455" maxx="7.974466136892424" maxy="55.949848572910106"/>
+          <BoundingBox SRS="EPSG:4326" minx="1.9542700199613623" miny="50.192484825947055" maxx="7.974466136892426" maxy="55.94984857203549"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4258" minx="50.19248482687455" miny="1.9542700199613618" maxx="55.949848572910106" maxy="7.974466136892424"/>
+          <BoundingBox SRS="urn:ogc:def:crs:EPSG::4326" minx="50.19248482594705" miny="1.9542700199613618" maxx="55.949848572035485" maxy="7.974466136892424"/>
+          <BoundingBox SRS="CRS:84" minx="1.9542700199613618" miny="50.19248482594705" maxx="7.974466136892424" maxy="55.949848572035485"/>
+          <MetadataURL type="ISO19115:2003">
+            <Format>application/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/test.xml"/>
+          </MetadataURL>
+          <Style>
+            <Name>XGB:Besluitvlak</Name>
+            <Title>XGB:Besluitvlak</Title>
+            <LegendURL width="98" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=XGB:Besluitvlak&amp;style=XGB:Besluitvlak&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <Style>
+            <Name>default</Name>
+            <Title>default</Title>
+            <LegendURL width="98" height="81">
+              <Format>image/png</Format>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://afnemers.ruimtelijkeplannen.nl/afnemers/services?request=GetLegendGraphic&amp;version=1.1.1&amp;service=WMS&amp;layer=XGB:Besluitvlak&amp;style=XGB:Besluitvlak&amp;format=image/png"/>
+            </LegendURL>
+          </Style>
+          <ScaleHint min="0.0" max="209.99999999999997"/>
+        </Layer>
+      </Layer>
+    </Layer>
+  </Capability>
+</WMT_MS_Capabilities>

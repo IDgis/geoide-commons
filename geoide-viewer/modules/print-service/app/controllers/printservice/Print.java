@@ -6,14 +6,16 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.UUID;
 
-import nl.idgis.geoide.commons.print.common.DocumentReference;
-import nl.idgis.geoide.commons.print.common.PrintRequest;
-import nl.idgis.geoide.commons.print.service.PrintService;
-import nl.idgis.geoide.documentcache.Document;
-import nl.idgis.geoide.documentcache.DocumentCache;
+import javax.inject.Inject;
+
+import nl.idgis.geoide.commons.domain.MimeContentType;
+import nl.idgis.geoide.commons.domain.api.DocumentCache;
+import nl.idgis.geoide.commons.domain.api.PrintService;
+import nl.idgis.geoide.commons.domain.document.Document;
+import nl.idgis.geoide.commons.domain.print.DocumentReference;
+import nl.idgis.geoide.commons.domain.print.PrintRequest;
 import nl.idgis.geoide.util.Promises;
 import nl.idgis.geoide.util.streams.StreamProcessor;
-import nl.idgis.ogc.util.MimeContentType;
 import play.Logger;
 import play.libs.F.Function;
 import play.libs.F.Promise;
@@ -29,6 +31,7 @@ public class Print extends Controller {
 	private final DocumentCache documentCache;
 	private final StreamProcessor streamProcessor;
 	
+	@Inject
 	public Print (final PrintService printService, final DocumentCache documentCache, final StreamProcessor streamProcessor) {
 		if (printService == null) {
 			throw new NullPointerException ("printService cannot be null");

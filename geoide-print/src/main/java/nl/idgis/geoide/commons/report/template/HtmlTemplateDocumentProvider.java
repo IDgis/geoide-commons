@@ -11,13 +11,16 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import nl.idgis.geoide.commons.domain.JsonFactory;
-import nl.idgis.geoide.documentcache.Document;
+import nl.idgis.geoide.commons.domain.api.TemplateDocumentProvider;
+import nl.idgis.geoide.commons.domain.document.Document;
+import nl.idgis.geoide.commons.domain.report.TemplateDocument;
 import nl.idgis.geoide.documentcache.service.DelegatingStore;
 import nl.idgis.geoide.documentcache.service.FileStore;
 import nl.idgis.geoide.util.Futures;
 import nl.idgis.geoide.util.streams.StreamProcessor;
 
-import org.jsoup.select.Elements;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
 
 import akka.util.ByteString;
 import akka.util.ByteString.ByteStrings;
@@ -66,17 +69,44 @@ public class HtmlTemplateDocumentProvider implements TemplateDocumentProvider {
 						
 				final String content = new String (data.toArray ());
 				
-				return new HtmlTemplateDocument(templateURI,content, uri);
+				return createTemplateDocument (templateName, templateURI, content, uri);
 			} catch (IOException | URISyntaxException e) {
 				throw new RuntimeException (e);
 			}
 		});
-		
-	   
-
-	
 	}
 	
+	private static TemplateDocument createTemplateDocument (final String templateName, final URI templateURI, final String htmlContent, final URI uri) {
+		final org.jsoup.nodes.Document html = Jsoup.parse (htmlContent, templateURI.toString());
+		
+		final TemplateDocument.Builder builder = TemplateDocument 
+			.build ()
+			.setUri (uri)
+			.setDocumentUri (templateURI)
+			.setRightMargin (html.select("html").attr("data-right-margin").isEmpty() ? 20 : Double.parseDouble(html.select("html").attr("data-right-margin")))
+			.setLeftMargin (html.select("html").attr("data-left-margin").isEmpty () ? 20 : Double.parseDouble(html.select("html").attr("data-left-margin")))
+			.setTopMargin (html.select("html").attr("data-top-margin").isEmpty () ? 20 : Double.parseDouble(html.select("html").attr("data-top-margin")))
+			.setBottomMargin (html.select("html").attr("data-bottom-margin").isEmpty () ? 20 : Double.parseDouble(html.select("html").attr("data-bottom-margin")))
+			.setPageFormat (html.select("html").attr("data-pageformat").isEmpty () ? "A4" : html.select("html").attr("data-pageformat"))
+			.setPageOrientation (html.select("html").attr("data-page-orientation").isEmpty () ? "portrait" : html.select("html").attr("data-page-orientation"))
+			.setGutterH (html.select("html").attr("data-gutter-h").isEmpty () ? 2 : Double.parseDouble(html.select("html").attr("data-gutter-h")))
+			.setGutterV (html.select("html").attr("data-gutter-v").isEmpty () ? 2 : Double.parseDouble(html.select("html").attr("data-gutter-v")))
+			.setColCount (html.select("html").attr("data-col-count").isEmpty () ? 12 : Integer.parseInt(html.select("html").attr("data-col-count")))
+			.setRowCount (html.select("html").attr("data-row-count").isEmpty () ? 12 : Integer.parseInt(html.select("html").attr("data-row-count")))
+			.setTemplate (templateName)
+			.setDescription (html.select("meta[name=description]").first().attr("content"))
+			.setContent (htmlContent);
+		
+		for (final Element block: html.getElementsByClass ("block")) {
+			if(block.hasClass ("text")) {
+				builder.addVariable (block.id (), block.text (), block.attr ("data-max-width").isEmpty () ? 0 : Integer.valueOf (block.attr ("data-max-width")));
+			}
+		}
+		
+		return builder.create ();
+	}
+	
+	@Override
 	public CompletableFuture<JsonNode> getTemplates() {
 		File[] templateDirectories = fileStore.getDirectories();
 		final List<CompletableFuture<JsonNode>> promises = new ArrayList<> (templateDirectories.length);
@@ -85,8 +115,7 @@ public class HtmlTemplateDocumentProvider implements TemplateDocumentProvider {
 			String name = templateDirectories[n].getName();
 			name = templateDirectories[n].getName().substring(name.lastIndexOf("/") + 1);
 			
-			promises.add (getTemplateProperties(name, getTemplateDocument (name)));
-			
+			promises.add (getTemplateDocument (name).thenCompose (this::getTemplateProperties));
 		}
 		
 		return Futures
@@ -102,28 +131,8 @@ public class HtmlTemplateDocumentProvider implements TemplateDocumentProvider {
 			});
 	}
 	
-
-	
-
 	@Override
-	public CompletableFuture<JsonNode> getTemplateProperties(final String templateName, final CompletableFuture<TemplateDocument>  html) {
-		return html.thenApply ((final TemplateDocument d) -> {
-			final ObjectNode template = JsonFactory.mapper ().createObjectNode ();
-			template.put("template", templateName);
-			template.put ("description", d.getDocument().select("meta[name=description]").first().attr("content"));
-			final ArrayNode properties = template.arrayNode();
-			Elements blocks = d.getBlocks();
-			for ( int n = 0; n< blocks.size(); n++) {
-				final ObjectNode property =  JsonFactory.mapper ().createObjectNode();
-				if(blocks.get(n).hasClass("text")) {
-					property.put("name", blocks.get(n).id())
-							.put("maxwidth", blocks.get(n).attr("data-max-width"))	
-							.put("default",blocks.get(n).text()); 	
-					properties.add(property);
-				}
-			}
-			template.put("variables", properties);
-			return (JsonNode)template;
-		});
+	public CompletableFuture<JsonNode> getTemplateProperties(final TemplateDocument template) {
+		return CompletableFuture.completedFuture (JsonFactory.externalize (JsonFactory.mapper ().valueToTree (template)));
 	}	
 }

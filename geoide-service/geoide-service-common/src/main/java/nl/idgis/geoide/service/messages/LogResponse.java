@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import nl.idgis.geoide.commons.domain.service.messages.ServiceError;
+
 public final class LogResponse implements Serializable {
 	
 	private static final long serialVersionUID = 2790461259414378477L;
