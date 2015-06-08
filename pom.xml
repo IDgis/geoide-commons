@@ -137,6 +137,11 @@
 			
 			<dependency>
 				<groupId>nl.idgis.geoide</groupId>
+				<artifactId>geoide-commons</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>nl.idgis.geoide</groupId>
 				<artifactId>geoide-util</artifactId>
 				<version>${project.version}</version>
 			</dependency>

@@ -61,7 +61,7 @@ public final class DefaultLayerType extends LayerType {
 		final List<Traits<LayerState>> parents = parentStates.isEmpty () || parentStates == null ? Collections.emptyList () : new ArrayList<> (parentStates);
 		final boolean visible = state.path ("visible").asBoolean ();
 		
-		return Traits.create (new LayerState (layer, visible, parents));
+		return Traits.create (new LayerState (layer, visible, parents, Optional.of (state)));
 	}
 	
 	private boolean isEffectiveVisible (final Traits<LayerState> layerState) {

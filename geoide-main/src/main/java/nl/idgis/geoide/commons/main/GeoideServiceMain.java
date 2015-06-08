@@ -1,6 +1,9 @@
 package nl.idgis.geoide.commons.main;
 
 import java.io.File;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringWriter;
 
 import nl.idgis.geoide.util.ConfigWrapper;
 import nl.idgis.geoide.util.GeoideScheduler;
@@ -89,7 +92,7 @@ public class GeoideServiceMain implements AutoCloseable {
 		scheduler.waitForCompletion ();
 	}
 	
-	public static void main (final String[] args) {
+	public static void main (final String[] args) throws Throwable {
 		try (final GeoideServiceMain main = new GeoideServiceMain ()) {
 			main.start ();
 		}
