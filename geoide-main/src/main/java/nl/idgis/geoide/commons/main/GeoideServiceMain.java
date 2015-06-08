@@ -89,7 +89,7 @@ public class GeoideServiceMain implements AutoCloseable {
 		scheduler.waitForCompletion ();
 	}
 	
-	public static void main (final String[] args) {
+	public static void main (final String[] args) throws Throwable {
 		try (final GeoideServiceMain main = new GeoideServiceMain ()) {
 			main.start ();
 		}

@@ -61,8 +61,8 @@ public class ExternalizableJsonNode extends BaseJsonNode implements Externalizab
 	public void readExternal (final ObjectInput in) throws IOException, ClassNotFoundException {
 		final int length = in.readInt ();
 		final byte[] bytes = new byte[length];
-		
-		in.read (bytes);
+
+		in.readFully (bytes);
 		
 		node = JsonFactory.mapper ().readTree (bytes);
 	}
