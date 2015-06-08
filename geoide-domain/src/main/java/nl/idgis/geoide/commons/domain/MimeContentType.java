@@ -1,11 +1,13 @@
 package nl.idgis.geoide.commons.domain;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MimeContentType {
-
+public class MimeContentType implements Serializable {
+	private static final long serialVersionUID = 3306765429574693074L;
+	
 	private final String originalString;
 	private final String type;
 	private final String subType;
