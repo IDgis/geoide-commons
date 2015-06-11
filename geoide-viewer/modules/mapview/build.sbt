@@ -3,7 +3,8 @@ name := """geoide-mapview"""
 Common.settings
 
 libraryDependencies ++= Seq(
-  cache
+  cache,
+  Common.Dependencies.webjarsOpenLayers
 )
 
 // Use IDgis repositories:
