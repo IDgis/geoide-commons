@@ -145,7 +145,7 @@ public final class TemplateDocument implements Serializable {
 		private double gutterV;
 		private String template;
 		private String description;
-		private List<TemplateVariable> variables;
+		private List<TemplateVariable> variables = new ArrayList<> ();
 		private String content;
 		
 		public TemplateDocument create () {
