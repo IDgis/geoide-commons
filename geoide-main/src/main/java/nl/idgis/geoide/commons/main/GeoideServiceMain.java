@@ -55,7 +55,7 @@ public class GeoideServiceMain implements AutoCloseable {
 				resourceConfig = fileConfig;
 			}
 
-			return resourceConfig;
+			return ConfigFactory.defaultOverrides ().withFallback (resourceConfig);
 		}
 		
 		@Bean
