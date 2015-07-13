@@ -143,6 +143,10 @@ public class FileStore implements DocumentStore {
 	 * @return Array of directories
 	 */
 	public File[] getDirectories() {
+		if (!basePath.exists () || !basePath.isDirectory ()) {
+			return new File[0];
+		}
+		
 		File[] directories = basePath.listFiles(new FilenameFilter() {
 		  @Override
 		  public boolean accept(File current, String name) {
