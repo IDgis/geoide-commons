@@ -45,6 +45,8 @@ public class AkkaTransport {
 				public void onComplete (final Throwable ex, final Object result) throws Throwable {
 					if (result instanceof RemoteMethodCallFailure) {
 						future.completeExceptionally (((RemoteMethodCallFailure) result).getCause ());
+					} else if (ex != null) {
+						future.completeExceptionally (ex);
 					} else {
 						future.complete (result);
 					}
