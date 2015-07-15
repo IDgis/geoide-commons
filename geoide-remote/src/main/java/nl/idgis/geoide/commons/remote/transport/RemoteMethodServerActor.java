@@ -7,18 +7,17 @@ import java.util.concurrent.CompletableFuture;
 
 import org.reactivestreams.Publisher;
 
+import akka.actor.ActorRef;
+import akka.actor.Props;
+import akka.actor.UntypedActor;
+import akka.util.ByteString;
 import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.geoide.commons.domain.document.Document;
 import nl.idgis.geoide.commons.remote.RemoteMethodCall;
 import nl.idgis.geoide.commons.remote.RemoteMethodServer;
 import nl.idgis.geoide.commons.remote.transport.messages.RemoteMethodCallFailure;
 import nl.idgis.geoide.util.streams.AkkaSerializablePublisher;
-import nl.idgis.geoide.util.streams.SerializablePublisher;
 import nl.idgis.geoide.util.streams.SerializablePublisherActor;
-import akka.actor.ActorRef;
-import akka.actor.Props;
-import akka.actor.UntypedActor;
-import akka.util.ByteString;
 
 public class RemoteMethodServerActor extends UntypedActor {
 
@@ -62,7 +61,7 @@ public class RemoteMethodServerActor extends UntypedActor {
 							sender.tell (new SerializableDocument (
 									document.getUri (), 
 									document.getContentType (), 
-									new AkkaSerializablePublisher<> (CompletableFuture.completedFuture (streamActor))
+									new AkkaSerializablePublisher<> (getContext (), CompletableFuture.completedFuture (streamActor))
 								), self);
 						} catch (URISyntaxException e) {
 							sender.tell (new RemoteMethodCallFailure (e), self);
@@ -82,9 +81,9 @@ public class RemoteMethodServerActor extends UntypedActor {
 		
 		private final URI uri;
 		private final MimeContentType contentType;
-		private final SerializablePublisher<ByteString> body;
+		private final Publisher<ByteString> body;
 		
-		public SerializableDocument (final URI uri, final MimeContentType contentType, final SerializablePublisher<ByteString> body) {
+		public SerializableDocument (final URI uri, final MimeContentType contentType, final Publisher<ByteString> body) {
 			this.uri = uri;
 			this.contentType = contentType;
 			this.body = body;
