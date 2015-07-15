@@ -87,4 +87,9 @@ public class AkkaSerializablePublisherTest extends PublisherVerification<ByteStr
 	public void test () {
 		
 	}
+	
+	@Override @Test
+	public void required_spec313_cancelMustMakeThePublisherEventuallyDropAllReferencesToTheSubscriber() throws Throwable {
+		super.required_spec313_cancelMustMakeThePublisherEventuallyDropAllReferencesToTheSubscriber ();
+	}
 }

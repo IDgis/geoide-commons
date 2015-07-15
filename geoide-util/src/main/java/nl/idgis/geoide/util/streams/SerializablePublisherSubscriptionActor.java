@@ -24,7 +24,7 @@ public class SerializablePublisherSubscriptionActor extends UntypedActor {
 
 	private final ActorRef publisherActor;
 	private final Publisher<?> publisher;
-	private final Subscriber<?> subscriber;
+	private Subscriber<?> subscriber;
 	private final long timeoutInMillis;
 	
 	private static enum Messages {
@@ -138,6 +138,7 @@ public class SerializablePublisherSubscriptionActor extends UntypedActor {
 			} else if (message instanceof PublisherCancel) {
 				sourceSubscription.cancel ();
 				getContext ().stop (self ());
+				subscriber = null;
 			} else {
 				onReceive (message);
 			}
