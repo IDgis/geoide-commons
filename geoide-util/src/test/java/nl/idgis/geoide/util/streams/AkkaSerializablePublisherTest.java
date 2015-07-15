@@ -40,7 +40,7 @@ public class AkkaSerializablePublisherTest extends PublisherVerification<ByteStr
 		actorSystem = null;
 	}
 	
-	private SerializablePublisher<ByteString> wrapPublisher (final Publisher<ByteString> original) {
+	private Publisher<ByteString> wrapPublisher (final Publisher<ByteString> original) {
 		return streamProcessor.asSerializable (original);
 	}
 	

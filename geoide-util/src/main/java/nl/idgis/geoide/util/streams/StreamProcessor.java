@@ -73,5 +73,5 @@ public interface StreamProcessor {
 	 * @param publisher	The source publisher.
 	 * @return			A remote publisher that wraps the given publisher.
 	 */
-	<T> SerializablePublisher<T> asSerializable (Publisher<T> publisher);
+	<T> Publisher<T> asSerializable (Publisher<T> publisher);
 }
