@@ -5,6 +5,8 @@ import org.reactivestreams.Subscription;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorRefFactory;
+import nl.idgis.geoide.util.streams.messages.SubscriberComplete;
+import nl.idgis.geoide.util.streams.messages.SubscriberError;
 
 public class AkkaSerializableSubscriber<T> implements Subscriber<T> {
 	private final ActorRef actorRef;
@@ -25,12 +27,12 @@ public class AkkaSerializableSubscriber<T> implements Subscriber<T> {
 	
 	@Override
 	public void onComplete () {
-		actorRef.tell ("oncomplete", actorRef);
+		actorRef.tell (new SubscriberComplete (), actorRef);
 	}
 
 	@Override
 	public void onError (final Throwable t) {
-		actorRef.tell (t, actorRef);
+		actorRef.tell (new SubscriberError (t), actorRef);
 	}
 
 	@Override

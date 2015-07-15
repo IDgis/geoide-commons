@@ -44,7 +44,7 @@ public class AkkaSerializablePublisher<T> implements Publisher<T> {
 			throw new NullPointerException ("subscriber cannot be null");
 		}
 		
-		final ActorRef subscriberActor = factory.actorOf (AkkaSerializableSubscriberActor.props (subscriber));
+		final ActorRef subscriberActor = factory.actorOf (AkkaSerializableSubscriberActor.props (subscriber, 10000));
 		final Subscriber<? super T> serializableSubscriber = new AkkaSerializableSubscriber<> (factory, subscriberActor);
 				
 		actor.tell (serializableSubscriber, actor);
