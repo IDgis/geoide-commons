@@ -58,7 +58,7 @@ public class RemoteMethodServerActor extends UntypedActor {
 						final ActorRef streamActor = getContext ().actorOf (SerializablePublisherActor.props (document.getBody (), streamTimeoutInMillis));
 						
 						try {
-							sender.tell (new SerializableDocument (
+							sender.tell (new RemoteDocument (
 									document.getUri (), 
 									document.getContentType (), 
 									new AkkaSerializablePublisher<> (getContext (), CompletableFuture.completedFuture (streamActor))
@@ -76,14 +76,12 @@ public class RemoteMethodServerActor extends UntypedActor {
 		}
 	}
 	
-	private static class SerializableDocument implements Document, Serializable {
-		private static final long serialVersionUID = -37444201173006054L;
-		
+	private static class RemoteDocument implements Document {
 		private final URI uri;
 		private final MimeContentType contentType;
 		private final Publisher<ByteString> body;
 		
-		public SerializableDocument (final URI uri, final MimeContentType contentType, final Publisher<ByteString> body) {
+		public RemoteDocument (final URI uri, final MimeContentType contentType, final Publisher<ByteString> body) {
 			this.uri = uri;
 			this.contentType = contentType;
 			this.body = body;

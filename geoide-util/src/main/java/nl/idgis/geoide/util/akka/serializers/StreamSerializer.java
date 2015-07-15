@@ -1,4 +1,4 @@
-package nl.idgis.geoide.util.streams;
+package nl.idgis.geoide.util.akka.serializers;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -11,6 +11,8 @@ import akka.actor.ActorRef;
 import akka.actor.ExtendedActorSystem;
 import akka.serialization.JSerializer;
 import akka.serialization.Serialization;
+import nl.idgis.geoide.util.streams.AkkaSerializablePublisher;
+import nl.idgis.geoide.util.streams.AkkaSerializableSubscriber;
 
 public class StreamSerializer extends JSerializer {
 
