@@ -6,6 +6,7 @@ import java.util.concurrent.TimeoutException;
 
 import nl.idgis.geoide.util.streams.messages.PublisherCancel;
 import nl.idgis.geoide.util.streams.messages.PublisherRequest;
+import nl.idgis.geoide.util.streams.messages.SubscriberError;
 
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
@@ -99,6 +100,8 @@ public class SerializablePublisherSubscriptionActor extends UntypedActor {
 			getContext ().stop (self ());
 		} else if (message instanceof Subscription) {
 			getContext ().become (subscribedToSource ((Subscription) message));
+		} else if (message instanceof SubscriberError) {
+			subscriber.onError (((SubscriberError) message).getThrowable ());
 		} else if (message instanceof Serializable) {
 			@SuppressWarnings("unchecked")
 			final Subscriber<Object> untypedSubscriber = (Subscriber<Object>) this.subscriber;
@@ -110,23 +113,7 @@ public class SerializablePublisherSubscriptionActor extends UntypedActor {
 	}
 	
 	private Procedure<Object> subscribedToSource (final Subscription sourceSubscription) {
-		final ActorRef self = self ();
-		
-		subscriber.onSubscribe (new Subscription () {
-			@Override
-			public void request (final long count) {
-				if (count <= 0) {
-					subscriber.onError (new IllegalArgumentException ("Count < 0 (3.9)"));
-					return;
-				}
-				self.tell (new PublisherRequest (count), self);
-			}
-			
-			@Override
-			public void cancel () {
-				self.tell (new PublisherCancel (), self);
-			}
-		});
+		subscriber.onSubscribe (new SerializableSubscription (self ()));
 		
 		return (message) -> {
 			if (message instanceof ReceiveTimeout) {
@@ -143,5 +130,29 @@ public class SerializablePublisherSubscriptionActor extends UntypedActor {
 				onReceive (message);
 			}
 		};
+	}
+	
+	private final static class SerializableSubscription implements Subscription, Serializable {
+		private static final long serialVersionUID = 4838831961829706716L;
+		
+		private final ActorRef self;
+		
+		public SerializableSubscription (final ActorRef self) {
+			this.self = self;
+		}
+		
+		@Override
+		public void request (final long count) {
+			if (count <= 0) {
+				self.tell (new SubscriberError (new IllegalArgumentException ("Count < 0 (3.9)")), self);
+			} else {
+				self.tell (new PublisherRequest (count), self);
+			}
+		}
+		
+		@Override
+		public void cancel () {
+			self.tell (new PublisherCancel (), self);
+		}
 	}
 }
