@@ -67,7 +67,8 @@ public class PrintConfig {
 				streamProcessor, 
 				config.getString ("geoide.service.components.print.cacheName", "geoide-print"), 
 				config.getInt ("geoide.service.components.print.cacheTtlInSeconds", 300), 
-				documentStore
+				documentStore,
+				config.getInt ("geoide.service.components.print.streamBlockSize", 100 * 1024)
 			);
 	}
 	
