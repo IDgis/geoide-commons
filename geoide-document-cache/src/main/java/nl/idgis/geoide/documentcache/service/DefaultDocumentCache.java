@@ -51,18 +51,21 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 	private final ActorRefFactory actorRefFactory;
 	private final StreamProcessor streamProcessor;
 
-	private DefaultDocumentCache (final ActorRefFactory actorRefFactory, final StreamProcessor streamProcessor, final String cacheName, final long ttlInSeconds, final File file, final Double maxSizeInGigabytes, final DocumentStore readThroughStore) {
+	private DefaultDocumentCache (final ActorRefFactory actorRefFactory, final StreamProcessor streamProcessor, final String cacheName, final long ttlInSeconds, final File file, final Double maxSizeInGigabytes, final DocumentStore readThroughStore, final int streamBlockSize) {
 		if (file == null && maxSizeInGigabytes == null) {
 			throw new IllegalArgumentException ("Either file or maxSizeInGigabytes must be given");
 		}
 		if (streamProcessor == null) {
 			throw new NullPointerException ("streamProcessor cannot be null");
 		}
+		if (streamBlockSize <= 0) {
+			throw new IllegalArgumentException ("streamBlockSize should be > 0");
+		}
 		
 		this.ttlInSeconds = ttlInSeconds;
 		this.readThroughStore = readThroughStore;
 		this.actorRefFactory = actorRefFactory;
-		cacheActor = actorRefFactory.actorOf (CacheActor.props (ttlInSeconds, file, maxSizeInGigabytes, readThroughStore, streamProcessor), String.format ("geoide-cache-%s", cacheName));
+		cacheActor = actorRefFactory.actorOf (CacheActor.props (ttlInSeconds, file, maxSizeInGigabytes, readThroughStore, streamProcessor, streamBlockSize), String.format ("geoide-cache-%s", cacheName));
 		this.streamProcessor = streamProcessor;
 	}
 
@@ -74,11 +77,12 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 	 * @param cacheName				The name of the cache. The cache name is reflected in the names of the scheduling actors and the name of the MapDB store. 
 	 * @param ttlSeconds			The number of seconds documents should (at least) be retained in the cache.
 	 * @param maxSizeInGigabytes	The maximum size in gigabytes of the in-memory cache. When this size is exceeded, storing new documents will fail with an exception.
-	 * @param readThroughStore		An optional read-through store that is accessed when fetching documents from the cache that have no entry. 
+	 * @param readThroughStore		An optional read-through store that is accessed when fetching documents from the cache that have no entry.
+	 * @param streamBlockSize		Maximum size of blocks when streaming cached documents. 
 	 * @return						The created DefaultDocumentCache instance.
 	 */
-	public static DefaultDocumentCache createInMemoryCache (final ActorRefFactory actorRefFactory, final StreamProcessor streamProcessor, final String cacheName, final long ttlSeconds, final double maxSizeInGigabytes, final DocumentStore readThroughStore) {
-		return new DefaultDocumentCache (actorRefFactory, streamProcessor, cacheName, ttlSeconds, null, maxSizeInGigabytes, readThroughStore);
+	public static DefaultDocumentCache createInMemoryCache (final ActorRefFactory actorRefFactory, final StreamProcessor streamProcessor, final String cacheName, final long ttlSeconds, final double maxSizeInGigabytes, final DocumentStore readThroughStore, final int streamBlockSize) {
+		return new DefaultDocumentCache (actorRefFactory, streamProcessor, cacheName, ttlSeconds, null, maxSizeInGigabytes, readThroughStore, streamBlockSize);
 	}
 	
 	/**
@@ -89,15 +93,16 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 	 * @param cacheName				The name of the cache. The cache name is reflected in the names of the scheduling actors and the name of the MapDB store. 
 	 * @param ttlSeconds			The number of seconds documents should (at least) be retained in the cache.
 	 * @param readThroughStore		An optional read-through store that is accessed when fetching documents from the cache that have no entry. 
+	 * @param streamBlockSize		Maximum size of blocks when streaming cached documents. 
 	 * @return						The created DefaultDocumentCache instance.
 	 * @throws IOException			Thrown when the temporary file could not be created.
 	 */
-	public static DefaultDocumentCache createTempFileCache (final ActorRefFactory actorRefFactory, final StreamProcessor streamProcessor, final String cacheName, final long ttlSeconds, final DocumentStore readThroughStore) throws IOException {
+	public static DefaultDocumentCache createTempFileCache (final ActorRefFactory actorRefFactory, final StreamProcessor streamProcessor, final String cacheName, final long ttlSeconds, final DocumentStore readThroughStore, final int streamBlockSize) throws IOException {
 		final File file = File.createTempFile ("geoide-cache-", ".tmp.db");
 		
 		file.deleteOnExit ();
 		
-		return createFileCache (actorRefFactory, streamProcessor, cacheName, ttlSeconds, file, readThroughStore);
+		return createFileCache (actorRefFactory, streamProcessor, cacheName, ttlSeconds, file, readThroughStore, streamBlockSize);
 	}
 	
 	/**
@@ -108,10 +113,11 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 	 * @param ttlSeconds			The number of seconds documents should (at least) be retained in the cache.
 	 * @param file					The file to create a database in.
 	 * @param readThroughStore		An optional read-through store that is accessed when fetching documents from the cache that have no entry. 
+	 * @param streamBlockSize		Maximum size of blocks when streaming cached documents. 
 	 * @return						The created DefaultDocumentCache instance.
 	 */
-	public static DefaultDocumentCache createFileCache (final ActorRefFactory actorRefFactory, final StreamProcessor streamProcessor, final String cacheName, final long ttlSeconds, final File file, final DocumentStore readThroughStore) {
-		return new DefaultDocumentCache (actorRefFactory, streamProcessor, cacheName, ttlSeconds, file, null, readThroughStore);
+	public static DefaultDocumentCache createFileCache (final ActorRefFactory actorRefFactory, final StreamProcessor streamProcessor, final String cacheName, final long ttlSeconds, final File file, final DocumentStore readThroughStore, final int streamBlockSize) {
+		return new DefaultDocumentCache (actorRefFactory, streamProcessor, cacheName, ttlSeconds, file, null, readThroughStore, streamBlockSize);
 	}
 	
 	/**
@@ -263,13 +269,17 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 		private final File file;
 		private final Double maxSizeInGigabytes;
 		private final Map<URI, List<ActorRef>> waitLists = new HashMap<> ();
+		private final int streamBlockSize;
 		
 		private DB db;
 		private HTreeMap<URI, ByteStringCachedDocument> cache;
 		
-		public CacheActor (final long ttlInSeconds, final File file, final Double maxSizeInGigabytes, final DocumentStore readThroughStore, final StreamProcessor streamProcessor) {
+		public CacheActor (final long ttlInSeconds, final File file, final Double maxSizeInGigabytes, final DocumentStore readThroughStore, final StreamProcessor streamProcessor, final int streamBlockSize) {
 			if (file == null && maxSizeInGigabytes == null) {
 				throw new IllegalArgumentException ("Either file or maxSizeInGigabytes must be given");
+			}
+			if (streamBlockSize <= 0) {
+				throw new IllegalArgumentException ("streamBlockSize must be > 0");
 			}
 			
 			this.ttlInSeconds = ttlInSeconds;
@@ -277,10 +287,11 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 			this.maxSizeInGigabytes = maxSizeInGigabytes;
 			this.readThroughStore = readThroughStore;
 			this.streamProcessor = streamProcessor;
+			this.streamBlockSize = streamBlockSize;
 		}
 		
-		public static Props props (final long ttl, final File file, final Double maxSizeInGigabytes, final DocumentStore readThroughStore, final StreamProcessor streamProcessor) { 
-			return Props.create (CacheActor.class, ttl, file, maxSizeInGigabytes, readThroughStore, streamProcessor);
+		public static Props props (final long ttl, final File file, final Double maxSizeInGigabytes, final DocumentStore readThroughStore, final StreamProcessor streamProcessor, final int streamBlockSize) { 
+			return Props.create (CacheActor.class, ttl, file, maxSizeInGigabytes, readThroughStore, streamProcessor, streamBlockSize);
 		}
 		
 		@Override
@@ -393,7 +404,7 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 				
 				@Override
 				public Publisher<ByteString> getBody () {
-					return streamProcessor.<ByteString>publishSinglevalue (cachedDocument.getBody ());
+					return streamProcessor.publishByteString (cachedDocument.getBody (), streamBlockSize);
 				}
 			};
 		}
