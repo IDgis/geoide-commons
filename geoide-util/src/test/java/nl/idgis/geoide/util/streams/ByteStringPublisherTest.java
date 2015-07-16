@@ -50,14 +50,14 @@ public class ByteStringPublisherTest  extends PublisherVerification<ByteString> 
 	
 	@Override
 	public Publisher<ByteString> createPublisher (final long elements) {
-		final byte[] data = new byte[(int)elements * BLOCK_SIZE];
+		final byte[] data = new byte[Math.max (0, (int)elements * BLOCK_SIZE - (BLOCK_SIZE / 2))];
 		
 		for (int i = 0; i < (int)elements; ++ i) {
-			for (int j = 0; j < BLOCK_SIZE; ++ j) {
+			for (int j = 0; j < BLOCK_SIZE && BLOCK_SIZE * i + j < data.length; ++ j) {
 				data[BLOCK_SIZE * i + j] = (byte)i;
 			}
 		}
-
+		
 		return streamProcessor.publishByteString (ByteStrings.fromArray (data), BLOCK_SIZE);
 	}
 	
@@ -94,7 +94,7 @@ public class ByteStringPublisherTest  extends PublisherVerification<ByteString> 
 			}
 		}).get (1000, TimeUnit.MILLISECONDS).toArray ();
 
-		for (int i = 0; i < 10 * BLOCK_SIZE; ++ i) {
+		for (int i = 0; i < 10 * BLOCK_SIZE - (BLOCK_SIZE / 2); ++ i) {
 			Assert.assertEquals ((byte)(i / BLOCK_SIZE), data[i]);
 		}
 	}
