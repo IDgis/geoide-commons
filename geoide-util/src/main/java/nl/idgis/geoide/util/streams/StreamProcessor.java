@@ -74,4 +74,13 @@ public interface StreamProcessor {
 	 * @return			A remote publisher that wraps the given publisher.
 	 */
 	<T> Publisher<T> asSerializable (Publisher<T> publisher);
+	
+	/**
+	 * Publishes a static ByteString by splitting it into block of at most blockSize bytes.
+	 * 
+	 * @param input		The input byteString, cannot be null
+	 * @param blockSize	The maximum block size in bytes (1 <= blockSize <= Long.MAX_VALUE).
+	 * @return 			A publisher that returns the bytes from the given byte string.
+	 */
+	Publisher<ByteString> publishByteString (ByteString input, int blockSize);
 }

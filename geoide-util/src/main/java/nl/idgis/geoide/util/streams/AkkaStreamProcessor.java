@@ -204,6 +204,22 @@ public class AkkaStreamProcessor implements StreamProcessor, Closeable {
 		return new AkkaSerializablePublisher<> (actorRefFactory, actorFuture);
 	}
 	
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override 
+	public Publisher<ByteString> publishByteString (final ByteString input, final int blockSize) {
+		if (input == null) {
+			throw new NullPointerException ("input cannot be null");
+		}
+		if (blockSize < 0) {
+			throw new NullPointerException ("blockSize must be > 0");
+		}
+		
+		return new ByteStringPublisher (input, blockSize);
+	}
+	
 	private CompletableFuture<ActorRef> createActor (final ActorRef containerActor, final Props props, final long timeoutInMillis) {
 		final Future<Object> scalaFuture = Patterns.ask (
 				containerActor,
