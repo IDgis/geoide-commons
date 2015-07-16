@@ -54,8 +54,8 @@ public class TestDefaultDocumentCache {
 		actorSystem = ActorSystem.create ();
 		streamProcessor = new AkkaStreamProcessor (actorSystem);
 		store = new TestDocumentStore ();
-		cache = DefaultDocumentCache.createInMemoryCache (actorSystem, streamProcessor, "test-cache-" + (++ count), 1, 0.5, null);
-		cacheReadThrough = DefaultDocumentCache.createInMemoryCache (actorSystem, streamProcessor, "test-cache-" + (++ count), 1, 0.5, store);
+		cache = DefaultDocumentCache.createInMemoryCache (actorSystem, streamProcessor, "test-cache-" + (++ count), 1, 0.5, null, 1);
+		cacheReadThrough = DefaultDocumentCache.createInMemoryCache (actorSystem, streamProcessor, "test-cache-" + (++ count), 1, 0.5, store, 1);
 	}
 	
 	/**

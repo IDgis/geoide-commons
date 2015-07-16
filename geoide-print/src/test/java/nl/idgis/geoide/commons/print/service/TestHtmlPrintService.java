@@ -45,7 +45,7 @@ public class TestHtmlPrintService {
 	public void before () {
 		actorSystem = ActorSystem.create ();
 		streamProcessor = new AkkaStreamProcessor (actorSystem);
-		documentCache = DefaultDocumentCache.createInMemoryCache (actorSystem, streamProcessor, "geoide-print-" + (++ count), 10, 0.5, null);
+		documentCache = DefaultDocumentCache.createInMemoryCache (actorSystem, streamProcessor, "geoide-print-" + (++ count), 10, 0.5, null, 10);
 		service = new HtmlPrintService (documentCache, streamProcessor, 1, 10000);
 	}
 

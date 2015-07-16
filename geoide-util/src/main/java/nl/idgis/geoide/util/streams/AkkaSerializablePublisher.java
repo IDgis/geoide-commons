@@ -3,16 +3,20 @@ package nl.idgis.geoide.util.streams;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 
 import akka.actor.ActorRef;
+import akka.actor.ActorRefFactory;
 
-public class AkkaSerializablePublisher<T> implements SerializablePublisher<T> {
-	private static final long serialVersionUID = -9152887082148053721L;
-	
+public class AkkaSerializablePublisher<T> implements Publisher<T> {
 	private final ActorRef actor;
+	private final ActorRefFactory factory;
 	
-	public AkkaSerializablePublisher (final CompletableFuture<ActorRef> actor) {
+	public AkkaSerializablePublisher (final ActorRefFactory factory, final CompletableFuture<ActorRef> actor) {
+		if (factory == null) {
+			throw new NullPointerException ("factory cannot be null");
+		}
 		if (actor == null) {
 			throw new NullPointerException ("actor cannot be null");
 		}
@@ -22,6 +26,16 @@ public class AkkaSerializablePublisher<T> implements SerializablePublisher<T> {
 		} catch (InterruptedException | ExecutionException e) {
 			throw new RuntimeException (e);
 		}
+		
+		this.factory = factory;
+	}
+	
+	public ActorRef getActorRef () {
+		return actor;
+	}
+	
+	public ActorRefFactory getActorRefFactory () {
+		return factory;
 	}
 	
 	@Override
@@ -30,6 +44,9 @@ public class AkkaSerializablePublisher<T> implements SerializablePublisher<T> {
 			throw new NullPointerException ("subscriber cannot be null");
 		}
 		
-		actor.tell (subscriber, actor);
+		final ActorRef subscriberActor = factory.actorOf (AkkaSerializableSubscriberActor.props (subscriber, 10000));
+		final Subscriber<? super T> serializableSubscriber = new AkkaSerializableSubscriber<> (factory, subscriberActor);
+				
+		actor.tell (serializableSubscriber, actor);
 	}
 }

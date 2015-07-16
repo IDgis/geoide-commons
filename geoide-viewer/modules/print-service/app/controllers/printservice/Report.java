@@ -11,6 +11,7 @@ import nl.idgis.geoide.commons.domain.api.ReportComposer;
 import nl.idgis.geoide.commons.domain.document.Document;
 import nl.idgis.geoide.util.Promises;
 import nl.idgis.geoide.util.streams.StreamProcessor;
+import play.Logger;
 import play.libs.F.Function;
 import play.libs.F.Promise;
 import play.libs.Json;
@@ -68,6 +69,7 @@ public class Report extends Controller {
 		return documentPromise.map (new Function<Document, Result> () {
 			//@Override
 			public Result apply (final Document document) throws Throwable {
+				Logger.debug ("Received document: " + (document == null ? "null" : document.getClass ().getCanonicalName ()));
 				// Build response:
 				final ObjectNode result = Json.newObject ();
 				result.put ("result", "ok");
