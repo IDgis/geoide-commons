@@ -4,7 +4,8 @@ Common.settings
 
 libraryDependencies ++= Seq(
   cache,
-  Common.Dependencies.webjarsOpenLayers
+  Common.Dependencies.webjarsOpenLayers,
+  Common.Dependencies.jts
 )
 
 // Use IDgis repositories:
