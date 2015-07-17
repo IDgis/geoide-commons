@@ -44,5 +44,7 @@ object Common {
   		val webjarsOpenLayers = "org.webjars" % "openlayers" % "3.4.0"
   		val webjarsPutSelector = "org.webjars" % "put-selector" % "0.3.5"
   		val webjarsFontAwesome = "org.webjars" % "font-awesome" % "4.2.0"
+  		
+  		val jts = "com.vividsolutions" % "jts" % "1.13"
 	}
 }
