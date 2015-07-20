@@ -118,7 +118,7 @@ public class TestAkkaTransport {
 		final RemoteMethodClient client = transport.connect ("akka://default/user/transport", "testInterface");
 		final TestInterface localObject = factory.createServiceReference (client, TestInterface.class);
 		
-		final ObjectWithPublisher object = localObject.returnPublisher ().get ();
+		localObject.returnPublisher ().get ();
 	}
 	
 	public static interface TestInterface {
@@ -195,6 +195,10 @@ public class TestAkkaTransport {
 		
 		public ObjectWithPublisher (final Publisher<ByteString> publisher) {
 			this.publisher = publisher;
+		}
+		
+		public Publisher<ByteString> getPublisher () {
+			return publisher;
 		}
 	}
 }
