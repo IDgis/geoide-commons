@@ -7,6 +7,7 @@ import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -26,6 +27,7 @@ import com.typesafe.config.ConfigFactory;
 import akka.actor.ActorSystem;
 import akka.testkit.JavaTestKit;
 import akka.util.ByteString;
+import akka.util.ByteString.ByteStrings;
 import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.geoide.commons.domain.document.Document;
 import nl.idgis.geoide.commons.remote.RemoteMethodClient;
@@ -131,6 +133,22 @@ public class TestAkkaTransportRemote {
 	@Test
 	public void testInvokeRemoteDocument () throws Throwable {
 		final Document document = clientObject.returnDocument ().get ();
+		final InputStream is = streamProcessors[1].asInputStream (document.getBody (), 5000);
+		final byte[] buf = new byte[128];
+		ByteString byteString = ByteString.empty ();
+		int n;
+		
+		while ((n = is.read (buf)) != -1) {
+			if (n == 0) {
+				continue;
+			}
+			
+			byteString = byteString.concat (ByteStrings.fromArray (buf, 0, n));
+		}
+		
+		final String result = new String (byteString.toArray ());
+		
+		assertEquals ("Hello, World!", result);
 	}
 	
 	private static Config config (final int portNumber) {
