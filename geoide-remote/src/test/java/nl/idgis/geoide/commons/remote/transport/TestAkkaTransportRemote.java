@@ -239,7 +239,7 @@ public class TestAkkaTransportRemote {
 		public CompletableFuture<Document> returnDocument () {
 			final ByteArrayOutputStream bos = new ByteArrayOutputStream ();
 			try (final PrintWriter writer = new PrintWriter (bos)) {
-				writer.println ("Hello, World!");
+				writer.print ("Hello, World!");
 			}
 			
 			final Publisher<ByteString> publisher = streamProcessor.publishInputStream (new ByteArrayInputStream (bos.toByteArray ()), 2, 1000);
