@@ -217,7 +217,9 @@ public class AkkaStreamProcessor implements StreamProcessor, Closeable {
 			throw new NullPointerException ("blockSize must be > 0");
 		}
 		
-		return new ByteStringPublisher (input, blockSize);
+		final ActorRef actor = actorRefFactory.actorOf (ByteStringPublisherActor.props (input, blockSize, 5000));
+		
+		return new ByteStringPublisher (actor);
 	}
 	
 	private CompletableFuture<ActorRef> createActor (final ActorRef containerActor, final Props props, final long timeoutInMillis) {
