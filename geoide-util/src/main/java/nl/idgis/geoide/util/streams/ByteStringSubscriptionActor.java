@@ -4,6 +4,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.reactivestreams.Subscriber;
 
+import akka.actor.ActorIdentity;
+import akka.actor.Identify;
 import akka.actor.Props;
 import akka.actor.ReceiveTimeout;
 import akka.actor.UntypedActor;
@@ -73,12 +75,15 @@ public class ByteStringSubscriptionActor extends UntypedActor {
 				byteString = byteString.drop (blockSize);
 
 				subscriber.onNext (block);
+				getContext ().parent ().tell (new Identify ("keepalive"), self ());
 				--count;
 			}
 		} else if (message instanceof PublisherCancel) {
 			getContext ().stop (self ());
 		} else if (message instanceof ReceiveTimeout) {
 			getContext ().stop (self ());
+		} else if (message instanceof ActorIdentity) {
+			// Ignore ActorIdentify messages that are sent in response to an Identify call.
 		} else {
 			unhandled (message);
 		}
