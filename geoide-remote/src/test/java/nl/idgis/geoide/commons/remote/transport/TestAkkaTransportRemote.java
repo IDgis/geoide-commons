@@ -1,11 +1,10 @@
 package nl.idgis.geoide.commons.remote.transport;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -16,10 +15,14 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import org.reactivestreams.Publisher;
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
+import org.reactivestreams.tck.PublisherVerification;
+import org.reactivestreams.tck.TestEnvironment;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
@@ -37,8 +40,10 @@ import nl.idgis.geoide.commons.remote.ServiceRegistration;
 import nl.idgis.geoide.util.streams.AkkaStreamProcessor;
 import scala.concurrent.duration.FiniteDuration;
 
-public class TestAkkaTransportRemote {
+public class TestAkkaTransportRemote extends PublisherVerification<ByteString>{
 
+	private final static int BLOCK_SIZE = 2;
+	
 	private ActorSystem[] actorSystems;
 	private AkkaTransport[] transports;
 	private RemoteServiceFactory[] factories;
@@ -48,7 +53,11 @@ public class TestAkkaTransportRemote {
 	private RemoteMethodClient client;
 	private TestInterface clientObject;
 	
-	@Before
+	public TestAkkaTransportRemote () {
+		super (new TestEnvironment (300), 1000);
+	}
+	
+	@BeforeMethod
 	public void createTransports () {
 		// Create two actorsystems, connected using TCP:
 		actorSystems = new ActorSystem[] {
@@ -81,8 +90,8 @@ public class TestAkkaTransportRemote {
 		clientObject = factories[1].createServiceReference (client, TestInterface.class);
 	}
 	
-	@After
-	public void destroyTransports () {
+	@AfterMethod
+	public void destroyTransports () throws Throwable {
 		Arrays
 			.stream (actorSystems)
 			.forEach (JavaTestKit::shutdownActorSystem);
@@ -151,6 +160,53 @@ public class TestAkkaTransportRemote {
 		assertEquals ("Hello, World!", result);
 	}
 	
+	@Override @Test
+	public void required_createPublisher3MustProduceAStreamOfExactly3Elements() throws Throwable {
+		super.required_createPublisher3MustProduceAStreamOfExactly3Elements ();
+	}
+	
+	@Override @Test
+	public void required_createPublisher1MustProduceAStreamOfExactly1Element() throws Throwable {
+		super.required_createPublisher1MustProduceAStreamOfExactly1Element ();
+	}
+	
+	@Override
+	public Publisher<ByteString> createPublisher (final long elements) {
+		try {
+			clientObject.returnDocumentOfLength (elements).get ();
+			final Document document = clientObject.returnDocumentOfLength (elements).get ();
+			return document.getBody ();
+		} catch (Exception t) {
+			throw new RuntimeException (t);
+		}
+	}
+
+	@Override
+	public Publisher<ByteString> createFailedPublisher () {
+		return new Publisher<ByteString> () {
+			@Override
+			public void subscribe (final Subscriber<? super ByteString> s) {
+				final Subscription subscription = new Subscription () {
+					@Override
+					public void request (final long n) {
+					}
+					
+					@Override
+					public void cancel() {
+					}
+				};
+				
+				s.onSubscribe (subscription);
+				s.onError (new RuntimeException ("Can't subscribe to subscriber"));
+			}
+		};
+	}
+	
+	@Override
+	public long maxElementsFromPublisher () {
+		return 128;
+	}
+	
 	private static Config config (final int portNumber) {
 		return ConfigFactory.parseString ("akka {\n"
 			+ "io.tcp.windows-connection-abort-workaround-enabled = false\n"
@@ -159,12 +215,18 @@ public class TestAkkaTransportRemote {
 				+ "serializers {\n"
 					+ "streams = \"nl.idgis.geoide.util.akka.serializers.StreamSerializer\"\n"
 					+ "document = \"nl.idgis.geoide.commons.domain.serializers.DocumentSerializer\"\n"
+					+ "bytestring = \"nl.idgis.geoide.util.akka.serializers.ByteStringSerializer\"\n"
 				+ "}\n"
-			
 				+ "serialization-bindings {\n"
 					+ "\"nl.idgis.geoide.util.streams.AkkaSerializablePublisher\" = streams\n"
 					+ "\"nl.idgis.geoide.util.streams.AkkaSerializableSubscriber\" = streams\n"
 					+ "\"nl.idgis.geoide.commons.domain.document.Document\" = document\n"
+					+ "\"akka.util.ByteString\" = bytestring"
+				+ "}\n"
+				+ "debug {\n"
+					+ "autoreceive = on\n"
+					+ "lifecycle = on\n"
+					+ "receive = on\n"
 				+ "}\n"
 			+ "}\n"
 			+ "remote {\n"
@@ -173,8 +235,11 @@ public class TestAkkaTransportRemote {
 					+ "hostname = \"127.0.0.1\"\n"
 					+ "port = " + portNumber + "\n"
 				+ "}\n"
+				+ "log-sent-messages = on\n"
+				+ "log-received-messages = on\n"
+				+ "log-remote-lifecycle-events = on\n"
 			+ "}\n"
-			+ "loggers = [\"akka.event.slf4j.Slf4jLogger\"]\n"		
+			+ "loggers = [\"akka.event.Logging$DefaultLogger\"]\n"		
 			+ "loglevel = \"DEBUG\"\n" +
 			"}");
 	}
@@ -185,6 +250,7 @@ public class TestAkkaTransportRemote {
 		CompletableFuture<Integer> throwException ();
 		CompletableFuture<Integer> throwExceptionDelayed ();
 		CompletableFuture<Document> returnDocument ();
+		CompletableFuture<Document> returnDocumentOfLength (long count);
 	}
 	
 	public static class TestImpl implements TestInterface {
@@ -242,9 +308,17 @@ public class TestAkkaTransportRemote {
 				writer.print ("Hello, World!");
 			}
 			
-			final Publisher<ByteString> publisher = streamProcessor.publishInputStream (new ByteArrayInputStream (bos.toByteArray ()), 2, 1000);
+			return CompletableFuture.completedFuture (new TestDocument (streamProcessor.publishByteString (ByteStrings.fromArray (bos.toByteArray ()), 2)));
+		}
+		
+		public CompletableFuture<Document> returnDocumentOfLength (final long count) {
+			final byte[] bytes = new byte[((int)count) * BLOCK_SIZE];
 			
-			return CompletableFuture.completedFuture (new TestDocument (publisher));
+			for (int i = 0; i < bytes.length; ++ i) {
+				bytes[i] = (byte)(i / BLOCK_SIZE);
+			}
+			
+			return CompletableFuture.completedFuture (new TestDocument (streamProcessor.publishByteString (ByteStrings.fromArray (bytes), BLOCK_SIZE)));
 		}
 	}
 	

@@ -102,13 +102,11 @@ public class SerializablePublisherSubscriptionActor extends UntypedActor {
 			getContext ().become (subscribedToSource ((Subscription) message));
 		} else if (message instanceof SubscriberError) {
 			subscriber.onError (((SubscriberError) message).getThrowable ());
-		} else if (message instanceof Serializable) {
+		} else {
 			@SuppressWarnings("unchecked")
 			final Subscriber<Object> untypedSubscriber = (Subscriber<Object>) this.subscriber;
 			untypedSubscriber.onNext (message);
 			publisherActor.tell (new Identify ("identify"), self ());
-		} else {
-			unhandled (message);
 		}
 	}
 	
