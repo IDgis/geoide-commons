@@ -529,11 +529,11 @@ define ([
 			if (animate) {
 				var view = this.olMap.getView (),
 					pan = ol.animation.pan ({
-						duration: 1000,
+						duration: 200,
 						source: this.olMap.getView ().getCenter ()
 					}),
 					zoom = ol.animation.zoom ({
-						duration: 1000,
+						duration: 200,
 						resolution: this.olMap.getView ().getResolution ()
 					});
 				
@@ -543,7 +543,7 @@ define ([
 				
 				setTimeout (function () {
 					def.resolve ();
-				}, 1000);
+				}, 200);
 			} else {
 				def.resolve ();
 				this.set ('resolution', resolution);
@@ -559,11 +559,11 @@ define ([
 			
 			if (animate) {
 				var pan = ol.animation.pan ({
-						duration: 1000,
+						duration: 200,
 						source: this.olMap.getView ().getCenter ()
 					}),
 					zoom = ol.animation.zoom ({
-						duration: 1000,
+						duration: 200,
 						resolution: this.olMap.getView ().getResolution ()
 					});
 				
@@ -571,7 +571,7 @@ define ([
 				
 				setTimeout (function () {
 					def.resolve ();
-				}, 1000);
+				}, 200);
 			} else {
 				def.resolve ();
 			}
