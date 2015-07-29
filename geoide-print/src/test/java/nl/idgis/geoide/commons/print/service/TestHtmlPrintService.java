@@ -79,6 +79,14 @@ public class TestHtmlPrintService {
 	}
 	
 	@Test
+	public void testPrintWithObjectMissingSvg () throws Throwable {
+		store ("http://idgis.nl", "text/html", "<html><head></head><body><h1>Hello, World!</h1><object style=\"display: block; position: absolute; left: 0; top: 0; width: 100%; height: 100%;\" type=\"image/svg+xml\" data=\"http://idgis.nl/map.svg\"></object></html>");
+		final Document document = print ("http://idgis.nl");
+		
+		assertEquals (new MimeContentType ("application/pdf"), document.getContentType ());
+	}
+	
+	@Test
 	public void testPrintWithEscapedAttribute () throws Throwable {
 		store ("http://idgis.nl", "text/html", "<html><head></head><body><h1 data-attr=\"&lt;&amp;&gt;\">Hello, World!</h1></body></html>");
 
