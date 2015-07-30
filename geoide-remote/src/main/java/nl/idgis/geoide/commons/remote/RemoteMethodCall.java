@@ -42,4 +42,25 @@ public class RemoteMethodCall implements Serializable {
 	public String getQualifier () {
 		return qualifier;
 	}
+	
+	@Override
+	public String toString () {
+		final StringBuilder builder = new StringBuilder ();
+		
+		builder.append (getInterface().getCanonicalName ());
+		builder.append ("#");
+		builder.append (getMethodReference ().getName ());
+		builder.append ("(");
+		
+		String separator = "";
+		for (final Class<?> cls: getMethodReference ().getParameterTypes()) {
+			builder.append (separator);
+			builder.append (cls.getCanonicalName ());
+			separator = ", ";
+		}
+		
+		builder.append (")");
+		
+		return builder.toString ();
+	}
 }
