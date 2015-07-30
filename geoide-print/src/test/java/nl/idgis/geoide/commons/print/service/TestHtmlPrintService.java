@@ -78,7 +78,7 @@ public class TestHtmlPrintService {
 		assertEquals (new MimeContentType ("application/pdf"), document.getContentType ());
 	}
 	
-	@Test
+	@Test (expected = PrintException.ResourceNotFound.class)
 	public void testPrintWithObjectMissingSvg () throws Throwable {
 		store ("http://idgis.nl", "text/html", "<html><head></head><body><h1>Hello, World!</h1><object style=\"display: block; position: absolute; left: 0; top: 0; width: 100%; height: 100%;\" type=\"image/svg+xml\" data=\"http://idgis.nl/map.svg\"></object></html>");
 		final Document document = print ("http://idgis.nl");
@@ -130,7 +130,7 @@ public class TestHtmlPrintService {
 	/**
 	 * Verify that less compilation fails when the less script can't be found.
 	 */
-	@Test (expected = LessCompilationException.class)
+	@Test (expected = PrintException.ResourceNotFound.class)
 	public void testPrintWithLessScriptNotFound () throws Throwable {
 		store ("http://idgis.nl", "text/html", "<html><head><link rel=\"stylesheet/less\" type=\"text/css\" href=\"test.less\"></head><body></body>");
 		

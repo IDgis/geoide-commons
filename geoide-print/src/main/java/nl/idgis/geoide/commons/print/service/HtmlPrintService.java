@@ -436,7 +436,7 @@ public class HtmlPrintService implements PrintService, Closeable {
 			 } catch (URISyntaxException | DocumentCacheException | InterruptedException | ExecutionException | TimeoutException e) {
 				 // Fall back to the default user agent for other requests:
 				 log.warn ("Unable to resolve related document " + uri.toString () + ", falling back to default implementation");
-				 return super.resolveAndOpenStream (uri);
+				 throw new PrintException.ResourceNotFound (uri, e);
 			 }
 		 }
 	 }	

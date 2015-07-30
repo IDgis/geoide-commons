@@ -5,6 +5,7 @@ import java.awt.Point;
 import java.awt.print.PageFormat;
 import java.awt.print.Paper;
 import java.io.ByteArrayInputStream;
+import java.util.Objects;
 
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.print.PrintTranscoder;
@@ -29,7 +30,7 @@ public class SVGReplacedElement implements ITextReplacedElement {
     public SVGReplacedElement(final byte[] svg, int cssWidth, int cssHeight) {
         this.cssWidth = cssWidth;
         this.cssHeight = cssHeight;
-        this.svg = svg;
+        this.svg = Objects.requireNonNull (svg, "svg cannot be null");
     }
 
     @Override
