@@ -1,6 +1,5 @@
 package nl.idgis.geoide.commons.remote.transport;
 
-import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.concurrent.CompletableFuture;
