@@ -130,7 +130,7 @@ public class TestHtmlPrintService {
 	/**
 	 * Verify that less compilation fails when the less script can't be found.
 	 */
-	@Test (expected = PrintException.ResourceNotFound.class)
+	@Test (expected = LessCompilationException.class)
 	public void testPrintWithLessScriptNotFound () throws Throwable {
 		store ("http://idgis.nl", "text/html", "<html><head><link rel=\"stylesheet/less\" type=\"text/css\" href=\"test.less\"></head><body></body>");
 		
@@ -183,6 +183,42 @@ public class TestHtmlPrintService {
 		print ("http://idgis.nl", "test-color", "#012");
 	}
 	
+	/**
+	 * Verifies that a CSS file can be loaded when referenced from the head section.
+	 */
+	@Test
+	public void testPrintWithCss () throws Throwable {
+		store ("http://idgis.nl", "text/html", "<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"test.css\"></head><body></body>");
+		store ("http://idgis.nl/test.css", "text/css", "h1 { } body { margin: 0; }");
+		
+		print ("http://idgis.nl");
+	}
+	
+	/**
+	 * Verifies that a missing CSS reference raises a {@link PrintException.ResourceNotFound}.
+	 */
+	@Test (expected = PrintException.ResourceNotFound.class)
+	public void testPrintWithCssMissing () throws Throwable {
+		store ("http://idgis.nl", "text/html", "<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"test.css\"></head><body></body>");
+		
+		print ("http://idgis.nl");
+	}
+	
+	/**
+	 * Verifies that a CSS file can be loaded when referenced from the head section, when the base URI contains a path.
+	 * This requires that the base URI is properly determined: the HTML page must be stripped and the trailing slash must
+	 * remain intact.
+	 */
+	@Test
+	public void testPrintWithCssPath () throws Throwable {
+		store ("http://idgis.nl/base/index.html", "text/html", "<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"test.css\"></head><body></body>");
+		store ("http://idgis.nl/base/", "text/html", "<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"test.css\"></head><body></body>");
+		store ("http://idgis.nl/base/test.css", "text/css", "h1 { } body { margin: 0; }");
+		
+		print ("http://idgis.nl/base/index.html");
+		print ("http://idgis.nl/base/");
+	}
+	
 	private Document print (final String uri) throws Throwable {
 		return print (uri, null, null);
 	}
@@ -197,7 +233,7 @@ public class TestHtmlPrintService {
 		final PrintRequest printRequest = new PrintRequest (
 				new DocumentReference (new MimeContentType ("text/html"), new URI (uri)), 
 				new MimeContentType ("application/pdf"), 
-				new URI ("http://idgis.nl"),
+				null,
 				parameters
 			);
 		

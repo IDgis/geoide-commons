@@ -223,7 +223,7 @@ public class HtmlPrintService implements PrintService, Closeable {
 					// Optional: set screen media, otherwise the print style is used.
 					renderer.getSharedContext ().setMedia ("screen");
 
-					renderer.setDocumentFromString (xmlDocument, baseUrl);
+					renderer.setDocumentFromString (xmlDocument, baseUrl.endsWith ("/") ? baseUrl : baseUrl + "/");
 					renderer.layout ();
 					renderer.createPDF (os);
 					
