@@ -1,4 +1,4 @@
-package nl.idgis.geoide.commons.report.layout.less;
+package nl.idgis.geoide.commons.domain.report;
 
 import java.util.Arrays;
 import java.util.Collections;

@@ -6,7 +6,7 @@ import java.util.concurrent.CompletableFuture;
 
 import nl.idgis.geoide.commons.domain.api.DocumentStore;
 import nl.idgis.geoide.commons.domain.document.Document;
-import nl.idgis.geoide.documentcache.DocumentCacheException;
+import nl.idgis.geoide.commons.domain.document.DocumentCacheException;
 import nl.idgis.geoide.util.Futures;
 
 

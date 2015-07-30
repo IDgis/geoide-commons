@@ -10,6 +10,8 @@ import java.util.Optional;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import nl.idgis.geoide.commons.domain.report.LessCompilationException;
+
 /**
  * Test cases for {@link LessCompiler}.
  */

@@ -1,4 +1,4 @@
-package nl.idgis.geoide.documentcache;
+package nl.idgis.geoide.commons.domain.document;
 
 import java.io.IOException;
 import java.net.URI;

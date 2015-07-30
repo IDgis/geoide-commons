@@ -1,4 +1,4 @@
-package nl.idgis.geoide.commons.print.service;
+package nl.idgis.geoide.commons.domain.print;
 
 import java.util.Objects;
 

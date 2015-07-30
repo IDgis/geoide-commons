@@ -33,13 +33,14 @@ import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.geoide.commons.domain.api.DocumentCache;
 import nl.idgis.geoide.commons.domain.api.PrintService;
 import nl.idgis.geoide.commons.domain.document.Document;
+import nl.idgis.geoide.commons.domain.document.DocumentCacheException;
 import nl.idgis.geoide.commons.domain.print.Capabilities;
+import nl.idgis.geoide.commons.domain.print.PrintException;
 import nl.idgis.geoide.commons.domain.print.PrintRequest;
+import nl.idgis.geoide.commons.domain.report.LessCompilationException;
 import nl.idgis.geoide.commons.print.svg.ChainedReplacedElementFactory;
 import nl.idgis.geoide.commons.print.svg.SVGReplacedElementFactory;
-import nl.idgis.geoide.commons.report.layout.less.LessCompilationException;
 import nl.idgis.geoide.commons.report.layout.less.LessCompiler;
-import nl.idgis.geoide.documentcache.DocumentCacheException;
 import nl.idgis.geoide.util.Futures;
 import nl.idgis.geoide.util.streams.StreamProcessor;
 
