@@ -2,8 +2,6 @@ package controllers.printservice;
 
 
 import java.net.URI;
-import java.net.URL;
-import java.util.Collections;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -22,9 +20,7 @@ import nl.idgis.geoide.commons.domain.print.PrintException;
 import nl.idgis.geoide.commons.domain.report.LessCompilationException;
 import nl.idgis.geoide.util.Promises;
 import nl.idgis.geoide.util.streams.StreamProcessor;
-import play.Application;
 import play.Logger;
-import play.i18n.Lang;
 import play.i18n.MessagesApi;
 import play.libs.F.Function;
 import play.libs.F.Promise;
@@ -40,7 +36,6 @@ public class Report extends Controller {
 	private final ReportComposer composer;
 	private final StreamProcessor streamProcessor;
 	private final DocumentCache documentCache;
-	private final Application application;
 	private final MessagesApi messages;
 	private final GeoideMessages geoideMessages;
 
@@ -49,7 +44,6 @@ public class Report extends Controller {
 			ReportComposer reportComposer, 
 			StreamProcessor streamProcessor, 
 			DocumentCache documentCache, 
-			final Application application,
 			final MessagesApi messages,
 			final GeoideMessages geoideMessages) {
 		if (reportComposer == null) {
@@ -64,7 +58,6 @@ public class Report extends Controller {
 		this.composer = reportComposer;	
 		this.streamProcessor = streamProcessor;
 		this.documentCache = documentCache;
-		this.application = Objects.requireNonNull (application, "application cannot be null");
 		this.messages = Objects.requireNonNull (messages, "messages cannot be null");
 		this.geoideMessages = Objects.requireNonNull (geoideMessages, "geoideMessages cannot be null");
 	}
@@ -98,14 +91,8 @@ public class Report extends Controller {
 			result.put ("result", "ok");
 			result.put("reportUrl", document.getUri().toString());
 			return (Result) ok (result);
-		}).recover (throwable -> {
+		}).recover ((Throwable throwable) -> {
 			log.error ("Report request returned error", throwable);
-			
-			for (final URL url: Collections.list (application.classloader ().getResources ("messages"))) {
-				log.error ("Messages: " + url);
-			}
-
-			log.error ("A: " + messages.get (Lang.defaultLang (), "a"));
 			
 			return internalServerError (reportError (
 					throwable, 
