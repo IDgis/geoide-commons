@@ -1,6 +1,5 @@
 package nl.idgis.geoide.commons.remote.transport;
 
-import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.concurrent.CompletableFuture;
@@ -10,6 +9,8 @@ import org.reactivestreams.Publisher;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 import akka.actor.UntypedActor;
+import akka.event.Logging;
+import akka.event.LoggingAdapter;
 import akka.util.ByteString;
 import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.geoide.commons.domain.document.Document;
@@ -20,6 +21,8 @@ import nl.idgis.geoide.util.streams.AkkaSerializablePublisher;
 import nl.idgis.geoide.util.streams.SerializablePublisherActor;
 
 public class RemoteMethodServerActor extends UntypedActor {
+	
+	private LoggingAdapter log = Logging.getLogger (getContext ().system (), this);
 
 	private final RemoteMethodServer server;
 	private final long streamTimeoutInMillis;
@@ -46,11 +49,19 @@ public class RemoteMethodServerActor extends UntypedActor {
 			final RemoteMethodCall remoteMethodCall = (RemoteMethodCall) message;
 			final ActorRef sender = sender ();
 			final ActorRef self = self ();
+			final CompletableFuture<?> future;
 			
-			final CompletableFuture<?> future = server.invokeMethod (remoteMethodCall);
+			try {
+				future = server.invokeMethod (remoteMethodCall);
+			} catch (Throwable t) {
+				log.debug ("Remote method call " + remoteMethodCall + " has thrown an exception", t);
+				sender.tell (new RemoteMethodCallFailure (t), self);
+				return;
+			}
 			
 			future.whenComplete ((value, throwable) -> {
 				if (throwable != null) {
+					log.debug ("Remote method call " + remoteMethodCall + " completed exceptionally", throwable);
 					sender.tell (new RemoteMethodCallFailure (throwable), self);
 				} else {
 					if (value instanceof Document) {

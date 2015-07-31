@@ -256,7 +256,7 @@ function lessCompile (input, variables) {
 	);
 	
 	if (compileError) {
-		return new (Java.type ('nl.idgis.geoide.commons.report.layout.less.LessCompilationException')) (
+		return new (Java.type ('nl.idgis.geoide.commons.domain.report.LessCompilationException')) (
 			compileError.message,
 			compileError.filename,
 			compileError.line === null ? -1 : compileError.line,

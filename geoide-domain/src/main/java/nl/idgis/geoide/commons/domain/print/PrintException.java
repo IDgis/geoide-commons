@@ -1,4 +1,6 @@
-package nl.idgis.geoide.commons.print.service;
+package nl.idgis.geoide.commons.domain.print;
+
+import java.util.Objects;
 
 import nl.idgis.geoide.commons.domain.MimeContentType;
 
@@ -69,5 +71,39 @@ public class PrintException extends RuntimeException {
 		public MimeContentType getOutputFormat () {
 			return outputFormat;
 		}
+	}
+	
+	/**
+	 * This exception is raised when a resource required for printing could not be found.
+	 */
+	public static class ResourceNotFound extends PrintException {
+		private static final long serialVersionUID = 434753950528412176L;
+		
+		private final String resourceReference;
+		
+		public ResourceNotFound (final String resourceReference) {
+			this (resourceReference, "Resource not found: " + resourceReference, null);
+		}
+		
+		public ResourceNotFound (final String resourceReference, final Throwable cause) {
+			this (resourceReference, "Resource not found: " + resourceReference, cause);
+			
+		}
+		
+		public ResourceNotFound (final String resourceReference, final String message) {
+			this (resourceReference, message, null);
+		}
+		
+		public ResourceNotFound (final String resourceReference, final String message, final Throwable cause) {
+			super (message, cause);
+			
+			this.resourceReference = Objects.requireNonNull (resourceReference, "resourceReference cannot be null");
+		}
+
+		public String getResourceReference() {
+			return resourceReference;
+		}
+		
+		
 	}
 }

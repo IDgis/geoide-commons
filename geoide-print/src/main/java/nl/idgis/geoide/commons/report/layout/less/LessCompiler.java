@@ -15,6 +15,8 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
+import nl.idgis.geoide.commons.domain.report.LessCompilationException;
+
 /**
  * Provides a Java interface to the less CSS compiler (http://lesscss.org). Uses the Nashorn JavaScript
  * engine in combination with the less-node WebJar.

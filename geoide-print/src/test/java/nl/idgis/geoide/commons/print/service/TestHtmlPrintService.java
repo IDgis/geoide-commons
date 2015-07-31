@@ -18,8 +18,9 @@ import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.geoide.commons.domain.api.DocumentCache;
 import nl.idgis.geoide.commons.domain.document.Document;
 import nl.idgis.geoide.commons.domain.print.DocumentReference;
+import nl.idgis.geoide.commons.domain.print.PrintException;
 import nl.idgis.geoide.commons.domain.print.PrintRequest;
-import nl.idgis.geoide.commons.report.layout.less.LessCompilationException;
+import nl.idgis.geoide.commons.domain.report.LessCompilationException;
 import nl.idgis.geoide.documentcache.service.DefaultDocumentCache;
 import nl.idgis.geoide.util.Futures;
 import nl.idgis.geoide.util.streams.AkkaStreamProcessor;
@@ -73,6 +74,14 @@ public class TestHtmlPrintService {
 		store ("http://idgis.nl", "text/html", "<html><head></head><body><h1>Hello, World!</h1><object style=\"display: block; position: absolute; left: 0; top: 0; width: 100%; height: 100%;\" type=\"image/svg+xml\" data=\"http://idgis.nl/map.svg\"></object></html>");
 		store ("http://idgis.nl/map.svg", "image/svg+xml", "<svg></svg>");
 
+		final Document document = print ("http://idgis.nl");
+		
+		assertEquals (new MimeContentType ("application/pdf"), document.getContentType ());
+	}
+	
+	@Test (expected = PrintException.ResourceNotFound.class)
+	public void testPrintWithObjectMissingSvg () throws Throwable {
+		store ("http://idgis.nl", "text/html", "<html><head></head><body><h1>Hello, World!</h1><object style=\"display: block; position: absolute; left: 0; top: 0; width: 100%; height: 100%;\" type=\"image/svg+xml\" data=\"http://idgis.nl/map.svg\"></object></html>");
 		final Document document = print ("http://idgis.nl");
 		
 		assertEquals (new MimeContentType ("application/pdf"), document.getContentType ());
@@ -175,6 +184,42 @@ public class TestHtmlPrintService {
 		print ("http://idgis.nl", "test-color", "#012");
 	}
 	
+	/**
+	 * Verifies that a CSS file can be loaded when referenced from the head section.
+	 */
+	@Test
+	public void testPrintWithCss () throws Throwable {
+		store ("http://idgis.nl", "text/html", "<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"test.css\"></head><body></body>");
+		store ("http://idgis.nl/test.css", "text/css", "h1 { } body { margin: 0; }");
+		
+		print ("http://idgis.nl");
+	}
+	
+	/**
+	 * Verifies that a missing CSS reference raises a {@link PrintException.ResourceNotFound}.
+	 */
+	@Test (expected = PrintException.ResourceNotFound.class)
+	public void testPrintWithCssMissing () throws Throwable {
+		store ("http://idgis.nl", "text/html", "<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"test.css\"></head><body></body>");
+		
+		print ("http://idgis.nl");
+	}
+	
+	/**
+	 * Verifies that a CSS file can be loaded when referenced from the head section, when the base URI contains a path.
+	 * This requires that the base URI is properly determined: the HTML page must be stripped and the trailing slash must
+	 * remain intact.
+	 */
+	@Test
+	public void testPrintWithCssPath () throws Throwable {
+		store ("http://idgis.nl/base/index.html", "text/html", "<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"test.css\"></head><body></body>");
+		store ("http://idgis.nl/base/", "text/html", "<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"test.css\"></head><body></body>");
+		store ("http://idgis.nl/base/test.css", "text/css", "h1 { } body { margin: 0; }");
+		
+		print ("http://idgis.nl/base/index.html");
+		print ("http://idgis.nl/base/");
+	}
+	
 	private Document print (final String uri) throws Throwable {
 		return print (uri, null, null);
 	}
@@ -189,7 +234,7 @@ public class TestHtmlPrintService {
 		final PrintRequest printRequest = new PrintRequest (
 				new DocumentReference (new MimeContentType ("text/html"), new URI (uri)), 
 				new MimeContentType ("application/pdf"), 
-				new URI ("http://idgis.nl"),
+				null,
 				parameters
 			);
 		

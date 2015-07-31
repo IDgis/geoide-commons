@@ -2,6 +2,9 @@ package nl.idgis.geoide.commons.remote.transport;
 
 import java.util.concurrent.CompletableFuture;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import nl.idgis.geoide.commons.remote.RemoteMethodClient;
 import nl.idgis.geoide.commons.remote.RemoteMethodServer;
 import nl.idgis.geoide.commons.remote.transport.messages.AddListener;
@@ -15,6 +18,8 @@ import akka.dispatch.OnComplete;
 import akka.pattern.Patterns;
 
 public class AkkaTransport {
+	
+	private final Logger log = LoggerFactory.getLogger (AkkaTransport.class);
 
 	private final ActorRefFactory actorRefFactory;
 	private final ActorRef transportActor;
@@ -44,8 +49,10 @@ public class AkkaTransport {
 				@Override
 				public void onComplete (final Throwable ex, final Object result) throws Throwable {
 					if (result instanceof RemoteMethodCallFailure) {
+						log.debug ("Remote method call to " + remoteMethodCall + " resulted in exception", ((RemoteMethodCallFailure) result).getCause ());
 						future.completeExceptionally (((RemoteMethodCallFailure) result).getCause ());
 					} else if (ex != null) {
+						log.debug ("Exception while performing remote method call " + remoteMethodCall, ex);
 						future.completeExceptionally (ex);
 					} else {
 						future.complete (result);
