@@ -4,9 +4,14 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import javax.inject.Named;
 import javax.inject.Singleton;
 
+import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
+
+import akka.actor.ActorRef;
+import akka.actor.ActorSelection;
+import akka.actor.ActorSystem;
 import nl.idgis.geoide.commons.domain.api.DocumentCache;
 import nl.idgis.geoide.commons.domain.api.MapProviderApi;
 import nl.idgis.geoide.commons.domain.api.MapQuery;
@@ -27,12 +32,6 @@ import play.Play;
 import play.libs.Akka;
 import play.libs.akka.AkkaGuiceSupport;
 import scala.concurrent.duration.FiniteDuration;
-import akka.actor.ActorRef;
-import akka.actor.ActorSelection;
-import akka.actor.ActorSystem;
-
-import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
 
 public class ViewerModule extends AbstractModule implements AkkaGuiceSupport {
 
@@ -71,7 +70,7 @@ public class ViewerModule extends AbstractModule implements AkkaGuiceSupport {
 	}
 	
 	@Provides
-	@Named ("printDocumentCache")
+	//@Named ("printDocumentCache")
 	@Singleton
 	public DocumentCache printDocumentCache (final RemoteServiceFactory factory, final RemoteMethodClient client) {
 		return factory.createServiceReference (client, DocumentCache.class, Play.application ().configuration().getString ("geoide.web.print.documentCacheQualifier"));
