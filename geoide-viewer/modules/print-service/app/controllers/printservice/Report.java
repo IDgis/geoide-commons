@@ -5,10 +5,15 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Objects;
-import java.util.stream.StreamSupport;
 
 import javax.inject.Inject;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import i18n.printservice.ReportExceptions;
+import models.core.GeoideMessages;
 import nl.idgis.geoide.commons.domain.JsonFactory;
 import nl.idgis.geoide.commons.domain.api.DocumentCache;
 import nl.idgis.geoide.commons.domain.api.ReportComposer;
@@ -20,17 +25,12 @@ import nl.idgis.geoide.util.streams.StreamProcessor;
 import play.Application;
 import play.Logger;
 import play.i18n.Lang;
-import play.i18n.Messages;
 import play.i18n.MessagesApi;
 import play.libs.F.Function;
 import play.libs.F.Promise;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 
@@ -42,14 +42,16 @@ public class Report extends Controller {
 	private final DocumentCache documentCache;
 	private final Application application;
 	private final MessagesApi messages;
+	private final GeoideMessages geoideMessages;
 
 	@Inject
-	public Report (
+	Report (
 			ReportComposer reportComposer, 
 			StreamProcessor streamProcessor, 
 			DocumentCache documentCache, 
 			final Application application,
-			final MessagesApi messages) {
+			final MessagesApi messages,
+			final GeoideMessages geoideMessages) {
 		if (reportComposer == null) {
 			throw new NullPointerException ("reportComposer cannot be null");
 		}
@@ -64,6 +66,7 @@ public class Report extends Controller {
 		this.documentCache = documentCache;
 		this.application = Objects.requireNonNull (application, "application cannot be null");
 		this.messages = Objects.requireNonNull (messages, "messages cannot be null");
+		this.geoideMessages = Objects.requireNonNull (geoideMessages, "geoideMessages cannot be null");
 	}
 
 	public Promise<Result> fetchReport (final String u) throws Throwable {
@@ -104,7 +107,9 @@ public class Report extends Controller {
 
 			log.error ("A: " + messages.get (Lang.defaultLang (), "a"));
 			
-			return internalServerError (reportError (throwable, messages.preferred (request ())));
+			return internalServerError (reportError (
+					throwable, 
+					geoideMessages.of (ReportExceptions.class, messages.preferred (request ()))));
 		});
 	}
 	
@@ -115,7 +120,7 @@ public class Report extends Controller {
 	 * @param t		The exception to translate.
 	 * @return		A JSON object containing the details that need to be reported to the client.
 	 */
-	private JsonNode reportError (final Throwable t, final Messages messages) {
+	private JsonNode reportError (final Throwable t, final ReportExceptions messages) {
 		final ObjectNode result = Json.newObject ();
 		
 		result.put ("result", "error");
@@ -124,12 +129,15 @@ public class Report extends Controller {
 		if (t instanceof PrintException.ResourceNotFound) {
 			result.put ("type", "resourceNotFound");
 			result.put ("resourceReference", ((PrintException.ResourceNotFound) t).getResourceReference ());
+			result.put ("localizedMessage", messages.resourceNotFound (((PrintException.ResourceNotFound) t).getResourceReference ()));
 		} else if (t instanceof PrintException.UnsupportedFormat) {
 			result.put ("type", "unsupportedFormat");
 			result.put ("inputFormat", ((PrintException.UnsupportedFormat) t).getInputFormat().toString ());
 			result.put ("outputFormat", ((PrintException.UnsupportedFormat) t).getOutputFormat ().toString ());
+			result.put ("localizedMessage", messages.unsupportedFormat (((PrintException.UnsupportedFormat) t).getInputFormat ().toString (), ((PrintException.UnsupportedFormat) t).getOutputFormat ().toString ()));
 		} else if (t instanceof PrintException) {
 			result.put ("type", "printError");
+			result.put ("localizedMessage", messages.printError ());
 		} else if (t instanceof LessCompilationException) {
 			result.put ("type", "lessCompilation");
 			result.put ("filename", ((LessCompilationException) t).getFilename ());
@@ -139,8 +147,10 @@ public class Report extends Controller {
 			for (final String s: ((LessCompilationException) t).getExtract ()) {
 				extract.add (s);
 			}
+			result.put ("localizedMessage", messages.lessCompilation ());
 		} else {
 			result.put ("type", "other");
+			result.put ("localizedMessage", messages.genericError ());
 		}
 		
 		return result;
