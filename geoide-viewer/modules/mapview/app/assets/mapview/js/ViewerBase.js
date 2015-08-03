@@ -9,12 +9,11 @@ define ([
 	'dojo/when',
 	'dojo/Deferred',
 	
-	'dojo/request/xhr',
-
 	'dojo/json',
 	
 	'dojo/Evented',
-	
+
+	'geoide-core/json-request',
 	'geoide-core/map/registry',
 	'geoide-core/DOMBehaviour',
 	'geoide-core/map/MapBehaviour',
@@ -31,12 +30,11 @@ define ([
 	when,
 	Deferred,
 
-	xhr,
-	
 	json,
 	
 	Evented,
-	
+
+	jsonRequest,
 	registry,
 	DOMBehaviour,
 	MapBehaviour,
@@ -375,7 +373,7 @@ define ([
 				var viewerState = { layers: this._buildViewerState (map.get ('layers')) };
 				
 				// Post the viewer state:
-				xhr.post (geoideViewerRoutes.controllers.mapview.View.buildView ().url, {
+				jsonRequest.post (geoideViewerRoutes.controllers.mapview.View.buildView ().url, {
 					handleAs: 'json',
 					headers: {
 						'Content-Type': 'application/json'
@@ -695,7 +693,7 @@ define ([
 				var reportInfo = {viewerstates: [ viewerState ] , template: templateInfo};
 
 				// Post the viewer state:
-				xhr.post (geoideReportRoutes.controllers.printservice.Report.report ().url, {
+				jsonRequest.post (geoideReportRoutes.controllers.printservice.Report.report ().url, {
 					handleAs: 'json',
 					headers: {
 						'Content-Type': 'application/json'
@@ -703,6 +701,8 @@ define ([
 					data: json.stringify (reportInfo)
 				}).then (lang.hitch (this, function (data) {
 					def.resolve (data);
+				}), lang.hitch (this, function (error) {
+					def.reject (error);
 				}));
 			}));
 			
@@ -712,7 +712,7 @@ define ([
 		templates: function () {
 			var def = new Deferred ();
 
-			xhr.get (geoideReportRoutes.controllers.printservice.Template.getTemplates ().url).then (lang.hitch (this, function (data) {
+			jsonRequest.get (geoideReportRoutes.controllers.printservice.Template.getTemplates ().url).then (lang.hitch (this, function (data) {
 					def.resolve (data);
 			}));
 			
