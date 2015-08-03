@@ -3,6 +3,7 @@ package controllers.printservice;
 
 import java.net.URI;
 import java.util.Objects;
+import java.util.concurrent.CompletionException;
 
 import javax.inject.Inject;
 
@@ -16,6 +17,7 @@ import nl.idgis.geoide.commons.domain.JsonFactory;
 import nl.idgis.geoide.commons.domain.api.DocumentCache;
 import nl.idgis.geoide.commons.domain.api.ReportComposer;
 import nl.idgis.geoide.commons.domain.document.Document;
+import nl.idgis.geoide.commons.domain.document.DocumentCacheException;
 import nl.idgis.geoide.commons.domain.print.PrintException;
 import nl.idgis.geoide.commons.domain.report.LessCompilationException;
 import nl.idgis.geoide.util.Promises;
@@ -109,29 +111,40 @@ public class Report extends Controller {
 	 */
 	private JsonNode reportError (final Throwable t, final ReportExceptions messages) {
 		final ObjectNode result = Json.newObject ();
+		final Throwable cause;
 		
 		result.put ("result", "error");
 		result.put ("message", t.getMessage ());
 		
-		if (t instanceof PrintException.ResourceNotFound) {
+		if (t instanceof CompletionException) {
+			cause = t.getCause () != null ? t.getCause () : t; 
+		} else {
+			cause = t;
+		}
+		
+		if (cause instanceof PrintException.ResourceNotFound) {
 			result.put ("type", "resourceNotFound");
-			result.put ("resourceReference", ((PrintException.ResourceNotFound) t).getResourceReference ());
-			result.put ("localizedMessage", messages.resourceNotFound (((PrintException.ResourceNotFound) t).getResourceReference ()));
-		} else if (t instanceof PrintException.UnsupportedFormat) {
+			result.put ("resourceReference", ((PrintException.ResourceNotFound) cause).getResourceReference ());
+			result.put ("localizedMessage", messages.resourceNotFound (((PrintException.ResourceNotFound) cause).getResourceReference ()));
+		} else if (cause instanceof DocumentCacheException.DocumentNotFoundException) {
+			result.put ("type", "resourceNotFound");
+			result.put ("resourceReference", ((DocumentCacheException.DocumentNotFoundException) cause).getUri().toString ());
+			result.put ("localizedMessage", messages.resourceNotFound (((DocumentCacheException.DocumentNotFoundException) cause).getUri ().toString ()));
+		} else if (cause instanceof PrintException.UnsupportedFormat) {
 			result.put ("type", "unsupportedFormat");
-			result.put ("inputFormat", ((PrintException.UnsupportedFormat) t).getInputFormat().toString ());
-			result.put ("outputFormat", ((PrintException.UnsupportedFormat) t).getOutputFormat ().toString ());
-			result.put ("localizedMessage", messages.unsupportedFormat (((PrintException.UnsupportedFormat) t).getInputFormat ().toString (), ((PrintException.UnsupportedFormat) t).getOutputFormat ().toString ()));
-		} else if (t instanceof PrintException) {
+			result.put ("inputFormat", ((PrintException.UnsupportedFormat) cause).getInputFormat().toString ());
+			result.put ("outputFormat", ((PrintException.UnsupportedFormat) cause).getOutputFormat ().toString ());
+			result.put ("localizedMessage", messages.unsupportedFormat (((PrintException.UnsupportedFormat) cause).getInputFormat ().toString (), ((PrintException.UnsupportedFormat) cause).getOutputFormat ().toString ()));
+		} else if (cause instanceof PrintException) {
 			result.put ("type", "printError");
 			result.put ("localizedMessage", messages.printError ());
-		} else if (t instanceof LessCompilationException) {
+		} else if (cause instanceof LessCompilationException) {
 			result.put ("type", "lessCompilation");
-			result.put ("filename", ((LessCompilationException) t).getFilename ());
-			result.put ("line", ((LessCompilationException) t).getLine ());
-			result.put ("column", ((LessCompilationException) t).getColumn ());
+			result.put ("filename", ((LessCompilationException) cause).getFilename ());
+			result.put ("line", ((LessCompilationException) cause).getLine ());
+			result.put ("column", ((LessCompilationException) cause).getColumn ());
 			final ArrayNode extract = result.putArray ("extract");
-			for (final String s: ((LessCompilationException) t).getExtract ()) {
+			for (final String s: ((LessCompilationException) cause).getExtract ()) {
 				extract.add (s);
 			}
 			result.put ("localizedMessage", messages.lessCompilation ());
