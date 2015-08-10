@@ -66,7 +66,7 @@ public class ReportPostProcessor {
 		
 		
 		return documentCache
-				.store(documentUri, new MimeContentType ("text/html"), html.child(0).html().getBytes())
+				.store(documentUri, new MimeContentType ("text/html"), html.html ().getBytes ())
 				.thenCompose ((final Document a) -> {
 						try {
 							return printService.print (

@@ -1,5 +1,7 @@
 package nl.idgis.geoide.commons.report;
 
+import java.util.Objects;
+
 /**
  * An object to store reportData wich are not reportBlock specific
  */
@@ -79,7 +81,116 @@ package nl.idgis.geoide.commons.report;
 		public int getColCount() {
 			return colCount;
 		}
+		
+		public static Builder build () {
+			return new Builder ();
+		}
 
-	    
+	    public final static class Builder {
+			private PaperFormat format = PaperFormat.A4portrait;
+		    private double leftMargin = 15;
+		    private double rightMargin = 15;
+		    private double topMargin = 15;
+		    private double bottomMargin = 15;
+		    private double gutterH = 2;
+		    private double gutterV = 2;
+		    private int rowCount = 12;
+		    private int colCount = 12;
+		    
+			public PaperFormat getFormat () {
+				return format;
+			}
+			
+			public Builder setFormat (final PaperFormat format) {
+				this.format = Objects.requireNonNull (format, "format cannot be null");
+				return this;
+			}
+			
+			public double getLeftMargin () {
+				return leftMargin;
+			}
+			
+			public Builder setLeftMargin (final double leftMargin) {
+				this.leftMargin = leftMargin;
+				return this;
+			}
+			
+			public double getRightMargin () {
+				return rightMargin;
+			}
+			
+			public Builder setRightMargin (final double rightMargin) {
+				this.rightMargin = rightMargin;
+				return this;
+			}
+			
+			public double getTopMargin () {
+				return topMargin;
+			}
+			
+			public Builder setTopMargin (final double topMargin) {
+				this.topMargin = topMargin;
+				return this;
+			}
+			
+			public double getBottomMargin() {
+				return bottomMargin;
+			}
+			
+			public Builder setBottomMargin (final double bottomMargin) {
+				this.bottomMargin = bottomMargin;
+				return this;
+			}
+			
+			public double getGutterH() {
+				return gutterH;
+			}
+			
+			public Builder setGutterH (final double gutterH) {
+				this.gutterH = gutterH;
+				return this;
+			}
+			
+			public double getGutterV () {
+				return gutterV;
+			}
+			
+			public Builder setGutterV (final double gutterV) {
+				this.gutterV = gutterV;
+				return this;
+			}
+			
+			public int getRowCount () {
+				return rowCount;
+			}
+			
+			public Builder setRowCount (final int rowCount) {
+				this.rowCount = rowCount;
+				return this;
+			}
+			
+			public int getColCount () {
+				return colCount;
+			}
+			
+			public Builder setColCount (final int colCount) {
+				this.colCount = colCount;
+				return this;
+			}
+			
+			public ReportData create () {
+				return new ReportData (
+						format, 
+						leftMargin, 
+						rightMargin, 
+						topMargin, 
+						bottomMargin, 
+						gutterH, 
+						gutterV, 
+						rowCount, 
+						colCount
+					);
+			}
+	    }
 
 }
