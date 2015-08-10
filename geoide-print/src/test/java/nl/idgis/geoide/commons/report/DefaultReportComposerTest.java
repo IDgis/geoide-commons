@@ -93,8 +93,8 @@ public class DefaultReportComposerTest {
 		verify (postProcessor).process (templateDocumentCaptor.capture (), documentCaptor.capture (), reportDataCaptor.capture ());
 
 		templateDocument = templateDocumentCaptor.getValue ();
-		document = documentCaptor.capture ();
-		reportData = reportDataCaptor.capture ();
+		document = documentCaptor.getValue ();
+		reportData = reportDataCaptor.getValue ();
 		
 		assertNotNull (templateDocument);
 		assertNotNull (document);
