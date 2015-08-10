@@ -133,11 +133,11 @@ define ([
 			return overlays;
 		},
 		
-		_serializeOverlay: function (/*ol.FeatureOverlay*/overlay) {
+		_serializeOverlay: function (/*ol.layer.Vector*/overlay) {
 			var features = [ ],
 				defaultStyleFunction = overlay.getStyleFunction ();
 			
-			overlay.getFeatures ().forEach (function (feature) {
+			overlay.getSource ().getFeatures ().forEach (function (feature) {
 				var serializedFeature = this._serializeFeature (feature, defaultStyleFunction);
 				if (serializedFeature) {
 					features.push (serializedFeature);
