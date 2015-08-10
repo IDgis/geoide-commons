@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 import nl.idgis.geoide.commons.domain.ExternalizableJsonNode;
@@ -80,8 +81,9 @@ public class DefaultReportComposer implements ReportComposer {
 	 */
 	@Override
 	public CompletableFuture<Document> compose (final ExternalizableJsonNode clientInfo) throws Throwable {
-
-		final JsonNode templateInfo = clientInfo.findPath("template");
+		Objects.requireNonNull (clientInfo, "clientInfo cannot be null");
+		
+		final JsonNode templateInfo = clientInfo.getJsonNode ().findPath("template");
 	
 		final String templateUrl = templateInfo.path ("id").asText();
 		
@@ -89,7 +91,7 @@ public class DefaultReportComposer implements ReportComposer {
 		
 		return doc.thenCompose((d) -> {
 			try { 
-				return composeTemplate (d, clientInfo);
+				return composeTemplate (d, clientInfo.getJsonNode ());
 			} catch (Throwable e) { 
 				throw new RuntimeException (e);
 			}

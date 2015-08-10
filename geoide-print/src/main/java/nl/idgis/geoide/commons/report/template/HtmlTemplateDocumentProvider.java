@@ -10,6 +10,15 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
+
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import akka.util.ByteString;
+import akka.util.ByteString.ByteStrings;
+import nl.idgis.geoide.commons.domain.ExternalizableJsonNode;
 import nl.idgis.geoide.commons.domain.JsonFactory;
 import nl.idgis.geoide.commons.domain.api.TemplateDocumentProvider;
 import nl.idgis.geoide.commons.domain.document.Document;
@@ -18,16 +27,6 @@ import nl.idgis.geoide.documentcache.service.DelegatingStore;
 import nl.idgis.geoide.documentcache.service.FileStore;
 import nl.idgis.geoide.util.Futures;
 import nl.idgis.geoide.util.streams.StreamProcessor;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Element;
-
-import akka.util.ByteString;
-import akka.util.ByteString.ByteStrings;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 public class HtmlTemplateDocumentProvider implements TemplateDocumentProvider {
@@ -107,9 +106,9 @@ public class HtmlTemplateDocumentProvider implements TemplateDocumentProvider {
 	}
 	
 	@Override
-	public CompletableFuture<JsonNode> getTemplates() {
+	public CompletableFuture<ExternalizableJsonNode> getTemplates() {
 		File[] templateDirectories = fileStore.getDirectories();
-		final List<CompletableFuture<JsonNode>> promises = new ArrayList<> (templateDirectories.length);
+		final List<CompletableFuture<ExternalizableJsonNode>> promises = new ArrayList<> (templateDirectories.length);
 		
 		for (int n = 0; n < templateDirectories.length; n++) {		
 			String name = templateDirectories[n].getName();
@@ -122,8 +121,8 @@ public class HtmlTemplateDocumentProvider implements TemplateDocumentProvider {
 			.all(promises)
 			.thenApply ((templates) -> {
 				final ArrayNode templateList = JsonFactory.mapper ().createObjectNode().arrayNode();
-				for (final JsonNode template: templates) {
-					templateList.add(template);	
+				for (final ExternalizableJsonNode template: templates) {
+					templateList.add(template.getJsonNode ());	
 				}
 				ObjectNode allTemplates = JsonFactory.mapper ().createObjectNode();
 				allTemplates.put("templates", templateList);
@@ -132,7 +131,7 @@ public class HtmlTemplateDocumentProvider implements TemplateDocumentProvider {
 	}
 	
 	@Override
-	public CompletableFuture<JsonNode> getTemplateProperties(final TemplateDocument template) {
+	public CompletableFuture<ExternalizableJsonNode> getTemplateProperties(final TemplateDocument template) {
 		return CompletableFuture.completedFuture (JsonFactory.externalize (JsonFactory.mapper ().valueToTree (template)));
 	}	
 }

@@ -3,10 +3,12 @@ package nl.idgis.geoide.map;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import nl.idgis.geoide.commons.domain.ExternalizableJsonNode;
 import nl.idgis.geoide.commons.domain.Layer;
 import nl.idgis.geoide.commons.domain.ParameterizedServiceLayer;
 import nl.idgis.geoide.commons.domain.Service;
@@ -104,8 +106,8 @@ public class DefaultMapView implements MapView {
 	 * @see nl.idgis.geoide.map.MapView#flattenLayerList(com.fasterxml.jackson.databind.JsonNode)
 	 */
 	@Override
-	public CompletableFuture<List<Traits<LayerState>>> flattenLayerList (final JsonNode viewerState) {
-		return CompletableFuture.completedFuture (flattenLayerList (viewerState, Collections.emptyList ()));
+	public CompletableFuture<List<Traits<LayerState>>> flattenLayerList (final ExternalizableJsonNode viewerState) {
+		return CompletableFuture.completedFuture (flattenLayerList (Objects.requireNonNull (viewerState, "viewerState cannot be null").getJsonNode (), Collections.emptyList ()));
 	}
 	
 	private List<Traits<LayerState>> flattenLayerList (final JsonNode viewerState, final List<Traits<LayerState>> parents) {

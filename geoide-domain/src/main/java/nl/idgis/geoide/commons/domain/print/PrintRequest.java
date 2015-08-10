@@ -5,7 +5,9 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
+import nl.idgis.geoide.commons.domain.ExternalizableJsonNode;
 import nl.idgis.geoide.commons.domain.JsonFactory;
 import nl.idgis.geoide.commons.domain.MimeContentType;
 
@@ -66,7 +68,27 @@ public final class PrintRequest implements Serializable {
 			if (entry.getValue () == null) {
 				result.put (entry.getKey (), null);
 			} else if (entry.getValue () instanceof JsonNode) {
-				result.put (entry.getKey (), JsonFactory.externalize ((JsonNode) entry.getValue ()));
+				result.put (entry.getKey (), new BoxedJson ((JsonNode) entry.getValue ()));
+			} else {
+				result.put (entry.getKey (), entry.getValue ());
+			}
+		}
+		
+		return result;
+	}
+	
+	private static Map<String, Object> deExternalizeParameters (final Map<String, Object> parameters) {
+		if (parameters == null || parameters.isEmpty ()) {
+			return Collections.emptyMap ();
+		}
+		
+		final Map<String, Object> result = new HashMap<> ();
+		
+		for (final Map.Entry<String, Object> entry: parameters.entrySet ()) {
+			if (entry.getValue () == null) {
+				result.put (entry.getKey (), null);
+			} else if (entry.getValue () instanceof BoxedJson) {
+				result.put (entry.getKey (), ((BoxedJson) entry.getValue ()).getJsonNode ());
 			} else {
 				result.put (entry.getKey (), entry.getValue ());
 			}
@@ -109,6 +131,18 @@ public final class PrintRequest implements Serializable {
 	 * @return A (possibly empty) map containing the layout parameters.
 	 */
 	public Map<String, Object> getLayoutParameters () {
-		return Collections.unmodifiableMap (layoutParameters);
+		return Collections.unmodifiableMap (deExternalizeParameters (layoutParameters));
+	}
+	
+	private final static class BoxedJson {
+		private final ExternalizableJsonNode jsonNode;
+		
+		public BoxedJson (final JsonNode jsonNode) {
+			this.jsonNode = JsonFactory.externalize (Objects.requireNonNull (jsonNode, "jsonNode cannot be null"));
+		}
+		
+		public JsonNode getJsonNode () {
+			return jsonNode.getJsonNode ();
+		}
 	}
 }

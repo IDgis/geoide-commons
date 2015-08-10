@@ -19,9 +19,9 @@ public class TestExternalizableJsonNode {
 		
 		final ExternalizableJsonNode wrapped = new ExternalizableJsonNode (node);
 		
-		assertEquals (3, wrapped.size ());
+		assertEquals (3, wrapped.getJsonNode ().size ());
 		int n = 0;
-		for (final JsonNode child: wrapped) {
+		for (final JsonNode child: wrapped.getJsonNode ()) {
 			assertNotNull (child);
 			++ n;
 		}
