@@ -189,7 +189,7 @@ require ([
 		redline (new DrawGeometry ({
 			type: 'Point', 
 			format: 'wkt',
-			features: viewers[0].overlay ('redline').getFeatures ()
+			source: viewers[0].overlay ('redline').getSource ()
 		}));
 	});
 	on (dom.byId ('draw-line'), 'click', function (e) {
@@ -199,7 +199,7 @@ require ([
 		redline (new DrawGeometry ({
 			type: 'LineString', 
 			format: 'wkt', 
-			features: viewers[0].overlay ('redline').getFeatures ()
+			source: viewers[0].overlay ('redline').getSource ()
 		}));
 	});
 	on (dom.byId ('draw-polygon'), 'click', function (e) {
@@ -209,7 +209,7 @@ require ([
 		redline (new DrawGeometry ({
 			type: 'Polygon', 
 			format: 'wkt', 
-			features: viewers[0].overlay ('redline').getFeatures ()
+			source: viewers[0].overlay ('redline').getSource ()
 		}));
 	});
 	on (dom.byId ('draw-text'), 'click', function (e) {
@@ -217,7 +217,7 @@ require ([
 		e.stopPropagation ();
 		
 		redline (new DrawText ({
-			features: viewers[0].overlay ('redline').getFeatures ()
+			source: viewers[0].overlay ('redline').getSource ()
 		}));
 	});
 	on (dom.byId ('edit-geometry'), 'click', function (e) {
@@ -225,7 +225,7 @@ require ([
 		e.stopPropagation ();
 		
 		redline (new ModifyGeometry ({
-			features: viewers[0].overlay ('redline').getFeatures ()
+			source: viewers[0].overlay ('redline').getSource ()
 		}));
 	});
 	on (dom.byId ('delete-features'), 'click', function (e) {

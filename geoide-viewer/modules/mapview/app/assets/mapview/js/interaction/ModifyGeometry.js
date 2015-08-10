@@ -81,7 +81,7 @@ define ([
 			
 			// Register listeners on overlays:
 			this._overlayHandles = [ ];
-			this.features.forEach (function (feature) {
+			(this.features ? this.features : this.source.getFeatures ()).forEach (function (feature) {
 				var overlay = feature.get ('_geoideOverlay');
 				
 				if (overlay) {

@@ -65,14 +65,46 @@ define ([
 					existingOverlay.setStyle (overlayOptions.style);
 				}
 				if ('features' in overlayOptions) {
-					existingOverlay.setFeatures (overlayOptions.features);
+					existingOverlay.setSource (new ol.source.Vector ({
+						features: overlayOptions.features,
+						useSpatialIndex: false
+					}));
+				}
+				if ('source' in overlayOptions) {
+					existingOverlay.setSource (overlayOptions.source);
 				}
 				
 				return existingOverlay;
 			}
+
+			// Create a source:
+			var overlaySource;
+			if ('features' in overlayOptions) {
+				overlaySource = new ol.source.Vector ({
+					features: overlayOptions.features,
+					useSpatialIndex: false
+				});
+			} else if ('source' in overlayOptions) {
+				overlaySource = overlayOptions.source;
+			} else {
+				overlaySource = new ol.source.Vector ({
+					features: new ol.Collection (),
+					useSpatialIndex: false
+				});
+			}
+			
+			// Overlay create options:
+			var createOptions = {
+				source: overlaySource,
+				updateWhileAnimating: true,
+				updateWhileInteracting: true
+			};
+			if ('style' in overlayOptions) {
+				createOptions.style = overlayOptions.style;
+			}
 			
 			// Create a new feature overlay:
-			var overlay = new ol.FeatureOverlay (overlayOptions || { });
+			var overlay = new ol.layer.Vector (createOptions);
 			
 			this._overlays[overlayName] = overlay;
 				
