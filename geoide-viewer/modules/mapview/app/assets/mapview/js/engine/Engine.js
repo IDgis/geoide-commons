@@ -576,7 +576,7 @@ define ([
 				def.resolve ();
 			}
 			
-			view.fitExtent (extent, this.olMap.getSize ());
+			view.fit (extent, this.olMap.getSize ());
 			
 			return def;
 		},
