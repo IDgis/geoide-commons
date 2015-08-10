@@ -39,7 +39,7 @@ public class DefaultMapQuery implements MapQuery {
 	
 	@Override
 	public CompletableFuture<Query> prepareQuery (final ExternalizableJsonNode input) {
-		return CompletableFuture.completedFuture (parseQueryInfo (input));
+		return CompletableFuture.completedFuture (parseQueryInfo (input.getJsonNode ()));
 	}
 	
 	@Override

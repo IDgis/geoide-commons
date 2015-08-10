@@ -41,7 +41,7 @@ object Common {
 		val webjarsPlay = "org.webjars" %% "webjars-play" % "2.3.0"
   		val webjarsBootstrap = "org.webjars" % "bootstrap" % "3.2.0"
   		val webjarsDojoBase = "org.webjars" % "dojo-base" % "1.10.0-SNAPSHOT"
-  		val webjarsOpenLayers = "org.webjars" % "openlayers" % "3.5.0"
+  		val webjarsOpenLayers = "org.webjars" % "openlayers" % "3.7.0"
   		val webjarsPutSelector = "org.webjars" % "put-selector" % "0.3.5"
   		val webjarsFontAwesome = "org.webjars" % "font-awesome" % "4.2.0"
   		

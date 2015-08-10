@@ -38,8 +38,8 @@ public final class QueryLayerInfo implements Serializable {
 		return layer;
 	}
 	
-	public ExternalizableJsonNode getState () {
-		return state;
+	public JsonNode getState () {
+		return state.getJsonNode ();
 	}
 	
 	public Optional<FeatureQuery> getQuery () {

@@ -23,8 +23,8 @@ public class Layer extends Entity {
 	private final String label;
 	private final List<Layer> layers;
 	private final List<ServiceLayer> serviceLayers;
-	private final Map<String, JsonNode> state;
-	private final Map<String, JsonNode> properties;
+	private final Map<String, ExternalizableJsonNode> state;
+	private final Map<String, ExternalizableJsonNode> properties;
 	
 	@JsonCreator
 	public Layer (
@@ -48,12 +48,12 @@ public class Layer extends Entity {
 		this.properties = externalizeProperties (properties); 
 	}
 	
-	private static Map<String, JsonNode> externalizeProperties (final Map<String, JsonNode> input) {
+	private static Map<String, ExternalizableJsonNode> externalizeProperties (final Map<String, JsonNode> input) {
 		if (input == null || input.isEmpty ()) {
 			return Collections.emptyMap ();
 		}
 		
-		final Map<String, JsonNode> result = new HashMap<> ();
+		final Map<String, ExternalizableJsonNode> result = new HashMap<> ();
 		
 		for (final Map.Entry<String, JsonNode> entry: input.entrySet ()) {
 			if (entry.getValue () == null) {
@@ -84,12 +84,18 @@ public class Layer extends Entity {
 		
 		if (!state.isEmpty()) {
 			final ObjectNode stateNode = n.putObject("state");
-			stateNode.putAll(state);
+			
+			for (final Map.Entry<String, ExternalizableJsonNode> entry: state.entrySet ()) {
+				stateNode.put (entry.getKey (), entry.getValue ().getJsonNode ());
+			}
 		}
 		
 		if (!properties.isEmpty()) {
 			final ObjectNode propertiesNode = n.putObject("properties");
-			propertiesNode.putAll(properties);
+			
+			for (final Map.Entry<String, ExternalizableJsonNode> entry: properties.entrySet ()) {
+				propertiesNode.put (entry.getKey (), entry.getValue ().getJsonNode ());
+			}
 		}
 		
 		
@@ -123,7 +129,7 @@ public class Layer extends Entity {
 	public String getInitialStateValue (String stateProperty) {
 		System.out.println("get InitialState Value " + stateProperty + " = " + state.get(stateProperty));
 		if(state.get(stateProperty)!=null){
-			return state.get(stateProperty).asText();
+			return state.get(stateProperty).getJsonNode ().asText();
 		} 
 		return "";
 	}

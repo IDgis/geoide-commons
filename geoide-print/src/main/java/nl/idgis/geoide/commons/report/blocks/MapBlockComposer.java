@@ -13,6 +13,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import nl.idgis.geoide.commons.domain.JsonFactory;
 import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.geoide.commons.domain.ServiceRequest;
 import nl.idgis.geoide.commons.domain.api.DocumentCache;
@@ -79,7 +80,7 @@ public class MapBlockComposer implements BlockComposer<MapBlockInfo> {
 		mapRow.attr("class", "map_row");
 				
 		return mapView
-			.flattenLayerList (mapInfo.getClientInfo ())
+			.flattenLayerList (JsonFactory.externalize(mapInfo.getClientInfo ()))
 			.thenCompose ((layerStates) -> mapView.getServiceRequests (layerStates).thenCompose ((serviceRequests) -> {
 				final List<CompletableFuture<nl.idgis.geoide.commons.domain.document.Document>> documentPromises = new ArrayList<> ();
 				

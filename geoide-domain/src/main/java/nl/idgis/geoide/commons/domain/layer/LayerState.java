@@ -40,7 +40,7 @@ public final class LayerState implements Serializable {
 		return Collections.unmodifiableList (parents);
 	}
 	
-	public ExternalizableJsonNode getProperties () {
-		return JsonFactory.externalize (properties.deepCopy ());
+	public JsonNode getProperties () {
+		return properties.getJsonNode ().deepCopy ();
 	}
 }
