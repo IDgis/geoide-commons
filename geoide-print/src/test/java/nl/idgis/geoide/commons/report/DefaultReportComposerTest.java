@@ -14,6 +14,8 @@ import org.mockito.Captor;
 import org.mockito.MockitoAnnotations;
 import org.reactivestreams.Publisher;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import akka.util.ByteString;
@@ -81,10 +83,46 @@ public class DefaultReportComposerTest {
 	public void testEmptyTemplate () throws Throwable {
 		print ("empty-template");
 	}
+	
+	@Test
+	public void testTemplateWithText () throws Throwable {
+		final ObjectNode block = JsonFactory.mapper ().createObjectNode ();
+		
+		block.put ("id", "title");
+		block.put ("text", "Hello, World!");
+		block.put ("type", "text");
+		
+		print ("template-with-text-block", block);
+		
+		assertEquals ("Hello, World!", document.getElementById ("title").text ());
+	}
 
-	private Document print (final String template) throws Throwable {
+	@Test
+	public void testTemplateWithTextNoValue () throws Throwable {
+		print ("template-with-text-block");
+		
+		assertEquals ("", document.getElementById ("title").text ());
+	}
+	
+	@Test
+	public void testTemplateWithTextMissingValue () throws Throwable {
+		final ObjectNode block = JsonFactory.mapper ().createObjectNode ();
+		
+		block.put ("id", "title");
+		
+		print ("template-with-text-block", block);
+		
+		assertEquals ("", document.getElementById ("title").text ());
+	}
+	
+	private Document print (final String template, final JsonNode ... blocks) throws Throwable {
 		final ObjectNode node = JsonFactory.mapper ().createObjectNode ();
 		final ObjectNode templateNode = node.putObject ("template");
+		final ArrayNode blocksNode = templateNode.putArray ("blocks");
+		
+		for (final JsonNode blockNode: blocks) {
+			blocksNode.add (blockNode);
+		}
 		
 		templateNode.put ("id", template);
 		
@@ -106,6 +144,9 @@ public class DefaultReportComposerTest {
 	private void mockTemplates () throws Throwable {
 		when (templateProvider.getTemplateDocument ("empty-template"))
 			.then (invocation -> template ("empty-template", "<html><head></head><body></body></html>"));
+		
+		when (templateProvider.getTemplateDocument ("template-with-text-block"))
+			.then (invocation -> template ("template-with-text-block", "<html><head></head><body><div class=\"block text\" id=\"title\"></div></body></html>"));
 	}
 	
 	private CompletableFuture<TemplateDocument> template (final String templateName, final String content) throws Throwable {
