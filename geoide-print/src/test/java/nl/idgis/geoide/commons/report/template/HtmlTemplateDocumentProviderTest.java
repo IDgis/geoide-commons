@@ -40,8 +40,8 @@ public class HtmlTemplateDocumentProviderTest {
 	private final static String[] templateContent = new String[] {
 		"<html><head><meta name=\"description\" content=\"template-1 description\"></head><body></body></html>",
 		"<html><head></head><body></body></html>",
-		"<html><head></head><body></body></html>",
-		"<html><head></head><body></body></html>"
+		"<html data-pageformat=\"A4\" data-left-margin=\"10\" data-right-margin=\"10\" data-top-margin=\"10\" data-bottom-margin=\"10\" data-page-orientation=\"portrait\" data-gutter-h=\"2\" data-gutter-v=\"2\"><meta name=\"description\" content=\"template-3 description\"><head></head><body></body></html>",
+		"<html data-pageformat=\"A4\" data-left-margin=\"10\" data-right-margin=\"10\" data-top-margin=\"10\" data-bottom-margin=\"10\" data-page-orientation=\"portrait\" data-gutter-h=\"2\" data-gutter-v=\"2\"><meta name=\"description\" content=\"template-4 description\"><head></head><body><div class=\"block text\" id=\"title\"></div></body></html>"
 	};
 	
 	@Before
@@ -115,7 +115,70 @@ public class HtmlTemplateDocumentProviderTest {
 	}
 	
 	@Test
+	public void testGetTemplateDocumentWithProperties () throws Throwable {
+		final TemplateDocument template = provider.getTemplateDocument ("template-3").get ();
+		
+		assertNotNull (template);
+		assertEquals ("template-3", template.getTemplate ());
+		assertEquals ("template-3 description", template.getDescription ());
+		
+		assertEquals ("A4", template.getPageFormat ());
+		assertEquals (10, template.getLeftMargin (), .001);
+		assertEquals (10, template.getRightMargin (), .001);
+		assertEquals (10, template.getTopMargin (), .001);
+		assertEquals (10, template.getBottomMargin (), .001);
+		assertEquals ("portrait", template.getPageOrientation ());
+		assertEquals (2, template.getGutterH (), .001);
+		assertEquals (2, template.getGutterV (), .001);
+		
+		assertEquals (0, template.getVariables ().size ());
+	}
+	
+	@Test
+	public void testGetTemplateDocumentWithVariable () throws Throwable {
+		final TemplateDocument template = provider.getTemplateDocument ("template-4").get ();
+		
+		assertNotNull (template);
+		assertEquals ("template-4", template.getTemplate ());
+		assertEquals ("template-4 description", template.getDescription ());
+		
+		assertEquals ("A4", template.getPageFormat ());
+		assertEquals (10, template.getLeftMargin (), .001);
+		assertEquals (10, template.getRightMargin (), .001);
+		assertEquals (10, template.getTopMargin (), .001);
+		assertEquals (10, template.getBottomMargin (), .001);
+		assertEquals ("portrait", template.getPageOrientation ());
+		assertEquals (2, template.getGutterH (), .001);
+		assertEquals (2, template.getGutterV (), .001);
+		
+		assertEquals (1, template.getVariables ().size ());
+		assertEquals ("", template.getVariables ().get (0).getDefaultValue ());
+		assertEquals ("title", template.getVariables ().get (0).getName ());
+		assertEquals (0, template.getVariables ().get (0).getMaxwidth ());
+	}
+	
+	@Test
 	public void testGetTemplateProperties () throws Throwable {
+		final TemplateDocument template = provider.getTemplateDocument ("template-4").get ();
+		final ExternalizableJsonNode node = provider.getTemplateProperties (template).get ();
+		
+		assertNotNull (node);
+		
+		final JsonNode props = node.getJsonNode ();
+		
+		assertEquals ("A4", props.path ("pageFormat").asText ());
+		assertEquals (10, props.path ("leftMargin").asDouble (), .001);
+		assertEquals (10, props.path ("rightMargin").asDouble (), .001);
+		assertEquals (10, props.path ("topMargin").asDouble (), .001);
+		assertEquals (10, props.path ("bottomMargin").asDouble (), .001);
+		assertEquals ("portrait", props.path ("pageOrientation").asText ());
+		assertEquals (2, props.path ("gutterH").asDouble (), .001);
+		assertEquals (2, props.path ("gutterV").asDouble (), .001);
+		
+		assertEquals (1, props.path ("variables").size ());
+		assertEquals ("", props.path ("variables").get (0).path ("defaultValue").asText ());
+		assertEquals ("title", props.path ("variables").get (0).path ("name").asText ());
+		assertEquals (0, props.path ("variables").get (0).path ("maxwidth").asInt ());
 	}
 	
 	@Test
@@ -125,6 +188,8 @@ public class HtmlTemplateDocumentProviderTest {
 		assertNotNull (node);
 		
 		final JsonNode templates = node.getJsonNode ();
+		
+		assertEquals (4, templates.size ());
 	}
 	
 	private ByteString extractByteString (final Publisher<ByteString> publisher) {
