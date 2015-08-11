@@ -81,7 +81,7 @@ public class HtmlTemplateDocumentProviderTest {
 			new File ("template-1"),
 			new File ("template-2"),
 			new File ("template-3"),
-			new File ("template-3")
+			new File ("template-4")
 		});
 		
 		// Mock the stream processor:
@@ -165,7 +165,29 @@ public class HtmlTemplateDocumentProviderTest {
 		assertNotNull (node);
 		
 		final JsonNode props = node.getJsonNode ();
+
+		assertTemplate4 (props);
+	}
+	
+	@Test
+	public void testGetTemplates () throws Throwable {
+		final ExternalizableJsonNode node = provider.getTemplates ().get ();
 		
+		assertNotNull (node);
+		
+		final JsonNode templates = node.getJsonNode ();
+		
+		assertEquals (4, templates.path ("templates").size ());
+		
+		assertEquals ("template-1", templates.path ("templates").path (0).path ("template").asText ());
+		assertEquals ("template-2", templates.path ("templates").path (1).path ("template").asText ());
+		assertEquals ("template-3", templates.path ("templates").path (2).path ("template").asText ());
+		assertEquals ("template-4", templates.path ("templates").path (3).path ("template").asText ());
+		
+		assertTemplate4 (templates.path ("templates").path (3));
+	}
+	
+	private void assertTemplate4 (final JsonNode props) {
 		assertEquals ("A4", props.path ("pageFormat").asText ());
 		assertEquals (10, props.path ("leftMargin").asDouble (), .001);
 		assertEquals (10, props.path ("rightMargin").asDouble (), .001);
@@ -179,17 +201,6 @@ public class HtmlTemplateDocumentProviderTest {
 		assertEquals ("", props.path ("variables").get (0).path ("defaultValue").asText ());
 		assertEquals ("title", props.path ("variables").get (0).path ("name").asText ());
 		assertEquals (0, props.path ("variables").get (0).path ("maxwidth").asInt ());
-	}
-	
-	@Test
-	public void testGetTemplates () throws Throwable {
-		final ExternalizableJsonNode node = provider.getTemplates ().get ();
-		
-		assertNotNull (node);
-		
-		final JsonNode templates = node.getJsonNode ();
-		
-		assertEquals (4, templates.size ());
 	}
 	
 	private ByteString extractByteString (final Publisher<ByteString> publisher) {
