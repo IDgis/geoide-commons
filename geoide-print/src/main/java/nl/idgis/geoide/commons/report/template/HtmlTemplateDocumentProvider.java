@@ -93,7 +93,7 @@ public class HtmlTemplateDocumentProvider implements TemplateDocumentProvider {
 			.setColCount (html.select("html").attr("data-col-count").isEmpty () ? 12 : Integer.parseInt(html.select("html").attr("data-col-count")))
 			.setRowCount (html.select("html").attr("data-row-count").isEmpty () ? 12 : Integer.parseInt(html.select("html").attr("data-row-count")))
 			.setTemplate (templateName)
-			.setDescription (html.select("meta[name=description]").first().attr("content"))
+			.setDescription (html.select("meta[name=description]").isEmpty () ? "" : html.select("meta[name=description]").attr("content"))
 			.setContent (htmlContent);
 		
 		for (final Element block: html.getElementsByClass ("block")) {
