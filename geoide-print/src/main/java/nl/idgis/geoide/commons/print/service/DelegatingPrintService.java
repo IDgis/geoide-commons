@@ -11,14 +11,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
+import org.reactivestreams.Publisher;
+
 import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.geoide.commons.domain.api.PrintService;
-import nl.idgis.geoide.commons.domain.document.Document;
 import nl.idgis.geoide.commons.domain.print.Capabilities;
-import nl.idgis.geoide.commons.domain.print.PrintException;
-import nl.idgis.geoide.commons.domain.print.PrintRequest;
 import nl.idgis.geoide.commons.domain.print.Capabilities.InputFormat;
+import nl.idgis.geoide.commons.domain.print.PrintEvent;
+import nl.idgis.geoide.commons.domain.print.PrintException;
 import nl.idgis.geoide.commons.domain.print.PrintException.UnsupportedFormat;
+import nl.idgis.geoide.commons.domain.print.PrintRequest;
 import nl.idgis.geoide.util.Futures;
 
 /**
@@ -64,7 +66,7 @@ public class DelegatingPrintService implements PrintService {
 	 * @see PrintService#print(PrintRequest)
 	 */
 	@Override
-	public CompletableFuture<Document> print (final PrintRequest printRequest) {
+	public CompletableFuture<Publisher<PrintEvent>> print (final PrintRequest printRequest) {
 		return getServiceCapabilities ().thenCompose ((final List<ServiceCapabilities> serviceCapabilities) -> {
 			// Locate all candidate services:
 			ServiceCapabilities bestCapabilities = null;
@@ -85,7 +87,7 @@ public class DelegatingPrintService implements PrintService {
 			}
 			
 			if (bestCapabilities == null) {
-				return Futures.<Document>throwing (new PrintException.UnsupportedFormat (printRequest.getInputDocument ().getContentType (), printRequest.getOutputFormat ()));
+				return Futures.<Publisher<PrintEvent>>throwing (new PrintException.UnsupportedFormat (printRequest.getInputDocument ().getContentType (), printRequest.getOutputFormat ()));
 			}
 			
 			return bestCapabilities.printService.print (printRequest);

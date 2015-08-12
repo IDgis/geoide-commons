@@ -1,6 +1,6 @@
 package nl.idgis.geoide.commons.print.service;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -9,7 +9,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
@@ -18,11 +20,11 @@ import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.geoide.commons.domain.api.DocumentCache;
 import nl.idgis.geoide.commons.domain.document.Document;
 import nl.idgis.geoide.commons.domain.print.DocumentReference;
+import nl.idgis.geoide.commons.domain.print.PrintEvent;
 import nl.idgis.geoide.commons.domain.print.PrintException;
 import nl.idgis.geoide.commons.domain.print.PrintRequest;
 import nl.idgis.geoide.commons.domain.report.LessCompilationException;
 import nl.idgis.geoide.documentcache.service.DefaultDocumentCache;
-import nl.idgis.geoide.util.Futures;
 import nl.idgis.geoide.util.streams.AkkaStreamProcessor;
 import nl.idgis.geoide.util.streams.StreamProcessor;
 
@@ -238,7 +240,19 @@ public class TestHtmlPrintService {
 				parameters
 			);
 		
-		return Futures.get (service.print (printRequest), 30000);
+		try {
+			final List<PrintEvent> printEvents = StreamProcessor.asList (service.print (printRequest).get (30, TimeUnit.SECONDS)).get (30, TimeUnit.SECONDS);
+	
+			assertTrue (!printEvents.isEmpty ());
+			for (int i = 0; i < printEvents.size () - 1; ++ i) {
+				assertTrue (printEvents.get (i).getEventType ().equals (PrintEvent.EventType.PROGRESS));
+			}
+			assertTrue (printEvents.get (printEvents.size () - 1).getEventType ().equals (PrintEvent.EventType.COMPLETE));
+	
+			return printEvents.get (printEvents.size () - 1).getDocument ().get ();
+		} catch (ExecutionException e) {
+			throw e.getCause ();
+		}
 	}
 	
 	private byte[] testPng () throws IOException {

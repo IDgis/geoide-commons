@@ -6,11 +6,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import org.reactivestreams.Publisher;
+
 import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.geoide.commons.domain.api.DocumentCache;
 import nl.idgis.geoide.commons.domain.api.PrintService;
 import nl.idgis.geoide.commons.domain.document.Document;
 import nl.idgis.geoide.commons.domain.print.DocumentReference;
+import nl.idgis.geoide.commons.domain.print.PrintEvent;
 import nl.idgis.geoide.commons.domain.print.PrintRequest;
 import nl.idgis.geoide.commons.domain.report.TemplateDocument;
 
@@ -43,7 +46,7 @@ public class ReportPostProcessor {
 	 * @param template		the report to print ( a "filled" template document)
 	 * @return 				a pdf Document
 	 */
-	public CompletableFuture<Document> process (TemplateDocument template, final org.jsoup.nodes.Document html, ReportData reportData) throws Throwable {
+	public CompletableFuture<Publisher<PrintEvent>> process (TemplateDocument template, final org.jsoup.nodes.Document html, ReportData reportData) throws Throwable {
 		
 
 		final URI documentUri = template.getDocumentUri();

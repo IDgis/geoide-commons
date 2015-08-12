@@ -2,10 +2,11 @@ package nl.idgis.geoide.commons.domain.api;
 
 import java.util.concurrent.CompletableFuture;
 
-import javax.print.PrintException;
+import org.reactivestreams.Publisher;
 
-import nl.idgis.geoide.commons.domain.document.Document;
 import nl.idgis.geoide.commons.domain.print.Capabilities;
+import nl.idgis.geoide.commons.domain.print.PrintEvent;
+import nl.idgis.geoide.commons.domain.print.PrintException;
 import nl.idgis.geoide.commons.domain.print.PrintRequest;
 
 /**
@@ -21,9 +22,9 @@ public interface PrintService {
 	 * Performs the given print request on this service. Print requests are processed in asynchronous manner.
 	 * 
 	 * @param printRequest The print request to execute.
-	 * @return A promise that will resolve to the resulting document, or raise a {@link PrintException}.
+	 * @return A promise that will resolve to a print event stream, or raise a {@link PrintException}.
 	 */
-	CompletableFuture<Document> print (PrintRequest printRequest);
+	CompletableFuture<Publisher<PrintEvent>> print (PrintRequest printRequest);
 	
 	/**
 	 * Returns the capabilities of the print service.

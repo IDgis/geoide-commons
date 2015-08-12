@@ -29,12 +29,27 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Attribute;
+import org.jsoup.nodes.DataNode;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import org.jsoup.nodes.TextNode;
+import org.reactivestreams.Publisher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xhtmlrenderer.pdf.ITextOutputDevice;
+import org.xhtmlrenderer.pdf.ITextRenderer;
+import org.xhtmlrenderer.pdf.ITextReplacedElementFactory;
+import org.xhtmlrenderer.pdf.ITextUserAgent;
+
 import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.geoide.commons.domain.api.DocumentCache;
 import nl.idgis.geoide.commons.domain.api.PrintService;
 import nl.idgis.geoide.commons.domain.document.Document;
 import nl.idgis.geoide.commons.domain.document.DocumentCacheException;
 import nl.idgis.geoide.commons.domain.print.Capabilities;
+import nl.idgis.geoide.commons.domain.print.PrintEvent;
 import nl.idgis.geoide.commons.domain.print.PrintException;
 import nl.idgis.geoide.commons.domain.print.PrintRequest;
 import nl.idgis.geoide.commons.domain.report.LessCompilationException;
@@ -42,20 +57,8 @@ import nl.idgis.geoide.commons.print.svg.ChainedReplacedElementFactory;
 import nl.idgis.geoide.commons.print.svg.SVGReplacedElementFactory;
 import nl.idgis.geoide.commons.report.layout.less.LessCompiler;
 import nl.idgis.geoide.util.Futures;
+import nl.idgis.geoide.util.streams.SingleValuePublisher;
 import nl.idgis.geoide.util.streams.StreamProcessor;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Attribute;
-import org.jsoup.nodes.DataNode;
-import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Node;
-import org.jsoup.nodes.TextNode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.xhtmlrenderer.pdf.ITextOutputDevice;
-import org.xhtmlrenderer.pdf.ITextRenderer;
-import org.xhtmlrenderer.pdf.ITextReplacedElementFactory;
-import org.xhtmlrenderer.pdf.ITextUserAgent;
 
 /**
  * Print service implementation that converts HTML + several linked media to
@@ -157,7 +160,7 @@ public class HtmlPrintService implements PrintService, Closeable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public CompletableFuture<Document> print (final PrintRequest printRequest) {
+	public CompletableFuture<Publisher<PrintEvent>> print (final PrintRequest printRequest) {
 		if (!"text".equals (printRequest.getInputDocument().getContentType ().type ()) 
 				|| !"html".equals (printRequest.getInputDocument().getContentType ().subType ())
 				|| !"application".equals (printRequest.getOutputFormat ().type ())
@@ -165,7 +168,7 @@ public class HtmlPrintService implements PrintService, Closeable {
 			return Futures.throwing (new PrintException.UnsupportedFormat (printRequest.getInputDocument ().getContentType (), printRequest.getOutputFormat ()));
 		}
 		
-		final CompletableFuture<Document> future = new CompletableFuture<> ();
+		final CompletableFuture<Publisher<PrintEvent>> future = new CompletableFuture<> ();
 
         executor.execute (new Runnable () {
 			@Override
@@ -234,7 +237,7 @@ public class HtmlPrintService implements PrintService, Closeable {
 					log.debug ("Storing result for " + printRequest.getInputDocument ().getUri ().toString () + " as " + resultUri.toString ());
 					final Document resultDocument = documentCache.store (resultUri, new MimeContentType ("application/pdf"), os.toByteArray ()).get (cacheTimeoutMillis, TimeUnit.MILLISECONDS);
 					
-					future.complete (resultDocument);
+					future.complete (new SingleValuePublisher<PrintEvent> (new PrintEvent (resultDocument)));
 				} catch (Throwable t) {
 					future.completeExceptionally (t);
 				}

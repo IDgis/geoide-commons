@@ -1,12 +1,18 @@
 package nl.idgis.geoide.commons.report;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
+import org.deegree.coverage.rangeset.SingleValue;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -20,14 +26,17 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import akka.util.ByteString;
 import akka.util.ByteString.ByteStrings;
+import nl.idgis.geoide.commons.domain.ExternalizableJsonNode;
 import nl.idgis.geoide.commons.domain.JsonFactory;
 import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.geoide.commons.domain.api.DocumentCache;
 import nl.idgis.geoide.commons.domain.document.Document;
+import nl.idgis.geoide.commons.domain.print.PrintEvent;
 import nl.idgis.geoide.commons.domain.report.TemplateDocument;
 import nl.idgis.geoide.commons.report.template.HtmlTemplateDocumentProvider;
 import nl.idgis.geoide.map.DefaultMapView;
 import nl.idgis.geoide.util.streams.SingleValuePublisher;
+import nl.idgis.geoide.util.streams.StreamProcessor;
 
 public class DefaultReportComposerTest {
 
@@ -59,7 +68,7 @@ public class DefaultReportComposerTest {
 		
 		// Mock the post processor:
 		when (postProcessor.process (any (TemplateDocument.class), any (org.jsoup.nodes.Document.class), any (ReportData.class)))
-			.then (invocation -> CompletableFuture.completedFuture (new Document() {
+			.then (invocation -> CompletableFuture.completedFuture (new SingleValuePublisher<PrintEvent> (new PrintEvent (new Document() {
 				@Override
 				public URI getUri () throws URISyntaxException {
 					return new URI ("generated://" + invocation.getArgumentAt (0, TemplateDocument.class).getTemplate ());
@@ -74,7 +83,7 @@ public class DefaultReportComposerTest {
 				public Publisher<ByteString> getBody () {
 					return new SingleValuePublisher<ByteString> (ByteStrings.fromArray (new byte[] { }));
 				}
-			}));
+			}))));
 		
 		composer = new DefaultReportComposer (postProcessor, templateProvider, mapView, documentCache);
 	}
@@ -126,7 +135,7 @@ public class DefaultReportComposerTest {
 		
 		templateNode.put ("id", template);
 		
-		final Document result = composer.compose (JsonFactory.externalize (node)).get ();
+		final Document result = doCompose (JsonFactory.externalize (node));
 		
 		verify (postProcessor).process (templateDocumentCaptor.capture (), documentCaptor.capture (), reportDataCaptor.capture ());
 
@@ -139,6 +148,15 @@ public class DefaultReportComposerTest {
 		assertNotNull (reportData);
 		
 		return result;
+	}
+	
+	private Document doCompose (final ExternalizableJsonNode clientInfo) throws Throwable {
+		final List<PrintEvent> events = StreamProcessor.asList (composer.compose (clientInfo).get (30, TimeUnit.SECONDS)).get (30, TimeUnit.SECONDS);
+		
+		assertTrue (!events.isEmpty ());
+		assertTrue (events.get (events.size () - 1).getEventType ().equals (PrintEvent.EventType.COMPLETE));
+		
+		return events.get (events.size () - 1).getDocument ().get ();
 	}
 	
 	private void mockTemplates () throws Throwable {
