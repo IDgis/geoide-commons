@@ -80,7 +80,7 @@ public class TestHttpDocumentStore {
 		running (fakeApplication (), new Runnable () {
 			@Override
 			public void run () {
-				final HttpDocumentStore store = new HttpDocumentStore (httpClient);
+				final HttpDocumentStore store = new HttpDocumentStore (httpClient, streamProcessor);
 				
 				final Document document;
 				try {
@@ -115,7 +115,7 @@ public class TestHttpDocumentStore {
 		running (fakeApplication (), new Runnable () {
 			@Override
 			public void run () {
-				final HttpDocumentStore store = new HttpDocumentStore (httpClient);
+				final HttpDocumentStore store = new HttpDocumentStore (httpClient, streamProcessor);
 				
 				final Document document;
 				try {
@@ -154,7 +154,7 @@ public class TestHttpDocumentStore {
 		running (fakeApplication (), new Runnable () {
 			@Override
 			public void run () {
-				final HttpDocumentStore store = new HttpDocumentStore (httpClient);
+				final HttpDocumentStore store = new HttpDocumentStore (httpClient, streamProcessor);
 				
 				final Document document;
 				try {

@@ -34,7 +34,7 @@ public class AkkaTransport {
 		}
 		
 		this.actorRefFactory = actorRefFactory;
-		this.transportActor = actorRefFactory.actorOf (TransportActor.props (timeoutInMillis), actorName);
+		this.transportActor = actorRefFactory.actorOf (TransportActor.props (), actorName);
 		this.timeoutInMillis = timeoutInMillis;
 	}
 	

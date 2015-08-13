@@ -12,6 +12,7 @@ import java.util.concurrent.CompletableFuture;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
+import org.reactivestreams.Publisher;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -56,7 +57,8 @@ public class HtmlTemplateDocumentProvider implements TemplateDocumentProvider {
 			try {
 				URI templateURI = new URI("stored://" + UUID.randomUUID ().toString ());
 				
-				final InputStream inputStream = streamProcessor.asInputStream (d.getBody (), 5000);
+				final Publisher<ByteString> body = streamProcessor.resolvePublisherReference (d.getBody (), 5000);
+				final InputStream inputStream = streamProcessor.asInputStream (body, 5000);
 				
 				final byte[] buffer = new byte[4096];
 				ByteString data = ByteStrings.empty ();

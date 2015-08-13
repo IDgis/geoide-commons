@@ -17,14 +17,9 @@ public class TransportActor extends UntypedActor {
 	private final LoggingAdapter log = Logging.getLogger (getContext ().system (), this);
 	
 	private final Map<String, ActorRef> listeners = new HashMap<> ();
-	private final long streamTimeoutInMillis;
 	
-	public TransportActor (final long streamTimeoutInMillis) {
-		this.streamTimeoutInMillis = streamTimeoutInMillis;
-	}
-	
-	public static Props props (final long streamTimeoutInMillis) {
-		return Props.create (TransportActor.class, streamTimeoutInMillis);
+	public static Props props () {
+		return Props.create (TransportActor.class);
 	}
 	
 	@Override
@@ -32,7 +27,7 @@ public class TransportActor extends UntypedActor {
 		if (message instanceof AddListener) {
 			final AddListener addListener = (AddListener) message;
 	
-			final ActorRef ref = context ().actorOf (RemoteMethodServerActor.props (addListener.getServer (), addListener.getName (), streamTimeoutInMillis), addListener.getName ());
+			final ActorRef ref = context ().actorOf (RemoteMethodServerActor.props (addListener.getServer (), addListener.getName ()), addListener.getName ());
 			
 			listeners
 				.put (

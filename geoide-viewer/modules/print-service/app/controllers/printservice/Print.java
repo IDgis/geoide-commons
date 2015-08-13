@@ -5,14 +5,21 @@ import java.io.FileInputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import javax.inject.Inject;
 
+import org.reactivestreams.Publisher;
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
+
+import akka.util.ByteString;
 import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.geoide.commons.domain.api.DocumentCache;
 import nl.idgis.geoide.commons.domain.api.PrintService;
 import nl.idgis.geoide.commons.domain.document.Document;
 import nl.idgis.geoide.commons.domain.print.DocumentReference;
+import nl.idgis.geoide.commons.domain.print.PrintEvent;
 import nl.idgis.geoide.commons.domain.print.PrintRequest;
 import nl.idgis.geoide.util.Promises;
 import nl.idgis.geoide.util.streams.StreamProcessor;
@@ -87,18 +94,44 @@ public class Print extends Controller {
 	}
 	
 	private Promise<Result> doPrint (final URI documentUri, final URI sourceUri) throws Throwable {
-		
-		final Promise<Document> documentPromise = Promises.asPromise (printService.print (new PrintRequest (
+		final Promise<Publisher<PrintEvent>> eventStreamPromise = Promises.asPromise (printService.print (new PrintRequest (
 				new DocumentReference (new MimeContentType ("text/html"), documentUri), 
 				new MimeContentType ("application/pdf"), 
 				getBaseUri (sourceUri)
 			)));
+		
+		return eventStreamPromise.flatMap (eventStream -> {
+			final CompletableFuture<Document> documentFuture = new CompletableFuture<> ();
+			
+			eventStream.subscribe (new Subscriber<PrintEvent> () {
+				@Override
+				public void onComplete () {
+				}
 
-		return documentPromise.map (new Function<Document, Result> () {
-			@Override
-			public Result apply (final Document document) throws Throwable {
-				return ok (streamProcessor.asInputStream (document.getBody (), 1024)).as (document.getContentType ().original ());
-			}
+				@Override
+				public void onError (final Throwable t) {
+					documentFuture.completeExceptionally (t);
+				}
+
+				@Override
+				public void onNext (final PrintEvent event) {
+					if (event.getException ().isPresent ()) {
+						documentFuture.completeExceptionally (event.getException ().get ());
+					} else if (event.getDocument ().isPresent ()) {
+						documentFuture.complete (event.getDocument ().get ());
+					}
+				}
+
+				@Override
+				public void onSubscribe (final Subscription subscription) {
+					subscription.request (Long.MAX_VALUE);
+				}
+			});
+			
+			return Promises.asPromise (documentFuture).map (document -> {
+				final Publisher<ByteString> body = streamProcessor.resolvePublisherReference (document.getBody (), 5000);
+				return ok (streamProcessor.asInputStream (body, 1024)).as (document.getContentType ().original ());
+			});
 		});
 	}
 	

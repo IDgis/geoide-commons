@@ -1,13 +1,15 @@
 package nl.idgis.geoide.commons.report.template;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -27,6 +29,7 @@ import nl.idgis.geoide.commons.domain.document.Document;
 import nl.idgis.geoide.commons.domain.report.TemplateDocument;
 import nl.idgis.geoide.documentcache.service.DelegatingStore;
 import nl.idgis.geoide.documentcache.service.FileStore;
+import nl.idgis.geoide.util.streams.PublisherReference;
 import nl.idgis.geoide.util.streams.SingleValuePublisher;
 import nl.idgis.geoide.util.streams.StreamProcessor;
 
@@ -44,6 +47,7 @@ public class HtmlTemplateDocumentProviderTest {
 		"<html data-pageformat=\"A4\" data-left-margin=\"10\" data-right-margin=\"10\" data-top-margin=\"10\" data-bottom-margin=\"10\" data-page-orientation=\"portrait\" data-gutter-h=\"2\" data-gutter-v=\"2\"><meta name=\"description\" content=\"template-4 description\"><head></head><body><div class=\"block text\" id=\"title\"></div></body></html>"
 	};
 	
+	@SuppressWarnings("unchecked")
 	@Before
 	public void init () {
 		documentStore = mock (DelegatingStore.class);
@@ -51,30 +55,32 @@ public class HtmlTemplateDocumentProviderTest {
 		streamProcessor = mock (StreamProcessor.class);
 		
 		// Mock the document store:
-		when (documentStore.fetch (any (URI.class))).then (invocation -> CompletableFuture.completedFuture (new Document () {
-			@Override
-			public URI getUri () throws URISyntaxException {
-				return invocation.getArgumentAt (0, URI.class);
-			}
-			
-			@Override
-			public MimeContentType getContentType () {
-				return new MimeContentType ("text/html");
-			}
-			
-			@Override
-			public Publisher<ByteString> getBody () {
+		when (documentStore.fetch (any (URI.class))).then (invocation -> {
 				final String uri = invocation.getArgumentAt (0, URI.class).toString ();
 				
 				for (int i = 0; i < templateContent.length; ++ i) {
 					if (uri.contains ("template-" + (i + 1))) {
-						return new SingleValuePublisher<ByteString> (ByteStrings.fromArray (templateContent[i].getBytes ()));
+						return CompletableFuture.completedFuture (new Document (
+								invocation.getArgumentAt (0, URI.class), 
+								new MimeContentType ("text/html"), 
+								streamProcessor.createPublisherReference (
+										new SingleValuePublisher<ByteString> (ByteStrings.fromArray (templateContent[i].getBytes ())),
+										5000
+							)));
 					}
 				}
 				
-				return new SingleValuePublisher<ByteString> (ByteStrings.empty ());
-			}
-		}));
+				final PublisherReference<ByteString> body = streamProcessor.createPublisherReference (
+						new SingleValuePublisher<ByteString> (ByteStrings.empty ()),
+						5000
+					);
+				
+				return CompletableFuture.completedFuture (new Document (
+						invocation.getArgumentAt (0, URI.class),
+						new MimeContentType ("text/html"),
+						body
+					));
+			});
 		
 		// Mock the fileStore:
 		when (fileStore.getDirectories ()).then (invocation -> new File[] {
@@ -86,12 +92,15 @@ public class HtmlTemplateDocumentProviderTest {
 		
 		// Mock the stream processor:
 		when (streamProcessor.asInputStream (any (), anyLong ())).then (invocation -> {
-			@SuppressWarnings("unchecked")
 			final Publisher<ByteString> publisher = (Publisher<ByteString>)invocation.getArgumentAt (0, Publisher.class);
 			final ByteString byteString = extractByteString (publisher);
 			
 			return new ByteArrayInputStream (byteString.toArray ());
 		});
+		when (streamProcessor.createPublisherReference (any (), anyLong ()))
+			.then (invocation -> new StaticPublisherReference<> (invocation.getArgumentAt (0, Publisher.class)));
+		when (streamProcessor.resolvePublisherReference (any (), anyLong ()))
+			.then (invocation -> invocation.getArgumentAt (0, StaticPublisherReference.class).getPublisher ());
 		
 		provider = new HtmlTemplateDocumentProvider (documentStore, fileStore, streamProcessor);
 	}
@@ -230,5 +239,18 @@ public class HtmlTemplateDocumentProviderTest {
 		
 		return result.get ();
 	}
-
+	
+	private final static class StaticPublisherReference<T> implements PublisherReference<T> {
+		private static final long serialVersionUID = 8177248641720307658L;
+		
+		private final Publisher<T> publisher;
+		
+		public StaticPublisherReference (final Publisher<T> publisher) {
+			this.publisher = publisher;
+		}
+		
+		public Publisher<T> getPublisher () {
+			return publisher;
+		}
+	}
 }

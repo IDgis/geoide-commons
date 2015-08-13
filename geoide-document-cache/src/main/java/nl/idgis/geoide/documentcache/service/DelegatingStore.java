@@ -56,6 +56,4 @@ public class DelegatingStore implements DocumentStore {
 			})
 			.thenCompose((f) -> f);
 	}
-	
-
 }

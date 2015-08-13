@@ -12,6 +12,14 @@ import java.net.URI;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import akka.actor.ActorSystem;
+import akka.testkit.JavaTestKit;
+import akka.util.ByteString;
+import akka.util.ByteString.ByteStrings;
 import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.geoide.commons.domain.api.DocumentStore;
 import nl.idgis.geoide.commons.domain.document.Document;
@@ -19,17 +27,8 @@ import nl.idgis.geoide.commons.domain.document.DocumentCacheException;
 import nl.idgis.geoide.commons.domain.document.DocumentCacheException.DocumentNotFoundException;
 import nl.idgis.geoide.util.Futures;
 import nl.idgis.geoide.util.streams.AkkaStreamProcessor;
+import nl.idgis.geoide.util.streams.PublisherReference;
 import nl.idgis.geoide.util.streams.StreamProcessor;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.reactivestreams.Publisher;
-
-import akka.actor.ActorSystem;
-import akka.testkit.JavaTestKit;
-import akka.util.ByteString;
-import akka.util.ByteString.ByteStrings;
 
 /**
  * Tests the default document cache.
@@ -254,7 +253,10 @@ public class TestDefaultDocumentCache {
 	 * @throws IOException
 	 */
 	public static void assertContent (final String expected, final Document document, final StreamProcessor streamProcessor) throws IOException {
-		final InputStream inputStream = streamProcessor.asInputStream (document.getBody (), 5000);
+		final InputStream inputStream = streamProcessor.asInputStream (
+				streamProcessor.resolvePublisherReference (document.getBody (), 5000), 
+				5000
+			);
 		
 		final byte[] buffer = new byte[4096];
 		ByteString data = ByteStrings.empty ();
@@ -295,26 +297,11 @@ public class TestDefaultDocumentCache {
 			try {
 				if (uri.equals (new URI ("http://idgis.nl"))) {
 					++ count;
-					final Document document = new Document () {
-						@Override
-						public URI getUri () {
-							return uri;
-						}
-						
-						@Override
-						public MimeContentType getContentType () {
-							return new MimeContentType ("text/plain");
-						}
-						
-						@Override
-						public Publisher<ByteString> getBody () {
-							try {
-								return streamProcessor.<ByteString>publishSinglevalue (ByteStrings.fromArray (testByteArray ("Hello, World!")).compact ());
-							} catch (Throwable e) {
-								throw new RuntimeException (e);
-							}
-						}
-					};
+					final PublisherReference<ByteString> body = streamProcessor.createPublisherReference (
+							streamProcessor.<ByteString>publishSinglevalue (ByteStrings.fromArray (testByteArray ("Hello, World!")).compact ()),
+							5000
+						);
+					final Document document = new Document (uri, new MimeContentType ("text/plain"), body);
 					
 					return CompletableFuture.completedFuture (document);
 				}

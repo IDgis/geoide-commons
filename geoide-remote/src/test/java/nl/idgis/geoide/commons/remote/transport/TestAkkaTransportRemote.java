@@ -38,6 +38,7 @@ import nl.idgis.geoide.commons.remote.RemoteMethodServer;
 import nl.idgis.geoide.commons.remote.RemoteServiceFactory;
 import nl.idgis.geoide.commons.remote.ServiceRegistration;
 import nl.idgis.geoide.util.streams.AkkaStreamProcessor;
+import nl.idgis.geoide.util.streams.PublisherReference;
 import scala.concurrent.duration.FiniteDuration;
 
 public class TestAkkaTransportRemote extends PublisherVerification<ByteString>{
@@ -142,7 +143,7 @@ public class TestAkkaTransportRemote extends PublisherVerification<ByteString>{
 	@Test
 	public void testInvokeRemoteDocument () throws Throwable {
 		final Document document = clientObject.returnDocument ().get ();
-		final InputStream is = streamProcessors[1].asInputStream (document.getBody (), 5000);
+		final InputStream is = streamProcessors[1].asInputStream (streamProcessors[1].resolvePublisherReference (document.getBody (), 5000), 5000);
 		final byte[] buf = new byte[128];
 		ByteString byteString = ByteString.empty ();
 		int n;
@@ -175,7 +176,7 @@ public class TestAkkaTransportRemote extends PublisherVerification<ByteString>{
 		try {
 			clientObject.returnDocumentOfLength (elements).get ();
 			final Document document = clientObject.returnDocumentOfLength (elements).get ();
-			return document.getBody ();
+			return streamProcessors[1].resolvePublisherReference (document.getBody (), 5000);
 		} catch (Exception t) {
 			throw new RuntimeException (t);
 		}
@@ -214,13 +215,11 @@ public class TestAkkaTransportRemote extends PublisherVerification<ByteString>{
 				+ "provider = \"akka.remote.RemoteActorRefProvider\"\n"
 				+ "serializers {\n"
 					+ "streams = \"nl.idgis.geoide.util.akka.serializers.StreamSerializer\"\n"
-					+ "document = \"nl.idgis.geoide.commons.domain.serializers.DocumentSerializer\"\n"
 					+ "bytestring = \"nl.idgis.geoide.util.akka.serializers.ByteStringSerializer\"\n"
 				+ "}\n"
 				+ "serialization-bindings {\n"
 					+ "\"nl.idgis.geoide.util.streams.AkkaSerializablePublisher\" = streams\n"
 					+ "\"nl.idgis.geoide.util.streams.AkkaSerializableSubscriber\" = streams\n"
-					+ "\"nl.idgis.geoide.commons.domain.document.Document\" = document\n"
 					+ "\"akka.util.ByteString\" = bytestring"
 				+ "}\n"
 				+ "debug {\n"
@@ -308,7 +307,12 @@ public class TestAkkaTransportRemote extends PublisherVerification<ByteString>{
 				writer.print ("Hello, World!");
 			}
 			
-			return CompletableFuture.completedFuture (new TestDocument (streamProcessor.publishByteString (ByteStrings.fromArray (bos.toByteArray ()), 2)));
+			return CompletableFuture.completedFuture (testDocument (
+					streamProcessor.createPublisherReference (
+							streamProcessor.publishByteString (ByteStrings.fromArray (bos.toByteArray ()), 2),
+							5000
+						)
+					));
 		}
 		
 		public CompletableFuture<Document> returnDocumentOfLength (final long count) {
@@ -318,30 +322,24 @@ public class TestAkkaTransportRemote extends PublisherVerification<ByteString>{
 				bytes[i] = (byte)(i / BLOCK_SIZE);
 			}
 			
-			return CompletableFuture.completedFuture (new TestDocument (streamProcessor.publishByteString (ByteStrings.fromArray (bytes), BLOCK_SIZE)));
+			return CompletableFuture.completedFuture (testDocument (
+					streamProcessor.createPublisherReference (
+							streamProcessor.publishByteString (ByteStrings.fromArray (bytes), BLOCK_SIZE),
+							5000
+						)
+					));
 		}
 	}
 	
-	public static class TestDocument implements Document {
-		private final Publisher<ByteString> publisher;
-		
-		public TestDocument (final Publisher<ByteString> publisher) {
-			this.publisher = publisher;
-		}
-		
-		@Override
-		public URI getUri () throws URISyntaxException {
-			return new URI ("http://www.idgis.nl");
-		}
-
-		@Override
-		public MimeContentType getContentType () {
-			return new MimeContentType ("text/html");
-		}
-
-		@Override
-		public Publisher<ByteString> getBody () {
-			return publisher;
+	public static Document testDocument (final PublisherReference<ByteString> body) {
+		try {
+			return new Document (
+					new URI ("http://www.idgis.nl"),
+					new MimeContentType ("text/html"),
+					body
+				);
+		} catch (URISyntaxException e) {
+			throw new RuntimeException (e);
 		}
 	}
 }

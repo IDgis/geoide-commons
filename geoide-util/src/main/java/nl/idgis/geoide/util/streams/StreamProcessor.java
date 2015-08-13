@@ -139,4 +139,23 @@ public interface StreamProcessor {
 	public static <T, R> Publisher<R> map (final Publisher<T> input, final Function<? super T, ? extends R> mapper) {
 		return new MappedPublisher<> (input, mapper);
 	}
+
+	/**
+	 * Creates a serializable publisher reference for the given publisher. The reference can be transformed
+	 * into a publisher at the receiving end.
+	 * 
+	 * @param publisher			The publisher to create a reference for.
+	 * @param timeoutInMillis	The timeout in milliseconds to wait for consumers of the stream.
+	 * @return					A {@link PublisherReference} for the given publisher.
+	 */
+	<T> PublisherReference<T> createPublisherReference (Publisher<T> publisher, long timeoutInMillis);
+	
+	/**
+	 * Resolves a publisher reference back to a publisher.
+	 * 
+	 * @param publisherReference	The publisher reference.
+	 * @param timeoutInMillis		The timeout in milliseconds to wait for elements in the stream.
+	 * @return						The publisher that is referenced by the given input.
+	 */
+	<T> Publisher<T> resolvePublisherReference (PublisherReference<T> publisherReference, long timeoutInMillis);
 }

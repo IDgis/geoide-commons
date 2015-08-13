@@ -43,6 +43,7 @@ import org.xhtmlrenderer.pdf.ITextRenderer;
 import org.xhtmlrenderer.pdf.ITextReplacedElementFactory;
 import org.xhtmlrenderer.pdf.ITextUserAgent;
 
+import akka.util.ByteString;
 import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.geoide.commons.domain.api.DocumentCache;
 import nl.idgis.geoide.commons.domain.api.PrintService;
@@ -188,8 +189,9 @@ public class HtmlPrintService implements PrintService, Closeable {
 					// Load the HTML and convert to an XML document:
 					final String xmlDocument;
 					final String baseUrl = printRequest.getBaseUri () != null ? printRequest.getBaseUri ().toString () : makeBaseUri (cachedDocument.getUri ()).toString ();
-					final String charset = printRequest.getInputDocument ().getContentType ().parameters ().containsKey ("charset") ? printRequest.getInputDocument ().getContentType ().parameters ().get ("charset") : "UTF-8"; 
-					try (final InputStream htmlStream = streamProcessor.asInputStream (cachedDocument.getBody (), cacheTimeoutMillis)) {
+					final String charset = printRequest.getInputDocument ().getContentType ().parameters ().containsKey ("charset") ? printRequest.getInputDocument ().getContentType ().parameters ().get ("charset") : "UTF-8";
+					final Publisher<ByteString> body = streamProcessor.resolvePublisherReference (cachedDocument.getBody (), cacheTimeoutMillis);
+					try (final InputStream htmlStream = streamProcessor.asInputStream (body, cacheTimeoutMillis)) {
 						final org.jsoup.nodes.Document document = Jsoup.parse (htmlStream, charset, baseUrl);
 
 						replaceLess (
@@ -395,7 +397,8 @@ public class HtmlPrintService implements PrintService, Closeable {
 					log.debug ("Importing less script: " + filename);
 					try {
 						final Document lessDocument = documentCache.fetch (new URI (filename)).get (cacheTimeoutMillis, TimeUnit.MILLISECONDS);
-						return Optional.of (readInputStream (streamProcessor.asInputStream (lessDocument.getBody (), cacheTimeoutMillis)));
+						final Publisher<ByteString> body = streamProcessor.resolvePublisherReference (lessDocument.getBody (), 5000);
+						return Optional.of (readInputStream (streamProcessor.asInputStream (body, cacheTimeoutMillis)));
 					} catch (DocumentCacheException | URISyntaxException | TimeoutException | ExecutionException | InterruptedException e) {
 						return Optional.<String>empty ();
 					}
@@ -436,7 +439,8 @@ public class HtmlPrintService implements PrintService, Closeable {
 			 try {
 				 // Attempt to load cached resources:
 				 final Document document = cache.fetch (new URI (uri)).get (timeout, TimeUnit.MILLISECONDS);
-				 return streamProcessor.asInputStream (document.getBody (), timeout);
+				 final Publisher<ByteString> body = streamProcessor.resolvePublisherReference (document.getBody (), timeout);
+				 return streamProcessor.asInputStream (body, timeout);
 			 } catch (URISyntaxException | DocumentCacheException | InterruptedException | ExecutionException | TimeoutException e) {
 				 // Fall back to the default user agent for other requests:
 				 log.warn ("Unable to resolve related document " + uri.toString () + ", falling back to default implementation");
