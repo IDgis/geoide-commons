@@ -115,4 +115,13 @@ public class IndexedRingBuffer<T> {
 	public int getBufferSize () {
 		return bufferSize;
 	}
+
+	/**
+	 * Returns the total size (the highest possible index + 1) of this event stream.
+	 * 
+	 * @return The size of this event stream.
+	 */
+	public long getSize () {
+		return baseIndex + size; 
+	}
 }
