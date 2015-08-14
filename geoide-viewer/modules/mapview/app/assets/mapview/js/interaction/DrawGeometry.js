@@ -122,13 +122,13 @@ define ([
 			}
 			
 			this._interaction = new ol.interaction.Draw (drawConfig);
-			
+				
 			engine._vectorSource.clear ();
-	
-			this._interaction.on ('drawstart', function (e) {
-				self.emit ('drawstart', { });
-			});
 			
+			this._interaction.on ('drawstart', function (e) {
+				self.emit ('drawstart', { feature: e.feature });
+			});
+					
 			this._interaction.on ('drawend', function (e) {
 				e.feature.setStyle(self.defaultStyle);
 				if (olFormat === null) {
