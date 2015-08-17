@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
@@ -12,28 +13,32 @@ import org.reactivestreams.Subscription;
 import akka.actor.ActorRef;
 import akka.actor.PoisonPill;
 import akka.actor.Props;
+import akka.actor.ReceiveTimeout;
 import akka.actor.Terminated;
 import akka.actor.UntypedActor;
 import akka.japi.Procedure;
 import nl.idgis.geoide.util.IndexedRingBuffer;
+import scala.concurrent.duration.Duration;
 
 public class AkkaEventStreamPublisherActor extends UntypedActor {
 	private final Set<ActorRef> subscribers = new HashSet<> ();
 	private final IndexedRingBuffer<Object>	buffer;
+	private final long timeoutInMillis;
 	private boolean completed = false;
 	
-	public AkkaEventStreamPublisherActor (final int windowSize) {
+	public AkkaEventStreamPublisherActor (final int windowSize, final long timeoutInMillis) {
 		this.buffer = new IndexedRingBuffer<> (windowSize);
+		this.timeoutInMillis = timeoutInMillis;
 	}
 	
-	public static Props props (final int windowSize) {
-		return Props.create (AkkaEventStreamPublisherActor.class, windowSize);
+	public static Props props (final int windowSize, final long timeoutInMillis) {
+		return Props.create (AkkaEventStreamPublisherActor.class, windowSize, timeoutInMillis);
 	}
 
 	@Override
 	public void onReceive (final Object message) throws Exception {
 		if (message instanceof Subscriber) {
-			final ActorRef subscriberActor = getContext ().actorOf (SubscriptionActor.props ((Subscriber<?>) message));
+			final ActorRef subscriberActor = getContext ().actorOf (SubscriptionActor.props ((Subscriber<?>) message, timeoutInMillis));
 			getContext ().watch (subscriberActor);
 			subscribers.add (subscriberActor);
 		} else if (message instanceof Terminated) {
@@ -56,6 +61,9 @@ public class AkkaEventStreamPublisherActor extends UntypedActor {
 			sender ().tell (new Response (items, startIndex, completed), self ());
 		} else if (message instanceof AkkaEventStreamPublisher.Complete) {
 			completed = true;
+			getContext ().setReceiveTimeout (Duration.create (timeoutInMillis, TimeUnit.MILLISECONDS));
+		} else if (message instanceof ReceiveTimeout) {
+			getContext ().stop (self ());
 		} else {
 			unhandled (message);
 		}
@@ -103,13 +111,15 @@ public class AkkaEventStreamPublisherActor extends UntypedActor {
 		private final Subscriber<?> subscriber;
 		private long requestCount = 0;
 		private long startIndex = 0;
+		private long timeoutInMillis;
 		
-		public SubscriptionActor (final Subscriber<?> subscriber) {
+		public SubscriptionActor (final Subscriber<?> subscriber, final long timeoutInMillis) {
 			this.subscriber = subscriber;
+			this.timeoutInMillis = timeoutInMillis;
 		}
 		
-		public static Props props (final Subscriber<?> subscriber) {
-			return Props.create (SubscriptionActor.class, subscriber);
+		public static Props props (final Subscriber<?> subscriber, final long timeoutInMillis) {
+			return Props.create (SubscriptionActor.class, subscriber, timeoutInMillis);
 		}
 
 		@Override
@@ -122,7 +132,9 @@ public class AkkaEventStreamPublisherActor extends UntypedActor {
 				@Override
 				public void request (final long count) {
 					if (count <= 0) {
-						throw new IllegalArgumentException ("count should be > 0");
+						subscriber.onError (new IllegalArgumentException ("count should be > 0 (3.9)"));
+						//throw new IllegalArgumentException ("count should be > 0");
+						return;
 					}
 					
 					self.tell (Long.valueOf (count), self);
@@ -133,6 +145,9 @@ public class AkkaEventStreamPublisherActor extends UntypedActor {
 					self.tell (PoisonPill.getInstance (), self);
 				}
 			});
+			
+			// Terminate subscriptions after a timeout:
+			getContext ().setReceiveTimeout (Duration.create (timeoutInMillis, TimeUnit.MILLISECONDS));
 		}
 		
 		@Override
@@ -186,6 +201,8 @@ public class AkkaEventStreamPublisherActor extends UntypedActor {
 						// Return to the pending state±
 						getContext ().unbecome ();
 					}
+				} else if (message instanceof ReceiveTimeout) {
+					getContext ().stop (self ());
 				} else {
 					unhandled (message);
 				}

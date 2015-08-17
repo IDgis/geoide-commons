@@ -10,13 +10,17 @@ import akka.actor.ActorRefFactory;
 public class AkkaEventStreamPublisher<T> implements EventStreamPublisher<T> {
 	private final ActorRef actor;
 	
-	public AkkaEventStreamPublisher (final ActorRefFactory factory, final int windowSize) {
-		actor = factory.actorOf (AkkaEventStreamPublisherActor.props (windowSize));
+	public AkkaEventStreamPublisher (final ActorRefFactory factory, final int windowSize, final long timeoutInMillis) {
+		if (timeoutInMillis <= 0) {
+			throw new IllegalArgumentException ("timeoutInMillis must be > 0");
+		}
+		
+		actor = factory.actorOf (AkkaEventStreamPublisherActor.props (windowSize, timeoutInMillis));
 	}
 
 	@Override
 	public void subscribe (final Subscriber<? super T> subscriber) {
-		actor.tell (subscriber, actor);
+		actor.tell (Objects.requireNonNull (subscriber, "Subscriber cannot be null"), actor);
 	}
 
 	@Override
