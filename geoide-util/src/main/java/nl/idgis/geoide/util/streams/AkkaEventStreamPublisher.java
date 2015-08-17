@@ -32,6 +32,10 @@ public class AkkaEventStreamPublisher<T> implements EventStreamPublisher<T> {
 	public void complete() {
 		actor.tell (new Complete (), actor);
 	}
+	
+	protected ActorRef getActor () {
+		return actor;
+	}
 
 	public static class Publish {
 		private final Object event;

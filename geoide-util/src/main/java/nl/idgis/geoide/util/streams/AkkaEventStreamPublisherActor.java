@@ -172,6 +172,7 @@ public class AkkaEventStreamPublisherActor extends UntypedActor {
 			}
 		}
 		
+		@SuppressWarnings({ "unchecked", "rawtypes" })
 		private Procedure<Object> request () {
 			getContext ().parent ().tell (new Request (startIndex), self ());
 			
