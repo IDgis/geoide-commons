@@ -243,11 +243,15 @@ public class TestHtmlPrintService {
 		try {
 			final List<PrintEvent> printEvents = StreamProcessor.asList (service.print (printRequest).get (30, TimeUnit.SECONDS)).get (30, TimeUnit.SECONDS);
 	
-			assertTrue (!printEvents.isEmpty ());
+			assertTrue ("At least one print event should be reported", !printEvents.isEmpty ());
 			for (int i = 0; i < printEvents.size () - 1; ++ i) {
 				assertTrue (printEvents.get (i).getEventType ().equals (PrintEvent.EventType.PROGRESS));
 			}
-			assertTrue (printEvents.get (printEvents.size () - 1).getEventType ().equals (PrintEvent.EventType.COMPLETE));
+			final PrintEvent lastEvent = printEvents.get (printEvents.size () - 1);
+			if (lastEvent.getEventType ().equals (PrintEvent.EventType.FAILED)) {
+				throw lastEvent.getException ().get ();
+			}
+			assertTrue ("Expected complete event, found: " + lastEvent.getEventType (), lastEvent.getEventType ().equals (PrintEvent.EventType.COMPLETE));
 	
 			return printEvents.get (printEvents.size () - 1).getDocument ().get ();
 		} catch (ExecutionException e) {

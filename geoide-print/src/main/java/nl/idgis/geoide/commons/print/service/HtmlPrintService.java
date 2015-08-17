@@ -58,7 +58,7 @@ import nl.idgis.geoide.commons.print.svg.ChainedReplacedElementFactory;
 import nl.idgis.geoide.commons.print.svg.SVGReplacedElementFactory;
 import nl.idgis.geoide.commons.report.layout.less.LessCompiler;
 import nl.idgis.geoide.util.Futures;
-import nl.idgis.geoide.util.streams.SingleValuePublisher;
+import nl.idgis.geoide.util.streams.EventStreamPublisher;
 import nl.idgis.geoide.util.streams.StreamProcessor;
 
 /**
@@ -169,8 +169,8 @@ public class HtmlPrintService implements PrintService, Closeable {
 			return Futures.throwing (new PrintException.UnsupportedFormat (printRequest.getInputDocument ().getContentType (), printRequest.getOutputFormat ()));
 		}
 		
-		final CompletableFuture<Publisher<PrintEvent>> future = new CompletableFuture<> ();
-
+		final EventStreamPublisher<PrintEvent> eventStream = streamProcessor.createEventStreamPublisher (100, 5000);
+		
         executor.execute (new Runnable () {
 			@Override
 			public void run () {
@@ -238,15 +238,17 @@ public class HtmlPrintService implements PrintService, Closeable {
 					final URI resultUri = new URI ("generated://" + UUID.randomUUID ().toString () + ".pdf");
 					log.debug ("Storing result for " + printRequest.getInputDocument ().getUri ().toString () + " as " + resultUri.toString ());
 					final Document resultDocument = documentCache.store (resultUri, new MimeContentType ("application/pdf"), os.toByteArray ()).get (cacheTimeoutMillis, TimeUnit.MILLISECONDS);
-					
-					future.complete (new SingleValuePublisher<PrintEvent> (new PrintEvent (resultDocument)));
+
+					eventStream.publish (new PrintEvent (resultDocument));
+					eventStream.complete ();
 				} catch (Throwable t) {
-					future.completeExceptionally (t);
+					eventStream.publish (new PrintEvent (t));
+					eventStream.complete ();
 				}
 			}
 		});
         
-		return future;
+        return CompletableFuture.completedFuture (eventStream);
 	}
 
 	/**

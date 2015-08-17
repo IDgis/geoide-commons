@@ -79,6 +79,14 @@ public class AkkaStreamProcessor implements StreamProcessor, Closeable {
 	 * {@inheritDoc}
 	 */
 	@Override
+	public <T> EventStreamPublisher<T> createEventStreamPublisher (final int windowSize, final long timeoutInMillis) {
+		return new AkkaEventStreamPublisher<> (actorRefFactory, windowSize, timeoutInMillis);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public <T> PublisherReference<T> createPublisherReference (final Publisher<T> publisher, final long timeoutInMillis) {
 		if (timeoutInMillis <= 0) {
 			throw new IllegalArgumentException ("timeoutInMillis must be > 0");

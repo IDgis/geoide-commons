@@ -158,4 +158,14 @@ public interface StreamProcessor {
 	 * @return						The publisher that is referenced by the given input.
 	 */
 	<T> Publisher<T> resolvePublisherReference (PublisherReference<T> publisherReference, long timeoutInMillis);
+	
+	/**
+	 * Creates a new event stream publisher with the given window size and timeout for subscribers.
+	 * 
+	 * @param windowSize		The window size: the maximum amount of events that are buffered before
+	 * 							evicting the oldest entries.
+	 * @param timeoutInMillis	The timeout to use for subscribers.
+	 * @return					An event stream publisher.
+	 */
+	<T> EventStreamPublisher<T> createEventStreamPublisher (int windowSize, long timeoutInMillis);
 }

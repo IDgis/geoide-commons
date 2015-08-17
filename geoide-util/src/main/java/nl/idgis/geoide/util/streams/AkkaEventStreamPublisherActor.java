@@ -55,7 +55,7 @@ public class AkkaEventStreamPublisherActor extends UntypedActor {
 			final long startIndex = Math.max (request.getStartIndex (), buffer.getBaseIndex ());
 			
 			for (long i = startIndex; i < buffer.getSize (); ++ i) {
-				items.add (buffer.get (i));
+				items.add (buffer.get (i).get ());
 			}
 			
 			sender ().tell (new Response (items, startIndex, completed), self ());
@@ -195,7 +195,7 @@ public class AkkaEventStreamPublisherActor extends UntypedActor {
 						// Terminate this subscriber if the event stream has completed:
 						subscriber.onComplete ();
 						getContext ().stop (self ());
-					} else if (requestCount > 0) {
+					} else if (requestCount > 0 && !items.isEmpty ()) {
 						// Request more items if there are pending requests:
 						getContext ().become (request ());
 					} else {
