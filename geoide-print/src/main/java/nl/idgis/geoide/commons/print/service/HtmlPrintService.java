@@ -43,6 +43,7 @@ import org.xhtmlrenderer.pdf.ITextRenderer;
 import org.xhtmlrenderer.pdf.ITextReplacedElementFactory;
 import org.xhtmlrenderer.pdf.ITextUserAgent;
 
+import akka.event.EventStream;
 import akka.util.ByteString;
 import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.geoide.commons.domain.api.DocumentCache;
@@ -193,6 +194,8 @@ public class HtmlPrintService implements PrintService, Closeable {
 					final Publisher<ByteString> body = streamProcessor.resolvePublisherReference (cachedDocument.getBody (), cacheTimeoutMillis);
 					try (final InputStream htmlStream = streamProcessor.asInputStream (body, cacheTimeoutMillis)) {
 						final org.jsoup.nodes.Document document = Jsoup.parse (htmlStream, charset, baseUrl);
+						
+						eventStream.publish (new PrintEvent ());
 
 						replaceLess (
 								document, 
@@ -217,7 +220,7 @@ public class HtmlPrintService implements PrintService, Closeable {
 					final ByteArrayOutputStream os = new ByteArrayOutputStream ();
 					
 					final ITextRenderer renderer = new ITextRenderer ();
-					final ResourceLoaderUserAgent callback = new ResourceLoaderUserAgent (renderer.getOutputDevice(), documentCache, streamProcessor, cacheTimeoutMillis);
+					final ResourceLoaderUserAgent callback = new ResourceLoaderUserAgent (renderer.getOutputDevice(), documentCache, streamProcessor, cacheTimeoutMillis, eventStream);
 					callback.setSharedContext (renderer.getSharedContext ());
 					renderer.getSharedContext ().setUserAgentCallback (callback);
 					
@@ -229,9 +232,13 @@ public class HtmlPrintService implements PrintService, Closeable {
 					// Optional: set screen media, otherwise the print style is used.
 					renderer.getSharedContext ().setMedia ("screen");
 
+					eventStream.publish (new PrintEvent ());
 					renderer.setDocumentFromString (xmlDocument, baseUrl.endsWith ("/") ? baseUrl : baseUrl + "/");
+					eventStream.publish (new PrintEvent ());
 					renderer.layout ();
+					eventStream.publish (new PrintEvent ());
 					renderer.createPDF (os);
+					eventStream.publish (new PrintEvent ());
 					
 					// Store the document in the cache:
 					os.close ();
@@ -419,13 +426,15 @@ public class HtmlPrintService implements PrintService, Closeable {
 		 private final DocumentCache cache;
 		 private final StreamProcessor streamProcessor;
 		 private final long timeout;
+		 private final EventStreamPublisher<PrintEvent> eventStream;
 		 
-		 public ResourceLoaderUserAgent (final ITextOutputDevice outputDevice, final DocumentCache cache, final StreamProcessor streamProcessor, final long timeout) {
+		 public ResourceLoaderUserAgent (final ITextOutputDevice outputDevice, final DocumentCache cache, final StreamProcessor streamProcessor, final long timeout, final EventStreamPublisher<PrintEvent> eventStream) {
 			 super (outputDevice);
 			 
 			 this.cache = cache;
 			 this.streamProcessor = streamProcessor;
 			 this.timeout = timeout;
+			 this.eventStream = eventStream;
 		 }
 		 
 		 protected InputStream resolveAndOpenStream (final String uri) {
@@ -439,6 +448,8 @@ public class HtmlPrintService implements PrintService, Closeable {
 			 */
 
 			 try {
+				eventStream.publish (new PrintEvent ());
+					
 				 // Attempt to load cached resources:
 				 final Document document = cache.fetch (new URI (uri)).get (timeout, TimeUnit.MILLISECONDS);
 				 final Publisher<ByteString> body = streamProcessor.resolvePublisherReference (document.getBody (), timeout);

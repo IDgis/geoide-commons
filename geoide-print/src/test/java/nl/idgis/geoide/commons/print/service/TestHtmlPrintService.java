@@ -31,6 +31,7 @@ import nl.idgis.geoide.util.streams.StreamProcessor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.reactivestreams.Publisher;
 
 import akka.actor.ActorSystem;
 import akka.testkit.JavaTestKit;
@@ -241,7 +242,8 @@ public class TestHtmlPrintService {
 			);
 		
 		try {
-			final List<PrintEvent> printEvents = StreamProcessor.asList (service.print (printRequest).get (30, TimeUnit.SECONDS)).get (30, TimeUnit.SECONDS);
+			final Publisher<PrintEvent> stream = service.print (printRequest).get (5, TimeUnit.SECONDS);
+			final List<PrintEvent> printEvents = StreamProcessor.asList (stream).get (5, TimeUnit.SECONDS);
 	
 			assertTrue ("At least one print event should be reported", !printEvents.isEmpty ());
 			for (int i = 0; i < printEvents.size () - 1; ++ i) {

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -101,26 +102,26 @@ public interface StreamProcessor {
 		Objects.requireNonNull (publisher, "publisher cannot be null");
 		
 		final CompletableFuture<List<T>> future = new CompletableFuture<> ();
-		final List<T> result = new ArrayList<> ();
+		final ConcurrentLinkedQueue<T> result = new ConcurrentLinkedQueue<> ();
 		
 		publisher.subscribe (new Subscriber<T> () {
 			@Override
-			public synchronized void onComplete () {
-				future.complete (result);
+			public void onComplete () {
+				future.complete (new ArrayList<> (result));
 			}
 
 			@Override
-			public synchronized void onError (final Throwable exception) {
+			public void onError (final Throwable exception) {
 				future.completeExceptionally (exception);
 			}
 
 			@Override
-			public synchronized void onNext (final T value) {
+			public void onNext (final T value) {
 				result.add (value);
 			}
 
 			@Override
-			public synchronized void onSubscribe (final Subscription subscription) {
+			public void onSubscribe (final Subscription subscription) {
 				subscription.request (Long.MAX_VALUE);
 			}
 		});
