@@ -9,10 +9,20 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.reactivestreams.Publisher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import nl.idgis.geoide.commons.domain.ExternalizableJsonNode;
 import nl.idgis.geoide.commons.domain.api.DocumentCache;
 import nl.idgis.geoide.commons.domain.api.ReportComposer;
-import nl.idgis.geoide.commons.domain.document.Document;
+import nl.idgis.geoide.commons.domain.print.PrintEvent;
 import nl.idgis.geoide.commons.domain.report.TemplateDocument;
 import nl.idgis.geoide.commons.print.service.HtmlPrintService;
 import nl.idgis.geoide.commons.report.blocks.Block;
@@ -28,17 +38,7 @@ import nl.idgis.geoide.commons.report.blocks.TextBlockInfo;
 import nl.idgis.geoide.commons.report.template.HtmlTemplateDocumentProvider;
 import nl.idgis.geoide.map.DefaultMapView;
 import nl.idgis.geoide.util.Futures;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import play.libs.F.Tuple;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 /**
@@ -80,7 +80,7 @@ public class DefaultReportComposer implements ReportComposer {
 	 * @see nl.idgis.geoide.commons.report.ReportComposer#compose(com.fasterxml.jackson.databind.JsonNode)
 	 */
 	@Override
-	public CompletableFuture<Document> compose (final ExternalizableJsonNode clientInfo) throws Throwable {
+	public CompletableFuture<Publisher<PrintEvent>> compose (final ExternalizableJsonNode clientInfo) throws Throwable {
 		Objects.requireNonNull (clientInfo, "clientInfo cannot be null");
 		
 		final JsonNode templateInfo = clientInfo.getJsonNode ().findPath("template");
@@ -99,7 +99,7 @@ public class DefaultReportComposer implements ReportComposer {
 	}
 		
 		
-	private CompletableFuture<Document> composeTemplate (TemplateDocument template, JsonNode clientInfo) throws Throwable {	
+	private CompletableFuture<Publisher<PrintEvent>> composeTemplate (TemplateDocument template, JsonNode clientInfo) throws Throwable {	
 		//parse templateInfo
 		final JsonNode templateInfo = clientInfo.findPath("template");
 		final JsonNode viewerStates = clientInfo.findPath("viewerstates");	

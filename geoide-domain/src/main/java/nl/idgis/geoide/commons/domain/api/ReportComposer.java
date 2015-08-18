@@ -2,8 +2,10 @@ package nl.idgis.geoide.commons.domain.api;
 
 import java.util.concurrent.CompletableFuture;
 
+import org.reactivestreams.Publisher;
+
 import nl.idgis.geoide.commons.domain.ExternalizableJsonNode;
-import nl.idgis.geoide.commons.domain.document.Document;
+import nl.idgis.geoide.commons.domain.print.PrintEvent;
 
 public interface ReportComposer {
 
@@ -13,6 +15,6 @@ public interface ReportComposer {
 	 * @param clientInfo 	client information in the form of a Json Node. 
 	 * @return a promise of a report document (html)
 	 */
-	CompletableFuture<Document> compose (ExternalizableJsonNode clientInfo) throws Throwable;
+	CompletableFuture<Publisher<PrintEvent>> compose (ExternalizableJsonNode clientInfo) throws Throwable;
 
 }

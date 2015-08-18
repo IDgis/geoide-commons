@@ -20,6 +20,7 @@ import nl.idgis.geoide.commons.domain.api.DocumentStore;
 import nl.idgis.geoide.commons.domain.document.Document;
 import nl.idgis.geoide.commons.domain.document.DocumentCacheException;
 import nl.idgis.geoide.util.Futures;
+import nl.idgis.geoide.util.streams.PublisherReference;
 import nl.idgis.geoide.util.streams.StreamProcessor;
 
 import org.mapdb.DB;
@@ -166,22 +167,9 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 			throw new NullPointerException ("body cannot be null");
 		}
 		
-		return store (new Document () {
-			@Override
-			public URI getUri () {
-				return uri;
-			}
-			
-			@Override
-			public MimeContentType getContentType () {
-				return contentType;
-			}
-			
-			@Override
-			public Publisher<ByteString> getBody () {
-				return body;
-			}
-		});
+		final PublisherReference<ByteString> reference = streamProcessor.createPublisherReference (body, 5000);
+				
+		return store (new Document (uri, contentType, reference));
 	}
 	
 	/**
@@ -391,22 +379,12 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 		}
 		
 		private Document createDocument (final ByteStringCachedDocument cachedDocument) {
-			return new Document () {
-				@Override
-				public URI getUri () {
-					return cachedDocument.getUri ();
-				}
-				
-				@Override
-				public MimeContentType getContentType () {
-					return new MimeContentType (cachedDocument.getContentType ());
-				}
-				
-				@Override
-				public Publisher<ByteString> getBody () {
-					return streamProcessor.publishByteString (cachedDocument.getBody (), streamBlockSize);
-				}
-			};
+			final PublisherReference<ByteString> body = streamProcessor.createPublisherReference (
+					streamProcessor.publishByteString (cachedDocument.getBody (), streamBlockSize),
+					5000
+				);
+			
+			return new Document (cachedDocument.getUri (), new MimeContentType (cachedDocument.getContentType ()), body);
 		}
 		
 		private void storeDocument (final Document document) {
@@ -415,7 +393,8 @@ public class DefaultDocumentCache implements DocumentCache, Closeable {
 			final ActorRef sender = sender ();
 			
 			// Reduce the document to a single value in memory:
-			final CompletableFuture<ByteString> promise = streamProcessor.reduce (document.getBody (), ByteStrings.empty (), new BiFunction<ByteString, ByteString, ByteString> () {
+			final Publisher<ByteString> bodyPublisher = streamProcessor.resolvePublisherReference (document.getBody (), 5000);
+			final CompletableFuture<ByteString> promise = streamProcessor.reduce (bodyPublisher, ByteStrings.empty (), new BiFunction<ByteString, ByteString, ByteString> () {
 				@Override
 				public ByteString apply (final ByteString a, final ByteString b) {
 					return a.concat (b);

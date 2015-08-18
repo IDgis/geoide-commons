@@ -4,8 +4,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
+import akka.util.ByteString;
 import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.geoide.commons.domain.api.DocumentCache;
 import nl.idgis.geoide.commons.domain.api.DocumentStore;
@@ -14,11 +16,9 @@ import nl.idgis.geoide.commons.domain.document.DocumentCacheException;
 import nl.idgis.geoide.commons.http.client.HttpClient;
 import nl.idgis.geoide.commons.http.client.HttpRequestBuilder;
 import nl.idgis.geoide.util.Futures;
-
-import org.reactivestreams.Publisher;
-
+import nl.idgis.geoide.util.streams.PublisherReference;
+import nl.idgis.geoide.util.streams.StreamProcessor;
 import play.Logger;
-import akka.util.ByteString;
 
 /**
  * An implementation of {@link DocumentStore} that uses a {@link HttpClient} to retrieve documents
@@ -31,6 +31,7 @@ import akka.util.ByteString;
 public class HttpDocumentStore implements DocumentStore {
 
 	private final HttpClient httpClient;
+	private final StreamProcessor streamProcessor;
 	private final long timeoutInMillis;
 	
 	/**
@@ -39,8 +40,8 @@ public class HttpDocumentStore implements DocumentStore {
 	 * 
 	 * @param httpClient The HTTP client to be used by this component for all outbound HTTP traffic.
 	 */
-	public HttpDocumentStore (final HttpClient httpClient) {
-		this (httpClient, 60000);
+	public HttpDocumentStore (final HttpClient httpClient, final StreamProcessor streamProcessor) {
+		this (httpClient, streamProcessor, 60000);
 	}
 
 	/**
@@ -49,12 +50,9 @@ public class HttpDocumentStore implements DocumentStore {
 	 * @param httpClient		The HTTP client to be used by this component for all outbound HTTP traffic.
 	 * @param timeoutInMillis	The timeout in milliseconds to use for each HTTP request.
 	 */
-	public HttpDocumentStore (final HttpClient httpClient, final long timeoutInMillis) {
-		if (httpClient == null) {
-			throw new NullPointerException ("httpClient cannot be null");
-		}
-		
-		this.httpClient = httpClient;
+	public HttpDocumentStore (final HttpClient httpClient, final StreamProcessor streamProcessor, final long timeoutInMillis) {
+		this.httpClient = Objects.requireNonNull (httpClient, "httpClient cannot be null");
+		this.streamProcessor = Objects.requireNonNull (streamProcessor, "streamProcessor cannot be null");
 		this.timeoutInMillis = timeoutInMillis;
 	}
 
@@ -106,24 +104,9 @@ public class HttpDocumentStore implements DocumentStore {
 				}
 
 				final MimeContentType contentType = new MimeContentType (response.getHeader ("Content-Type"));
-				final Publisher<ByteString> body = response.getBody ();
+				final PublisherReference<ByteString> body = streamProcessor.createPublisherReference (response.getBody (), 5000);
 				
-				return (Document)new Document () {
-					@Override
-					public URI getUri () {
-						return uri;
-					}
-					
-					@Override
-					public MimeContentType getContentType () {
-						return contentType;
-					}
-					
-					@Override
-					public Publisher<ByteString> getBody () {
-						return body;
-					}
-				};
+				return new Document (uri, contentType, body);
 			});
 	}
 }

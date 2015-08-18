@@ -3,14 +3,20 @@ package controllers.printservice;
 
 import java.net.URI;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 
 import javax.inject.Inject;
+
+import org.reactivestreams.Publisher;
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import akka.util.ByteString;
 import i18n.printservice.ReportExceptions;
 import models.core.GeoideMessages;
 import nl.idgis.geoide.commons.domain.JsonFactory;
@@ -18,6 +24,7 @@ import nl.idgis.geoide.commons.domain.api.DocumentCache;
 import nl.idgis.geoide.commons.domain.api.ReportComposer;
 import nl.idgis.geoide.commons.domain.document.Document;
 import nl.idgis.geoide.commons.domain.document.DocumentCacheException;
+import nl.idgis.geoide.commons.domain.print.PrintEvent;
 import nl.idgis.geoide.commons.domain.print.PrintException;
 import nl.idgis.geoide.commons.domain.report.LessCompilationException;
 import nl.idgis.geoide.util.Promises;
@@ -72,7 +79,8 @@ public class Report extends Controller {
 		return documentPromise.map (new Function<Document, Result> () {
 			//@Override
 			public Result apply (final Document document) throws Throwable {
-				return ok (streamProcessor.asInputStream (document.getBody (), 1024)).as (document.getContentType ().original ());
+				final Publisher<ByteString> body = streamProcessor.resolvePublisherReference (document.getBody (), 5000);
+				return ok (streamProcessor.asInputStream (body, 1024)).as (document.getContentType ().original ());
 			}
 		});
 	}
@@ -83,16 +91,48 @@ public class Report extends Controller {
 	}
 	
 	private Promise<Result> doCompose (final JsonNode reportJson) throws Throwable {
-
-		final Promise<Document> documentPromise = Promises.asPromise (composer.compose(JsonFactory.externalize (reportJson)));
 		
-		return documentPromise.map (document -> {
-			Logger.debug ("Received document: " + (document == null ? "null" : document.getClass ().getCanonicalName ()));
-			// Build response:
-			final ObjectNode result = Json.newObject ();
-			result.put ("result", "ok");
-			result.put("reportUrl", document.getUri().toString());
-			return (Result) ok (result);
+		final Promise<Publisher<PrintEvent>> eventStreamPromise = Promises.asPromise (
+				composer.compose (
+						JsonFactory.externalize (reportJson)));
+
+		return eventStreamPromise.flatMap (eventStream -> {
+			final CompletableFuture<Document> documentFuture = new CompletableFuture<> ();
+			
+			eventStream.subscribe (new Subscriber<PrintEvent> () {
+				@Override
+				public void onComplete () {
+				}
+
+				@Override
+				public void onError (final Throwable t) {
+					documentFuture.completeExceptionally (t);
+				}
+
+				@Override
+				public void onNext (final PrintEvent event) {
+					if (event.getException().isPresent ()) {
+						documentFuture.completeExceptionally (event.getException ().get ());
+					} else if (event.getDocument ().isPresent ()) {
+						documentFuture.complete (event.getDocument ().get ());
+					}
+				}
+
+				@Override
+				public void onSubscribe (final Subscription subscription) {
+					subscription.request (Long.MAX_VALUE);
+				}
+			});
+			
+			return Promises.asPromise (documentFuture).map (document -> {
+				Logger.debug ("Received document: " + (document == null ? "null" : document.getClass ().getCanonicalName ()));
+				// Build response:
+				final ObjectNode result = Json.newObject ();
+				result.put ("result", "ok");
+				result.put("reportUrl", document.getUri().toString());
+				return (Result) ok (result);
+				
+			});
 		}).recover ((Throwable throwable) -> {
 			log.error ("Report request returned error", throwable);
 			

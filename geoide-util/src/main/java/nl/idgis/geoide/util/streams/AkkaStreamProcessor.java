@@ -3,6 +3,7 @@ package nl.idgis.geoide.util.streams;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -63,6 +64,7 @@ public class AkkaStreamProcessor implements StreamProcessor, Closeable {
 		actorRefFactory.stop (publishInputStreamContainer);
 		actorRefFactory.stop (asInputStreamContainer);
 	}
+
 	
 	/**
 	 * Returns the ActorRefFactory used by this stream processor, set using the constructor.
@@ -73,6 +75,54 @@ public class AkkaStreamProcessor implements StreamProcessor, Closeable {
 		return actorRefFactory;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public IntervalPublisher createIntervalPublisher (final long intervalInMillis) {
+		return new AkkaIntervalPublisher (actorRefFactory, intervalInMillis);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <T> EventStreamPublisher<T> createEventStreamPublisher (final int windowSize, final long timeoutInMillis) {
+		return new AkkaEventStreamPublisher<> (actorRefFactory, windowSize, timeoutInMillis);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <T> PublisherReference<T> createPublisherReference (final Publisher<T> publisher, final long timeoutInMillis) {
+		if (timeoutInMillis <= 0) {
+			throw new IllegalArgumentException ("timeoutInMillis must be > 0");
+		}
+		
+		final ActorRef actor = actorRefFactory.actorOf (SerializablePublisherActor.props (
+				Objects.requireNonNull (publisher, "publisher cannot be null"), 
+				timeoutInMillis
+			));
+		
+		return new AkkaPublisherReference<> (actor);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <T> Publisher<T> resolvePublisherReference (final PublisherReference<T> publisherReference, final long timeoutInMillis) {
+		if (!(Objects.requireNonNull (publisherReference, "publisherReference cannot be null") instanceof AkkaPublisherReference)) {
+			throw new IllegalArgumentException ("Expected instance of " + AkkaPublisherReference.class.getCanonicalName ());
+		}
+		
+		return new AkkaSerializablePublisher<T> (
+				actorRefFactory, 
+				CompletableFuture.completedFuture (((AkkaPublisherReference<T>) publisherReference).getActorRef ())
+			);
+	}
+	
 	/**
 	 * Uses {@link SingleValuePublisher} to create a publisher that produces a single value.
 	 * 

@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.concurrent.CompletableFuture;
 
 import nl.idgis.geoide.commons.domain.document.Document;
+import nl.idgis.geoide.commons.domain.document.DocumentCacheException;
 
 /**
  * A document store provides access to documents that are identified by a unique URI. The DocumentStore

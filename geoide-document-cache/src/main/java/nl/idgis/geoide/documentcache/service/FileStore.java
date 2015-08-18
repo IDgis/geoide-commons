@@ -6,22 +6,20 @@ import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.util.concurrent.CompletableFuture;
 
+import org.apache.commons.io.FilenameUtils;
+
+import akka.util.ByteString;
 import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.geoide.commons.domain.api.DocumentStore;
 import nl.idgis.geoide.commons.domain.document.Document;
 import nl.idgis.geoide.commons.domain.document.DocumentCacheException;
 import nl.idgis.geoide.util.Futures;
+import nl.idgis.geoide.util.streams.PublisherReference;
 import nl.idgis.geoide.util.streams.StreamProcessor;
-
-import org.apache.commons.io.FilenameUtils;
-import org.reactivestreams.Publisher;
-
 import play.Logger;
-import akka.util.ByteString;
 
 
 /**
@@ -58,24 +56,38 @@ public class FileStore implements DocumentStore {
 	public String getProtocol() {
 		return protocol;
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	
-	@Override
-	public CompletableFuture<Document> fetch (URI fileUri) {
-				
+
+	private File getFile (URI fileUri) throws DocumentCacheException {
 		if (!protocol.equals (fileUri.getScheme ())) {
 			Logger.debug ("Bad scheme: " + fileUri.toString ());
-			return Futures.throwing (new DocumentCacheException.DocumentNotFoundException (fileUri)); 
+			throw new DocumentCacheException.DocumentNotFoundException (fileUri); 
 		}
 		
 		final File file = new File (basePath, fileUri.getPath ());
 		
 		if (!file.getAbsolutePath().startsWith(basePath.getAbsolutePath())) {
 			Logger.debug ("file: " + fileUri.getPath() + " is not on the basepath: " + basePath);
-			return Futures.throwing (new DocumentCacheException.IOError(null));
+			throw new DocumentCacheException.IOError (null);
+		}
+		
+		if (!file.exists () || !file.isFile ()) {
+			throw new DocumentCacheException.DocumentNotFoundException (fileUri);
+		}
+
+		return file;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public CompletableFuture<Document> fetch (URI fileUri) {
+		final File file;
+		
+		try {
+			file = getFile (fileUri);
+		} catch (DocumentCacheException e) {
+			return Futures.throwing (e);
 		}
 		
 		String contentType;
@@ -96,37 +108,23 @@ public class FileStore implements DocumentStore {
 			return Futures.throwing (e); 
 		}
 		
-		String contType = contentType;
+		final String contType = contentType;
+		final PublisherReference<ByteString> bodyReference;
 		
-		Publisher<ByteString> body; 
-
 		try {
-			body = streamProcessor.publishInputStream(new FileInputStream(file), 1024, 30000);
+			 bodyReference = streamProcessor.createPublisherReference (
+					streamProcessor.publishInputStream(new FileInputStream(file), 1024, 30000),
+					5000
+				);			
 		} catch (FileNotFoundException e) {
 			Logger.debug ("Cannot find file on filePath: " + file.getAbsolutePath());
-	    	return Futures.throwing (e);
+	    	return Futures.throwing (new DocumentCacheException.DocumentNotFoundException (fileUri, e));
 		}
 		
 		
-		Document document = new Document () {
-				@Override
-				public URI getUri () throws URISyntaxException  {
-					return fileUri;
-				}
-				
-				@Override
-				public MimeContentType getContentType () {
-					return new MimeContentType(contType);
-				}
-				
-				@Override
-				public Publisher<ByteString> getBody () {
-					return body;
-				}
-			};
+		Document document = new Document (fileUri, new MimeContentType (contType), bodyReference);
 		
 		return CompletableFuture.completedFuture (document);	
-
 	}
 	
 	/**

@@ -1,10 +1,17 @@
 package nl.idgis.geoide.util.streams;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import org.reactivestreams.Publisher;
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
 
 import akka.util.ByteString;
 
@@ -83,4 +90,91 @@ public interface StreamProcessor {
 	 * @return 			A publisher that returns the bytes from the given byte string.
 	 */
 	Publisher<ByteString> publishByteString (ByteString input, int blockSize);
+	
+	/**
+	 * Reads all values from the given publisher and returns them as a list.
+	 * 
+	 * @param publisher	The publisher to read values from.
+	 * @return			A completablefuture that is completed when all elements from the publisher have been consumed.
+	 * 					Completes exceptionally if the publisher returned an error.
+	 */
+	public static <T> CompletableFuture<List<T>> asList (final Publisher<T> publisher) {
+		Objects.requireNonNull (publisher, "publisher cannot be null");
+		
+		final CompletableFuture<List<T>> future = new CompletableFuture<> ();
+		final ConcurrentLinkedQueue<T> result = new ConcurrentLinkedQueue<> ();
+		
+		publisher.subscribe (new Subscriber<T> () {
+			@Override
+			public void onComplete () {
+				future.complete (new ArrayList<> (result));
+			}
+
+			@Override
+			public void onError (final Throwable exception) {
+				future.completeExceptionally (exception);
+			}
+
+			@Override
+			public void onNext (final T value) {
+				result.add (value);
+			}
+
+			@Override
+			public void onSubscribe (final Subscription subscription) {
+				subscription.request (Long.MAX_VALUE);
+			}
+		});
+		
+		return future;
+	}
+	
+	/**
+	 * Returns a new publisher that is created by mapping the values in the given publisher using
+	 * the provided mapper function.
+	 * 
+	 * @param input		The input publisher to transform.
+	 * @param mapper	The mapping function to use when transforming values.
+	 * @return			A new publisher that produces transformed values.
+	 */
+	public static <T, R> Publisher<R> map (final Publisher<T> input, final Function<? super T, ? extends R> mapper) {
+		return new MappedPublisher<> (input, mapper);
+	}
+
+	/**
+	 * Creates a serializable publisher reference for the given publisher. The reference can be transformed
+	 * into a publisher at the receiving end.
+	 * 
+	 * @param publisher			The publisher to create a reference for.
+	 * @param timeoutInMillis	The timeout in milliseconds to wait for consumers of the stream.
+	 * @return					A {@link PublisherReference} for the given publisher.
+	 */
+	<T> PublisherReference<T> createPublisherReference (Publisher<T> publisher, long timeoutInMillis);
+	
+	/**
+	 * Resolves a publisher reference back to a publisher.
+	 * 
+	 * @param publisherReference	The publisher reference.
+	 * @param timeoutInMillis		The timeout in milliseconds to wait for elements in the stream.
+	 * @return						The publisher that is referenced by the given input.
+	 */
+	<T> Publisher<T> resolvePublisherReference (PublisherReference<T> publisherReference, long timeoutInMillis);
+	
+	/**
+	 * Creates a new event stream publisher with the given window size and timeout for subscribers.
+	 * 
+	 * @param windowSize		The window size: the maximum amount of events that are buffered before
+	 * 							evicting the oldest entries.
+	 * @param timeoutInMillis	The timeout to use for subscribers.
+	 * @return					An event stream publisher.
+	 */
+	<T> EventStreamPublisher<T> createEventStreamPublisher (int windowSize, long timeoutInMillis);
+	
+	/**
+	 * Creates a publisher that produces ticks with the given interval when a subscription is made. Allows multi-subscribe.
+	 * 
+	 * @param intervalInMillis		The tick interval in milliseconds.
+	 * @return						
+	 */
+	IntervalPublisher createIntervalPublisher (long intervalInMillis); 
 }

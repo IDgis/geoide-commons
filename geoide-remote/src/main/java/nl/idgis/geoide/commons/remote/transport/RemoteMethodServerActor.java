@@ -1,7 +1,5 @@
 package nl.idgis.geoide.commons.remote.transport;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.concurrent.CompletableFuture;
 
 import org.reactivestreams.Publisher;
@@ -11,9 +9,6 @@ import akka.actor.Props;
 import akka.actor.UntypedActor;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
-import akka.util.ByteString;
-import nl.idgis.geoide.commons.domain.MimeContentType;
-import nl.idgis.geoide.commons.domain.document.Document;
 import nl.idgis.geoide.commons.remote.RemoteMethodCall;
 import nl.idgis.geoide.commons.remote.RemoteMethodServer;
 import nl.idgis.geoide.commons.remote.transport.messages.RemoteMethodCallFailure;
@@ -25,14 +20,12 @@ public class RemoteMethodServerActor extends UntypedActor {
 	private LoggingAdapter log = Logging.getLogger (getContext ().system (), this);
 
 	private final RemoteMethodServer server;
-	private final long streamTimeoutInMillis;
 	
-	public RemoteMethodServerActor (final RemoteMethodServer server, final String name, final long streamTimeoutInMillis) {
+	public RemoteMethodServerActor (final RemoteMethodServer server, final String name) {
 		this.server = server;
-		this.streamTimeoutInMillis = streamTimeoutInMillis;
 	}
 	
-	public static Props props (final RemoteMethodServer server, final String name, final long streamTimeoutInMillis) {
+	public static Props props (final RemoteMethodServer server, final String name) {
 		if (server == null) {
 			throw new NullPointerException ("server cannot be null");
 		}
@@ -40,7 +33,7 @@ public class RemoteMethodServerActor extends UntypedActor {
 			throw new NullPointerException ("name cannot be null");
 		}
 		
-		return Props.create (RemoteMethodServerActor.class, server, name, streamTimeoutInMillis);
+		return Props.create (RemoteMethodServerActor.class, server, name);
 	}
 	
 	@Override
@@ -54,29 +47,21 @@ public class RemoteMethodServerActor extends UntypedActor {
 			try {
 				future = server.invokeMethod (remoteMethodCall);
 			} catch (Throwable t) {
-				log.debug ("Remote method call " + remoteMethodCall + " has thrown an exception", t);
+				log.error (t, "Remote method call " + remoteMethodCall + " has thrown an exception");
 				sender.tell (new RemoteMethodCallFailure (t), self);
 				return;
 			}
 			
 			future.whenComplete ((value, throwable) -> {
 				if (throwable != null) {
-					log.debug ("Remote method call " + remoteMethodCall + " completed exceptionally", throwable);
+					log.error (throwable, "Remote method call " + remoteMethodCall + " completed exceptionally");
 					sender.tell (new RemoteMethodCallFailure (throwable), self);
 				} else {
-					if (value instanceof Document) {
-						final Document document = (Document) value;
-						final ActorRef streamActor = getContext ().actorOf (SerializablePublisherActor.props (document.getBody (), streamTimeoutInMillis));
-						
-						try {
-							sender.tell (new RemoteDocument (
-									document.getUri (), 
-									document.getContentType (), 
-									new AkkaSerializablePublisher<> (getContext (), CompletableFuture.completedFuture (streamActor))
-								), self);
-						} catch (URISyntaxException e) {
-							sender.tell (new RemoteMethodCallFailure (e), self);
-						}
+					if (value instanceof Publisher && ! (value instanceof AkkaSerializablePublisher)) {
+						// Wrap publisher in a serializable publisher:
+						@SuppressWarnings({ "unchecked", "rawtypes" })
+						final ActorRef publisherActor = getContext ().actorOf (SerializablePublisherActor.props ((Publisher) value, 5000));
+						sender.tell (new AkkaSerializablePublisher<Object> (getContext (), CompletableFuture.completedFuture (publisherActor)), self);
 					} else {
 						sender.tell (value, self);
 					}
@@ -84,33 +69,6 @@ public class RemoteMethodServerActor extends UntypedActor {
 			});
 		} else {
 			unhandled (message);
-		}
-	}
-	
-	private static class RemoteDocument implements Document {
-		private final URI uri;
-		private final MimeContentType contentType;
-		private final Publisher<ByteString> body;
-		
-		public RemoteDocument (final URI uri, final MimeContentType contentType, final Publisher<ByteString> body) {
-			this.uri = uri;
-			this.contentType = contentType;
-			this.body = body;
-		}
-		
-		@Override
-		public URI getUri () throws URISyntaxException {
-			return uri;
-		}
-
-		@Override
-		public MimeContentType getContentType () {
-			return contentType;
-		}
-
-		@Override
-		public Publisher<ByteString> getBody () {
-			return body;
 		}
 	}
 }

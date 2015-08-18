@@ -29,12 +29,30 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Attribute;
+import org.jsoup.nodes.DataNode;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import org.jsoup.nodes.TextNode;
+import org.reactivestreams.Publisher;
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xhtmlrenderer.pdf.ITextOutputDevice;
+import org.xhtmlrenderer.pdf.ITextRenderer;
+import org.xhtmlrenderer.pdf.ITextReplacedElementFactory;
+import org.xhtmlrenderer.pdf.ITextUserAgent;
+
+import akka.util.ByteString;
 import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.geoide.commons.domain.api.DocumentCache;
 import nl.idgis.geoide.commons.domain.api.PrintService;
 import nl.idgis.geoide.commons.domain.document.Document;
 import nl.idgis.geoide.commons.domain.document.DocumentCacheException;
 import nl.idgis.geoide.commons.domain.print.Capabilities;
+import nl.idgis.geoide.commons.domain.print.PrintEvent;
 import nl.idgis.geoide.commons.domain.print.PrintException;
 import nl.idgis.geoide.commons.domain.print.PrintRequest;
 import nl.idgis.geoide.commons.domain.report.LessCompilationException;
@@ -42,20 +60,9 @@ import nl.idgis.geoide.commons.print.svg.ChainedReplacedElementFactory;
 import nl.idgis.geoide.commons.print.svg.SVGReplacedElementFactory;
 import nl.idgis.geoide.commons.report.layout.less.LessCompiler;
 import nl.idgis.geoide.util.Futures;
+import nl.idgis.geoide.util.streams.EventStreamPublisher;
+import nl.idgis.geoide.util.streams.IntervalPublisher;
 import nl.idgis.geoide.util.streams.StreamProcessor;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Attribute;
-import org.jsoup.nodes.DataNode;
-import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Node;
-import org.jsoup.nodes.TextNode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.xhtmlrenderer.pdf.ITextOutputDevice;
-import org.xhtmlrenderer.pdf.ITextRenderer;
-import org.xhtmlrenderer.pdf.ITextReplacedElementFactory;
-import org.xhtmlrenderer.pdf.ITextUserAgent;
 
 /**
  * Print service implementation that converts HTML + several linked media to
@@ -157,7 +164,7 @@ public class HtmlPrintService implements PrintService, Closeable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public CompletableFuture<Document> print (final PrintRequest printRequest) {
+	public CompletableFuture<Publisher<PrintEvent>> print (final PrintRequest printRequest) {
 		if (!"text".equals (printRequest.getInputDocument().getContentType ().type ()) 
 				|| !"html".equals (printRequest.getInputDocument().getContentType ().subType ())
 				|| !"application".equals (printRequest.getOutputFormat ().type ())
@@ -165,8 +172,30 @@ public class HtmlPrintService implements PrintService, Closeable {
 			return Futures.throwing (new PrintException.UnsupportedFormat (printRequest.getInputDocument ().getContentType (), printRequest.getOutputFormat ()));
 		}
 		
-		final CompletableFuture<Document> future = new CompletableFuture<> ();
+		final EventStreamPublisher<PrintEvent> eventStream = streamProcessor.createEventStreamPublisher (100, 5000);
+		final IntervalPublisher tickPublisher = streamProcessor.createIntervalPublisher (1000);
+		
+		// Send periodic progress events:
+		tickPublisher.subscribe (new Subscriber<Long> () {
+			@Override
+			public void onComplete () {
+			}
 
+			@Override
+			public void onError (final Throwable t) {
+			}
+
+			@Override
+			public void onNext (final Long value) {
+				eventStream.publish (new PrintEvent ());
+			}
+
+			@Override
+			public void onSubscribe (final Subscription subscription) {
+				subscription.request (Long.MAX_VALUE);
+			}
+		});
+		
         executor.execute (new Runnable () {
 			@Override
 			public void run () {
@@ -185,10 +214,11 @@ public class HtmlPrintService implements PrintService, Closeable {
 					// Load the HTML and convert to an XML document:
 					final String xmlDocument;
 					final String baseUrl = printRequest.getBaseUri () != null ? printRequest.getBaseUri ().toString () : makeBaseUri (cachedDocument.getUri ()).toString ();
-					final String charset = printRequest.getInputDocument ().getContentType ().parameters ().containsKey ("charset") ? printRequest.getInputDocument ().getContentType ().parameters ().get ("charset") : "UTF-8"; 
-					try (final InputStream htmlStream = streamProcessor.asInputStream (cachedDocument.getBody (), cacheTimeoutMillis)) {
+					final String charset = printRequest.getInputDocument ().getContentType ().parameters ().containsKey ("charset") ? printRequest.getInputDocument ().getContentType ().parameters ().get ("charset") : "UTF-8";
+					final Publisher<ByteString> body = streamProcessor.resolvePublisherReference (cachedDocument.getBody (), cacheTimeoutMillis);
+					try (final InputStream htmlStream = streamProcessor.asInputStream (body, cacheTimeoutMillis)) {
 						final org.jsoup.nodes.Document document = Jsoup.parse (htmlStream, charset, baseUrl);
-
+						
 						replaceLess (
 								document, 
 								printRequest.getBaseUri () != null ? printRequest.getBaseUri () : makeBaseUri (cachedDocument.getUri ()),
@@ -233,15 +263,21 @@ public class HtmlPrintService implements PrintService, Closeable {
 					final URI resultUri = new URI ("generated://" + UUID.randomUUID ().toString () + ".pdf");
 					log.debug ("Storing result for " + printRequest.getInputDocument ().getUri ().toString () + " as " + resultUri.toString ());
 					final Document resultDocument = documentCache.store (resultUri, new MimeContentType ("application/pdf"), os.toByteArray ()).get (cacheTimeoutMillis, TimeUnit.MILLISECONDS);
-					
-					future.complete (resultDocument);
+
+					tickPublisher.stop ().thenAccept (r -> {
+						eventStream.publish (new PrintEvent (resultDocument));
+						eventStream.complete ();
+					});
 				} catch (Throwable t) {
-					future.completeExceptionally (t);
+					tickPublisher.stop ().thenAccept (r -> {
+						eventStream.publish (new PrintEvent (t));
+						eventStream.complete ();
+					});
 				}
 			}
 		});
         
-		return future;
+        return CompletableFuture.completedFuture (eventStream);
 	}
 
 	/**
@@ -392,7 +428,8 @@ public class HtmlPrintService implements PrintService, Closeable {
 					log.debug ("Importing less script: " + filename);
 					try {
 						final Document lessDocument = documentCache.fetch (new URI (filename)).get (cacheTimeoutMillis, TimeUnit.MILLISECONDS);
-						return Optional.of (readInputStream (streamProcessor.asInputStream (lessDocument.getBody (), cacheTimeoutMillis)));
+						final Publisher<ByteString> body = streamProcessor.resolvePublisherReference (lessDocument.getBody (), 5000);
+						return Optional.of (readInputStream (streamProcessor.asInputStream (body, cacheTimeoutMillis)));
 					} catch (DocumentCacheException | URISyntaxException | TimeoutException | ExecutionException | InterruptedException e) {
 						return Optional.<String>empty ();
 					}
@@ -433,7 +470,8 @@ public class HtmlPrintService implements PrintService, Closeable {
 			 try {
 				 // Attempt to load cached resources:
 				 final Document document = cache.fetch (new URI (uri)).get (timeout, TimeUnit.MILLISECONDS);
-				 return streamProcessor.asInputStream (document.getBody (), timeout);
+				 final Publisher<ByteString> body = streamProcessor.resolvePublisherReference (document.getBody (), timeout);
+				 return streamProcessor.asInputStream (body, timeout);
 			 } catch (URISyntaxException | DocumentCacheException | InterruptedException | ExecutionException | TimeoutException e) {
 				 // Fall back to the default user agent for other requests:
 				 log.warn ("Unable to resolve related document " + uri.toString () + ", falling back to default implementation");

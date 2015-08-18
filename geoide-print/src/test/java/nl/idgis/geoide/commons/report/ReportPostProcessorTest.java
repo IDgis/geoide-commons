@@ -1,10 +1,13 @@
 package nl.idgis.geoide.commons.report;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.concurrent.CompletableFuture;
 
 import org.jsoup.nodes.Document;
@@ -13,16 +16,14 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.MockitoAnnotations;
-import org.reactivestreams.Publisher;
 
 import akka.util.ByteString;
-import akka.util.ByteString.ByteStrings;
 import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.geoide.commons.domain.api.DocumentCache;
 import nl.idgis.geoide.commons.domain.api.PrintService;
 import nl.idgis.geoide.commons.domain.print.PrintRequest;
 import nl.idgis.geoide.commons.domain.report.TemplateDocument;
-import nl.idgis.geoide.util.streams.SingleValuePublisher;
+import nl.idgis.geoide.util.streams.PublisherReference;
 
 public class ReportPostProcessorTest {
 
@@ -43,43 +44,24 @@ public class ReportPostProcessorTest {
 
 		// Make the mocked document cache return the document immediately:
 		when (documentCache.store (any (URI.class), any (MimeContentType.class), any (byte[].class))).then (invocation -> {
-			return CompletableFuture.completedFuture (new nl.idgis.geoide.commons.domain.document.Document() {
-				
-				@Override
-				public URI getUri () throws URISyntaxException {
-					return invocation.getArgumentAt (0, URI.class);
-				}
-				
-				@Override
-				public MimeContentType getContentType () {
-					return invocation.getArgumentAt (1, MimeContentType.class);
-				}
-				
-				@Override
-				public Publisher<ByteString> getBody () {
-					return new SingleValuePublisher<ByteString> (ByteStrings.fromArray (invocation.getArgumentAt (2, byte[].class)));
-				}
-			});
+			return CompletableFuture.completedFuture (new nl.idgis.geoide.commons.domain.document.Document (
+					invocation.getArgumentAt (0, URI.class),
+					invocation.getArgumentAt (1, MimeContentType.class),
+					new PublisherReference<ByteString> () {
+						private static final long serialVersionUID = 4553437063579695720L; 
+					}
+				));
 		});
 		
 		// Make the mocked print service return a value:
 		when (printService.print (any (PrintRequest.class))).then (invocation -> {
-			return CompletableFuture.completedFuture (new nl.idgis.geoide.commons.domain.document.Document () {
-				@Override
-				public URI getUri () throws URISyntaxException {
-					return new URI ("generated://print-result");
-				}
-				
-				@Override
-				public MimeContentType getContentType () {
-					return new MimeContentType ("application/pdf");
-				}
-				
-				@Override
-				public Publisher<ByteString> getBody() {
-					return new SingleValuePublisher<ByteString> (ByteStrings.fromArray (new byte[] { }));
-				}
-			});
+			return CompletableFuture.completedFuture (new nl.idgis.geoide.commons.domain.document.Document (
+					new URI ("generated://print-result"),
+					new MimeContentType ("application/pdf"),
+					new PublisherReference<ByteString> () {
+						private static final long serialVersionUID = 6917787825571305360L;
+					}
+				));
 		});
 	}
 	

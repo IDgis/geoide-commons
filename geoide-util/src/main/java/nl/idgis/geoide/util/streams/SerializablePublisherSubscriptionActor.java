@@ -116,7 +116,7 @@ public class SerializablePublisherSubscriptionActor extends UntypedActor {
 		return (message) -> {
 			if (message instanceof ReceiveTimeout) {
 				sourceSubscription.cancel ();
-				subscriber.onError (new TimeoutException ());
+				subscriber.onError (new TimeoutException ("Serializable publisher subscription received no data after " + timeoutInMillis + " milliseconds"));
 				getContext ().stop (self ());
 			} else if (message instanceof PublisherRequest) {
 				sourceSubscription.request (((PublisherRequest) message).getCount ());

@@ -31,8 +31,8 @@ public class PrintConfig {
 	@Bean
 	@Qualifier ("printHttpDocumentStore")
 	@Autowired
-	public HttpDocumentStore printHttpDocumentStore (final HttpClient httpClient) {
-		return new HttpDocumentStore (httpClient);
+	public HttpDocumentStore printHttpDocumentStore (final HttpClient httpClient, final StreamProcessor streamProcessor) {
+		return new HttpDocumentStore (httpClient, streamProcessor);
 	}
 	
 	@Bean
