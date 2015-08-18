@@ -79,6 +79,14 @@ public class AkkaStreamProcessor implements StreamProcessor, Closeable {
 	 * {@inheritDoc}
 	 */
 	@Override
+	public IntervalPublisher createIntervalPublisher (final long intervalInMillis) {
+		return new AkkaIntervalPublisher (actorRefFactory, intervalInMillis);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public <T> EventStreamPublisher<T> createEventStreamPublisher (final int windowSize, final long timeoutInMillis) {
 		return new AkkaEventStreamPublisher<> (actorRefFactory, windowSize, timeoutInMillis);
 	}

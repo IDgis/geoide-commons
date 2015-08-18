@@ -36,6 +36,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 import org.reactivestreams.Publisher;
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xhtmlrenderer.pdf.ITextOutputDevice;
@@ -59,6 +61,7 @@ import nl.idgis.geoide.commons.print.svg.SVGReplacedElementFactory;
 import nl.idgis.geoide.commons.report.layout.less.LessCompiler;
 import nl.idgis.geoide.util.Futures;
 import nl.idgis.geoide.util.streams.EventStreamPublisher;
+import nl.idgis.geoide.util.streams.IntervalPublisher;
 import nl.idgis.geoide.util.streams.StreamProcessor;
 
 /**
@@ -170,6 +173,28 @@ public class HtmlPrintService implements PrintService, Closeable {
 		}
 		
 		final EventStreamPublisher<PrintEvent> eventStream = streamProcessor.createEventStreamPublisher (100, 5000);
+		final IntervalPublisher tickPublisher = streamProcessor.createIntervalPublisher (1000);
+		
+		// Send periodic progress events:
+		tickPublisher.subscribe (new Subscriber<Long> () {
+			@Override
+			public void onComplete () {
+			}
+
+			@Override
+			public void onError (final Throwable t) {
+			}
+
+			@Override
+			public void onNext (final Long value) {
+				eventStream.publish (new PrintEvent ());
+			}
+
+			@Override
+			public void onSubscribe (final Subscription subscription) {
+				subscription.request (Long.MAX_VALUE);
+			}
+		});
 		
         executor.execute (new Runnable () {
 			@Override
@@ -194,8 +219,6 @@ public class HtmlPrintService implements PrintService, Closeable {
 					try (final InputStream htmlStream = streamProcessor.asInputStream (body, cacheTimeoutMillis)) {
 						final org.jsoup.nodes.Document document = Jsoup.parse (htmlStream, charset, baseUrl);
 						
-						eventStream.publish (new PrintEvent ());
-
 						replaceLess (
 								document, 
 								printRequest.getBaseUri () != null ? printRequest.getBaseUri () : makeBaseUri (cachedDocument.getUri ()),
@@ -219,7 +242,7 @@ public class HtmlPrintService implements PrintService, Closeable {
 					final ByteArrayOutputStream os = new ByteArrayOutputStream ();
 					
 					final ITextRenderer renderer = new ITextRenderer ();
-					final ResourceLoaderUserAgent callback = new ResourceLoaderUserAgent (renderer.getOutputDevice(), documentCache, streamProcessor, cacheTimeoutMillis, eventStream);
+					final ResourceLoaderUserAgent callback = new ResourceLoaderUserAgent (renderer.getOutputDevice(), documentCache, streamProcessor, cacheTimeoutMillis);
 					callback.setSharedContext (renderer.getSharedContext ());
 					renderer.getSharedContext ().setUserAgentCallback (callback);
 					
@@ -231,13 +254,9 @@ public class HtmlPrintService implements PrintService, Closeable {
 					// Optional: set screen media, otherwise the print style is used.
 					renderer.getSharedContext ().setMedia ("screen");
 
-					eventStream.publish (new PrintEvent ());
 					renderer.setDocumentFromString (xmlDocument, baseUrl.endsWith ("/") ? baseUrl : baseUrl + "/");
-					eventStream.publish (new PrintEvent ());
 					renderer.layout ();
-					eventStream.publish (new PrintEvent ());
 					renderer.createPDF (os);
-					eventStream.publish (new PrintEvent ());
 					
 					// Store the document in the cache:
 					os.close ();
@@ -245,11 +264,15 @@ public class HtmlPrintService implements PrintService, Closeable {
 					log.debug ("Storing result for " + printRequest.getInputDocument ().getUri ().toString () + " as " + resultUri.toString ());
 					final Document resultDocument = documentCache.store (resultUri, new MimeContentType ("application/pdf"), os.toByteArray ()).get (cacheTimeoutMillis, TimeUnit.MILLISECONDS);
 
-					eventStream.publish (new PrintEvent (resultDocument));
-					eventStream.complete ();
+					tickPublisher.stop ().thenAccept (r -> {
+						eventStream.publish (new PrintEvent (resultDocument));
+						eventStream.complete ();
+					});
 				} catch (Throwable t) {
-					eventStream.publish (new PrintEvent (t));
-					eventStream.complete ();
+					tickPublisher.stop ().thenAccept (r -> {
+						eventStream.publish (new PrintEvent (t));
+						eventStream.complete ();
+					});
 				}
 			}
 		});
@@ -425,15 +448,13 @@ public class HtmlPrintService implements PrintService, Closeable {
 		 private final DocumentCache cache;
 		 private final StreamProcessor streamProcessor;
 		 private final long timeout;
-		 private final EventStreamPublisher<PrintEvent> eventStream;
 		 
-		 public ResourceLoaderUserAgent (final ITextOutputDevice outputDevice, final DocumentCache cache, final StreamProcessor streamProcessor, final long timeout, final EventStreamPublisher<PrintEvent> eventStream) {
+		 public ResourceLoaderUserAgent (final ITextOutputDevice outputDevice, final DocumentCache cache, final StreamProcessor streamProcessor, final long timeout) {
 			 super (outputDevice);
 			 
 			 this.cache = cache;
 			 this.streamProcessor = streamProcessor;
 			 this.timeout = timeout;
-			 this.eventStream = eventStream;
 		 }
 		 
 		 protected InputStream resolveAndOpenStream (final String uri) {
@@ -447,8 +468,6 @@ public class HtmlPrintService implements PrintService, Closeable {
 			 */
 
 			 try {
-				eventStream.publish (new PrintEvent ());
-					
 				 // Attempt to load cached resources:
 				 final Document document = cache.fetch (new URI (uri)).get (timeout, TimeUnit.MILLISECONDS);
 				 final Publisher<ByteString> body = streamProcessor.resolvePublisherReference (document.getBody (), timeout);

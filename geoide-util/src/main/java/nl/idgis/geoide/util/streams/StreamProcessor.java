@@ -169,4 +169,12 @@ public interface StreamProcessor {
 	 * @return					An event stream publisher.
 	 */
 	<T> EventStreamPublisher<T> createEventStreamPublisher (int windowSize, long timeoutInMillis);
+	
+	/**
+	 * Creates a publisher that produces ticks with the given interval when a subscription is made. Allows multi-subscribe.
+	 * 
+	 * @param intervalInMillis		The tick interval in milliseconds.
+	 * @return						
+	 */
+	IntervalPublisher createIntervalPublisher (long intervalInMillis); 
 }
