@@ -61,6 +61,9 @@ public class AkkaEventStreamPublisherActor extends UntypedActor {
 			sender ().tell (new Response (items, startIndex, completed), self ());
 		} else if (message instanceof AkkaEventStreamPublisher.Complete) {
 			completed = true;
+			for (final ActorRef subscriber: subscribers) {
+				subscriber.tell (new HasMore (), self ());
+			}
 			getContext ().setReceiveTimeout (Duration.create (timeoutInMillis, TimeUnit.MILLISECONDS));
 		} else if (message instanceof ReceiveTimeout) {
 			getContext ().stop (self ());
@@ -182,16 +185,17 @@ public class AkkaEventStreamPublisherActor extends UntypedActor {
 				} else if (message instanceof Response) {
 					final Response response = (Response) message;
 					final List<Object>items = response.getItems ();
+					int i;
 					
 					startIndex = response.getIndex ();
 					
-					for (int i = 0; i < items.size () && requestCount > 0; ++ i) {
+					for (i = 0; i < items.size () && requestCount > 0; ++ i) {
 						((Subscriber) subscriber).onNext (items.get (i));
 						++ startIndex;
 						-- requestCount;
 					}
-					
-					if (requestCount > 0 && response.isCompleted ()) {
+
+					if (i == items.size () && response.isCompleted ()) {
 						// Terminate this subscriber if the event stream has completed:
 						subscriber.onComplete ();
 						getContext ().stop (self ());

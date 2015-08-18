@@ -43,7 +43,6 @@ import org.xhtmlrenderer.pdf.ITextRenderer;
 import org.xhtmlrenderer.pdf.ITextReplacedElementFactory;
 import org.xhtmlrenderer.pdf.ITextUserAgent;
 
-import akka.event.EventStream;
 import akka.util.ByteString;
 import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.geoide.commons.domain.api.DocumentCache;

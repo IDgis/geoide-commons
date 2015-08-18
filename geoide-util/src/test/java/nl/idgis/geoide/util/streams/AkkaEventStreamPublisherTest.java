@@ -1,5 +1,6 @@
 package nl.idgis.geoide.util.streams;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.reactivestreams.Publisher;
@@ -65,7 +66,7 @@ public class AkkaEventStreamPublisherTest extends PublisherVerification<Integer>
 	
 	@Test
 	public void testActorTermination () throws Throwable {
-		final AkkaEventStreamPublisher<Integer> publisher = new AkkaEventStreamPublisher<> (actorSystem, BUFFER_SIZE, 10);
+		final AkkaEventStreamPublisher<Integer> publisher = new AkkaEventStreamPublisher<> (actorSystem, BUFFER_SIZE, 100);
 		
 		for (int i = 0; i < BUFFER_SIZE; ++ i) {
 			publisher.publish (i);
@@ -73,13 +74,40 @@ public class AkkaEventStreamPublisherTest extends PublisherVerification<Integer>
 		
 		publisher.complete ();
 
-		Thread.sleep (50);
+		Thread.sleep (1000);
 		try {
 			Patterns.ask (publisher.getActor (), new Identify ("Test alive"), 1000).result (Duration.create (500, TimeUnit.MILLISECONDS), new CanAwait () { });
 		} catch (AskTimeoutException e) {
 			return;
 		}
 		
-		fail ("Publisher actor did not terminate 5 seconds after completion");
+		fail ("Publisher actor did not terminate 1 seconds after completion");
+	}
+	
+	@Test
+	public void testSlowPublisher () throws Throwable {
+		final AkkaEventStreamPublisher<Integer> publisher = new AkkaEventStreamPublisher<> (actorSystem, BUFFER_SIZE, 100);
+		
+		final Thread producerThread = new Thread (() -> {
+			for (int i = 0; i < 100; ++ i) {
+				publisher.publish (i);
+				try {
+					Thread.sleep (10);
+				} catch (Exception e) {
+				}
+			}
+			
+			publisher.complete ();
+		});
+		
+		producerThread.start ();
+		
+		final List<Integer> publishedItems = StreamProcessor.asList (publisher).get (5000, TimeUnit.MILLISECONDS);
+		
+		assertEquals (publishedItems.size (), 100);
+		
+		for (int i = 0; i < 100; ++ i) {
+			assertEquals (publishedItems.get (i).intValue (), i);
+		}
 	}
 }

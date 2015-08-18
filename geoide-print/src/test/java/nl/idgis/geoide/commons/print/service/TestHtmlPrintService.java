@@ -243,7 +243,7 @@ public class TestHtmlPrintService {
 		
 		try {
 			final Publisher<PrintEvent> stream = service.print (printRequest).get (5, TimeUnit.SECONDS);
-			final List<PrintEvent> printEvents = StreamProcessor.asList (stream).get (5, TimeUnit.SECONDS);
+			final List<PrintEvent> printEvents = StreamProcessor.asList (stream).get (20, TimeUnit.SECONDS);
 	
 			assertTrue ("At least one print event should be reported", !printEvents.isEmpty ());
 			for (int i = 0; i < printEvents.size () - 1; ++ i) {
