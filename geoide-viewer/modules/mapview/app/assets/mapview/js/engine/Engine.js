@@ -582,7 +582,7 @@ define ([
 		},
 		
 		getScaleForExtent: function (extent) {
-			var resolution = this.olMap.getView ().getResolutionForExtent (extent, this.olMap.getSize ());
+			var resolution = ol.extent.getWidth(extent) / this.olMap.getSize ()[0];
 			var scale = resolution / this.get ('unitsPerPixel');
 			return scale;
 		},
