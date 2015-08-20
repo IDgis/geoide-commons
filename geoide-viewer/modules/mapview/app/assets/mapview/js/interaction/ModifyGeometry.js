@@ -180,7 +180,7 @@ define ([
 				overlay.remove ();
 			}
 			
-			this.features.remove (feature);
+			(this.features ? this.features : this.source.getFeaturesCollection()).remove (feature);
 		},
 		
 		deleteSelected: function () {
