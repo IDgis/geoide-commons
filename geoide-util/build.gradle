@@ -1,0 +1,12 @@
+apply plugin: 'java'
+
+dependencies {
+	compile externalDependency.reactiveStreams
+	compile externalDependency.akkaActor
+
+	provided externalDependency.playWs
+	
+	testCompile externalDependency.junit
+	testCompile externalDependency.reactiveStreamsTck
+	testCompile externalDependency.akkaTestkit
+}

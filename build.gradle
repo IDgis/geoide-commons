@@ -7,7 +7,7 @@ ext {
 	jsoupVersion = "1.8.1"
 	mapdbVersion = "1.0.6"
 	wiremockVersion = "1.53"
-	reactiveStreamsVversion = "1.0.0"
+	reactiveStreamsVersion = "1.0.0"
 	httpcomponentsSsyncclientVersion = "4.0.2"
 	lesscssVersion = "2.3.1"
 	geoapiVersion = "3.0.0"
@@ -37,13 +37,63 @@ ext {
 	commonsLoggingVersion = "1.1.3"
 }
 
+project.ext.externalDependency = [
+	'jacksonDatabind': "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}",
+	'junit': "junit:junit:${junitVersion}",
+	'jts': "com.vividsolutions:jts:${jtsVersion}",
+	'akkaActor': "com.typesafe.akka:akka-actor_${scalaAbiVersion}:${akkaVersion}",
+	'akkaTestkit': "com.typesafe.akka:akka-testkit_${scalaAbiVersion}:${akkaVersion}",
+	'springContext': "org.springframework:spring-context:${springVersion}",
+	'reactiveStreams': "org.reactivestreams:reactive-streams:${reactiveStreamsVersion}",
+	'reactiveStreamsTck': "org.reactivestreams:reactive-streams-tck:${reactiveStreamsVersion}",	
+	'playWs': "com.typesafe.play:play-java-ws_${scalaAbiVersion}:${play2Version}"
+]
+
 allprojects {
+
+	apply plugin: 'java'
 
 	repositories {
 		mavenCentral ()
+		
+		maven {
+			name "idgis-public"
+			url "http://nexus.idgis.eu/content/groups/public/"
+			credentials {
+				username nexusUser 
+				password nexusPassword
+			}
+		}
+		maven {
+			name "idgis-restricted"
+			url "http://nexus.idgis.eu/content/groups/restricted/"
+			credentials {
+				username nexusUser 
+				password nexusPassword
+			}
+		}
+	    ivy {
+	        name "typesafe-ivy-release"
+	        url "https://repo.typesafe.com/typesafe/ivy-releases"
+	        layout "ivy"
+	    }
 	}
 	
 	version = '1.8.0-SNAPSHOT'
+	
+	configurations {
+		provided
+	}
+	
+	sourceSets {
+		main {
+			compileClasspath += configurations.provided
+		}
+		test {
+			compileClasspath += configurations.provided
+			runtimeClasspath += configurations.provided
+		}
+	}
 	
 	dependencies {
 		/*

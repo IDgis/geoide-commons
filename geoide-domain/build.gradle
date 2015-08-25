@@ -1,0 +1,12 @@
+apply plugin: 'java'
+
+dependencies {
+	compile project(':geoide-util')
+	
+	provided externalDependency.jacksonDatabind
+	provided externalDependency.jts
+	provided externalDependency.akkaActor
+	provided externalDependency.springContext
+			
+	testCompile externalDependency.junit
+}
