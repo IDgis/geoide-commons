@@ -1,0 +1,321 @@
+ext {
+	deegree3Version = "3.4-pre17"
+	jtsVersion = "1.13"
+	batikVersion = "1.7"
+	fopVersion = "1.1"
+	flyingSaucerVersion = "9.0.7"
+	jsoupVersion = "1.8.1"
+	mapdbVersion = "1.0.6"
+	wiremockVersion = "1.53"
+	reactiveStreamsVversion = "1.0.0"
+	httpcomponentsSsyncclientVersion = "4.0.2"
+	lesscssVersion = "2.3.1"
+	geoapiVersion = "3.0.0"
+	mockitoVersion = "1.10.19"
+	logbackVersion = "1.1.3"
+	typesafeConfigVersion = "1.3.0-M3"
+
+	// Versions used by the Play framework:	
+	scalaVersion = "2.11.1"
+	play2Version = "2.3.2"
+	scalaAbiVersion = "2.11"
+	jacksonVersion = "2.3.3"
+	jodatimeVersion = "2.3"
+	akkaVersion = "2.3.3"
+	junitVersion = "4.11"
+	springVersion = "4.0.3.RELEASE"
+	nettyVersion = "3.9.2.Final"
+	slf4jVersion = "1.7.6"
+	commonsCodecVersion = "1.9"
+	guavaVersion = "16.0.1"
+	xmlApisVersion = "1.4.01"
+	commonsIoVersion = "2.4"
+	hamcrestVersion = "1.3"
+	httpcomponentsVersion = "4.3.1"
+	xalanVersion = "2.7.1"
+	snakeyamlVersion = "1.13"
+	commonsLoggingVersion = "1.1.3"
+}
+
+allprojects {
+
+	repositories {
+		mavenCentral ()
+	}
+	
+	version = '1.8.0-SNAPSHOT'
+	
+	dependencies {
+		/*
+		springContext = "org.springframework:spring-context:${springVersion}"
+		logbackClassic = "ch.qos.logback:logback-classic:${logbackVersion}"
+		logbackCore = "ch.qos.logback:logback-core:${logbackVersion}"
+		typesafeConfig = "com.typesafe:config:${typesafeConfigVersion}"
+
+		jacksonDatabind = "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
+		jacksonAnnotations = "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}"
+		jacksonCore = "com.fasterxml.jackson.core:jackson-core${jacksonVersion}"
+		
+		playWs = "com.typesafe.play:play-java-ws_${scalaAbiVersion}:${play2Version}"
+		playTest = "com.typesafe.play:play-test_${scalaAbiVersion}:${play2Version}"
+		
+		junit = "junit:junit:${junitVersion}"
+		wiremock = "com.github.tomakehurst:wiremock:${wiremock.version}"
+		*/
+				
+			/*
+				<classifier>standalone</classifier>
+				<exclusions>
+				    <exclusion>
+				      <groupId>org.mortbay.jetty</groupId>
+				      <artifactId>jetty</artifactId>
+				    </exclusion>
+				    <exclusion>
+				      <groupId>com.google.guava</groupId>
+				      <artifactId>guava</artifactId>
+				    </exclusion>
+				    <exclusion>
+				      <groupId>com.fasterxml.jackson.core</groupId>
+				      <artifactId>jackson-core</artifactId>
+				    </exclusion>
+				    <exclusion>
+				      <groupId>com.fasterxml.jackson.core</groupId>
+				      <artifactId>jackson-annotations</artifactId>
+				    </exclusion>
+				    <exclusion>
+				      <groupId>com.fasterxml.jackson.core</groupId>
+				      <artifactId>jackson-databind</artifactId>
+				    </exclusion>
+				    <exclusion>
+				      <groupId>org.apache.httpcomponents</groupId>
+				      <artifactId>httpclient</artifactId>
+				    </exclusion>
+				    <exclusion>
+				      <groupId>org.skyscreamer</groupId>
+				      <artifactId>jsonassert</artifactId>
+				    </exclusion>
+				    <exclusion>
+				      <groupId>xmlunit</groupId>
+				      <artifactId>xmlunit</artifactId>
+				    </exclusion>
+				    <exclusion>
+				      <groupId>com.jayway.jsonpath</groupId>
+				      <artifactId>json-path</artifactId>
+				    </exclusion>
+				    <exclusion>
+				      <groupId>net.sf.jopt-simple</groupId>
+				      <artifactId>jopt-simple</artifactId>
+				    </exclusion>
+				</exclusions>				
+			</dependency>
+
+			<dependency>
+				<groupId>com.typesafe.akka</groupId>
+				<artifactId>akka-actor_${scala.abi.version}</artifactId>
+				<version>${akka.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.typesafe.akka</groupId>
+				<artifactId>akka-remote_${scala.abi.version}</artifactId>
+				<version>${akka.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.typesafe.akka</groupId>
+				<artifactId>akka-slf4j_${scala.abi.version}</artifactId>
+				<version>${akka.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.typesafe.akka</groupId>
+				<artifactId>akka-testkit_${scala.abi.version}</artifactId>
+				<version>${akka.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.reactivestreams</groupId>
+				<artifactId>reactive-streams</artifactId>
+				<version>${reactive-streams.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.reactivestreams</groupId>
+				<artifactId>reactive-streams-tck</artifactId>
+				<version>${reactive-streams.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.mapdb</groupId>
+				<artifactId>mapdb</artifactId>
+				<version>${mapdb.version}</version>
+			</dependency>
+			
+			<!-- deegree dependencies -->
+			<dependency>
+				<groupId>org.deegree</groupId>
+				<artifactId>deegree-core-base</artifactId>
+				<version>${deegree3.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.vividsolutions</groupId>
+				<artifactId>jts</artifactId>
+				<version>${jts.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.opengis</groupId>
+				<artifactId>geoapi</artifactId>
+				<version>${geoapi.version}</version>
+			</dependency>
+			
+			<!-- Apache XMLGraphics (Batik and FOP): -->
+			<dependency>
+				<groupId>org.apache.xmlgraphics</groupId>
+				<artifactId>batik-parser</artifactId>
+				<version>${batik.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.xmlgraphics</groupId>
+				<artifactId>batik-dom</artifactId>
+				<version>${batik.version}</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>xalan</artifactId>
+						<groupId>xalan</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.xmlgraphics</groupId>
+				<artifactId>batik-transcoder</artifactId>
+				<version>${batik.version}</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>xalan</artifactId>
+						<groupId>xalan</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.xmlgraphics</groupId>
+				<artifactId>fop</artifactId>
+				<version>${fop.version}</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>avalon-framework-api</artifactId>
+						<groupId>org.apache.avalon.framework</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>avalon-framework-impl</artifactId>
+						<groupId>org.apache.avalon.framework</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			
+			<!-- Flying saucer and iText: -->
+			<dependency>
+				<groupId>org.xhtmlrenderer</groupId>
+				<artifactId>flying-saucer-pdf</artifactId>
+				<version>${flying.saucer.version}</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.jsoup</groupId>
+			    <artifactId>jsoup</artifactId>
+			    <version>${jsoup.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.webjars</groupId>
+				<artifactId>less-node</artifactId>
+				<version>${lesscss.version}</version>
+			</dependency>
+			
+			<dependency>
+			    <groupId>org.mockito</groupId>
+			    <artifactId>mockito-core</artifactId>
+			    <version>${mockito.version}</version>
+			    <scope>test</scope>
+			</dependency>
+
+			<!-- Conflicting dependencies introduced by idgis-commons: -->
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jcl-over-slf4j</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+			
+			<!-- Conflicting dependencies of the play framework: -->
+			<dependency>
+				<groupId>io.netty</groupId>
+				<artifactId>netty</artifactId>
+				<version>${netty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-codec</groupId>
+				<artifactId>commons-codec</artifactId>
+				<version>${commons-codec.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.guava</groupId>
+				<artifactId>guava</artifactId>
+				<version>${guava.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.scala-lang</groupId>
+				<artifactId>scala-library</artifactId>
+				<version>${scala.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>xml-apis</groupId>
+				<artifactId>xml-apis</artifactId>
+				<version>${xml-apis.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>${commons-io.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.hamcrest</groupId>
+				<artifactId>hamcrest-core</artifactId>
+				<version>${hamcrest.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpclient</artifactId>
+				<version>${httpcomponents.version}</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.apache.httpcomponents</groupId>
+			    <artifactId>httpasyncclient</artifactId>
+			    <version>${httpcomponents-asyncclient.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpcore</artifactId>
+				<version>${httpcomponents.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.scala-lang</groupId>
+				<artifactId>scala-reflect</artifactId>
+				<version>${scala.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>xalan</groupId>
+				<artifactId>xalan</artifactId>
+				<version>${xalan.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.yaml</groupId>
+				<artifactId>snakeyaml</artifactId>
+				<version>${snakeyaml.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-logging</groupId>
+				<artifactId>commons-logging</artifactId>
+				<version>${commons-logging.version}</version>
+			</dependency>
+		*/
+	}
+}
