@@ -2,3 +2,6 @@
 /bin/
 /.cache-main
 /.cache-tests
+/$buildDir/
+/build/
+/.gradle/

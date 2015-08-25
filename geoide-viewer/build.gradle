@@ -1,0 +1,151 @@
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+	
+	dependencies {
+		classpath 'com.github.houbie:lesscss-gradle-plugin:1.0.3-less-1.7.0'
+	}
+}
+
+plugins {
+    id 'play'
+}
+
+allprojects {
+
+	apply plugin: 'play'
+	apply plugin: 'lesscss'
+
+	version '1.8.0-SNAPSHOT'
+	
+	repositories {
+	    jcenter()
+	    mavenCentral()
+	    maven {
+	        name "typesafe-maven-release"
+	        url "https://repo.typesafe.com/typesafe/maven-releases"
+	    }
+	    ivy {
+	        name "typesafe-ivy-release"
+	        url "https://repo.typesafe.com/typesafe/ivy-releases"
+	        layout "ivy"
+	    }
+	    mavenLocal()
+	}
+	
+	model {
+		components {
+			play {
+				platform play: '2.4.0', java: '1.8'
+				
+				sources {
+					resources {
+						source.srcDir "$buildDir/webjar-source"
+					}
+				}
+				
+				binaries.all { binary ->
+					binary.classes.addResourceDir project.file("$buildDir/webjar-source")
+					
+					tasks.create ("copy${binary.name.capitalize()}WebjarPublicAssets", Copy) { task ->
+						from 'public'
+						into "$buildDir/webjar-source/META-INF/resources/webjars/$task.project.name/$task.project.version"
+						
+						binary.classes.builtBy task
+					}
+					
+					tasks.create ("copy${binary.name.capitalize()}WebjarAssets", Copy) { task ->
+						from 'app/assets'
+						into "$buildDir/webjar-source/META-INF/resources/webjars/$task.project.name/$task.project.version"
+						
+						binary.classes.builtBy task
+					}
+					
+					tasks.create ("copy${binary.name.capitalize()}WebjarCompiledAssets", Copy) { task ->
+						from "$buildDir/${binary.name}/minify${binary.name.capitalize()}JavaScript"
+						into "$buildDir/webjar-source/META-INF/resources/webjars/$task.project.name/$task.project.version"
+						
+						binary.classes.builtBy task
+					}
+
+					def lessDestinationDir = "${buildDir}/less/"					
+					def extractLessTask = "extract${binary.name.capitalize()}WebjarsLess"
+					def copyLessTask = "copy${binary.name.capitalize()}Less"
+					
+					binary.assets.addAssetDir project.file (lessDestinationDir)
+					
+					tasks.create (extractLessTask, Copy) { task ->
+						from {
+							configurations.play.collect { 
+								zipTree(it).matching { include 'META-INF/resources/webjars/**' }
+							}
+						}
+						into lessDestinationDir + "lib/"
+						eachFile { details ->
+							def shortPath = (details.path - "META-INF/resources/webjars/")
+							def parts = shortPath.split '/'
+							def result = new StringBuilder ()
+							for (int i = 0; i < parts.length; ++ i) {
+								if (i == 1) {
+									continue;
+								}
+								if (result.length () > 0) {
+									result.append "/"
+								}
+								result.append parts[i]
+							}
+							def targetPath = result.toString ()
+							details.path = targetPath
+						}
+						
+						binary.assets.builtBy task
+					}
+					
+					tasks.create (copyLessTask, Copy) { task ->
+						from "app/assets"
+						into lessDestinationDir
+						include "**/*.less"
+					
+						binary.assets.builtBy task
+						dependsOn extractLessTask
+					}
+					
+					tasks.create ("compile${binary.name.capitalize()}LessAssets", com.github.houbie.gradle.lesscss.LesscTask) { task ->
+						sourceDir lessDestinationDir
+						include "**/*.less"
+						exclude "**/_*.less"
+						exclude "lib/**"
+						destinationDir = project.file("${buildDir}/${binary.name}/lessAssets")
+						
+						binary.assets.addAssetDir destinationDir
+						binary.assets.builtBy task
+						dependsOn copyLessTask
+					}
+				}
+			}
+		}
+	}
+}
+
+dependencies {
+	play project(':geoide-core')
+	play project(':geoide-mapview')
+	play project(':geoide-print-service')
+	play project(':geoide-toc')
+	
+	play 'com.typesafe.akka:akka-remote_2.11:2.3.4'
+		
+	play 'nl.idgis.geoide:geoide-domain:0.1.8-SNAPSHOT'
+	play 'nl.idgis.geoide:geoide-util:0.1.8-SNAPSHOT'
+	play 'nl.idgis.geoide:geoide-remote:0.1.8-SNAPSHOT'
+		
+	play 'org.webjars:webjars-play_2.11:2.4.0'
+	play 'org.webjars:bootstrap:3.2.0'
+	play 'org.webjars:dojo-base:1.10.0-SNAPSHOT'
+	play 'org.webjars:openlayers:3.8.2'
+	play 'org.webjars:put-selector:0.3.5'
+	play 'org.webjars:font-awesome:4.2.0'
+	
+	play 'com.vividsolutions:jts:1.13'
+}

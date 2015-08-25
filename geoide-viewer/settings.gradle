@@ -1,0 +1,6 @@
+include 'geoide-core', 'geoide-mapview', 'geoide-print-service', 'geoide-toc'
+
+project(':geoide-core').projectDir = new File(settingsDir, 'modules/core')
+project(':geoide-mapview').projectDir = new File(settingsDir, 'modules/mapview')
+project(':geoide-print-service').projectDir = new File(settingsDir, 'modules/print-service')
+project(':geoide-toc').projectDir = new File(settingsDir, 'modules/toc')

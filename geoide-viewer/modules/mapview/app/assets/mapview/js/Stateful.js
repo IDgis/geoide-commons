@@ -65,7 +65,7 @@ define ([
 			}
 			
 			var handle = { 
-				callback: callback,
+				callback: callback
 			};
 			
 			this._watchHandles[propertyName].push (handle);
