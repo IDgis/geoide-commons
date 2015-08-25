@@ -1,0 +1,9 @@
+apply plugin: 'java'
+
+dependencies {
+	compile project(':geoide-util')
+	
+	compile externalDependency.springContext
+	compile externalDependency.logbackClassic
+	compile externalDependency.typesafeConfig
+}

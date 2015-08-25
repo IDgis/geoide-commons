@@ -1,0 +1,16 @@
+apply plugin: 'java'
+
+dependencies {
+	compile project(':geoide-domain')
+	compile project(':geoide-layer:geoide-layer-common')
+	compile project(':geoide-layer:geoide-layer-default')
+	compile project(':geoide-service:geoide-service-wms')
+	compile project(':geoide-service:geoide-service-tms')
+	compile project(':geoide-service:geoide-service-common')
+	compile project(':geoide-service:geoide-service-wfs')
+	compile project(':geoide-map')
+	
+	provided externalDependency.akkaActor
+	provided externalDependency.playWs
+	
+}

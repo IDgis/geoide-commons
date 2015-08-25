@@ -1,0 +1,12 @@
+apply plugin: 'java'
+
+dependencies {
+	compile project(':geoide-main')
+	compile project(':geoide-config:geoide-config-akka')
+	compile project(':geoide-config:geoide-config-http')
+	compile project(':geoide-config:geoide-config-print')
+	compile project(':geoide-config:geoide-config-map')
+	compile project(':geoide-config:geoide-config-providers')
+	
+	provided externalDependency.playWs
+}

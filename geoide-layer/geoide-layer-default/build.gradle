@@ -1,0 +1,7 @@
+apply plugin: 'java'
+
+dependencies {
+	compile project(':geoide-layer:geoide-layer-common')
+	
+	provided externalDependency.jacksonDatabind
+}

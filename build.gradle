@@ -39,14 +39,36 @@ ext {
 
 project.ext.externalDependency = [
 	'jacksonDatabind': "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}",
+	'jacksonAnnotations': "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}",
+	'jacksonCore': "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}",
 	'junit': "junit:junit:${junitVersion}",
 	'jts': "com.vividsolutions:jts:${jtsVersion}",
 	'akkaActor': "com.typesafe.akka:akka-actor_${scalaAbiVersion}:${akkaVersion}",
 	'akkaTestkit': "com.typesafe.akka:akka-testkit_${scalaAbiVersion}:${akkaVersion}",
+	'akkaRemote': "com.typesafe.akka:akka-remote_${scala.abi.version}:${akkaVersion}",
 	'springContext': "org.springframework:spring-context:${springVersion}",
 	'reactiveStreams': "org.reactivestreams:reactive-streams:${reactiveStreamsVersion}",
 	'reactiveStreamsTck': "org.reactivestreams:reactive-streams-tck:${reactiveStreamsVersion}",	
-	'playWs': "com.typesafe.play:play-java-ws_${scalaAbiVersion}:${play2Version}"
+	'playWs': "com.typesafe.play:play-java-ws_${scalaAbiVersion}:${play2Version}",
+	'mapdb': "org.mapdb:mapdb${mapdbVersion}",
+	'commonsIo': "commons-io:commons-io:${commonsIoVersion}",
+	'wiremock': "com.github.tomakehurst:wiremock:${wiremock.version}:standalone",
+	'playTest': "com.typesafe.play:play-test_${scalaAbiVersion}:${play2Version}",
+	'httpasyncclient': "org.apache.httpcomponents:httpasyncclient:${httpcomponentsAsyncclientVersion}",
+	'logbackClassic': "ch.qos.logback:logback-classic:${logbackVersion}",
+	'typesafeConfig': "com.typesafe:config:${typesafeConfigVersion}",
+	'deegreeCoreBase': "org.deegree:deegree-core-base:${deegree3Version}",
+	'mockitoCore': "org.mockito:mockito-core:${mockitoVersion}",
+	'batikParser': "org.apache.xmlgraphics:batik-parser:${batikVersion}",
+	'batikDom': "org.apache.xmlgraphics:batik-dom:${batikVersion}",
+	'batikTranscoder': "org.apache.xmlgraphics:batik-transcoder:${batikVersion}",
+	'fop': "org.apache.xmlgraphics:fop:${fopVersion}",
+	'avalonFrameworkApi': "org.apache.avalon.framework:avalon-framework-api:4.3.1",
+	'avalonFrameworkImpl': "org.apache.avalon.framework:avalon-framework-impl:4.3.1",
+	'flyingSaucerPdf': "org.xhtmlrenderer:flying-saucer-pdf:${flyingSaucerVersion}",
+	'jsoup': "org.jsoup:jsoup:${jsoupVersion}",
+	'lessNode': "org.webjars:less-node:${lesscssVersion}",
+	'xalan': "xalan:xalan:${xalanVersion}"
 ]
 
 allprojects {

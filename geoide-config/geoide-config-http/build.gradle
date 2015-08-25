@@ -1,0 +1,6 @@
+apply plugin: 'java'
+
+dependencies {
+	compile project(':geoide-http-client')
+	provided externalDependency.playWs
+}

@@ -1,0 +1,30 @@
+apply plugin: 'java'
+
+dependencies {
+	provided playWs
+	provided akkaActor
+	compile project(':geoide-ogc-client')
+	compile project(':geoide-document-cache')
+	compile project(':geoide-map')
+	test externalDependency.junit
+	test externalDependency.akkaTestkit
+	test externalDependency.mockitoCore
+	
+	compile externalDependency.batikParser
+	compile (externalDependency.batikDom) {
+		exclude group: 'xalan', module: 'xalan'
+	}
+	compile (externalDependency.batikTranscoder) {
+		exclude group: 'xalan', module: 'xalan'
+	}
+	compile (externalDependency.fop) {
+		exclude group: 'org.apache.avalon.framework', module: 'avalon-framework-api'
+		exclude group: 'org.apache.avalon.framework', module: 'avalon-framework-impl'
+	}
+	compile externalDependency.avalonFrameworkApi
+	compile externalDependency.avalonFrameworkImpl
+	compile externalDependency.flyingSaucerPdf
+	compile externalDependency.jsoup
+	compile externalDependency.lessNode
+	compile externalDependency.xalan	
+}
