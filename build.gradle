@@ -90,6 +90,7 @@ allprojects {
 	// Default plugins that are available to all projects:
 	apply plugin: 'lesscss'
 	apply plugin: 'maven'
+	apply plugin: 'eclipse'
 
 	// Provide a default less source and destination directory that applies to all subprojects.
 	// The play projects use their own less tasks with custom configuration.
@@ -144,8 +145,6 @@ allprojects {
 				addFilter ('assets-jar') { artifact, file ->
 					artifact.attributes['classifier'] == 'assets'
 				}
-
-				//pom('assets-jar').classifier = 'assets'				
 			}
 		}
 	}
@@ -165,6 +164,14 @@ configure(subprojects.findAll { !it.path.startsWith(':geoide-viewer') }) {
 		test {
 			compileClasspath += configurations.provided
 			runtimeClasspath += configurations.provided
+		}
+	}
+	
+	eclipse {
+		classpath {
+			plusConfigurations += [ configurations.provided ]
+			downloadSources = true
+			downloadJavadoc = false
 		}
 	}
 }
