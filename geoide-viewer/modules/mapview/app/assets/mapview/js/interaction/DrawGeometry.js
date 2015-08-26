@@ -39,6 +39,7 @@ define ([
 		_interaction: null,
 		
 		constructor: function (parameters) {
+			console.log(parameters);
 			if(parameters.style) {
 				this.defaultStyle = parameters.style;
 			} else {
@@ -100,14 +101,14 @@ define ([
 			
 			switch (this.modifier.toLowerCase ()) {
 				default:
-				case 'shiftKey':
+				case 'shiftkey':
 					condition = ol.events.condition.shiftKeyOnly;
 					break;
 				case 'none':
 					condition = ol.events.condition.noModifierKeys;
 					break;
 			}
-
+			
 			var drawConfig = {
 				type: olType,
 				condition: condition
