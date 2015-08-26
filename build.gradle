@@ -8,7 +8,7 @@ ext {
 	mapdbVersion = "1.0.6"
 	wiremockVersion = "1.53"
 	reactiveStreamsVersion = "1.0.0"
-	httpcomponentsSsyncclientVersion = "4.0.2"
+	httpcomponentsAsyncclientVersion = "4.0.2"
 	lesscssVersion = "2.3.1"
 	geoapiVersion = "3.0.0"
 	mockitoVersion = "1.10.19"
@@ -45,14 +45,14 @@ project.ext.externalDependency = [
 	'jts': "com.vividsolutions:jts:${jtsVersion}",
 	'akkaActor': "com.typesafe.akka:akka-actor_${scalaAbiVersion}:${akkaVersion}",
 	'akkaTestkit': "com.typesafe.akka:akka-testkit_${scalaAbiVersion}:${akkaVersion}",
-	'akkaRemote': "com.typesafe.akka:akka-remote_${scala.abi.version}:${akkaVersion}",
+	'akkaRemote': "com.typesafe.akka:akka-remote_${scalaAbiVersion}:${akkaVersion}",
 	'springContext': "org.springframework:spring-context:${springVersion}",
 	'reactiveStreams': "org.reactivestreams:reactive-streams:${reactiveStreamsVersion}",
 	'reactiveStreamsTck': "org.reactivestreams:reactive-streams-tck:${reactiveStreamsVersion}",	
 	'playWs': "com.typesafe.play:play-java-ws_${scalaAbiVersion}:${play2Version}",
-	'mapdb': "org.mapdb:mapdb${mapdbVersion}",
+	'mapdb': "org.mapdb:mapdb:${mapdbVersion}",
 	'commonsIo': "commons-io:commons-io:${commonsIoVersion}",
-	'wiremock': "com.github.tomakehurst:wiremock:${wiremock.version}:standalone",
+	'wiremock': "com.github.tomakehurst:wiremock:${wiremockVersion}:standalone",
 	'playTest': "com.typesafe.play:play-test_${scalaAbiVersion}:${play2Version}",
 	'httpasyncclient': "org.apache.httpcomponents:httpasyncclient:${httpcomponentsAsyncclientVersion}",
 	'logbackClassic': "ch.qos.logback:logback-classic:${logbackVersion}",
@@ -68,12 +68,15 @@ project.ext.externalDependency = [
 	'flyingSaucerPdf': "org.xhtmlrenderer:flying-saucer-pdf:${flyingSaucerVersion}",
 	'jsoup': "org.jsoup:jsoup:${jsoupVersion}",
 	'lessNode': "org.webjars:less-node:${lesscssVersion}",
-	'xalan': "xalan:xalan:${xalanVersion}"
+	'xalan': "xalan:xalan:${xalanVersion}",
+	'slf4j': "org.slf4j:slf4j-api:${slf4jVersion}"
 ]
 
 allprojects {
 
 	apply plugin: 'java'
+	
+	compileJava.options.encoding = 'UTF-8'
 
 	repositories {
 		mavenCentral ()

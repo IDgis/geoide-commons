@@ -18,7 +18,9 @@ dependencies {
 		exclude group: 'org.codehaus.woodstox', module: 'woodstox-core-lgpl'
 		exclude group: 'org.slf4j', module: 'slf4j-log4j12'
 		exclude group: 'org.apache.geronimo.specs', module: 'geronimo-stax-api_1.0_spec'
+		exclude module: 'vecmath'
 	}
 	
-	test externalDependency.junit
+	compile "java3d:vecmath:1.5.2:@jar"
+	testCompile externalDependency.junit
 }

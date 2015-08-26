@@ -11,8 +11,8 @@ dependencies {
 	provided externalDependency.playWs
 	provided externalDependency.akkaActor
 	
-	test externalDependency.junit
-	test externalDependency.akkaTestkit
-	test externalDependency.wiremock
-	test externalDependency.playTest
+	testCompile externalDependency.junit
+	testCompile externalDependency.akkaTestkit
+	testCompile externalDependency.wiremock
+	testCompile externalDependency.playTest
 }

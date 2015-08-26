@@ -1,0 +1,7 @@
+apply plugin: 'java'
+
+dependencies {
+	compile project(':geoide-service:geoide-service-common')
+	provided externalDependency.playWs
+	provided externalDependency.akkaActor
+}

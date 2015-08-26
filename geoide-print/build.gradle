@@ -1,14 +1,14 @@
 apply plugin: 'java'
 
 dependencies {
-	provided playWs
-	provided akkaActor
+	provided externalDependency.playWs
+	provided externalDependency.akkaActor
 	compile project(':geoide-ogc-client')
 	compile project(':geoide-document-cache')
 	compile project(':geoide-map')
-	test externalDependency.junit
-	test externalDependency.akkaTestkit
-	test externalDependency.mockitoCore
+	testCompile externalDependency.junit
+	testCompile externalDependency.akkaTestkit
+	testCompile externalDependency.mockitoCore
 	
 	compile externalDependency.batikParser
 	compile (externalDependency.batikDom) {

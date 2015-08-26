@@ -1,0 +1,8 @@
+apply plugin: 'java'
+
+dependencies {
+	compile project(':geoide-domain')
+	provided externalDependency.playWs
+	provided externalDependency.akkaActor
+	compile project(':geoide-ogc-client')
+}
