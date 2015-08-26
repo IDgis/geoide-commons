@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-	play project(':geoide-core')
+	play project(':geoide-viewer:geoide-core')
 	
 	play 'com.typesafe.akka:akka-remote_2.11:2.3.4'
 		

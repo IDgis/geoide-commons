@@ -24,6 +24,11 @@ include ':geoide-config:geoide-config-providers'
 include ':geoide-config'
 include ':geoide-app'
 include ':geoide-ogc-client'
+include ':geoide-viewer'
+include ':geoide-viewer:geoide-core'
+include ':geoide-viewer:geoide-mapview'
+include ':geoide-viewer:geoide-print-service'
+include ':geoide-viewer:geoide-toc'
 
 project(':geoide-domain').projectDir = "$rootDir/geoide-domain" as File
 project(':geoide-util').projectDir = "$rootDir/geoide-util" as File
@@ -50,3 +55,8 @@ project(':geoide-config:geoide-config-providers').projectDir = "$rootDir/geoide-
 project(':geoide-config').projectDir = "$rootDir/geoide-config" as File
 project(':geoide-app').projectDir = "$rootDir/geoide-app" as File
 project(':geoide-ogc-client').projectDir = "$rootDir/geoide-ogc-client" as File
+project(':geoide-viewer').projectDir = "$rootDir/geoide-viewer" as File
+project(':geoide-viewer:geoide-core').projectDir = new File(settingsDir, 'geoide-viewer/modules/core')
+project(':geoide-viewer:geoide-mapview').projectDir = new File(settingsDir, 'geoide-viewer/modules/mapview')
+project(':geoide-viewer:geoide-print-service').projectDir = new File(settingsDir, 'geoide-viewer/modules/print-service')
+project(':geoide-viewer:geoide-toc').projectDir = new File(settingsDir, 'geoide-viewer/modules/toc')
