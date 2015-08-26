@@ -83,8 +83,13 @@ project.ext.externalDependency = [
 ]
 
 allprojects {
-	version '1.8.0-SNAPSHOT'
+	// Project metadata (for POM's);
+	version '0.1.8-SNAPSHOT'
+	group 'nl.idgis.geoide'
+	
+	// Default plugins that are available to all projects:
 	apply plugin: 'lesscss'
+	apply plugin: 'maven'
 
 	// Provide a default less source and destination directory that applies to all subprojects.
 	// The play projects use their own less tasks with custom configuration.
@@ -94,7 +99,8 @@ allprojects {
 		exclude "**/_*.less"
 		destinationDir "$buildDir/css"
 	}
-		
+
+	// Configure maven and ivy repositories:		
 	repositories {
 		jcenter ()
 		mavenCentral ()
@@ -120,10 +126,29 @@ allprojects {
 	        url "https://repo.typesafe.com/typesafe/ivy-releases"
 	        layout "ivy"
 	    }
-		mavenLocal()
 	}
 	
-	version = '1.8.0-SNAPSHOT'
+	// Configure the uploadDefault task:
+	uploadDefault {
+		repositories {
+			mavenDeployer {
+				repository(url: (project.version.endsWith("-SNAPSHOT") 
+					? "http://nexus.idgis.eu/content/repositories/restricted-snapshots/"
+					: "http://nexus.idgis.eu/content/repositories/restricted-releases/")) {
+					authentication(userName: nexusUser, password: nexusPassword)
+				}
+				
+				addFilter ('jar') { artifact, file ->
+					artifact.attributes['classifier'] != 'assets'
+				}
+				addFilter ('assets-jar') { artifact, file ->
+					artifact.attributes['classifier'] == 'assets'
+				}
+
+				//pom('assets-jar').classifier = 'assets'				
+			}
+		}
+	}
 	
 	configurations {
 		provided

@@ -7,6 +7,14 @@ allprojects {
 	apply plugin: 'play'
 	apply plugin: 'lesscss'
 	
+	task artifacts(dependsOn: 'build') << {
+		configurations.all.each { c ->
+			c.allArtifacts.each { a ->
+				println "Artifact: " + c.name + ": " + a
+			}
+		} 
+	}	
+	
 	model {
 		components {
 			play {
@@ -99,6 +107,14 @@ allprojects {
 			}
 		}
 	}
+	
+	artifacts {
+		archives (file ("${buildDir}/lib/${project.name}-assets.jar")) {
+			name "${project.name}"
+			type "jar"
+			classifier "assets"
+		}
+	}
 }
 
 dependencies {
@@ -106,12 +122,12 @@ dependencies {
 	play project(':geoide-viewer:geoide-mapview')
 	play project(':geoide-viewer:geoide-print-service')
 	play project(':geoide-viewer:geoide-toc')
-	
+	play project(':geoide-domain')
+	play project(':geoide-util')
+	play project(':geoide-remote')
+		
 	play 'com.typesafe.akka:akka-remote_2.11:2.3.4'
 		
-	play 'nl.idgis.geoide:geoide-domain:0.1.8-SNAPSHOT'
-	play 'nl.idgis.geoide:geoide-util:0.1.8-SNAPSHOT'
-	play 'nl.idgis.geoide:geoide-remote:0.1.8-SNAPSHOT'
 		
 	play 'org.webjars:webjars-play_2.11:2.4.0'
 	play 'org.webjars:bootstrap:3.2.0'
