@@ -2,6 +2,9 @@ package nl.idgis.geoide.service.wfs.actors;
 
 import java.util.Map;
 
+import akka.actor.ActorRef;
+import akka.actor.Props;
+import akka.pattern.Patterns;
 import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.geoide.commons.domain.QName;
 import nl.idgis.geoide.commons.domain.ServiceIdentification;
@@ -24,11 +27,8 @@ import play.Logger;
 import play.libs.F.Callback;
 import play.libs.F.Promise;
 import play.libs.ws.WSClient;
-import play.libs.ws.WSRequestHolder;
+import play.libs.ws.WSRequest;
 import play.libs.ws.WSResponse;
-import akka.actor.ActorRef;
-import akka.actor.Props;
-import akka.pattern.Patterns;
 
 public class WFS extends OGCService {
 
@@ -116,7 +116,7 @@ public class WFS extends OGCService {
 				Logger.debug ("Querying " + wfsFeatureType.namespacePrefix () + ":" + wfsFeatureType.name () + " " + outputFormat);
 				
 				// Construct a request:
-				WSRequestHolder holder = requestForEndpoint (identification ().getServiceEndpoint (), 20000)
+				WSRequest holder = requestForEndpoint (identification ().getServiceEndpoint (), 20000)
 					.setQueryParameter ("service", "WFS")
 					.setQueryParameter ("version", identification ().getServiceVersion ())
 					.setQueryParameter ("request", "GetFeature")
