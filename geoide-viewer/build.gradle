@@ -4,16 +4,10 @@ plugins {
 
 allprojects {
 
+	apply plugin: 'java-base'	// Use the java-base plugin, this provides basic support within the eclipse plugin.
 	apply plugin: 'play'
 	apply plugin: 'lesscss'
-	
-	task artifacts(dependsOn: 'build') << {
-		configurations.all.each { c ->
-			c.allArtifacts.each { a ->
-				println "Artifact: " + c.name + ": " + a
-			}
-		} 
-	}	
+	apply plugin: 'eclipse'
 	
 	model {
 		components {
@@ -108,13 +102,107 @@ allprojects {
 		}
 	}
 	
+	configurations {
+		playJar {
+			defaultDependencies { dependencies ->
+				println play.dependencies
+				println play.dependencies.each { dep -> println dep }
+				
+			 	dependencies.addAll (play.dependencies)
+			}
+		}
+		playAssetsJar
+	}
+	
+	// Support for Play projects is lacking with the eclipse plugin, update the eclipse configuration
+	// so that the correct classpath and source folders are used.
+	// The scala and java natures are added to the generated eclipse projects.
+	eclipse {
+		classpath {
+			plusConfigurations += [ configurations.play ]
+			
+			file {
+				whenMerged { cp ->
+					cp.entries.add (new org.gradle.plugins.ide.eclipse.model.SourceFolder('app', null))
+					cp.entries.add (new org.gradle.plugins.ide.eclipse.model.SourceFolder('test', null))
+					cp.entries.add (new org.gradle.plugins.ide.eclipse.model.SourceFolder("build/playBinary/src/compilePlayBinaryRoutes", null))
+					cp.entries.add (new org.gradle.plugins.ide.eclipse.model.SourceFolder("build/playBinary/src/compilePlayBinaryTwirlTemplates", null))
+				}
+			}
+		}
+		
+		project {
+			natures 'org.scala-ide.sdt.core.scalanature', 'org.eclipse.jdt.core.javanature'
+		}
+	}
+	
+	// Define the artifacts for Play projects:
 	artifacts {
-		archives (file ("${buildDir}/lib/${project.name}-assets.jar")) {
+		playJar (file: file ("${buildDir}/playBinary/lib/${project.name}.jar")) {
+			name "${project.name}"
+			type "jar"
+			builtBy { createPlayBinaryJar }
+		}
+		
+		playAssetsJar (file: file ("${buildDir}/playBinary/lib/${project.name}-assets.jar")) {
 			name "${project.name}"
 			type "jar"
 			classifier "assets"
+			builtBy { createPlayBinaryAssetsJar }
 		}
 	}
+
+	// Configure the upload task for the Play jar:	
+	uploadPlayJar {
+		repositories {
+			mavenDeployer {
+				repository(url: (project.version.endsWith("-SNAPSHOT") 
+					? "http://nexus.idgis.eu/content/repositories/restricted-snapshots/"
+					: "http://nexus.idgis.eu/content/repositories/restricted-releases/")) {
+					authentication(userName: nexusUser, password: nexusPassword)
+				}
+
+				// Customize the POM, add dependencies:
+				pom.whenConfigured { pom ->
+					pom.withXml {
+						def dependenciesNode = asNode ().appendNode ('dependencies')
+						project.configurations.play.allDependencies.each { dep ->
+							def dependencyNode = dependenciesNode.appendNode ('dependency')
+							dependencyNode.appendNode ('groupId', dep.group)
+							dependencyNode.appendNode ('artifactId', dep.name)
+							dependencyNode.appendNode ('version', dep.version)
+							
+							if (dep.excludeRules.size () > 0) {
+								def exclusions = dependencyNode.appendNode ('exclusions')
+								dep.excludeRules.each { ex ->
+									def exclusion = exclusions.appendNode ('exclusion')
+									exclusion.appendNode ('groupId', ex.group)
+									exclusion.appendNode ('artifactId', ex.module)
+								}	
+							}
+						}
+					}
+				}				
+			}
+		}
+	}
+	
+	// Configure the upload task for the Play assets jar:	
+	uploadPlayAssetsJar {
+		repositories {
+			mavenDeployer {
+				repository(url: (project.version.endsWith("-SNAPSHOT") 
+					? "http://nexus.idgis.eu/content/repositories/restricted-snapshots/"
+					: "http://nexus.idgis.eu/content/repositories/restricted-releases/")) {
+					authentication(userName: nexusUser, password: nexusPassword)
+				}
+			}
+		}
+	}
+	
+	// Make the uploadArtifacts task depend on uploadPlayJar and uploadPlayAssetsJar
+	uploadArtifacts.dependsOn uploadPlayJar
+	uploadArtifacts.dependsOn uploadPlayAssetsJar
 }
 
 dependencies {
@@ -126,15 +214,13 @@ dependencies {
 	play project(':geoide-util')
 	play project(':geoide-remote')
 		
-	play 'com.typesafe.akka:akka-remote_2.11:2.3.4'
-		
-		
-	play 'org.webjars:webjars-play_2.11:2.4.0'
-	play 'org.webjars:bootstrap:3.2.0'
-	play 'org.webjars:dojo-base:1.10.0-SNAPSHOT'
-	play 'org.webjars:openlayers:3.8.2'
-	play 'org.webjars:put-selector:0.3.5'
-	play 'org.webjars:font-awesome:4.2.0'
+	play externalDependency.akkaRemote
+	play externalDependency.jts	
 	
-	play 'com.vividsolutions:jts:1.13'
+	play externalDependency.webjarsPlay
+	play externalDependency.webjarsBootstrap
+	play externalDependency.webjarsDojoBase
+	play externalDependency.webjarsOpenLayers
+	play externalDependency.webjarsPutSelector
+	play externalDependency.webjarsFontAwesome	
 }

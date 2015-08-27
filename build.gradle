@@ -1,3 +1,4 @@
+// Add repositories and dependencies for the build script: gradle plugins.
 buildscript {
 	repositories {
 		mavenCentral()
@@ -8,6 +9,7 @@ buildscript {
 	}
 }
 
+// Variables used in dependency management:
 ext {
 	deegree3Version = "3.4-pre17"
 	jtsVersion = "1.13"
@@ -27,11 +29,11 @@ ext {
 
 	// Versions used by the Play framework:	
 	scalaVersion = "2.11.1"
-	play2Version = "2.3.2"
+	play2Version = "2.4.0"
 	scalaAbiVersion = "2.11"
 	jacksonVersion = "2.3.3"
 	jodatimeVersion = "2.3"
-	akkaVersion = "2.3.3"
+	akkaVersion = "2.3.4"
 	junitVersion = "4.11"
 	springVersion = "4.0.3.RELEASE"
 	nettyVersion = "3.9.2.Final"
@@ -47,6 +49,7 @@ ext {
 	commonsLoggingVersion = "1.1.3"
 }
 
+// List all external dependencies that are used by subprojects.
 project.ext.externalDependency = [
 	'jacksonDatabind': "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}",
 	'jacksonAnnotations': "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}",
@@ -79,7 +82,14 @@ project.ext.externalDependency = [
 	'jsoup': "org.jsoup:jsoup:${jsoupVersion}",
 	'lessNode': "org.webjars:less-node:${lesscssVersion}",
 	'xalan': "xalan:xalan:${xalanVersion}",
-	'slf4j': "org.slf4j:slf4j-api:${slf4jVersion}"
+	'slf4j': "org.slf4j:slf4j-api:${slf4jVersion}",
+	
+	'webjarsPlay': "org.webjars:webjars-play_2.11:${play2Version}",
+	'webjarsBootstrap': "org.webjars:bootstrap:3.2.0",
+	'webjarsDojoBase': "org.webjars:dojo-base:1.10.0-SNAPSHOT",
+	'webjarsOpenLayers': "org.webjars:openlayers:3.8.2",
+	'webjarsPutSelector': "org.webjars:put-selector:0.3.5",
+	'webjarsFontAwesome': "org.webjars:font-awesome:4.2.0"
 ]
 
 allprojects {
@@ -90,6 +100,7 @@ allprojects {
 	// Default plugins that are available to all projects:
 	apply plugin: 'lesscss'
 	apply plugin: 'maven'
+	apply plugin: 'maven-publish'
 	apply plugin: 'eclipse'
 
 	// Provide a default less source and destination directory that applies to all subprojects.
@@ -130,7 +141,7 @@ allprojects {
 	}
 	
 	// Configure the uploadDefault task:
-	uploadDefault {
+	uploadArchives {
 		repositories {
 			mavenDeployer {
 				repository(url: (project.version.endsWith("-SNAPSHOT") 
@@ -138,25 +149,39 @@ allprojects {
 					: "http://nexus.idgis.eu/content/repositories/restricted-releases/")) {
 					authentication(userName: nexusUser, password: nexusPassword)
 				}
-				
-				addFilter ('jar') { artifact, file ->
-					artifact.attributes['classifier'] != 'assets'
-				}
-				addFilter ('assets-jar') { artifact, file ->
-					artifact.attributes['classifier'] == 'assets'
-				}
 			}
 		}
 	}
-	
+
+	// Add a "provided" configuration. Dependencies in this configuration are available during
+	// compilation and while testing, but not as transitive dependencies of the project.
 	configurations {
 		provided
 	}
+	
+	// Utility task to list all artifacts in the project.
+	task artifacts(dependsOn: 'build') << {
+		configurations.all.each { c ->
+			c.allArtifacts.each { a ->
+				println "Artifact: " + c.name + ": " + a
+			}
+		} 
+	}
+	
+	// Define an uploadArtifacts task that depends on the upload tasks specific to the
+	// project. This would be uploadArchives for Java projects, for Play applications
+	// this would be uploadPlayJar and uploadPlayAssetsJar  
+	task uploadArtifacts {
+		dependsOn build
+	}	
 }
 
+// Specific configuration for all non-play projects.
 configure(subprojects.findAll { !it.path.startsWith(':geoide-viewer') }) {
 	apply plugin: 'java'
 	
+	// Add provided dependencies to the compile classpath and to the runtime
+	// classpath for tests:
 	sourceSets {
 		main {
 			compileClasspath += configurations.provided
@@ -166,7 +191,8 @@ configure(subprojects.findAll { !it.path.startsWith(':geoide-viewer') }) {
 			runtimeClasspath += configurations.provided
 		}
 	}
-	
+
+	// Configure the eclipse plugin. Provided dependencies are added and sources are downloaded.	
 	eclipse {
 		classpath {
 			plusConfigurations += [ configurations.provided ]
@@ -174,4 +200,10 @@ configure(subprojects.findAll { !it.path.startsWith(':geoide-viewer') }) {
 			downloadJavadoc = false
 		}
 	}
+
+	// Make the uploadArtifacts task depend on uploadArchives:	
+	uploadArtifacts.dependsOn uploadArchives
+}
+
+configure(subprojects.findAll { it.path.startsWith(':geoide-viewer') }) {
 }

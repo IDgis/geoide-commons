@@ -8,14 +8,14 @@ dependencies {
 	play project(':geoide-util')
 	play project(':geoide-remote')
 	
-	play 'com.typesafe.akka:akka-remote_2.11:2.3.4'
+	play externalDependency.akkaRemote
 		
-	play 'org.webjars:webjars-play_2.11:2.4.0'
-	play 'org.webjars:bootstrap:3.2.0'
-	play 'org.webjars:dojo-base:1.10.0-SNAPSHOT'
-	play 'org.webjars:openlayers:3.8.2'
-	play 'org.webjars:put-selector:0.3.5'
-	play 'org.webjars:font-awesome:4.2.0'
+	play externalDependency.webjarsPlay
+	play externalDependency.webjarsBootstrap
+	play externalDependency.webjarsDojoBase
+	play externalDependency.webjarsOpenLayers
+	play externalDependency.webjarsPutSelector
+	play externalDependency.webjarsFontAwesome	
 	
-	play 'com.vividsolutions:jts:1.13'
+	play externalDependency.jts
 }
