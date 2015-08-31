@@ -95,7 +95,7 @@ project.ext.externalDependency = [
 allprojects {
 	// Project metadata (for POM's);
 	version '0.1.8-SNAPSHOT'
-	group 'nl.idgis.geoide'
+	group 'nl.idgis.geoide.gradle'
 	
 	// Default plugins that are available to all projects:
 	apply plugin: 'lesscss'
