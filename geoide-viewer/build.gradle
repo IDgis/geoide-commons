@@ -145,9 +145,8 @@ allprojects {
 		}
 		
 		playAssetsJar (file: file ("${buildDir}/playBinary/lib/${project.name}-assets.jar")) {
-			name "${project.name}"
+			name "${project.name}-assets"
 			type "jar"
-			classifier "assets"
 			builtBy { createPlayBinaryAssetsJar }
 		}
 	}
