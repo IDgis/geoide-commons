@@ -1,0 +1,26 @@
+apply plugin: 'java'
+
+dependencies {
+	compile project(':geoide-domain')
+	
+	provided externalDependency.jacksonCore
+	provided externalDependency.jacksonAnnotations
+	provided externalDependency.jacksonDatabind
+	compile (externalDependency.deegreeCoreBase) {
+		exclude group: 'xerces', module: 'xercesImpl'
+		exclude group: 'xml-apis', module: 'xml-apis'
+		exclude group: 'javax.xml.stream', module: 'stax-api'
+		exclude group: 'xalan', module: 'xalan'
+		exclude group: 'commons-logging', module: 'commons-logging'
+		exclude group: 'com.h2database', module: 'h2'
+		exclude group: 'commons-codec', module: 'commons-codec'
+		exclude group: 'commons-pool', module: 'commons-pool'
+		exclude group: 'org.codehaus.woodstox', module: 'woodstox-core-lgpl'
+		exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+		exclude group: 'org.apache.geronimo.specs', module: 'geronimo-stax-api_1.0_spec'
+		exclude module: 'vecmath'
+	}
+	
+	compile "java3d:vecmath:1.5.2:@jar"
+	testCompile externalDependency.junit
+}

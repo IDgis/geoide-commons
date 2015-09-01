@@ -10,6 +10,11 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
+
+import akka.actor.ActorRef;
+import akka.util.ByteString;
 import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.geoide.commons.domain.ServiceIdentification;
 import nl.idgis.geoide.commons.domain.service.Capabilities;
@@ -23,21 +28,14 @@ import nl.idgis.geoide.service.messages.OGCServiceResponse;
 import nl.idgis.geoide.service.messages.ServiceCapabilities;
 import nl.idgis.services.OGCCapabilities;
 import nl.idgis.services.OGCCapabilities.Operation;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.client.utils.URLEncodedUtils;
-
 import play.Logger;
 import play.libs.F.Callback;
 import play.libs.F.Function;
 import play.libs.F.Function0;
 import play.libs.F.Promise;
-import play.libs.ws.WS;
 import play.libs.ws.WSClient;
-import play.libs.ws.WSRequestHolder;
+import play.libs.ws.WSRequest;
 import play.libs.ws.WSResponse;
-import akka.actor.ActorRef;
-import akka.util.ByteString;
 
 public abstract class OGCService extends Service {
 
@@ -143,7 +141,7 @@ public abstract class OGCService extends Service {
 		}
 		
 		// Create the request holder:
-		WSRequestHolder holder = wsClient ().url (url).setTimeout (requestTimeout ());
+		WSRequest holder = wsClient ().url (url).setRequestTimeout (requestTimeout ());
 		
 		// Add parameters from the endpoint:
 		if (!query.isEmpty ()) {
@@ -275,9 +273,9 @@ public abstract class OGCService extends Service {
 	}
 	
 	private Promise<ServiceMessage> doGetCapabilities (final ActorRef self, final ActorRef sender, final ServiceMessageContext context) {
-		final WSRequestHolder holder = request (identification ())
+		final WSRequest holder = request (identification ())
 				.setQueryParameter ("request", "GetCapabilities")
-				.setTimeout (capabilitiesTimeout ());
+				.setRequestTimeout (capabilitiesTimeout ());
 		
 		Logger.debug (String.format ("Requesting capabilities for service %s", identification ().toString ()));
 		
@@ -291,13 +289,13 @@ public abstract class OGCService extends Service {
 	
 	protected abstract ServiceMessage parseCapabilities (final WSResponse response, final String url, final ActorRef sender, final ActorRef self, final ServiceMessageContext context);
 	
-	private WSRequestHolder request (final ServiceIdentification identification) {
+	private WSRequest request (final ServiceIdentification identification) {
 		return requestForEndpoint (identification.getServiceEndpoint (), capabilitiesTimeout ())
 				.setQueryParameter ("service", service ())
 				.setQueryParameter ("version", identification.getServiceVersion ());
 	}
 	
-	protected WSRequestHolder requestForEndpoint (final String endpoint, final int timeout) {
+	protected WSRequest requestForEndpoint (final String endpoint, final int timeout) {
 		final String url;
 		final String query;
 		final URI uri;
@@ -313,7 +311,7 @@ public abstract class OGCService extends Service {
 		}
 		
 		// Create the request holder:
-		WSRequestHolder holder = wsClient ().url (url).setTimeout (timeout);
+		WSRequest holder = wsClient ().url (url).setRequestTimeout (timeout);
 		
 		// Add parameters from the endpoint:
 		if (!query.isEmpty ()) {

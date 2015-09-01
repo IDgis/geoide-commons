@@ -1,0 +1,18 @@
+apply plugin: 'java'
+
+dependencies {
+	compile project(':geoide-http-client')
+	compile externalDependency.reactiveStreams
+	compile externalDependency.mapdb
+	compile project(':geoide-util')
+	compile project(':geoide-domain')
+	compile externalDependency.commonsIo
+	
+	provided externalDependency.playWs
+	provided externalDependency.akkaActor
+	
+	testCompile externalDependency.junit
+	testCompile externalDependency.akkaTestkit
+	testCompile externalDependency.wiremock
+	testCompile externalDependency.playTest
+}

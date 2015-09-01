@@ -7,6 +7,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import com.google.common.collect.TreeMultimap;
+
+import akka.actor.ActorRef;
+import akka.actor.Props;
+import akka.util.ByteString;
 import nl.idgis.geoide.commons.domain.ServiceIdentification;
 import nl.idgis.geoide.commons.domain.service.Capabilities;
 import nl.idgis.geoide.commons.domain.service.messages.ServiceError;
@@ -30,13 +35,8 @@ import play.libs.F.Function;
 import play.libs.F.Function0;
 import play.libs.F.Promise;
 import play.libs.ws.WSClient;
-import play.libs.ws.WSRequestHolder;
+import play.libs.ws.WSRequest;
 import play.libs.ws.WSResponse;
-import akka.actor.ActorRef;
-import akka.actor.Props;
-import akka.util.ByteString;
-
-import com.google.common.collect.TreeMultimap;
 
 public class TMS extends Service {
 
@@ -154,9 +154,9 @@ public class TMS extends Service {
 		// Construct the url:
 		final String url = tileSet.href ().endsWith ("/") ? tileSet.href () : tileSet.href () + "/";
 		
-		final WSRequestHolder holder = wsClient ()
+		final WSRequest holder = wsClient ()
 				.url (url + x + "/" + y + "." + tileMapLayer.tileFormat ().extension ())
-				.setTimeout (requestTimeout ());
+				.setRequestTimeout (requestTimeout ());
 		
 		return get (
 			holder, 
@@ -224,7 +224,7 @@ public class TMS extends Service {
 		
 		return wsClient ()
 			.url (tileMap.href ())
-			.setTimeout (requestTimeout ())
+			.setRequestTimeout (requestTimeout ())
 			.get ()
 			.map (new Function<WSResponse, TileMapLayer> () {
 				@Override
@@ -263,9 +263,9 @@ public class TMS extends Service {
 	}
 	
 	private Promise<ServiceMessage> doGetCapabilities (final ActorRef self, final ActorRef sender, final ServiceMessageContext context) {
-		final WSRequestHolder holder = wsClient ()
+		final WSRequest holder = wsClient ()
 				.url (identification ().getServiceEndpoint ())
-				.setTimeout (capabilitiesTimeout ());
+				.setRequestTimeout (capabilitiesTimeout ());
 		
 		Logger.debug (String.format ("Requesting capabilities for service %s", identification ().toString ()));
 		

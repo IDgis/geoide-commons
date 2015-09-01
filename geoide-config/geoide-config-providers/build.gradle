@@ -1,0 +1,10 @@
+apply plugin: 'java'
+
+dependencies {
+	compile project(':geoide-domain')
+	compile project(':geoide-util')
+	compile project(':geoide-map')
+	compile externalDependency.jacksonDatabind
+	compile externalDependency.springContext
+	compile externalDependency.slf4j
+}

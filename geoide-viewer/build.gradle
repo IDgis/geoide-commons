@@ -1,0 +1,225 @@
+plugins {
+    id 'play'
+}
+
+allprojects {
+
+	apply plugin: 'java-base'	// Use the java-base plugin, this provides basic support within the eclipse plugin.
+	apply plugin: 'play'
+	apply plugin: 'lesscss'
+	apply plugin: 'eclipse'
+	
+	model {
+		components {
+			play {
+				platform play: '2.4.0', java: '1.8'
+				
+				sources {
+					resources {
+						source.srcDir "$buildDir/webjar-source"
+					}
+				}
+				
+				binaries.all { binary ->
+					binary.classes.addResourceDir project.file("$buildDir/webjar-source")
+					
+					tasks.create ("copy${binary.name.capitalize()}WebjarPublicAssets", Copy) { task ->
+						from 'public'
+						into "$buildDir/webjar-source/META-INF/resources/webjars/$task.project.name/$task.project.version"
+						
+						binary.classes.builtBy task
+					}
+					
+					tasks.create ("copy${binary.name.capitalize()}WebjarAssets", Copy) { task ->
+						from 'app/assets'
+						into "$buildDir/webjar-source/META-INF/resources/webjars/$task.project.name/$task.project.version"
+						
+						binary.classes.builtBy task
+					}
+					
+					tasks.create ("copy${binary.name.capitalize()}WebjarCompiledAssets", Copy) { task ->
+						from "$buildDir/${binary.name}/minify${binary.name.capitalize()}JavaScript"
+						into "$buildDir/webjar-source/META-INF/resources/webjars/$task.project.name/$task.project.version"
+						
+						binary.classes.builtBy task
+					}
+
+					def lessDestinationDir = "${buildDir}/less/"					
+					def extractLessTask = "extract${binary.name.capitalize()}WebjarsLess"
+					def copyLessTask = "copy${binary.name.capitalize()}Less"
+					
+					binary.assets.addAssetDir project.file (lessDestinationDir)
+					
+					tasks.create (extractLessTask, Copy) { task ->
+						from {
+							configurations.play.collect { 
+								zipTree(it).matching { include 'META-INF/resources/webjars/**' }
+							}
+						}
+						into lessDestinationDir + "lib/"
+						eachFile { details ->
+							def shortPath = (details.path - "META-INF/resources/webjars/")
+							def parts = shortPath.split '/'
+							def result = new StringBuilder ()
+							for (int i = 0; i < parts.length; ++ i) {
+								if (i == 1) {
+									continue;
+								}
+								if (result.length () > 0) {
+									result.append "/"
+								}
+								result.append parts[i]
+							}
+							def targetPath = result.toString ()
+							details.path = targetPath
+						}
+						
+						binary.assets.builtBy task
+					}
+					
+					tasks.create (copyLessTask, Copy) { task ->
+						from "app/assets"
+						into lessDestinationDir
+						include "**/*.less"
+					
+						binary.assets.builtBy task
+						dependsOn extractLessTask
+					}
+					
+					tasks.create ("compile${binary.name.capitalize()}LessAssets", com.github.houbie.gradle.lesscss.LesscTask) { task ->
+						sourceDir lessDestinationDir
+						include "**/*.less"
+						exclude "**/_*.less"
+						exclude "lib/**"
+						destinationDir = project.file("${buildDir}/${binary.name}/lessAssets")
+						
+						binary.assets.addAssetDir destinationDir
+						binary.assets.builtBy task
+						dependsOn copyLessTask
+					}
+				}
+			}
+		}
+	}
+	
+	configurations {
+		playJar {
+			defaultDependencies { dependencies ->
+				println play.dependencies
+				println play.dependencies.each { dep -> println dep }
+				
+			 	dependencies.addAll (play.dependencies)
+			}
+		}
+		playAssetsJar
+	}
+	
+	// Support for Play projects is lacking with the eclipse plugin, update the eclipse configuration
+	// so that the correct classpath and source folders are used.
+	// The scala and java natures are added to the generated eclipse projects.
+	eclipse {
+		classpath {
+			plusConfigurations += [ configurations.play ]
+			
+			file {
+				whenMerged { cp ->
+					cp.entries.add (new org.gradle.plugins.ide.eclipse.model.SourceFolder('app', null))
+					cp.entries.add (new org.gradle.plugins.ide.eclipse.model.SourceFolder('test', null))
+					cp.entries.add (new org.gradle.plugins.ide.eclipse.model.SourceFolder("build/playBinary/src/compilePlayBinaryRoutes", null))
+					cp.entries.add (new org.gradle.plugins.ide.eclipse.model.SourceFolder("build/playBinary/src/compilePlayBinaryTwirlTemplates", null))
+				}
+			}
+		}
+		
+		project {
+			natures 'org.scala-ide.sdt.core.scalanature', 'org.eclipse.jdt.core.javanature'
+		}
+	}
+	
+	// Define the artifacts for Play projects:
+	artifacts {
+		playJar (file: file ("${buildDir}/playBinary/lib/${project.name}.jar")) {
+			name "${project.name}"
+			type "jar"
+			builtBy { createPlayBinaryJar }
+		}
+		
+		playAssetsJar (file: file ("${buildDir}/playBinary/lib/${project.name}-assets.jar")) {
+			name "${project.name}-assets"
+			type "jar"
+			builtBy { createPlayBinaryAssetsJar }
+		}
+	}
+
+	// Configure the upload task for the Play jar:	
+	uploadPlayJar {
+		repositories {
+			mavenDeployer {
+				repository(url: (project.version.endsWith("-SNAPSHOT") 
+					? "http://nexus.idgis.eu/content/repositories/restricted-snapshots/"
+					: "http://nexus.idgis.eu/content/repositories/restricted-releases/")) {
+					authentication(userName: nexusUser, password: nexusPassword)
+				}
+
+				// Customize the POM, add dependencies:
+				pom.whenConfigured { pom ->
+					pom.withXml {
+						def dependenciesNode = asNode ().appendNode ('dependencies')
+						project.configurations.play.allDependencies.each { dep ->
+							def dependencyNode = dependenciesNode.appendNode ('dependency')
+							dependencyNode.appendNode ('groupId', dep.group)
+							dependencyNode.appendNode ('artifactId', dep.name)
+							dependencyNode.appendNode ('version', dep.version)
+							
+							if (dep.excludeRules.size () > 0) {
+								def exclusions = dependencyNode.appendNode ('exclusions')
+								dep.excludeRules.each { ex ->
+									def exclusion = exclusions.appendNode ('exclusion')
+									exclusion.appendNode ('groupId', ex.group)
+									exclusion.appendNode ('artifactId', ex.module)
+								}	
+							}
+						}
+					}
+				}				
+			}
+		}
+	}
+	
+	// Configure the upload task for the Play assets jar:	
+	uploadPlayAssetsJar {
+		repositories {
+			mavenDeployer {
+				repository(url: (project.version.endsWith("-SNAPSHOT") 
+					? "http://nexus.idgis.eu/content/repositories/restricted-snapshots/"
+					: "http://nexus.idgis.eu/content/repositories/restricted-releases/")) {
+					authentication(userName: nexusUser, password: nexusPassword)
+				}
+			}
+		}
+	}
+	
+	// Make the uploadArtifacts task depend on uploadPlayJar and uploadPlayAssetsJar
+	uploadArtifacts.dependsOn uploadPlayJar
+	uploadArtifacts.dependsOn uploadPlayAssetsJar
+}
+
+dependencies {
+	play project(':geoide-viewer:geoide-core')
+	play project(':geoide-viewer:geoide-mapview')
+	play project(':geoide-viewer:geoide-print-service')
+	play project(':geoide-viewer:geoide-toc')
+	play project(':geoide-domain')
+	play project(':geoide-util')
+	play project(':geoide-remote')
+		
+	play externalDependency.akkaRemote
+	play externalDependency.jts	
+	
+	play externalDependency.webjarsPlay
+	play externalDependency.webjarsBootstrap
+	play externalDependency.webjarsDojoBase
+	play externalDependency.webjarsOpenLayers
+	play externalDependency.webjarsPutSelector
+	play externalDependency.webjarsFontAwesome	
+}

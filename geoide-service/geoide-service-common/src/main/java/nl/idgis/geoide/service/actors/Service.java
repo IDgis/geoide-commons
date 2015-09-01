@@ -8,6 +8,9 @@ import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.Map;
 
+import akka.actor.ActorRef;
+import akka.actor.Props;
+import akka.actor.UntypedActor;
 import nl.idgis.geoide.commons.domain.ServiceIdentification;
 import nl.idgis.geoide.commons.domain.service.Capabilities;
 import nl.idgis.geoide.commons.domain.service.messages.ServiceError;
@@ -24,11 +27,8 @@ import play.libs.F.Callback;
 import play.libs.F.Function;
 import play.libs.F.Promise;
 import play.libs.ws.WSClient;
-import play.libs.ws.WSRequestHolder;
+import play.libs.ws.WSRequest;
 import play.libs.ws.WSResponse;
-import akka.actor.ActorRef;
-import akka.actor.Props;
-import akka.actor.UntypedActor;
 
 public abstract class Service extends UntypedActor {
 
@@ -150,15 +150,15 @@ public abstract class Service extends UntypedActor {
 	protected abstract boolean handleServiceMessage (ServiceMessage message) throws Throwable;
 	protected abstract void reset () throws Throwable;
 	
-	protected Promise<ServiceMessage> get (final WSRequestHolder requestHolder, final ActorRef sender, final ActorRef self, final ResponseHandler responseHandler, final ServiceMessageContext context) {
+	protected Promise<ServiceMessage> get (final WSRequest requestHolder, final ActorRef sender, final ActorRef self, final ResponseHandler responseHandler, final ServiceMessageContext context) {
 		return handleResponse (requestHolder, requestHolder.get (), sender, self, responseHandler, context);
 	}
 	
-	protected Promise<ServiceMessage> post (final WSRequestHolder requestHolder, final InputStream inputStream, final ActorRef sender, final ActorRef self, final ResponseHandler responseHandler, final ServiceMessageContext context) {
+	protected Promise<ServiceMessage> post (final WSRequest requestHolder, final InputStream inputStream, final ActorRef sender, final ActorRef self, final ResponseHandler responseHandler, final ServiceMessageContext context) {
 		return handleResponse (requestHolder, requestHolder.post (inputStream), sender, self, responseHandler, context);
 	}
 	
-	protected Promise<ServiceMessage> handleResponse (final WSRequestHolder requestHolder, final Promise<WSResponse> promise, final ActorRef sender, final ActorRef self, final ResponseHandler responseHandler, final ServiceMessageContext context) {
+	protected Promise<ServiceMessage> handleResponse (final WSRequest requestHolder, final Promise<WSResponse> promise, final ActorRef sender, final ActorRef self, final ResponseHandler responseHandler, final ServiceMessageContext context) {
 		final String url = requestHolderToUrl (requestHolder);
 		promise.onFailure (new Callback<Throwable> () {
 			@Override
@@ -207,7 +207,7 @@ public abstract class Service extends UntypedActor {
 		actor.tell (ServiceControl.RESET, actor);
 	}
 	
-	protected static String requestHolderToUrl (final WSRequestHolder holder) {
+	protected static String requestHolderToUrl (final WSRequest holder) {
 		final StringBuilder parameters = new StringBuilder ();
 		final Map<String, Collection<String>> queryParameters = holder.getQueryParameters ();
 		

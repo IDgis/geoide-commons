@@ -1,0 +1,15 @@
+apply plugin: 'java'
+
+dependencies {
+	compile project(':geoide-util')
+	compile externalDependency.httpasyncclient
+	compile externalDependency.reactiveStreams
+	
+	provided externalDependency.playWs
+	provided externalDependency.akkaActor
+	
+	testCompile externalDependency.junit
+	testCompile externalDependency.akkaTestkit
+	testCompile externalDependency.wiremock
+	testCompile externalDependency.playTest
+}

@@ -1,0 +1,209 @@
+// Add repositories and dependencies for the build script: gradle plugins.
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+	
+	dependencies {
+		classpath 'com.github.houbie:lesscss-gradle-plugin:1.0.3-less-1.7.0'
+	}
+}
+
+// Variables used in dependency management:
+ext {
+	deegree3Version = "3.4-pre17"
+	jtsVersion = "1.13"
+	batikVersion = "1.7"
+	fopVersion = "1.1"
+	flyingSaucerVersion = "9.0.7"
+	jsoupVersion = "1.8.1"
+	mapdbVersion = "1.0.6"
+	wiremockVersion = "1.53"
+	reactiveStreamsVersion = "1.0.0"
+	httpcomponentsAsyncclientVersion = "4.0.2"
+	lesscssVersion = "2.3.1"
+	geoapiVersion = "3.0.0"
+	mockitoVersion = "1.10.19"
+	logbackVersion = "1.1.3"
+	typesafeConfigVersion = "1.3.0-M3"
+
+	// Versions used by the Play framework:	
+	scalaVersion = "2.11.1"
+	play2Version = "2.4.0"
+	scalaAbiVersion = "2.11"
+	jacksonVersion = "2.3.3"
+	jodatimeVersion = "2.3"
+	akkaVersion = "2.3.4"
+	junitVersion = "4.11"
+	springVersion = "4.0.3.RELEASE"
+	nettyVersion = "3.9.2.Final"
+	slf4jVersion = "1.7.6"
+	commonsCodecVersion = "1.9"
+	guavaVersion = "16.0.1"
+	xmlApisVersion = "1.4.01"
+	commonsIoVersion = "2.4"
+	hamcrestVersion = "1.3"
+	httpcomponentsVersion = "4.3.1"
+	xalanVersion = "2.7.1"
+	snakeyamlVersion = "1.13"
+	commonsLoggingVersion = "1.1.3"
+}
+
+// List all external dependencies that are used by subprojects.
+project.ext.externalDependency = [
+	'jacksonDatabind': "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}",
+	'jacksonAnnotations': "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}",
+	'jacksonCore': "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}",
+	'junit': "junit:junit:${junitVersion}",
+	'jts': "com.vividsolutions:jts:${jtsVersion}",
+	'akkaActor': "com.typesafe.akka:akka-actor_${scalaAbiVersion}:${akkaVersion}",
+	'akkaTestkit': "com.typesafe.akka:akka-testkit_${scalaAbiVersion}:${akkaVersion}",
+	'akkaRemote': "com.typesafe.akka:akka-remote_${scalaAbiVersion}:${akkaVersion}",
+	'springContext': "org.springframework:spring-context:${springVersion}",
+	'reactiveStreams': "org.reactivestreams:reactive-streams:${reactiveStreamsVersion}",
+	'reactiveStreamsTck': "org.reactivestreams:reactive-streams-tck:${reactiveStreamsVersion}",	
+	'playWs': "com.typesafe.play:play-java-ws_${scalaAbiVersion}:${play2Version}",
+	'mapdb': "org.mapdb:mapdb:${mapdbVersion}",
+	'commonsIo': "commons-io:commons-io:${commonsIoVersion}",
+	'wiremock': "com.github.tomakehurst:wiremock:${wiremockVersion}:standalone",
+	'playTest': "com.typesafe.play:play-test_${scalaAbiVersion}:${play2Version}",
+	'httpasyncclient': "org.apache.httpcomponents:httpasyncclient:${httpcomponentsAsyncclientVersion}",
+	'logbackClassic': "ch.qos.logback:logback-classic:${logbackVersion}",
+	'typesafeConfig': "com.typesafe:config:${typesafeConfigVersion}",
+	'deegreeCoreBase': "org.deegree:deegree-core-base:${deegree3Version}",
+	'mockitoCore': "org.mockito:mockito-core:${mockitoVersion}",
+	'batikParser': "org.apache.xmlgraphics:batik-parser:${batikVersion}",
+	'batikDom': "org.apache.xmlgraphics:batik-dom:${batikVersion}",
+	'batikTranscoder': "org.apache.xmlgraphics:batik-transcoder:${batikVersion}",
+	'fop': "org.apache.xmlgraphics:fop:${fopVersion}",
+	'avalonFrameworkApi': "org.apache.avalon.framework:avalon-framework-api:4.3.1",
+	'avalonFrameworkImpl': "org.apache.avalon.framework:avalon-framework-impl:4.3.1",
+	'flyingSaucerPdf': "org.xhtmlrenderer:flying-saucer-pdf:${flyingSaucerVersion}",
+	'jsoup': "org.jsoup:jsoup:${jsoupVersion}",
+	'lessNode': "org.webjars:less-node:${lesscssVersion}",
+	'xalan': "xalan:xalan:${xalanVersion}",
+	'slf4j': "org.slf4j:slf4j-api:${slf4jVersion}",
+	
+	'webjarsPlay': "org.webjars:webjars-play_2.11:${play2Version}",
+	'webjarsBootstrap': "org.webjars:bootstrap:3.2.0",
+	'webjarsDojoBase': "org.webjars:dojo-base:1.10.0-SNAPSHOT",
+	'webjarsOpenLayers': "org.webjars:openlayers:3.8.2",
+	'webjarsPutSelector': "org.webjars:put-selector:0.3.5",
+	'webjarsFontAwesome': "org.webjars:font-awesome:4.2.0"
+]
+
+allprojects {
+	// Project metadata (for POM's);
+	version '0.1.8-SNAPSHOT'
+	group 'nl.idgis.geoide.commons'
+	
+	// Default plugins that are available to all projects:
+	apply plugin: 'lesscss'
+	apply plugin: 'maven'
+	apply plugin: 'maven-publish'
+	apply plugin: 'eclipse'
+
+	// Provide a default less source and destination directory that applies to all subprojects.
+	// The play projects use their own less tasks with custom configuration.
+	lessc {
+		sourceDir "src/main/less"
+		include "**/*.less"
+		exclude "**/_*.less"
+		destinationDir "$buildDir/css"
+	}
+
+	// Configure maven and ivy repositories:		
+	repositories {
+		jcenter ()
+		mavenCentral ()
+		
+		maven {
+			name "idgis-public"
+			url "http://nexus.idgis.eu/content/groups/public/"
+			credentials {
+				username nexusUser 
+				password nexusPassword
+			}
+		}
+		maven {
+			name "idgis-restricted"
+			url "http://nexus.idgis.eu/content/groups/restricted/"
+			credentials {
+				username nexusUser 
+				password nexusPassword
+			}
+		}
+	    ivy {
+	        name "typesafe-ivy-release"
+	        url "https://repo.typesafe.com/typesafe/ivy-releases"
+	        layout "ivy"
+	    }
+	}
+	
+	// Configure the uploadDefault task:
+	uploadArchives {
+		repositories {
+			mavenDeployer {
+				repository(url: (project.version.endsWith("-SNAPSHOT") 
+					? "http://nexus.idgis.eu/content/repositories/restricted-snapshots/"
+					: "http://nexus.idgis.eu/content/repositories/restricted-releases/")) {
+					authentication(userName: nexusUser, password: nexusPassword)
+				}
+			}
+		}
+	}
+
+	// Add a "provided" configuration. Dependencies in this configuration are available during
+	// compilation and while testing, but not as transitive dependencies of the project.
+	configurations {
+		provided
+	}
+	
+	// Utility task to list all artifacts in the project.
+	task artifacts(dependsOn: 'build') << {
+		configurations.all.each { c ->
+			c.allArtifacts.each { a ->
+				println "Artifact: " + c.name + ": " + a
+			}
+		} 
+	}
+	
+	// Define an uploadArtifacts task that depends on the upload tasks specific to the
+	// project. This would be uploadArchives for Java projects, for Play applications
+	// this would be uploadPlayJar and uploadPlayAssetsJar  
+	task uploadArtifacts {
+		dependsOn build
+	}	
+}
+
+// Specific configuration for all non-play projects.
+configure(subprojects.findAll { !it.path.startsWith(':geoide-viewer') }) {
+	apply plugin: 'java'
+	
+	// Add provided dependencies to the compile classpath and to the runtime
+	// classpath for tests:
+	sourceSets {
+		main {
+			compileClasspath += configurations.provided
+		}
+		test {
+			compileClasspath += configurations.provided
+			runtimeClasspath += configurations.provided
+		}
+	}
+
+	// Configure the eclipse plugin. Provided dependencies are added and sources are downloaded.	
+	eclipse {
+		classpath {
+			plusConfigurations += [ configurations.provided ]
+			downloadSources = true
+			downloadJavadoc = false
+		}
+	}
+
+	// Make the uploadArtifacts task depend on uploadArchives:	
+	uploadArtifacts.dependsOn uploadArchives
+}
+
+configure(subprojects.findAll { it.path.startsWith(':geoide-viewer') }) {
+}

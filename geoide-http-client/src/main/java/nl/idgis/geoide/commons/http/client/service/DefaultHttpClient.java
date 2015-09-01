@@ -5,26 +5,26 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 
+import com.ning.http.client.AsyncHttpClientConfig;
+import com.typesafe.config.ConfigFactory;
+
+import akka.util.ByteString;
+import akka.util.ByteString.ByteStrings;
 import nl.idgis.geoide.commons.http.client.HttpClient;
 import nl.idgis.geoide.commons.http.client.HttpRequest;
 import nl.idgis.geoide.commons.http.client.HttpRequestBuilder;
 import nl.idgis.geoide.commons.http.client.HttpResponse;
 import nl.idgis.geoide.util.ConfigWrapper;
 import nl.idgis.geoide.util.streams.StreamProcessor;
-import play.api.libs.ws.DefaultWSClientConfig;
 import play.api.libs.ws.WSClientConfig;
 import play.api.libs.ws.ning.NingAsyncHttpClientConfigBuilder;
-import play.api.libs.ws.ssl.SSLConfig;
+import play.api.libs.ws.ning.NingWSClientConfig;
+import play.api.libs.ws.ning.NingWSClientConfigFactory;
 import play.libs.F.Function;
 import play.libs.F.Promise;
 import play.libs.ws.WSClient;
-import play.libs.ws.WSRequestHolder;
+import play.libs.ws.WSRequest;
 import play.libs.ws.WSResponse;
-import akka.util.ByteString;
-import akka.util.ByteString.ByteStrings;
-
-import com.ning.http.client.AsyncHttpClientConfig;
-import com.typesafe.config.ConfigFactory;
 
 /**
  * Implementation of {@link HttpClient} that uses Play WS to perform the requests (which in turn
@@ -84,9 +84,9 @@ public class DefaultHttpClient implements HttpClient {
 			throw new NullPointerException ("request cannot be null");
 		}
 		
-		WSRequestHolder holder = wsClient
+		WSRequest holder = wsClient
 				.url (request.getUrl ())
-				.setTimeout ((int) request.getTimeoutInMillis ())
+				.setRequestTimeout ((int) request.getTimeoutInMillis ())
 				.setFollowRedirects (request.isFollowRedirects ())
 				.setMethod (request.getMethod ().name ());
 
@@ -120,7 +120,7 @@ public class DefaultHttpClient implements HttpClient {
 		}
 	}
 	
-	private CompletableFuture<HttpResponse> requestWithBody (final WSRequestHolder holder, final HttpRequest request) {
+	private CompletableFuture<HttpResponse> requestWithBody (final WSRequest holder, final HttpRequest request) {
 		final CompletableFuture<ByteString> reducedFuture = streamProcessor.reduce (request.getBody (), ByteStrings.empty (), new BiFunction<ByteString, ByteString, ByteString> () {
 			@Override
 			public ByteString apply (final ByteString a, final ByteString b) {
@@ -166,31 +166,26 @@ public class DefaultHttpClient implements HttpClient {
 	
 	public static WSClient createWSClient (final ConfigWrapper config) {
 		// Set up the client config (you can also use a parser here):
-		 scala.Option<Object> none = scala.None$.empty();
-		 scala.Option<String> noneString = scala.None$.empty();
-		 scala.Option<SSLConfig> noneSSLConfig = scala.None$.empty();
-		 WSClientConfig clientConfig = new DefaultWSClientConfig(
-		         none, // connectionTimeout
-		         none, // idleTimeout
-		         none, // requestTimeout
-		         none, // followRedirects
-		         none, // useProxyProperties
-		         noneString, // userAgent
-		         none, // compressionEnabled
-		         none, // acceptAnyCertificate
-		         noneSSLConfig);
+		 WSClientConfig wsClientConfig = new WSClientConfig(
+				 WSClientConfig.apply$default$1 (), // connectionTimeout
+				 WSClientConfig.apply$default$2 (), // idleTimeout
+				 WSClientConfig.apply$default$3 (), // requestTimeout
+				 WSClientConfig.apply$default$4 (), // followRedirects
+				 WSClientConfig.apply$default$5 (), // useProxyProperties
+		         WSClientConfig.apply$default$6 (), // userAgent
+		         WSClientConfig.apply$default$7 (), // compressionEnabled
+		         WSClientConfig.apply$default$8 ()
+			);
+		 
+		 NingWSClientConfig clientConfig = NingWSClientConfigFactory.forClientConfig (wsClientConfig);
 
-		 // Build a secure config out of the client config and the ning builder:
-		 AsyncHttpClientConfig.Builder asyncHttpClientBuilder = new AsyncHttpClientConfig.Builder();
-		 NingAsyncHttpClientConfigBuilder secureBuilder = new NingAsyncHttpClientConfigBuilder(clientConfig,
-		         asyncHttpClientBuilder);
+		 NingAsyncHttpClientConfigBuilder secureBuilder = new NingAsyncHttpClientConfigBuilder(clientConfig);
 		 AsyncHttpClientConfig secureDefaults = secureBuilder.build();
-
-		 // You can directly use the builder for specific options once you have secure TLS defaults...
+		 
 		 AsyncHttpClientConfig customConfig = new AsyncHttpClientConfig.Builder(secureDefaults)
-			.setCompressionEnabled(true)
-			.build();
-		
-		 return new play.libs.ws.ning.NingWSClient (customConfig);
+	                .setCompressionEnforced (true)
+	                .build();
+		 
+		 return  new play.libs.ws.ning.NingWSClient (customConfig);
 	}
 }

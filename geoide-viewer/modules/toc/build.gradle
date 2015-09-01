@@ -1,0 +1,21 @@
+plugins {
+    id 'play'
+}
+
+dependencies {
+	play project(':geoide-viewer:geoide-core')
+	play project(':geoide-domain')
+	play project(':geoide-util')
+	play project(':geoide-remote')
+	
+	play externalDependency.akkaRemote
+		
+	play externalDependency.webjarsPlay
+	play externalDependency.webjarsBootstrap
+	play externalDependency.webjarsDojoBase
+	play externalDependency.webjarsOpenLayers
+	play externalDependency.webjarsPutSelector
+	play externalDependency.webjarsFontAwesome	
+	
+	play externalDependency.jts
+}

@@ -1,0 +1,62 @@
+rootProject.name = 'geoide-commons'
+include ':geoide-domain'
+include ':geoide-util'
+include ':geoide-domain-test'
+include ':geoide-service:geoide-service-common'
+include ':geoide-service:geoide-service-wms'
+include ':geoide-service:geoide-service-tms'
+include ':geoide-service:geoide-service-wfs'
+include ':geoide-service'
+include ':geoide-layer:geoide-layer-common'
+include ':geoide-layer:geoide-layer-default'
+include ':geoide-layer'
+include ':geoide-print'
+include ':geoide-document-cache'
+include ':geoide-http-client'
+include ':geoide-map'
+include ':geoide-remote'
+include ':geoide-main'
+include ':geoide-config:geoide-config-akka'
+include ':geoide-config:geoide-config-http'
+include ':geoide-config:geoide-config-print'
+include ':geoide-config:geoide-config-map'
+include ':geoide-config:geoide-config-providers'
+include ':geoide-config'
+include ':geoide-app'
+include ':geoide-ogc-client'
+include ':geoide-viewer'
+include ':geoide-viewer:geoide-core'
+include ':geoide-viewer:geoide-mapview'
+include ':geoide-viewer:geoide-print-service'
+include ':geoide-viewer:geoide-toc'
+
+project(':geoide-domain').projectDir = "$rootDir/geoide-domain" as File
+project(':geoide-util').projectDir = "$rootDir/geoide-util" as File
+project(':geoide-domain-test').projectDir = "$rootDir/geoide-domain-test" as File
+project(':geoide-service:geoide-service-common').projectDir = "$rootDir/geoide-service/geoide-service-common" as File
+project(':geoide-service:geoide-service-wms').projectDir = "$rootDir/geoide-service/geoide-service-wms" as File
+project(':geoide-service:geoide-service-tms').projectDir = "$rootDir/geoide-service/geoide-service-tms" as File
+project(':geoide-service:geoide-service-wfs').projectDir = "$rootDir/geoide-service/geoide-service-wfs" as File
+project(':geoide-service').projectDir = "$rootDir/geoide-service" as File
+project(':geoide-layer:geoide-layer-common').projectDir = "$rootDir/geoide-layer/geoide-layer-common" as File
+project(':geoide-layer:geoide-layer-default').projectDir = "$rootDir/geoide-layer/geoide-layer-default" as File
+project(':geoide-layer').projectDir = "$rootDir/geoide-layer" as File
+project(':geoide-print').projectDir = "$rootDir/geoide-print" as File
+project(':geoide-document-cache').projectDir = "$rootDir/geoide-document-cache" as File
+project(':geoide-http-client').projectDir = "$rootDir/geoide-http-client" as File
+project(':geoide-map').projectDir = "$rootDir/geoide-map" as File
+project(':geoide-remote').projectDir = "$rootDir/geoide-remote" as File
+project(':geoide-main').projectDir = "$rootDir/geoide-main" as File
+project(':geoide-config:geoide-config-akka').projectDir = "$rootDir/geoide-config/geoide-config-akka" as File
+project(':geoide-config:geoide-config-http').projectDir = "$rootDir/geoide-config/geoide-config-http" as File
+project(':geoide-config:geoide-config-print').projectDir = "$rootDir/geoide-config/geoide-config-print" as File
+project(':geoide-config:geoide-config-map').projectDir = "$rootDir/geoide-config/geoide-config-map" as File
+project(':geoide-config:geoide-config-providers').projectDir = "$rootDir/geoide-config/geoide-config-providers" as File
+project(':geoide-config').projectDir = "$rootDir/geoide-config" as File
+project(':geoide-app').projectDir = "$rootDir/geoide-app" as File
+project(':geoide-ogc-client').projectDir = "$rootDir/geoide-ogc-client" as File
+project(':geoide-viewer').projectDir = "$rootDir/geoide-viewer" as File
+project(':geoide-viewer:geoide-core').projectDir = new File(settingsDir, 'geoide-viewer/modules/core')
+project(':geoide-viewer:geoide-mapview').projectDir = new File(settingsDir, 'geoide-viewer/modules/mapview')
+project(':geoide-viewer:geoide-print-service').projectDir = new File(settingsDir, 'geoide-viewer/modules/print-service')
+project(':geoide-viewer:geoide-toc').projectDir = new File(settingsDir, 'geoide-viewer/modules/toc')
