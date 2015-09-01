@@ -91,6 +91,42 @@ public class JsonFactory {
 		return mapDefinitions (mapEntityNodes);
 	}
 	
+	public static MapDefinition mapDefinition (final JsonNode mapNode, final Map<String, JsonNode> layerNodes, final Map<String, ServiceLayer> serviceLayerMap) {
+		final JsonNode id = mapNode.path ("id"); 
+		final JsonNode label = mapNode.path ("label");
+		final JsonNode prefix = mapNode.path ("prefix");
+		final String initialExtent;
+		final JsonNode initialExtentNode = mapNode.path("initial-extent");
+		if (!initialExtentNode.isMissingNode ()) {
+			JsonNode minx = initialExtentNode.path("minx");
+			JsonNode miny = initialExtentNode.path("miny");
+			JsonNode maxx = initialExtentNode.path("maxx");
+			JsonNode maxy = initialExtentNode.path("maxy");
+			if(minx.isMissingNode() || miny.isMissingNode() || maxx.isMissingNode() || maxy.isMissingNode()){
+				//throw new IllegalArgumentException ("Missing property: initial-extent");
+				initialExtent = "";
+			} else {
+				initialExtent = minx.asText() + "," + miny.asText() + ","+ maxx.asText() + "," + maxy.asText(); 
+			}
+		} else {
+			initialExtent = "";
+		}
+
+		if (mapNode.has("maplayers")) {
+			final List<Layer> layerList = new ArrayList<> ();
+			//Parse layers:
+			for ( final JsonNode mapLayer: mapNode.path("maplayers")) {
+				// merge maplayer and layer
+				mergeLayers(mapLayer, layerNodes);
+				final Layer layer = JsonFactory.layer (mapLayer, serviceLayerMap);
+				layerList.add (layer);	
+			}
+			return new MapDefinition (id.asText (), label.asText (), prefix.asText(), initialExtent, layerList);
+		} else {
+			throw new IllegalArgumentException ("Missing property: maplayers");
+		}
+	}
+	
 	public static List<MapDefinition> mapDefinitions (List<JsonNode> mapEntityNodes) {
 		JsonNode services = null; 
 		JsonNode featureTypes = null;
@@ -118,6 +154,8 @@ public class JsonFactory {
 		final Map<String, Service> serviceMap = new HashMap<> ();
 		final Map<String, FeatureType> featureTypeMap = new HashMap<> ();
 		final Map<String, ServiceLayer> serviceLayerMap = new HashMap<> ();
+		final Map<String, JsonNode> layerMap = new HashMap<> ();
+		
 		// Parse services:
 		if (services != null) {
 			for (final JsonNode serviceNode: services) {
@@ -139,49 +177,23 @@ public class JsonFactory {
 				serviceLayerMap.put (serviceLayer.getId (), serviceLayer);
 			}	
 		}
+		
+		if (layers != null) {
+			for (final JsonNode layerNode: layers) {
+				layerMap.put (layerNode.path ("id").asText (), layerNode);
+			}
+		}
+		
 		final List<MapDefinition> mapDefinitions = new ArrayList<MapDefinition>();
 		for (final JsonNode mapNode: maps) {
-			final JsonNode id = mapNode.path ("id"); 
-			final JsonNode label = mapNode.path ("label");
-			final JsonNode prefix = mapNode.path ("prefix");
-			final String initialExtent;
-			final JsonNode initialExtentNode = mapNode.path("initial-extent");
-			if (!initialExtentNode.isMissingNode ()) {
-				JsonNode minx = initialExtentNode.path("minx");
-				JsonNode miny = initialExtentNode.path("miny");
-				JsonNode maxx = initialExtentNode.path("maxx");
-				JsonNode maxy = initialExtentNode.path("maxy");
-				if(minx.isMissingNode() || miny.isMissingNode() || maxx.isMissingNode() || maxy.isMissingNode()){
-					//throw new IllegalArgumentException ("Missing property: initial-extent");
-					initialExtent = "";
-				} else {
-					initialExtent = minx.asText() + "," + miny.asText() + ","+ maxx.asText() + "," + maxy.asText(); 
-				}
-			} else {
-				initialExtent = "";
-			}
-
-			if (mapNode.has("maplayers")) {
-				final List<Layer> layerList = new ArrayList<> ();
-				//Parse layers:
-				for ( final JsonNode mapLayer: mapNode.path("maplayers")) {
-					// merge maplayer and layer
-					mergeLayers(mapLayer, layers);
-					final Layer layer = JsonFactory.layer (mapLayer, serviceLayerMap);
-					layerList.add (layer);	
-				}
-				mapDefinitions.add (new MapDefinition (id.asText (), label.asText (), prefix.asText(), initialExtent, layerList));
-			} else {
-				throw new IllegalArgumentException ("Missing property: maplayers");
-			}
-			
+			mapDefinitions.add (mapDefinition (mapNode, layerMap, serviceLayerMap));
 		}
 		return mapDefinitions;
 		
 	}
 	
 	// method to merge maplayer and layer
-	private static JsonNode mergeLayers (final JsonNode mapLayer, final JsonNode layers) {
+	private static JsonNode mergeLayers (final JsonNode mapLayer, final Map<String, JsonNode> layers) {
 		final JsonNode layer = mapLayer.path ("layer");
 		if (layer.isMissingNode () || layer.asText ().isEmpty ()) {
 		
@@ -200,7 +212,7 @@ public class JsonFactory {
 			
 		}
 		
-		for (final JsonNode lyr: layers) {
+		for (final JsonNode lyr: layers.values ()) {
 			if(lyr.path("id").asText().equals(layer.asText())) { 
 				final JsonNode layerType = lyr.path ("layerType");
 				final JsonNode serviceLyrs = lyr.path ("serviceLayers");
