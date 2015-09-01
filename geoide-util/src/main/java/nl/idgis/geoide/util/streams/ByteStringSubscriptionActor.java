@@ -3,8 +3,10 @@ package nl.idgis.geoide.util.streams;
 import java.util.concurrent.TimeUnit;
 
 import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
 
 import akka.actor.ActorIdentity;
+import akka.actor.ActorRef;
 import akka.actor.Identify;
 import akka.actor.Props;
 import akka.actor.ReceiveTimeout;
@@ -50,6 +52,19 @@ public class ByteStringSubscriptionActor extends UntypedActor {
 		super.preStart();
 		
 		getContext ().setReceiveTimeout (Duration.create (timeoutInMillis, TimeUnit.MILLISECONDS));
+		
+		final ActorRef self = self ();
+		subscriber.onSubscribe (new Subscription () {
+			@Override
+			public void request (final long count) {
+				self.tell (new PublisherRequest (count), self ());
+			}
+			
+			@Override
+			public void cancel () {
+				self.tell (new PublisherCancel (), self ());
+			}
+		});
 	}
 	
 	@Override
