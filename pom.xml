@@ -54,7 +54,7 @@
 		
 		<!-- These versions should match the versions that are in use by the Play framework: -->
 		<scala.version>2.11.1</scala.version>
-		<play2.version>2.3.2</play2.version>
+		<play2.version>2.4.0</play2.version>
 		<scala.abi.version>2.11</scala.abi.version>
 		<jackson.version>2.3.3</jackson.version>
 		<jodatime.version>2.3</jodatime.version>
