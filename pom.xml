@@ -60,7 +60,7 @@
 		<jodatime.version>2.3</jodatime.version>
 		<akka.version>2.3.3</akka.version>
 		<junit.version>4.11</junit.version>
-		<spring.version>4.0.3.RELEASE</spring.version>
+		<spring.version>4.1.6.RELEASE</spring.version>
 		<netty.version>3.9.2.Final</netty.version>
 		<slf4j.version>1.7.6</slf4j.version>
 		<commons-codec.version>1.9</commons-codec.version>
@@ -560,6 +560,16 @@
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-lang3</artifactId>
 				<version>3.4</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-core</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-beans</artifactId>
+				<version>${spring.version}</version>
 			</dependency>
 		</dependencies>		
 	</dependencyManagement>
