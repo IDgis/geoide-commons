@@ -546,6 +546,11 @@
 				<artifactId>javassist</artifactId>
 				<version>3.19.0-GA</version>
 			</dependency>
+			<dependency>
+				<groupId>org.reflections</groupId>
+				<artifactId>reflections</artifactId>
+				<version>0.9.9</version>
+			</dependency>
 		</dependencies>		
 	</dependencyManagement>
 	
