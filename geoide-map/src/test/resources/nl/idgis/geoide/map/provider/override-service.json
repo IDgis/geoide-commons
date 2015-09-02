@@ -1,0 +1,13 @@
+{
+	"services": [
+		{
+			"id": "test-service-1",
+			"label": "Test service 1 override",
+			"identification": {
+				"serviceType": "TMS",
+				"serviceEndpoint": "http://geodata.nationaalgeoregister.nl/tms/1.0.0",
+				"serviceVersion": "1.0.0"
+			}
+		}
+	]
+}

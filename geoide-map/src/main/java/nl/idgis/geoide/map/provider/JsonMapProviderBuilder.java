@@ -107,7 +107,8 @@ public class JsonMapProviderBuilder {
 		nodes
 			.stream ()
 			.filter (node -> node.has ("maps"))
-			.map (node -> JsonFactory.mapDefinition (node, layers, serviceLayers))
+			.flatMap (node -> StreamSupport.stream (node.path ("maps").spliterator (), false)
+				.map (mapNode -> JsonFactory.mapDefinition (mapNode, layers, serviceLayers)))
 			.forEach (mapDef -> mapDefinitions.put (mapDef.getId (), mapDef));
 		
 		return Collections.unmodifiableCollection (mapDefinitions.values ());

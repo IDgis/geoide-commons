@@ -1,18 +1,16 @@
 package nl.idgis.geoide.commons.config;
 
-import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
-import nl.idgis.geoide.commons.domain.JsonFactory;
-import nl.idgis.geoide.commons.domain.provider.StaticMapProvider;
-import nl.idgis.geoide.util.ConfigWrapper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +24,11 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 
+import nl.idgis.geoide.commons.domain.JsonFactory;
+import nl.idgis.geoide.commons.domain.provider.MapProvider;
+import nl.idgis.geoide.map.provider.JsonMapProviderBuilder;
+import nl.idgis.geoide.util.ConfigWrapper;
+
 @Configuration
 public class ProviderConfig {
 
@@ -33,12 +36,14 @@ public class ProviderConfig {
 	
 	@Bean
 	@Autowired
-	public StaticMapProvider mapProvider (final ConfigWrapper config) throws IOException {
+	public MapProvider mapProvider (final ConfigWrapper config) throws IOException {
 		final String mapsResource = config.getString ("geoide.service.components.mapProvider.resources.maps", "nl/idgis/geoide/commons/config/map/maps.json");
 		final String servicesResource = config.getString ("geoide.service.components.mapProvider.resources.services", "nl/idgis/geoide/commons/config/map/services.json");
 		final String featureTypesResource = config.getString ("geoide.service.components.mapProvider.resources.featureTypes", "nl/idgis/geoide/commons/config/map/featuretypes.json");
 		final String serviceLayersResource = config.getString ("geoide.service.components.mapProvider.resources.serviceLayers", "nl/idgis/geoide/commons/config/map/servicelayers.json");
 		final String layersResource = config.getString ("geoide.service.components.mapProvider.resources.layers", "nl/idgis/geoide/commons/config/map/layers.json");
+		
+		final String mapConfigurationDirectory = config.getString ("geoide.service.components.mapProvider.configDir", null);
 		
 		final ClassLoader cl = Thread.currentThread ().getContextClassLoader ();
 		
@@ -48,21 +53,52 @@ public class ProviderConfig {
 		log.info ("Feature types configuration: " + featureTypesResource);
 		log.info ("Service layers configuration: " + serviceLayersResource);
 		log.info ("Layers configuration: " + layersResource);
-		
-		return new StaticMapProvider (
+
+		// Add default configurations from the classpath:
+		final JsonMapProviderBuilder builder = JsonMapProviderBuilder.create (
 				replaceJsonVariables (cl.getResourceAsStream (mapsResource), config),
 				replaceJsonVariables (cl.getResourceAsStream (servicesResource), config),
 				replaceJsonVariables (cl.getResourceAsStream (featureTypesResource), config),
 				replaceJsonVariables (cl.getResourceAsStream (serviceLayersResource), config),
-				replaceJsonVariables (cl.getResourceAsStream (layersResource), config));
+				replaceJsonVariables (cl.getResourceAsStream (layersResource), config)
+			);
+		
+		// Add override configurations from the filesystem:
+		if (mapConfigurationDirectory != null) {
+			final File configDir = new File (mapConfigurationDirectory);
+
+			if (!configDir.exists () || !configDir.isDirectory ()) {
+				throw new IllegalArgumentException ("Map configuration directory: " + configDir + " does not exist or is not a directory");
+			}
+			
+			final String[] jsonFiles = configDir.list ((dir, filename) -> filename.toLowerCase ().endsWith (".json"));
+			if (jsonFiles == null) {
+				throw new IllegalStateException ("Unable to list JSON files in " + mapConfigurationDirectory);
+			}
+			
+			builder.addJson (Arrays
+				.stream (jsonFiles)
+				.map (filename -> new File (configDir, filename))
+				.map (file -> { 
+					try { 
+						return replaceJsonVariables (new FileInputStream (file), config); 
+					} catch (Exception e) { 
+						throw new RuntimeException (e); 
+					} 
+				})
+				.collect (Collectors.toList ())
+				.toArray (new JsonNode[0]));
+		}
+		
+		return builder.build ();
 	}
 	
-	private InputStream replaceJsonVariables (final InputStream inputStream, final ConfigWrapper config) throws JsonProcessingException, IOException {
+	private JsonNode replaceJsonVariables (final InputStream inputStream, final ConfigWrapper config) throws JsonProcessingException, IOException {
 		final JsonNode node = JsonFactory.mapper ().readTree (inputStream);
 		
 		filterNode (node, config);
 		
-		return new ByteArrayInputStream (JsonFactory.mapper ().writeValueAsBytes (node));
+		return node;
 	}
 	
 	private void filterNode (final JsonNode node, final ConfigWrapper config) {
