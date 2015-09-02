@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -56,11 +55,11 @@ public class ProviderConfig {
 
 		// Add default configurations from the classpath:
 		final JsonMapProviderBuilder builder = JsonMapProviderBuilder.create (
-				replaceJsonVariables (cl.getResourceAsStream (mapsResource), config),
-				replaceJsonVariables (cl.getResourceAsStream (servicesResource), config),
-				replaceJsonVariables (cl.getResourceAsStream (featureTypesResource), config),
-				replaceJsonVariables (cl.getResourceAsStream (serviceLayersResource), config),
-				replaceJsonVariables (cl.getResourceAsStream (layersResource), config)
+				replaceJsonVariables (mapsResource, cl.getResourceAsStream (mapsResource), config),
+				replaceJsonVariables (servicesResource, cl.getResourceAsStream (servicesResource), config),
+				replaceJsonVariables (featureTypesResource, cl.getResourceAsStream (featureTypesResource), config),
+				replaceJsonVariables (serviceLayersResource, cl.getResourceAsStream (serviceLayersResource), config),
+				replaceJsonVariables (layersResource, cl.getResourceAsStream (layersResource), config)
 			);
 		
 		// Add override configurations from the filesystem:
@@ -81,7 +80,7 @@ public class ProviderConfig {
 				.map (filename -> new File (configDir, filename))
 				.map (file -> { 
 					try { 
-						return replaceJsonVariables (new FileInputStream (file), config); 
+						return replaceJsonVariables (file.toString (), new FileInputStream (file), config); 
 					} catch (Exception e) { 
 						throw new RuntimeException (e); 
 					} 
@@ -93,12 +92,16 @@ public class ProviderConfig {
 		return builder.build ();
 	}
 	
-	private JsonNode replaceJsonVariables (final InputStream inputStream, final ConfigWrapper config) throws JsonProcessingException, IOException {
-		final JsonNode node = JsonFactory.mapper ().readTree (inputStream);
-		
-		filterNode (node, config);
-		
-		return node;
+	private JsonNode replaceJsonVariables (final String filename, final InputStream inputStream, final ConfigWrapper config) {
+		try {
+			final JsonNode node = JsonFactory.mapper ().readTree (inputStream);
+			
+			filterNode (node, config);
+			
+			return node;
+		} catch (IOException e) {
+			throw new RuntimeException ("Failed to load " + filename, e);
+		}
 	}
 	
 	private void filterNode (final JsonNode node, final ConfigWrapper config) {
