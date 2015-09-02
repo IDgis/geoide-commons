@@ -25,7 +25,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 
 import nl.idgis.geoide.commons.domain.JsonFactory;
-import nl.idgis.geoide.commons.domain.provider.MapProvider;
+import nl.idgis.geoide.commons.domain.provider.StaticMapProvider;
 import nl.idgis.geoide.map.provider.JsonMapProviderBuilder;
 import nl.idgis.geoide.util.ConfigWrapper;
 
@@ -36,7 +36,7 @@ public class ProviderConfig {
 	
 	@Bean
 	@Autowired
-	public MapProvider mapProvider (final ConfigWrapper config) throws IOException {
+	public StaticMapProvider mapProvider (final ConfigWrapper config) throws IOException {
 		final String mapsResource = config.getString ("geoide.service.components.mapProvider.resources.maps", "nl/idgis/geoide/commons/config/map/maps.json");
 		final String servicesResource = config.getString ("geoide.service.components.mapProvider.resources.services", "nl/idgis/geoide/commons/config/map/services.json");
 		final String featureTypesResource = config.getString ("geoide.service.components.mapProvider.resources.featureTypes", "nl/idgis/geoide/commons/config/map/featuretypes.json");

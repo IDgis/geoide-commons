@@ -16,7 +16,6 @@ import nl.idgis.geoide.commons.domain.JsonFactory;
 import nl.idgis.geoide.commons.domain.MapDefinition;
 import nl.idgis.geoide.commons.domain.Service;
 import nl.idgis.geoide.commons.domain.ServiceLayer;
-import nl.idgis.geoide.commons.domain.provider.MapProvider;
 import nl.idgis.geoide.commons.domain.provider.StaticMapProvider;
 
 public class JsonMapProviderBuilder {
@@ -36,7 +35,7 @@ public class JsonMapProviderBuilder {
 		return this;
 	}
 	
-	public MapProvider build () {
+	public StaticMapProvider build () {
 		final Map<String, Service> services = parseServices ();
 		final Map<String, FeatureType> featureTypes = parseFeatureTypes (services);
 		final Map<String, ServiceLayer> serviceLayers = parseServiceLayers (services, featureTypes);
