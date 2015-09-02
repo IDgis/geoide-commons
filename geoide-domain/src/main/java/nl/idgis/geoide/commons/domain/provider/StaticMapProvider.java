@@ -1,6 +1,5 @@
 package nl.idgis.geoide.commons.domain.provider;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -9,16 +8,11 @@ import java.util.List;
 import java.util.Set;
 
 import nl.idgis.geoide.commons.domain.FeatureType;
-import nl.idgis.geoide.commons.domain.JsonFactory;
 import nl.idgis.geoide.commons.domain.Layer;
 import nl.idgis.geoide.commons.domain.MapDefinition;
 import nl.idgis.geoide.commons.domain.Service;
 import nl.idgis.geoide.commons.domain.ServiceLayer;
 import nl.idgis.geoide.util.Assert;
-
-
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 public class StaticMapProvider implements MapProvider, ServiceProvider, ServiceLayerProvider, FeatureTypeProvider, LayerProvider {
 
@@ -33,29 +27,6 @@ public class StaticMapProvider implements MapProvider, ServiceProvider, ServiceL
 	public StaticMapProvider (final MapDefinition mapDefinition) {
 		this (wrap (mapDefinition));
 	}
-	
-	public StaticMapProvider (final String jsonData) {
-		this (JsonFactory.mapDefinition (jsonData));
-	}
-	
-	public StaticMapProvider (final JsonNode json) {
-		this (JsonFactory.mapDefinition (json));
-	}
-	
-	
-	public StaticMapProvider (final InputStream ... inputStreams) {
-		this (makeMapDefinitions (inputStreams));
-	}
-
-	
-	private static Collection<MapDefinition> makeMapDefinitions (final InputStream[] inputStreams) {
-		Assert.notNull (inputStreams, "inputStream");
-		
-		final List<MapDefinition> mapDefinitions = JsonFactory.mapDefinitions (inputStreams);
-		
-		return mapDefinitions;
-	}
-	
 	
 	private static <T> Collection<T> wrap (final T value) {
 		Assert.notNull (value, "value");

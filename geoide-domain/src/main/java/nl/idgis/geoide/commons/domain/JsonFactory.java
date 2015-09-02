@@ -1,7 +1,6 @@
 package nl.idgis.geoide.commons.domain;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -62,35 +61,6 @@ public class JsonFactory {
 		}
 	}
 	
-	public static MapDefinition mapDefinition (final String json) {
-		List<JsonNode> mapEntityNodes = new ArrayList<> ();
-		mapEntityNodes.add(parse (json));
-		return mapDefinitions (mapEntityNodes).get(0);
-	}
-	
-	public static MapDefinition mapDefinition (final JsonNode json) {
-		List<JsonNode> mapEntityNodes = new ArrayList<> ();
-		mapEntityNodes.add(json);
-		return mapDefinitions (mapEntityNodes).get(0);
-	}
-	
-	
-	public static MapDefinition mapDefinition (final InputStream inputStream) {
-		return mapDefinitions (inputStream).get(0);
-	}
-	
-	public static List<MapDefinition> mapDefinitions (final InputStream... inputStreams) {
-		
-		List<JsonNode> mapEntityNodes = new ArrayList<> ();
-		
-		for (final InputStream is: inputStreams) {
-			JsonNode node = parse(is);
-			mapEntityNodes.add(node);
-		}	
-		
-		return mapDefinitions (mapEntityNodes);
-	}
-	
 	public static MapDefinition mapDefinition (final JsonNode mapNode, final Map<String, JsonNode> layerNodes, final Map<String, ServiceLayer> serviceLayerMap) {
 		final JsonNode id = mapNode.path ("id"); 
 		final JsonNode label = mapNode.path ("label");
@@ -125,71 +95,6 @@ public class JsonFactory {
 		} else {
 			throw new IllegalArgumentException ("Missing property: maplayers");
 		}
-	}
-	
-	public static List<MapDefinition> mapDefinitions (List<JsonNode> mapEntityNodes) {
-		JsonNode services = null; 
-		JsonNode featureTypes = null;
-		JsonNode serviceLayers = null;
-		JsonNode layers = null;
-		JsonNode maps = null;
-		for (final JsonNode mapEntityNode: mapEntityNodes) {
-			if (mapEntityNode.has("services")){
-				services = mapEntityNode.path("services");
-			}	
-			if (mapEntityNode.has("featureTypes")){
-				featureTypes =  mapEntityNode.path("featureTypes");	
-			}
-			if (mapEntityNode.has("serviceLayers")){
-				serviceLayers =  mapEntityNode.path("serviceLayers");			
-			}
-			if (mapEntityNode.has("layers")){ 
-				 layers =  mapEntityNode.path("layers");
-			}
-			if (mapEntityNode.has("maps")){ 
-				 maps =  mapEntityNode.path("maps");
-			}
-		}	
-		
-		final Map<String, Service> serviceMap = new HashMap<> ();
-		final Map<String, FeatureType> featureTypeMap = new HashMap<> ();
-		final Map<String, ServiceLayer> serviceLayerMap = new HashMap<> ();
-		final Map<String, JsonNode> layerMap = new HashMap<> ();
-		
-		// Parse services:
-		if (services != null) {
-			for (final JsonNode serviceNode: services) {
-				final Service service = JsonFactory.service (serviceNode);
-				serviceMap.put (service.getId (), service);
-			}
-		}
-		// Parse feature types:
-		if (featureTypes != null) {
-			for (final JsonNode featureTypeNode: featureTypes) {
-				final FeatureType featureType = JsonFactory.featureType (featureTypeNode, serviceMap);
-				featureTypeMap.put (featureType.getId (), featureType);
-			}
-		}
-		// Parse service layers:
-		if (serviceLayers != null) {
-			for (final JsonNode serviceLayerNode: serviceLayers) {
-				final ServiceLayer serviceLayer = JsonFactory.serviceLayer (serviceLayerNode, serviceMap, featureTypeMap);
-				serviceLayerMap.put (serviceLayer.getId (), serviceLayer);
-			}	
-		}
-		
-		if (layers != null) {
-			for (final JsonNode layerNode: layers) {
-				layerMap.put (layerNode.path ("id").asText (), layerNode);
-			}
-		}
-		
-		final List<MapDefinition> mapDefinitions = new ArrayList<MapDefinition>();
-		for (final JsonNode mapNode: maps) {
-			mapDefinitions.add (mapDefinition (mapNode, layerMap, serviceLayerMap));
-		}
-		return mapDefinitions;
-		
 	}
 	
 	// method to merge maplayer and layer
@@ -374,16 +279,6 @@ public class JsonFactory {
 			throw new RuntimeException (e);
 		}
 	}
-	
-	private static JsonNode parse (final InputStream inputStream) {
-		try {
-			return mapper.readTree (inputStream);
-		} catch (IOException e) {
-			throw new RuntimeException (e);
-		}
-	}
-	
-	
 	
 	private static <T> T parseObject (final JsonNode node, final Class<T> cls) {
 		try {

@@ -1,22 +1,13 @@
 package nl.idgis.geoide.commons.domain;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import nl.idgis.geoide.commons.domain.JsonFactory;
-import nl.idgis.geoide.commons.domain.Layer;
-import nl.idgis.geoide.commons.domain.MapDefinition;
-import nl.idgis.geoide.commons.domain.QName;
-import nl.idgis.geoide.commons.domain.Service;
-import nl.idgis.geoide.commons.domain.ServiceIdentification;
-
 import org.junit.Test;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 public class TestJsonFactory {
 
@@ -134,24 +125,6 @@ public class TestJsonFactory {
 	@Test (expected = RuntimeException.class)
 	public void testQNameMissingLocalName () {
 		JsonFactory.qName ("{ \"namespace\": \"namespace\" }");
-	}
-	
-	@Test
-	public void testMapDefinition () {
-		final MapDefinition def = JsonFactory.mapDefinition (mapDefinitionJson);
-
-		assertMapDefinition (def);
-	}
-	
-	@Test
-	public void testSerializeMapDefinition () {
-		final MapDefinition def = JsonFactory.mapDefinition (mapDefinitionJson);
-		final JsonNode node = JsonFactory.serialize (def);
-			
-		//TODO terug kan niet meer
-		//final MapDefinition def2 = JsonFactory.mapDefinition (node);
-		
-		assertMapDefinition (def);
 	}
 	
 	private void assertMapDefinition (final MapDefinition def) {
