@@ -33,6 +33,24 @@ public class ProviderConfig {
 
 	private final static Logger log = LoggerFactory.getLogger (ProviderConfig.class);
 	
+	/**
+	 * Configures and creates a {@link StaticMapProvider} instance. Configuration is loaded
+	 * from the classpath, from the resources pointed to by the following configuration
+	 * parameters:
+	 * 
+	 * - geoide.service.components.mapProvider.resources.map
+	 * - geoide.service.components.mapProvider.resources.services
+	 * - geoide.service.components.mapProvider.resources.featureTypes
+	 * - geoide.service.components.mapProvider.resources.serviceLayers
+	 * - geoide.service.components.mapProvider.resources.layers
+	 * 
+	 * The configuration is overridden by all JSON files found in the directory pointed to
+	 * by the property geoide.service.components.mapProvider.configDir 
+	 * 
+	 * @param config	The application configuration.
+	 * @return 			A configured {@link StaticMapProvider} instance.
+	 * @throws			IOException
+	 */
 	@Bean
 	@Autowired
 	public StaticMapProvider mapProvider (final ConfigWrapper config) throws IOException {
@@ -65,6 +83,8 @@ public class ProviderConfig {
 		// Add override configurations from the filesystem:
 		if (mapConfigurationDirectory != null) {
 			final File configDir = new File (mapConfigurationDirectory);
+			
+			log.info ("Overriding map configuration with files from: " + configDir.getAbsolutePath ());
 
 			if (!configDir.exists () || !configDir.isDirectory ()) {
 				throw new IllegalArgumentException ("Map configuration directory: " + configDir + " does not exist or is not a directory");
