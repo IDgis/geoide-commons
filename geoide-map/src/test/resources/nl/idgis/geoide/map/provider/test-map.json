@@ -1,0 +1,79 @@
+{
+	"maps": [ 
+		{
+			"id": "test-map",
+			"label": "Test map",
+			"maplayers": [			
+				{
+					"id": "test-layer-1",
+					"layer": "test-layer-1",
+					"label": "Layer 1"
+				},
+				{
+					"id": "test-layer-2",
+					"layer": "test-layer-2",
+					"label": "Layer 2"
+				}
+			]
+		}
+	],
+	
+	"layers": [
+		{
+			"id": "test-layer-1",
+			"layerType": "default",
+			"serviceLayers": [ "test-servicelayer-1" ]			
+		},
+		{
+			"id": "test-layer-2",
+			"layerType": "default",
+			"serviceLayers": [ "test-servicelayer-2" ]			
+		}
+	],
+	
+	"serviceLayers": [
+		{
+			"id": "test-servicelayer-1",
+			"label": "Test servicelayer 1",
+			"name": "testservicelayer1",
+			"service": "test-service-1"
+		},
+		{
+			"id": "test-servicelayer-2",
+			"label": "Test servicelayer 2",
+			"name": "testservicelayer2",
+			"service": "test-service-2",
+			"featureType": "test-feature-type-1"
+		}
+	],
+	
+	"featureTypes": [
+		{
+			"id": "test-feature-type-1",
+			"label": "Test feature type 1",
+			"name": "featuretype",
+			"service": "test-service-2"
+		}
+	],
+	
+	"services": [
+		{
+			"id": "test-service-1",
+			"label": "Test service 1",
+			"identification": {
+				"serviceType": "TMS",
+				"serviceEndpoint": "http://geodata.nationaalgeoregister.nl/tms/1.0.0",
+				"serviceVersion": "1.0.0"
+			}
+		},
+		{
+			"id": "test-service-2",
+			"label": "Test service 2",
+			"identification": {
+				"serviceType": "TMS",
+				"serviceEndpoint": "http://geodata.nationaalgeoregister.nl/tms/1.0.0",
+				"serviceVersion": "1.0.0"
+			}
+		}
+	]
+}

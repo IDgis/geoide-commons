@@ -12,7 +12,6 @@
 	<modules>
 		<module>geoide-domain</module>
 		<module>geoide-util</module>
-		<module>geoide-domain-test</module>
 		<module>geoide-service</module>
 		<module>geoide-layer</module>
 		<module>geoide-print</module>

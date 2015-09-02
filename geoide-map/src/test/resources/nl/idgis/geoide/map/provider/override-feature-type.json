@@ -1,0 +1,10 @@
+{
+	"featureTypes": [
+		{
+			"id": "test-feature-type-1",
+			"label": "Test feature type 1 override",
+			"name": "featuretypeoverride",
+			"service": "test-service-1"
+		}
+	]
+}

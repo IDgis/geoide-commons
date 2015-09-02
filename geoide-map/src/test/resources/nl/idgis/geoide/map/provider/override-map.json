@@ -1,0 +1,9 @@
+{
+	"maps": [ 
+		{
+			"id": "test-map",
+			"label": "Test map override",
+			"maplayers": [ ]
+		}
+	]
+}

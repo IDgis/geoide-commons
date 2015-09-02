@@ -5,5 +5,8 @@ dependencies {
 	compile project(':geoide-service:geoide-service-common')
 	compile project(':geoide-layer:geoide-layer-common')
 	
+	testCompile externalDependency.junit
+	
+	provided externalDependency.jacksonCore
 	provided externalDependency.jacksonDatabind
 }

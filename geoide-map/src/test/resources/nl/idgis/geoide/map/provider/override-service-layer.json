@@ -1,0 +1,10 @@
+{
+	"serviceLayers": [
+		{
+			"id": "test-servicelayer-2",
+			"label": "Test servicelayer 2 override",
+			"name": "testservicelayer2",
+			"service": "test-service-2"
+		}
+	]
+}
