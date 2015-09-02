@@ -7,5 +7,6 @@ dependencies {
 	
 	testCompile externalDependency.junit
 	
+	provided externalDependency.jacksonCore
 	provided externalDependency.jacksonDatabind
 }

@@ -1,7 +1,6 @@
 rootProject.name = 'geoide-commons'
 include ':geoide-domain'
 include ':geoide-util'
-include ':geoide-domain-test'
 include ':geoide-service:geoide-service-common'
 include ':geoide-service:geoide-service-wms'
 include ':geoide-service:geoide-service-tms'
@@ -32,7 +31,6 @@ include ':geoide-viewer:geoide-toc'
 
 project(':geoide-domain').projectDir = "$rootDir/geoide-domain" as File
 project(':geoide-util').projectDir = "$rootDir/geoide-util" as File
-project(':geoide-domain-test').projectDir = "$rootDir/geoide-domain-test" as File
 project(':geoide-service:geoide-service-common').projectDir = "$rootDir/geoide-service/geoide-service-common" as File
 project(':geoide-service:geoide-service-wms').projectDir = "$rootDir/geoide-service/geoide-service-wms" as File
 project(':geoide-service:geoide-service-tms').projectDir = "$rootDir/geoide-service/geoide-service-tms" as File
