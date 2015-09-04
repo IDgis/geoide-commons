@@ -15,6 +15,10 @@
 			<artifactId>geoide-domain</artifactId>
 		</dependency>	
 		<dependency>
+			<groupId>nl.idgis.geoide</groupId>
+			<artifactId>geoide-http-client</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.typesafe.play</groupId>
 			<artifactId>play-java-ws_${scala.abi.version}</artifactId>
 			<scope>provided</scope>
