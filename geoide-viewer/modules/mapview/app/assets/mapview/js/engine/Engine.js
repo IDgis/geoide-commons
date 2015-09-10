@@ -281,6 +281,7 @@ define ([
 				})
 			});
 			
+			
 			this.olMap = new ol.Map ({
 				layers: [ ],
 				renderer: 'canvas',
@@ -292,7 +293,8 @@ define ([
 					minResolution: this.get ('minResolution'),
 					maxResolution: this.get ('maxResolution')
 				}),
-				interactions: [ ]	// Map defaults to no interactions.
+				interactions: [ ],// Map defaults to no interactions.
+				controls: ol.control.defaults({ attribution: false }) // default no attribution control
 			});
 			
 			this.olMap.on ('moveend', this._onMoveEnd, this);
