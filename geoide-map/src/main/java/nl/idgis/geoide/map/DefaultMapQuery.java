@@ -11,6 +11,7 @@ import nl.idgis.geoide.commons.domain.FeatureQuery;
 import nl.idgis.geoide.commons.domain.Layer;
 import nl.idgis.geoide.commons.domain.ParameterizedFeatureType;
 import nl.idgis.geoide.commons.domain.api.MapQuery;
+import nl.idgis.geoide.commons.domain.geometry.Envelope;
 import nl.idgis.geoide.commons.domain.provider.LayerProvider;
 import nl.idgis.geoide.commons.domain.query.Query;
 import nl.idgis.geoide.commons.domain.query.QueryLayerInfo;
@@ -39,6 +40,7 @@ public class DefaultMapQuery implements MapQuery {
 	
 	@Override
 	public CompletableFuture<Query> prepareQuery (final ExternalizableJsonNode input) {
+		System.out.println("prepareQuery " + input.getJsonNode ());
 		return CompletableFuture.completedFuture (parseQueryInfo (input.getJsonNode ()));
 	}
 	
@@ -48,6 +50,7 @@ public class DefaultMapQuery implements MapQuery {
 	}
 	
 	private Query parseQueryInfo (final JsonNode queryNode) {
+		System.out.println("parseQueryInfo");
 		return new Query (parseLayerInfos (queryNode.path ("layers")), parseQuery (queryNode.path ("query")));
 	}
 	
@@ -73,8 +76,27 @@ public class DefaultMapQuery implements MapQuery {
 		if (queryNode.isMissingNode ()) {
 			return Optional.empty ();
 		}
+		if (queryNode.path ("bbox").isMissingNode ()) {
+			return Optional.empty ();
+		}
 		
-		return Optional.of (new FeatureQuery ());
+		Envelope envelope = getEnvelope (queryNode.path ("bbox"));
+		return Optional.of (new FeatureQuery (Optional.of(envelope)));
+	}
+	
+	private Envelope getEnvelope (final JsonNode bboxNode) {
+		if (bboxNode.path("minx").isMissingNode() || bboxNode.path("miny").isMissingNode() || bboxNode.path("maxx").isMissingNode() || bboxNode.path("maxy").isMissingNode()) {
+			throw new IllegalArgumentException ("Bbox is missing a coördinate");
+		}
+		Envelope envelope = null;
+		try {
+			envelope  = new Envelope(bboxNode.path("minx").asDouble(),bboxNode.path("miny").asDouble(),bboxNode.path("maxx").asDouble(),bboxNode.path("maxy").asDouble()); 
+		} catch (Exception e) {
+			throw new IllegalArgumentException ("Error in Bbox coördinates " + e);
+		}
+		
+		return envelope;
+		
 	}
 
 	private Layer getLayer (final JsonNode id) {
