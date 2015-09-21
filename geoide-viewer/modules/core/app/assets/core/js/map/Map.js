@@ -104,7 +104,8 @@ define ([
 			var layerDictionary = { },
 				layerList = [ ];
 			
-			var processLayers = function (object) {
+			var processLayers = function (object, parentId) {
+				var pid = object.get ('id');
 				var layers = object.get ('layers');
 				if (!layers) {
 					return;
@@ -115,13 +116,14 @@ define ([
 						id = layer.get ('id');
 					
 					if (!(id in layerDictionary)) {
+						layer.set ('parentId', pid);
 						layerDictionary[id] = layer;
 						layerList.push (layer);
 					} else if (layerDictionary[id] !== layer) {
 						throw new Error ('Duplicate layer with id: ', id);
 					}
 					
-					processLayers (layer);
+					processLayers (layer, pid);
 				}
 			};
 			
@@ -142,6 +144,11 @@ define ([
 		
 		getInitialExtent: function () {
 			return (this.get ('initial-extent'));
+		},
+		
+		getParentLayer: function (layerId) {
+			var layer = this.get ('layerDictionary').get (layerId);
+			return this.get ('layerDictionary').get (layer.get('parentId'));
 		}
 		
 	});

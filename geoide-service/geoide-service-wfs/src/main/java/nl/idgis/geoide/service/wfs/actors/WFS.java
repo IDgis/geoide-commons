@@ -1,13 +1,16 @@
 package nl.idgis.geoide.service.wfs.actors;
 
 import java.util.Map;
+import java.util.Optional;
 
 import akka.actor.ActorRef;
 import akka.actor.Props;
 import akka.pattern.Patterns;
+import nl.idgis.geoide.commons.domain.FeatureQuery;
 import nl.idgis.geoide.commons.domain.MimeContentType;
 import nl.idgis.geoide.commons.domain.QName;
 import nl.idgis.geoide.commons.domain.ServiceIdentification;
+import nl.idgis.geoide.commons.domain.geometry.Envelope;
 import nl.idgis.geoide.commons.domain.service.Capabilities;
 import nl.idgis.geoide.commons.domain.service.WFSRequestParameters;
 import nl.idgis.geoide.commons.domain.service.messages.QueryFeatures;
@@ -139,7 +142,17 @@ public class WFS extends OGCService {
 						holder = holder.setQueryParameter (entry.getKey (), entry.getValue ());
 					}
 				}
+
+				if (queryFeatures.getQuery ().isPresent ()) {
+					final FeatureQuery query = queryFeatures.getQuery().get ();
 					
+					if (query.getBbox ().isPresent ()) {
+						Envelope envelope = query.getBbox ().get();
+						String bbox = envelope.getMinX() + "," + envelope.getMinY() + "," + envelope.getMaxX() + "," + envelope.getMaxY();
+						holder = holder.setQueryParameter ("bbox", bbox);
+					}
+				}
+				
 				final Promise<ServiceMessage> responsePromise = get (holder, sender, self, new ResponseHandler () {
 					@Override
 					public ServiceMessage handleResponse (final WSResponse response, final String url, final ActorRef sender, final ActorRef self) {
