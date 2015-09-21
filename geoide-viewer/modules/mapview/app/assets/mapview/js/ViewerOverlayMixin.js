@@ -155,11 +155,11 @@ define ([
 				styleFunction = feature.getStyleFunction () || defaultStyleFunction,
 				resolution = this.get ('resolution');
 
-			console.log ('Overlay style function: ', styleFunction);
+			//console.log ('Overlay style function: ', styleFunction);
 			
 			var styles = styleFunction (feature, resolution);
 			
-			console.log ('Feature styles: ', styles);
+			//console.log ('Feature styles: ', styles);
 			
 			if (!styles) {
 				return null;

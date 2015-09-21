@@ -39,7 +39,7 @@ define ([
 		_interaction: null,
 		
 		constructor: function (parameters) {
-			console.log(parameters);
+			//console.log(parameters);
 			if(parameters.style) {
 				this.defaultStyle = parameters.style;
 			} else {
