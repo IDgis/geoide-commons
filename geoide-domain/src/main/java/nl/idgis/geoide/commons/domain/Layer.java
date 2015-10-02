@@ -20,7 +20,6 @@ public class Layer extends Entity {
 	private static final long serialVersionUID = 5628518429669556235L;
 
 	private final String layerType;
-	private final String label;
 	private final List<Layer> layers;
 	private final List<ServiceLayer> serviceLayers;
 	private final Map<String, ExternalizableJsonNode> state;
@@ -35,13 +34,11 @@ public class Layer extends Entity {
 			final @JsonProperty("serviceLayers") List<ServiceLayer> serviceLayers,
 			final @JsonProperty("state") Map <String,JsonNode> state,
 			final @JsonProperty("properties") Map <String,JsonNode> properties) {
-		super (id);
+		super (id, label);
 		
-		Assert.notNull (label, "label");
 		Assert.notNull (layerType, "layerType");
 		
 		this.layerType = layerType;
-		this.label = label;
 		this.layers = layers == null ? Collections.<Layer>emptyList () : new ArrayList<> (layers);
 		this.serviceLayers = serviceLayers == null ? Collections.<ServiceLayer>emptyList () : new ArrayList<> (serviceLayers);
 		this.state = externalizeProperties (state); 
@@ -112,10 +109,6 @@ public class Layer extends Entity {
 
 	public String getLayerType () {
 		return layerType;
-	}
-
-	public String getLabel () {
-		return label;
 	}
 
 	public List<Layer> getLayers () {

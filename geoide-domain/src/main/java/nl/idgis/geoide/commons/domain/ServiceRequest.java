@@ -6,18 +6,20 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-public final class ServiceRequest extends Entity {
+public final class ServiceRequest {
 	
 	private static final long serialVersionUID = 2821223114900949315L;
 	
+	private final String id;
 	private final Service service;
 	private final Object parameters;
 	
 	public ServiceRequest (final String id, final Service service, final Object parameters) {
-		super (id);
-		
+	
+		Assert.notNull (id, "id");
 		Assert.notNull (service, "service");
 		
+		this.id = id;
 		this.service = service;
 		this.parameters = parameters;
 	}
@@ -42,5 +44,9 @@ public final class ServiceRequest extends Entity {
 	
 	public Object getParameters () {
 		return parameters;
+	}
+	
+	public String getId () {
+		return id;
 	}
 }

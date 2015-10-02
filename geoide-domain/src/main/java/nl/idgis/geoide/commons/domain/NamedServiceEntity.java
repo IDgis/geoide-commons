@@ -7,18 +7,15 @@ public abstract class NamedServiceEntity extends Entity {
 	
 	private final Service service;
 	private final QName name;
-	private final String label;
-
+	
 	public NamedServiceEntity (final String id, final Service service, final QName name, final String label) {
-		super (id);
+		super (id, label);
 		
 		Assert.notNull (service, "service");
 		Assert.notNull (name, "name");
-		Assert.notNull (label, "label");
 
 		this.service = service;
 		this.name = name;
-		this.label = label;
 	}
 	
 	public Service getService () {
@@ -29,7 +26,4 @@ public abstract class NamedServiceEntity extends Entity {
 		return name;
 	}
 
-	public String getLabel () {
-		return label;
-	}
 }

@@ -15,7 +15,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class MapDefinition extends Entity {
 	private static final long serialVersionUID = -5946086390948660716L;
 	private final List<Layer> rootLayers;
-	private final String label;
 	private final String prefix;
 	private final String initialExtent;
 	private final Map<String, Service> services = new HashMap<> ();
@@ -24,8 +23,7 @@ public class MapDefinition extends Entity {
 	private final Map<String, Layer> layers = new HashMap<> ();
 
 	public MapDefinition (final String id, final String label, final String prefix, final String initialExtent, final List<Layer> rootLayers) {
-		super (id);
-		this.label = label;
+		super (id, label);
 		this.prefix = prefix;
 		this.initialExtent = initialExtent;
 		this.rootLayers = rootLayers == null ? Collections.<Layer>emptyList () : new ArrayList<> (rootLayers);
@@ -74,10 +72,6 @@ public class MapDefinition extends Entity {
 	
 	public List<Layer> getRootLayers () {
 		return Collections.unmodifiableList (rootLayers);
-	}
-	
-	public String getLabel () {
-		return label;
 	}
 	
 	public String getPrefix () {
