@@ -13,7 +13,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import nl.idgis.geoide.commons.domain.FeatureType;
 import nl.idgis.geoide.commons.domain.JsonFactory;
-import nl.idgis.geoide.commons.domain.Layer;
+import nl.idgis.geoide.commons.domain.MapLayer;
 import nl.idgis.geoide.commons.domain.MapDefinition;
 import nl.idgis.geoide.commons.domain.Service;
 import nl.idgis.geoide.commons.domain.ServiceLayer;
@@ -26,7 +26,7 @@ import nl.idgis.geoide.commons.domain.provider.StaticMapProvider;
  * - {@link Service}
  * - {@link FeatureType}
  * - {@link ServiceLayer}
- * - {@link Layer}
+ * - {@link MapLayer}
  * - {@link MapDefinition}
  * 
  * MapDefinitions are created by resolving references to related entities. 

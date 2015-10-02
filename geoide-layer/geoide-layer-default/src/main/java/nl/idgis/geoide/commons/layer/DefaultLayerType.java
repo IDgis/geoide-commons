@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nl.idgis.geoide.commons.domain.FeatureQuery;
-import nl.idgis.geoide.commons.domain.Layer;
+import nl.idgis.geoide.commons.domain.MapLayer;
 import nl.idgis.geoide.commons.domain.ParameterizedFeatureType;
 import nl.idgis.geoide.commons.domain.ParameterizedServiceLayer;
 import nl.idgis.geoide.commons.domain.ServiceLayer;
@@ -42,7 +42,7 @@ public final class DefaultLayerType extends LayerType {
 	}
 
 	@Override
-	public List<ParameterizedFeatureType<?>> getFeatureTypes (final Layer layer, final Optional<FeatureQuery> query, final JsonNode state) {
+	public List<ParameterizedFeatureType<?>> getFeatureTypes (final MapLayer layer, final Optional<FeatureQuery> query, final JsonNode state) {
 		final List<ParameterizedFeatureType<?>> result = new ArrayList<> ();
 		
 		for (final ServiceLayer serviceLayer: layer.getServiceLayers ()) {
@@ -57,7 +57,7 @@ public final class DefaultLayerType extends LayerType {
 	}
 
 	@Override
-	public Traits<LayerState> createLayerState (final Layer layer, final JsonNode state, final List<Traits<LayerState>> parentStates) {
+	public Traits<LayerState> createLayerState (final MapLayer layer, final JsonNode state, final List<Traits<LayerState>> parentStates) {
 		final List<Traits<LayerState>> parents = parentStates.isEmpty () || parentStates == null ? Collections.emptyList () : new ArrayList<> (parentStates);
 		final boolean visible = state.path ("visible").asBoolean ();
 		

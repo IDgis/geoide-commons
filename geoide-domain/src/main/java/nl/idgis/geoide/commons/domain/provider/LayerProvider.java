@@ -2,9 +2,9 @@ package nl.idgis.geoide.commons.domain.provider;
 
 import java.util.List;
 
-import nl.idgis.geoide.commons.domain.Layer;
+import nl.idgis.geoide.commons.domain.MapLayer;
 
 public interface LayerProvider {
-	Layer getLayer (String layer);
-	List<Layer> getLayers (List<String> layerIds);
+	MapLayer getLayer (String layer);
+	List<MapLayer> getLayers (List<String> layerIds);
 }

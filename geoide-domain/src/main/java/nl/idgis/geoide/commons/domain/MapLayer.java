@@ -15,22 +15,22 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-public class Layer extends Entity {
+public class MapLayer extends Entity {
 
 	private static final long serialVersionUID = 5628518429669556235L;
 
 	private final String layerType;
-	private final List<Layer> layers;
+	private final List<MapLayer> layers;
 	private final List<ServiceLayer> serviceLayers;
 	private final Map<String, ExternalizableJsonNode> state;
 	private final Map<String, ExternalizableJsonNode> properties;
 	
 	@JsonCreator
-	public Layer (
+	public MapLayer (
 			final @JsonProperty("id") String id,
 			final @JsonProperty("layerType") String layerType,
 			final @JsonProperty("label") String label,
-			final @JsonProperty("layers") List<Layer> layers,
+			final @JsonProperty("layers") List<MapLayer> layers,
 			final @JsonProperty("serviceLayers") List<ServiceLayer> serviceLayers,
 			final @JsonProperty("state") Map <String,JsonNode> state,
 			final @JsonProperty("properties") Map <String,JsonNode> properties) {
@@ -39,7 +39,7 @@ public class Layer extends Entity {
 		Assert.notNull (layerType, "layerType");
 		
 		this.layerType = layerType;
-		this.layers = layers == null ? Collections.<Layer>emptyList () : new ArrayList<> (layers);
+		this.layers = layers == null ? Collections.<MapLayer>emptyList () : new ArrayList<> (layers);
 		this.serviceLayers = serviceLayers == null ? Collections.<ServiceLayer>emptyList () : new ArrayList<> (serviceLayers);
 		this.state = externalizeProperties (state); 
 		this.properties = externalizeProperties (properties); 
@@ -74,7 +74,7 @@ public class Layer extends Entity {
 		if (!getLayers ().isEmpty ()) {
 			final ArrayNode layersNode = n.putArray ("layers");
 			
-			for (final Layer layer: getLayers ()) {
+			for (final MapLayer layer: getLayers ()) {
 				layersNode.add (JsonFactory.mapper ().valueToTree (layer));
 			}
 		}
@@ -111,7 +111,7 @@ public class Layer extends Entity {
 		return layerType;
 	}
 
-	public List<Layer> getLayers () {
+	public List<MapLayer> getLayers () {
 		return Collections.unmodifiableList (layers);
 	}
 

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import nl.idgis.geoide.commons.domain.FeatureType;
-import nl.idgis.geoide.commons.domain.Layer;
+import nl.idgis.geoide.commons.domain.MapLayer;
 import nl.idgis.geoide.commons.domain.MapDefinition;
 import nl.idgis.geoide.commons.domain.Service;
 import nl.idgis.geoide.commons.domain.ServiceLayer;
@@ -50,13 +50,13 @@ public class StaticMapProvider implements MapProvider, ServiceProvider, ServiceL
 	}
 	
 	@Override
-	public List<Layer> getLayers(String mapId) {
+	public List<MapLayer> getLayers(String mapId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<Layer> getRootLayers(String mapId) {
+	public List<MapLayer> getRootLayers(String mapId) {
 		for (final MapDefinition mapDefinition: mapDefinitions) {
 			if (mapDefinition.getId ().equals (mapId)) {
 				return mapDefinition.getRootLayers();
@@ -67,13 +67,13 @@ public class StaticMapProvider implements MapProvider, ServiceProvider, ServiceL
 	
 
 	@Override
-	public Layer getLayer (final String layerId) {
+	public MapLayer getLayer (final String layerId) {
 		if (layerId == null) {
 			return null;
 		}
 		
 		for (final MapDefinition mapDefinition: mapDefinitions) {
-			final Layer layer = mapDefinition.getLayers ().get (layerId);
+			final MapLayer layer = mapDefinition.getLayers ().get (layerId);
 			
 			if (layer != null) {
 				return layer;
@@ -84,12 +84,12 @@ public class StaticMapProvider implements MapProvider, ServiceProvider, ServiceL
 	}
 
 	@Override
-	public List<Layer> getLayers (final List<String> layerIds) {
+	public List<MapLayer> getLayers (final List<String> layerIds) {
 		if (layerIds == null || layerIds.isEmpty ()) {
 			return Collections.emptyList ();
 		}
 		
-		final List<Layer> layers = new ArrayList<Layer> (layerIds.size ());
+		final List<MapLayer> layers = new ArrayList<MapLayer> (layerIds.size ());
 		
 		for (final String layerId: layerIds) {
 			layers.add (getLayer (layerId));

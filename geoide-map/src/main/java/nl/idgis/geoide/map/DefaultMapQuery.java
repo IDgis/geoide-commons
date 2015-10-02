@@ -8,7 +8,7 @@ import java.util.concurrent.CompletableFuture;
 
 import nl.idgis.geoide.commons.domain.ExternalizableJsonNode;
 import nl.idgis.geoide.commons.domain.FeatureQuery;
-import nl.idgis.geoide.commons.domain.Layer;
+import nl.idgis.geoide.commons.domain.MapLayer;
 import nl.idgis.geoide.commons.domain.ParameterizedFeatureType;
 import nl.idgis.geoide.commons.domain.api.MapQuery;
 import nl.idgis.geoide.commons.domain.geometry.Envelope;
@@ -99,12 +99,12 @@ public class DefaultMapQuery implements MapQuery {
 		
 	}
 
-	private Layer getLayer (final JsonNode id) {
+	private MapLayer getLayer (final JsonNode id) {
 		if (id == null) {
 			throw new IllegalArgumentException ("Missing layer ID");
 		}
 		
-		final Layer layer = layerProvider.getLayer (id.asText ());
+		final MapLayer layer = layerProvider.getLayer (id.asText ());
 		if (layer == null) {
 			throw new IllegalArgumentException ("No layer found with ID " + id.asText ());
 		}
