@@ -6,11 +6,16 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-public final class ServiceLayer extends NamedServiceEntity {
+import nl.idgis.geoide.util.Assert;
+
+public final class ServiceLayer extends Entity {
 
 	private static final long serialVersionUID = -1751576147573777244L;
 
+	private final Service service;
+	private final QName name;
 	private final FeatureType featureType;
+
 	
 	@JsonCreator
 	public ServiceLayer (
@@ -19,7 +24,13 @@ public final class ServiceLayer extends NamedServiceEntity {
 			final @JsonProperty ("name") QName name,
 			final @JsonProperty ("label") String label,
 			final @JsonProperty ("featureType") FeatureType featureType ) {
-		super (id, service, name, label);
+		super (id, label);
+		
+		Assert.notNull (service, "service");
+		Assert.notNull (name, "name");
+		
+		this.service = service;
+		this.name = name;	
 		
 		this.featureType = featureType;
 	}
@@ -29,8 +40,8 @@ public final class ServiceLayer extends NamedServiceEntity {
 		final ObjectNode n = JsonFactory.mapper ().createObjectNode ();
 		
 		n.put ("id", getId ());
-		n.put ("service", getService ().getId ());
-		n.put ("name", JsonFactory.mapper ().valueToTree (getName ()));
+		n.put ("service", service.getId ());
+		n.put ("name", JsonFactory.mapper ().valueToTree (name));
 		n.put ("label", getLabel ());
 		
 		if (getFeatureType () != null) {
@@ -40,6 +51,14 @@ public final class ServiceLayer extends NamedServiceEntity {
 		return n;
 	}
 
+	public Service getService () {
+		return service;
+	}
+
+	public QName getName () {
+		return name;
+	}
+	
 	public FeatureType getFeatureType () {
 		return featureType;
 	}
