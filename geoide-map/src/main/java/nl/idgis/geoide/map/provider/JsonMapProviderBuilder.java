@@ -77,7 +77,7 @@ public class JsonMapProviderBuilder {
 		final Map<String, Service> services = parseServices ();
 		final Map<String, FeatureType> featureTypes = parseFeatureTypes (services);
 		final Map<String, ServiceLayer> serviceLayers = parseServiceLayers (services, featureTypes);
-		final Map<String, JsonNode> layers = parseLayers ();
+		final Map<String, Layer> layers = parseLayers (serviceLayers);
 		
 		return new StaticMapProvider (parseMaps (layers, serviceLayers));
 	}
@@ -126,19 +126,21 @@ public class JsonMapProviderBuilder {
 		return Collections.unmodifiableMap (serviceLayers);
 	}
 	
-	private Map<String, JsonNode> parseLayers () {
-		final Map<String, JsonNode> layers = new HashMap<> ();
+	private Map<String, Layer> parseLayers (final Map<String, ServiceLayer> serviceLayers) {
+		final Map<String, Layer> layers = new HashMap<> ();
 		
 		nodes
 			.stream ()
 			.filter (node -> node.has ("layers"))
-			.flatMap (node -> StreamSupport.stream (node.path ("layers").spliterator (), false))
-			.forEach (node -> layers.put (node.path ("id").asText (), node));
+			.flatMap (node -> StreamSupport
+					.stream (node.path ("layers").spliterator (), false)
+					.map ( n -> JsonFactory.layer (n, serviceLayers)))
+			.forEach (layer -> layers.put (layer.getId (), layer));
 		
 		return Collections.unmodifiableMap (layers);
 	}
 	
-	private Collection<MapDefinition> parseMaps (final Map<String, JsonNode> layers, final Map<String, ServiceLayer> serviceLayers) {
+	private Collection<MapDefinition> parseMaps (final Map<String, Layer> layers, final Map<String, ServiceLayer> serviceLayers) {
 		final Map<String, MapDefinition> mapDefinitions = new HashMap<> ();
 		
 		nodes
