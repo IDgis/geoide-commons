@@ -14,19 +14,20 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class MapDefinition extends Entity {
 	private static final long serialVersionUID = -5946086390948660716L;
-	private final List<MapLayer> rootLayers;
+	private final List<LayerRef> rootLayers;
 	private final String prefix;
 	private final String initialExtent;
+	
 	private final Map<String, Service> services = new HashMap<> ();
 	private final Map<String, ServiceLayer> serviceLayers = new HashMap<> ();
 	private final Map<String, FeatureType> featureTypes = new HashMap<> ();
-	private final Map<String, MapLayer> layers = new HashMap<> ();
+	private final Map<String, LayerRef> layerRefs = new HashMap<> ();
 
-	public MapDefinition (final String id, final String label, final String prefix, final String initialExtent, final List<MapLayer> rootLayers) {
+	public MapDefinition (final String id, final String label, final String prefix, final String initialExtent, final List<LayerRef> rootLayers) {
 		super (id, label);
 		this.prefix = prefix;
 		this.initialExtent = initialExtent;
-		this.rootLayers = rootLayers == null ? Collections.<MapLayer>emptyList () : new ArrayList<> (rootLayers);
+		this.rootLayers = rootLayers == null ? Collections.<LayerRef>emptyList () : new ArrayList<> (rootLayers);
 		// Scan the layers and fill the indices:
 		scanLayers (this.rootLayers);
 	}
@@ -63,14 +64,14 @@ public class MapDefinition extends Entity {
 		// Write layers:
 		if (!getRootLayers ().isEmpty ()) {
 			final ArrayNode layersNode = obj.putArray ("layers");
-			for (final MapLayer layer: getRootLayers ()) {
-				layersNode.add (JsonFactory.mapper ().valueToTree (layer));
+			for (final LayerRef layerRef: getRootLayers ()) {
+				layersNode.add (JsonFactory.mapper ().valueToTree (layerRef));
 			}
 		}
 		return obj;
 	}
 	
-	public List<MapLayer> getRootLayers () {
+	public List<LayerRef> getRootLayers () {
 		return Collections.unmodifiableList (rootLayers);
 	}
 	
@@ -94,18 +95,18 @@ public class MapDefinition extends Entity {
 		return Collections.unmodifiableMap (featureTypes);
 	}
 	
-	public Map<String, MapLayer> getLayers () {
-		return Collections.unmodifiableMap (layers);
+	public Map<String, LayerRef> getLayers () {
+		return Collections.unmodifiableMap (layerRefs);
 	}
 	
-	private void scanLayers (final Collection<MapLayer> layers) {
-		final LinkedList<MapLayer> fringe = new LinkedList<> (layers);
+	private void scanLayers (final Collection<LayerRef> layerRefs) {
+		final LinkedList<LayerRef> fringe = new LinkedList<> (layerRefs);
 		
 		while (!fringe.isEmpty ()) {
-			final MapLayer layer = fringe.poll ();
-			this.layers.put (layer.getId (), layer);
+			final LayerRef layerRef = fringe.poll ();
+			this.layerRefs.put (layerRef.getLayer().getId (), layerRef);
 		
-			for (final ServiceLayer serviceLayer: layer.getServiceLayers ()) {
+			for (final ServiceLayer serviceLayer: layerRef.getLayer().getServiceLayers ()) {
 				this.serviceLayers.put (serviceLayer.getId (), serviceLayer);
 				this.services.put (serviceLayer.getService ().getId (), serviceLayer.getService ());
 				if (serviceLayer.getFeatureType () != null) {
@@ -114,7 +115,7 @@ public class MapDefinition extends Entity {
 				}
 			}
 			
-			fringe.addAll (layer.getLayers ());
+			fringe.addAll (layerRef.getLayerRefs ());
 		}
 	}
 }

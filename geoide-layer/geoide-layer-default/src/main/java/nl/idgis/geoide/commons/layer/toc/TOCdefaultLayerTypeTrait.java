@@ -3,7 +3,7 @@ package nl.idgis.geoide.commons.layer.toc;
 import java.util.ArrayList;
 import java.util.List;
 
-import nl.idgis.geoide.commons.domain.MapLayer;
+import nl.idgis.geoide.commons.domain.Layer;
 import nl.idgis.geoide.commons.domain.ServiceLayer;
 import nl.idgis.geoide.commons.domain.toc.Symbol;
 import nl.idgis.geoide.commons.domain.toc.TOCItem;
@@ -22,7 +22,7 @@ public class TOCdefaultLayerTypeTrait implements TOCLayerTypeTrait {
 	}
 
 	@Override
-	public List<Traits<TOCItem>> getTOC(Traits<LayerType> layerType, MapLayer layer) {
+	public List<Traits<TOCItem>> getTOC(Traits<LayerType> layerType, Layer layer) {
 		List<ServiceLayer>  serviceLayers = layer.getServiceLayers();
 		List<Traits<TOCItem>> tocChildItems = new ArrayList<>();
 		for( ServiceLayer serviceLayer: serviceLayers) {
@@ -32,8 +32,8 @@ public class TOCdefaultLayerTypeTrait implements TOCLayerTypeTrait {
 				tocChildItems.addAll(serviceType.trait(TOCServiceTypeTrait.class).getTOC(serviceType,serviceLayer));
 			}	
 		}
-		List<MapLayer> sublayers = layer.getLayers();
-		for (MapLayer sublayer: sublayers) {
+		List<Layer> sublayers = layer.getLayers();
+		for (Layer sublayer: sublayers) {
 			tocChildItems.addAll(getTOC(layerType, sublayer));
 		}
 		

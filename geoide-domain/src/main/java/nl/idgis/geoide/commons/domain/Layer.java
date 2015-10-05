@@ -15,22 +15,20 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-public class MapLayer extends Entity {
+public class Layer extends Entity {
 
 	private static final long serialVersionUID = 5628518429669556235L;
 
 	private final String layerType;
-	private final List<MapLayer> layers;
 	private final List<ServiceLayer> serviceLayers;
-	private final Map<String, ExternalizableJsonNode> state;
+	private final LayerState state;
 	private final Map<String, ExternalizableJsonNode> properties;
 	
 	@JsonCreator
-	public MapLayer (
+	public Layer (
 			final @JsonProperty("id") String id,
 			final @JsonProperty("layerType") String layerType,
 			final @JsonProperty("label") String label,
-			final @JsonProperty("layers") List<MapLayer> layers,
 			final @JsonProperty("serviceLayers") List<ServiceLayer> serviceLayers,
 			final @JsonProperty("state") Map <String,JsonNode> state,
 			final @JsonProperty("properties") Map <String,JsonNode> properties) {
@@ -39,9 +37,8 @@ public class MapLayer extends Entity {
 		Assert.notNull (layerType, "layerType");
 		
 		this.layerType = layerType;
-		this.layers = layers == null ? Collections.<MapLayer>emptyList () : new ArrayList<> (layers);
 		this.serviceLayers = serviceLayers == null ? Collections.<ServiceLayer>emptyList () : new ArrayList<> (serviceLayers);
-		this.state = externalizeProperties (state); 
+		this.state = new LayerState (state); 
 		this.properties = externalizeProperties (properties); 
 	}
 	
@@ -71,21 +68,8 @@ public class MapLayer extends Entity {
 		n.put ("label", getLabel ());
 		n.put ("layerType", getLayerType ());
 		
-		if (!getLayers ().isEmpty ()) {
-			final ArrayNode layersNode = n.putArray ("layers");
-			
-			for (final MapLayer layer: getLayers ()) {
-				layersNode.add (JsonFactory.mapper ().valueToTree (layer));
-			}
-		}
 		
-		if (!state.isEmpty()) {
-			final ObjectNode stateNode = n.putObject("state");
-			
-			for (final Map.Entry<String, ExternalizableJsonNode> entry: state.entrySet ()) {
-				stateNode.put (entry.getKey (), entry.getValue ().getJsonNode ());
-			}
-		}
+		n.put ("state", state.serialize());
 		
 		if (!properties.isEmpty()) {
 			final ObjectNode propertiesNode = n.putObject("properties");
@@ -111,19 +95,13 @@ public class MapLayer extends Entity {
 		return layerType;
 	}
 
-	public List<MapLayer> getLayers () {
-		return Collections.unmodifiableList (layers);
-	}
 
 	public List<ServiceLayer> getServiceLayers () {
 		return Collections.unmodifiableList (serviceLayers);
 	}
 	
-	public String getInitialStateValue (String stateProperty) {
-		System.out.println("get InitialState Value " + stateProperty + " = " + state.get(stateProperty));
-		if(state.get(stateProperty)!=null){
-			return state.get(stateProperty).getJsonNode ().asText();
-		} 
-		return "";
+	public LayerState getLayerState () {
+		return state;
 	}
+	
 }

@@ -83,12 +83,12 @@ public class JsonFactory {
 		}
 
 		if (mapNode.has("maplayers")) {
-			final List<MapLayer> layerList = new ArrayList<> ();
+			final List<Layer> layerList = new ArrayList<> ();
 			//Parse layers:
 			for ( final JsonNode mapLayer: mapNode.path("maplayers")) {
 				// merge maplayer and layer
 				mergeLayers(mapLayer, layerNodes);
-				final MapLayer layer = JsonFactory.layer (mapLayer, serviceLayerMap);
+				final Layer layer = JsonFactory.layer (mapLayer, serviceLayerMap);
 				layerList.add (layer);	
 			}
 			return new MapDefinition (id.asText (), label.asText (), prefix.asText(), initialExtent, layerList);
@@ -209,11 +209,11 @@ public class JsonFactory {
 			);
 	}
 	
-	public static MapLayer layer (final String json, final Map<String, ServiceLayer> serviceLayers) {
+	public static Layer layer (final String json, final Map<String, ServiceLayer> serviceLayers) {
 		return layer (parse (json), serviceLayers);
 	}
 	
-	public static MapLayer layer (final JsonNode node, final Map<String, ServiceLayer> serviceLayerMap) {
+	public static Layer layer (final JsonNode node, final Map<String, ServiceLayer> serviceLayerMap) {
 		final JsonNode id = node.path ("id"); 
 		final JsonNode layerType = node.path ("layerType");
 		final JsonNode label = node.path ("label"); 
@@ -234,7 +234,7 @@ public class JsonFactory {
 			throw new IllegalArgumentException ("Missing property: label");
 		}
 		
-		final List<MapLayer> layerList = new ArrayList<> ();
+		final List<Layer> layerList = new ArrayList<> ();
 		for (final JsonNode layerNode: layers) {
 			layerList.add (layer (layerNode, serviceLayerMap));
 		}
@@ -265,7 +265,7 @@ public class JsonFactory {
 		}
 		
 		
-		return new MapLayer (id.asText (), layerType.asText (), label.asText (), layerList, serviceLayerList, initialStateMap, propertiesMap);
+		return new Layer (id.asText (), layerType.asText (), label.asText (), layerList, serviceLayerList, initialStateMap, propertiesMap);
 	}
 	
 	public static JsonNode serialize (final MapDefinition mapDefinition) {

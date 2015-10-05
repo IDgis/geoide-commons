@@ -131,7 +131,7 @@ public class TestJsonFactory {
 		assertEquals ("mapdef-1", def.getId ());
 		assertEquals ("Map definition 1", def.getLabel ());
 		
-		final List<MapLayer> layers = def.getRootLayers ();
+		final List<Layer> layers = def.getRootLayers ();
 		
 		assertEquals (1, layers.size ());
 		

@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import nl.idgis.geoide.commons.domain.ExternalizableJsonNode;
-import nl.idgis.geoide.commons.domain.MapLayer;
+import nl.idgis.geoide.commons.domain.Layer;
 import nl.idgis.geoide.commons.domain.ParameterizedServiceLayer;
 import nl.idgis.geoide.commons.domain.Service;
 import nl.idgis.geoide.commons.domain.ServiceRequest;
@@ -93,7 +93,7 @@ public class DefaultMapView implements MapView {
 		final List<ParameterizedServiceLayer<?>> serviceLayers = new ArrayList<> ();
 	
 		for (final Traits<LayerState> layerState: layerStates) {
-			final MapLayer layer = layerState.get ().getLayer ();
+			final Layer layer = layerState.get ().getLayer ();
 			final Traits<LayerType> layerType = layerTypeRegistry.getLayerType (layer);
 			
 			serviceLayers.addAll (layerType.get ().getServiceLayers (layerState));
@@ -119,7 +119,7 @@ public class DefaultMapView implements MapView {
 		}
 
 		for (final JsonNode layerNode: layersNode) {
-			final MapLayer layer = getLayer (layerNode.path ("id"));
+			final Layer layer = getLayer (layerNode.path ("id"));
 			final Traits<LayerType> layerType = layerTypeRegistry.getLayerType (layer);
 			
 			if (layerType == null) {
@@ -143,12 +143,12 @@ public class DefaultMapView implements MapView {
 		return layers;
 	}
 	
-	private MapLayer getLayer (final JsonNode id) {
+	private Layer getLayer (final JsonNode id) {
 		if (id == null) {
 			throw new IllegalArgumentException ("Missing layer ID");
 		}
 		
-		final MapLayer layer = layerProvider.getLayer (id.asText ());
+		final Layer layer = layerProvider.getLayer (id.asText ());
 		if (layer == null) {
 			throw new IllegalArgumentException ("No layer found with ID " + id.asText ());
 		}

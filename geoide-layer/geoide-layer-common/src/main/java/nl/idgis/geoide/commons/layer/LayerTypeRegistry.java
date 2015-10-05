@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import nl.idgis.geoide.commons.domain.MapLayer;
+import nl.idgis.geoide.commons.domain.Layer;
 import nl.idgis.geoide.commons.domain.traits.Traits;
 
 public class LayerTypeRegistry {
@@ -20,7 +20,7 @@ public class LayerTypeRegistry {
 		}
 	}
 	
-	public Traits<LayerType> getLayerType (final MapLayer layer) {
+	public Traits<LayerType> getLayerType (final Layer layer) {
 		return getLayerType (layer.getLayerType ());
 	}
 	

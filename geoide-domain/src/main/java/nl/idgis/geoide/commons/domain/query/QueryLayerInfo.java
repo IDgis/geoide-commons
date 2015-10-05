@@ -6,7 +6,7 @@ import java.util.Optional;
 import nl.idgis.geoide.commons.domain.ExternalizableJsonNode;
 import nl.idgis.geoide.commons.domain.FeatureQuery;
 import nl.idgis.geoide.commons.domain.JsonFactory;
-import nl.idgis.geoide.commons.domain.MapLayer;
+import nl.idgis.geoide.commons.domain.Layer;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.MissingNode;
@@ -14,11 +14,11 @@ import com.fasterxml.jackson.databind.node.MissingNode;
 public final class QueryLayerInfo implements Serializable {
 	private static final long serialVersionUID = 7062965007858043754L;
 	
-	private final MapLayer layer;
+	private final Layer layer;
 	private final ExternalizableJsonNode state;
 	private final FeatureQuery query;
 	
-	public QueryLayerInfo (final MapLayer layer, final Optional<JsonNode> state, final Optional<FeatureQuery> query) {
+	public QueryLayerInfo (final Layer layer, final Optional<JsonNode> state, final Optional<FeatureQuery> query) {
 		if (layer == null) {
 			throw new NullPointerException ("layer cannot be null");
 		}
@@ -34,7 +34,7 @@ public final class QueryLayerInfo implements Serializable {
 		this.query = query.isPresent () ? query.get () : null;
 	}
 
-	public MapLayer getLayer () {
+	public Layer getLayer () {
 		return layer;
 	}
 	
