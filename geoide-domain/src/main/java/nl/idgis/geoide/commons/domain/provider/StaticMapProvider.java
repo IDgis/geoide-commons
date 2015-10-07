@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import nl.idgis.geoide.commons.domain.FeatureType;
@@ -72,19 +74,13 @@ public class StaticMapProvider implements MapProvider, ServiceProvider, ServiceL
 		if (layerId == null) {
 			return null;
 		}
-		
 		for (final MapDefinition mapDefinition: mapDefinitions) {
-			for (final LayerRef layerRef: mapDefinition.getLayers ()){
-				
-			}
-			
-			final LayerRef layer = mapDefinition.getLayers ()
-					
-					
-					.get (layerId);
-			
-			if (layer != null) {
-				return layer;
+			Iterator<Entry<String, LayerRef>> layerRefs = mapDefinition.getLayers ().entrySet().iterator();
+			while (layerRefs.hasNext()) {
+				  Entry<String, LayerRef> layerRef = (Entry<String, LayerRef>) layerRefs.next();
+				  if (layerId == layerRef.getKey()) {
+					  return layerRef.getValue().getLayer();
+				  }
 			}
 		}
 		

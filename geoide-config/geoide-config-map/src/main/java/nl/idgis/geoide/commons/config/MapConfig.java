@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import nl.idgis.geoide.commons.domain.Layer;
+import nl.idgis.geoide.commons.domain.LayerRef;
 import nl.idgis.geoide.commons.domain.MapDefinition;
 import nl.idgis.geoide.commons.domain.Service;
 import nl.idgis.geoide.commons.domain.api.MapProviderApi;
@@ -64,7 +65,7 @@ public class MapConfig {
 	public MapProviderApi mapProviderApi (final MapProvider mapProvider) {
 		return new MapProviderApi () {
 			@Override
-			public CompletableFuture<List<Layer>> getRootLayers (final String mapId) {
+			public CompletableFuture<List<LayerRef>> getRootLayers (final String mapId) {
 				return CompletableFuture.completedFuture (mapProvider.getRootLayers (mapId));
 			}
 			
@@ -74,7 +75,7 @@ public class MapConfig {
 			}
 			
 			@Override
-			public CompletableFuture<List<Layer>> getLayers (final String mapId) {
+			public CompletableFuture<List<LayerRef>> getLayers (final String mapId) {
 				return CompletableFuture.completedFuture (mapProvider.getLayers (mapId));
 			}
 		};
