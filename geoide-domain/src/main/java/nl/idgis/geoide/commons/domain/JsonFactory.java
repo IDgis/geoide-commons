@@ -81,6 +81,12 @@ public class JsonFactory {
 		} else {
 			initialExtent = "";
 		}
+		
+		final List<QueryDescription> queryDescriptionList = new ArrayList<> ();
+		for ( final JsonNode queryDescriptionNode: mapNode.path("queryDescriptions")) {
+			final QueryDescription queryDescription = JsonFactory.queryDescription (queryDescriptionNode);
+		}
+		
 
 		if (mapNode.has("maplayers")) {
 			final List<LayerRef> layerRefList = new ArrayList<> ();
@@ -93,7 +99,7 @@ public class JsonFactory {
 				final LayerRef layerRef = JsonFactory.layerRef (layerRefNode, layerMap);
 				layerRefList.add (layerRef);	
 			}
-			return new MapDefinition (id.asText (), label.asText (), prefix.asText(), initialExtent, layerRefList);
+			return new MapDefinition (id.asText (), label.asText (), prefix.asText(), initialExtent, layerRefList, queryDescriptionList);
 		} else {
 			throw new IllegalArgumentException ("Missing property: maplayers");
 		}
@@ -199,6 +205,78 @@ public class JsonFactory {
 		return new FeatureType (content.getId (), content.getService (), content.getName (), content.getLabel ());
 	}
 	
+	public static QueryTerm queryTerm (final JsonNode node, final Map<String, FeatureType> featureTypes) {
+		final JsonNode attribute = node.path("attribute");
+		final JsonNode label = node.path ("label");
+		final JsonNode featureType = node.path ("featureType");
+		
+		if (attribute.isMissingNode ()) {
+			throw new IllegalArgumentException ("Missing property: attribute");
+		}
+		
+		if (featureType.isMissingNode ()) {
+			throw new IllegalArgumentException ("Missing property: featureType");
+		}
+		
+		final FeatureType ft = getFeatureType (featureType.asText (), featureTypes);
+		return new QueryTerm (
+				qName (attribute),
+				label.asText (),
+				ft);
+		
+	}
+	
+	public static QueryDescription queryDescription (final JsonNode node, final Map<String, QueryTerm> queryTermMap, final Map <String, ServiceLayer> serviceLayerMap) {
+		final JsonNode id = node.path("id");
+		final JsonNode label = node.path ("label");
+		final JsonNode serviceLayer = node.path ("serviceLayer");
+		final JsonNode queryTerms = node.path ("queryTerms");
+		
+		if (id.isMissingNode () || id.asText ().isEmpty ()) {
+			throw new IllegalArgumentException ("Missing property: id");
+		}
+		if (label.isMissingNode ()) {
+			throw new IllegalArgumentException ("Missing property: label");
+		}
+		if (serviceLayer.isMissingNode ()) {
+			throw new IllegalArgumentException ("Missing property: serviceLayer");
+		}
+		
+		final String serviceLayerId = serviceLayer.asText ();
+		
+		if (!serviceLayerMap.containsKey (serviceLayerId)) {
+			throw new IllegalArgumentException ("ServiceLayer not defined: " + serviceLayerId);
+		}
+
+		final List<QueryTerm> queryTermList = new ArrayList<> ();
+
+		
+		for (final JsonNode queryTermNode: queryTerms) {
+			if (!queryTermMap.containsKey (queryTermNode.asText ())) {
+				throw new IllegalArgumentException ("Undefined queryTerm: " + queryTermNode.asText ());
+			}
+			queryTermList.add (queryTermMap.get (queryTermNode.asText ()));
+		}
+		
+		return new QueryDescription(
+				id.asText(), 
+				label.asText(), 
+				queryTermList, 
+				serviceLayerMap.get(serviceLayerId));
+		
+	}
+
+	
+	private static FeatureType getFeatureType (final String featureTypeId, final Map<String, FeatureType> featureTypes) {
+		final FeatureType ft;		
+		if (!featureTypes.containsKey (featureTypeId)) {
+			throw new IllegalArgumentException ("Feature type not defined: " + featureTypeId);
+		}
+		ft = featureTypes.get (featureTypeId);
+		
+		return ft;
+	}
+	
 	private static ParseNamedServiceEntity namedServiceEntity (final JsonNode node, final Map<String, Service> services, final Map<String, FeatureType> featureTypes) {
 		final JsonNode id = node.path ("id");
 		final JsonNode service = node.path ("service");
@@ -228,12 +306,7 @@ public class JsonFactory {
 		final FeatureType ft;
 		if (!featureType.isMissingNode () && !featureType.isNull () && featureTypes != null) {
 			final String featureTypeId = featureType.asText ();
-			
-			if (!featureTypes.containsKey (featureTypeId)) {
-				throw new IllegalArgumentException ("Feature type not defined: " + featureTypeId);
-			}
-			
-			ft = featureTypes.get (featureTypeId);
+			ft = getFeatureType (featureTypeId, featureTypes);
 		} else {
 			ft = null;
 		}

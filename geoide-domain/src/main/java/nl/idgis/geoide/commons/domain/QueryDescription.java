@@ -20,13 +20,13 @@ public class QueryDescription extends Entity {
 	public QueryDescription(
 		final @JsonProperty("id") String id,
 		final @JsonProperty("label") String label,
-		final @JsonProperty("queryterms") List<QueryTerm> queryTerms,
-		final @JsonProperty("servicelayer") ServiceLayer serviceLayer) {
+		final @JsonProperty("queryTerms") List<QueryTerm> queryTerms,
+		final @JsonProperty("serviceLayer") ServiceLayer serviceLayer) {
 		
 		super(id, label);
 		
-		Assert.notNull (queryTerms, "queryterms");
-		Assert.notNull (serviceLayer, "servicelayer");
+		Assert.notNull (queryTerms, "queryTerms");
+		Assert.notNull (serviceLayer, "serviceLayer");
 		
 		this.queryTerms = new ArrayList<> (queryTerms);
 		this.layer = serviceLayer;

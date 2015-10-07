@@ -22,12 +22,20 @@ public class MapDefinition extends Entity {
 	private final Map<String, ServiceLayer> serviceLayers = new HashMap<> ();
 	private final Map<String, FeatureType> featureTypes = new HashMap<> ();
 	private final Map<String, LayerRef> layerRefs = new HashMap<> ();
+	private final List<QueryDescription> queryDescriptions;
 
-	public MapDefinition (final String id, final String label, final String prefix, final String initialExtent, final List<LayerRef> rootLayers) {
+	public MapDefinition (
+			final String id, 
+			final String label, 
+			final String prefix, 
+			final String initialExtent, 
+			final List<LayerRef> rootLayers,
+			final List<QueryDescription> queryDescriptions) {
 		super (id, label);
 		this.prefix = prefix;
 		this.initialExtent = initialExtent;
 		this.rootLayers = rootLayers == null ? Collections.<LayerRef>emptyList () : new ArrayList<> (rootLayers);
+		this.queryDescriptions = queryDescriptions;
 		// Scan the layers and fill the indices:
 		scanLayers (this.rootLayers);
 	}
@@ -99,6 +107,10 @@ public class MapDefinition extends Entity {
 		return Collections.unmodifiableMap (layerRefs);
 	}
 	
+	public List<QueryDescription> getQueryDescriptions() {
+		return queryDescriptions;
+	}
+	
 	private void scanLayers (final Collection<LayerRef> layerRefs) {
 		final LinkedList<LayerRef> fringe = new LinkedList<> (layerRefs);
 		
@@ -118,4 +130,6 @@ public class MapDefinition extends Entity {
 			fringe.addAll (layerRef.getLayerRefs ());
 		}
 	}
+
+
 }

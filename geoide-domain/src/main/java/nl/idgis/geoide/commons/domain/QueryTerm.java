@@ -22,9 +22,9 @@ public class QueryTerm implements Serializable {
 	public QueryTerm (
 			final @JsonProperty ("attribute") QName attribute,
 			final @JsonProperty ("label") String label,
-			final @JsonProperty ("featuretype") FeatureType featureType){
+			final @JsonProperty ("featureType") FeatureType featureType){
 		
-		Assert.notNull (featureType, "featuretype");
+		Assert.notNull (featureType, "featureType");
 		Assert.notNull (attribute, "attribute");
 		
 		this.attribute = attribute;
