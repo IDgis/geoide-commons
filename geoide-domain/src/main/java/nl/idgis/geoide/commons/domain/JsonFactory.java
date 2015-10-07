@@ -61,7 +61,11 @@ public class JsonFactory {
 		}
 	}
 	
-	public static MapDefinition mapDefinition (final JsonNode mapNode, final Map<String, Layer> layerMap, final Map<String, ServiceLayer> serviceLayerMap) {
+	public static MapDefinition mapDefinition (
+			final JsonNode mapNode, 
+			final Map<String, Layer> layerMap, 
+			final Map<String, ServiceLayer> serviceLayerMap,
+			final Map<String, QueryTerm> queryTermMap) {
 		final JsonNode id = mapNode.path ("id"); 
 		final JsonNode label = mapNode.path ("label");
 		final JsonNode prefix = mapNode.path ("prefix");
@@ -84,7 +88,8 @@ public class JsonFactory {
 		
 		final List<QueryDescription> queryDescriptionList = new ArrayList<> ();
 		for ( final JsonNode queryDescriptionNode: mapNode.path("queryDescriptions")) {
-			final QueryDescription queryDescription = JsonFactory.queryDescription (queryDescriptionNode);
+			final QueryDescription queryDescription = JsonFactory.queryDescription (queryDescriptionNode, queryTermMap, serviceLayerMap);
+			queryDescriptionList.add (queryDescription);
 		}
 		
 

@@ -15,6 +15,7 @@ import nl.idgis.geoide.commons.domain.FeatureType;
 import nl.idgis.geoide.commons.domain.JsonFactory;
 import nl.idgis.geoide.commons.domain.Layer;
 import nl.idgis.geoide.commons.domain.MapDefinition;
+import nl.idgis.geoide.commons.domain.QueryTerm;
 import nl.idgis.geoide.commons.domain.Service;
 import nl.idgis.geoide.commons.domain.ServiceLayer;
 import nl.idgis.geoide.commons.domain.provider.StaticMapProvider;
@@ -76,10 +77,11 @@ public class JsonMapProviderBuilder {
 	public StaticMapProvider build () {
 		final Map<String, Service> services = parseServices ();
 		final Map<String, FeatureType> featureTypes = parseFeatureTypes (services);
+		final Map<String, QueryTerm> queryTerms = parseQueryTerms (featureTypes);  
 		final Map<String, ServiceLayer> serviceLayers = parseServiceLayers (services, featureTypes);
 		final Map<String, Layer> layers = parseLayers (serviceLayers);
 		
-		return new StaticMapProvider (parseMaps (layers, serviceLayers));
+		return new StaticMapProvider (parseMaps (layers, serviceLayers, queryTerms));
 	}
 	
 	private Map<String, Service> parseServices () {
@@ -112,6 +114,19 @@ public class JsonMapProviderBuilder {
 		return Collections.unmodifiableMap (featureTypes);
 	}
 	
+	private Map<String, QueryTerm> parseQueryTerms (final Map<String, FeatureType> featureTypes) {
+		final Map<String, QueryTerm> queryTerms =  new HashMap<> ();
+		nodes
+			.stream ()
+			.filter (node -> node.has ("queryTerms"))
+			.flatMap (node -> StreamSupport
+					.stream (node.path ("queryTerms").spliterator (), false)
+					.map (n -> JsonFactory.queryTerm (n, featureTypes)))
+			.forEach (queryTerm -> queryTerms.put (queryTerm.getFeatureType().getId() + queryTerm.getAtttribute().getLocalName(), queryTerm));
+		
+		return queryTerms;
+	}
+	
 	private Map<String, ServiceLayer> parseServiceLayers (final Map<String, Service> services, final Map<String, FeatureType> featureTypes) {
 		final Map<String, ServiceLayer> serviceLayers = new HashMap<> ();
 		
@@ -140,14 +155,17 @@ public class JsonMapProviderBuilder {
 		return Collections.unmodifiableMap (layers);
 	}
 	
-	private Collection<MapDefinition> parseMaps (final Map<String, Layer> layers, final Map<String, ServiceLayer> serviceLayers) {
+	private Collection<MapDefinition> parseMaps (
+			final Map<String, Layer> layers, 
+			final Map<String, ServiceLayer> serviceLayers, 
+			final Map<String, QueryTerm> queryTerms) {
 		final Map<String, MapDefinition> mapDefinitions = new HashMap<> ();
 		
 		nodes
 			.stream ()
 			.filter (node -> node.has ("maps"))
 			.flatMap (node -> StreamSupport.stream (node.path ("maps").spliterator (), false)
-				.map (mapNode -> JsonFactory.mapDefinition (mapNode, layers, serviceLayers)))
+				.map (mapNode -> JsonFactory.mapDefinition (mapNode, layers, serviceLayers, queryTerms)))
 			.forEach (mapDef -> mapDefinitions.put (mapDef.getId (), mapDef));
 		
 		return Collections.unmodifiableCollection (mapDefinitions.values ());
