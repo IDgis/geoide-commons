@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import nl.idgis.geoide.commons.domain.Layer;
+import nl.idgis.geoide.commons.domain.LayerRef;
 import nl.idgis.geoide.commons.domain.MapDefinition;
 import nl.idgis.geoide.commons.domain.api.TableOfContents;
 import nl.idgis.geoide.commons.domain.toc.TOCItem;
@@ -25,11 +26,11 @@ public class DefaultTableOfContents implements TableOfContents {
 	@Override
 	public CompletableFuture<List<Traits<TOCItem>>> getItems (final MapDefinition mapDefinition) {
 		List<Traits<TOCItem>> tocItems = new ArrayList<>();
-		List <Layer> rootLayers = mapDefinition.getRootLayers();
-		for (Layer rootLayer : rootLayers){
-			final Traits<LayerType> layerType = layerTypeRegistry.getLayerType (rootLayer);
+		List <LayerRef> rootLayers = mapDefinition.getRootLayers();
+		for (LayerRef rootLayer : rootLayers){
+			final Traits<LayerType> layerType = layerTypeRegistry.getLayerType (rootLayer.getLayer());
 			if(layerType.has(TOCLayerTypeTrait.class)){
-				tocItems.addAll(layerType.trait(TOCLayerTypeTrait.class).getTOC(layerType, rootLayer));
+				tocItems.addAll(layerType.trait(TOCLayerTypeTrait.class).getTOC(layerType, rootLayer.getLayer()));
 			}
 		}
 		
