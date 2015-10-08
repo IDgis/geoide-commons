@@ -1,7 +1,19 @@
 {
 	"layers": [ 
 		{
+			"id": "group-layer",
+			"label": "Group",
+			"layerType": "default",
+		},
+		{
+			"id": "group2-layer",
+			"label": "Group2",
+			"layerType": "default",
+		},
+		
+		{
 			"id": "layer-1",
+			"label": "BRT achtergrondkaart",
 			"layerType": "default",
 			"serviceLayers": [ "test-service-1-brtachtergrondkaart", "test-service-1-natura2000" ]			
 		},
