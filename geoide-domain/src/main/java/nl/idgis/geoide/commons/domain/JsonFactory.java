@@ -65,7 +65,7 @@ public class JsonFactory {
 			final JsonNode mapNode, 
 			final Map<String, Layer> layerMap, 
 			final Map<String, ServiceLayer> serviceLayerMap,
-			final Map<String, QueryTerm> queryTermMap) {
+			final Map<String, QueryDescription> queryDescriptionMap) {
 		final JsonNode id = mapNode.path ("id"); 
 		final JsonNode label = mapNode.path ("label");
 		final JsonNode prefix = mapNode.path ("prefix");
@@ -87,12 +87,12 @@ public class JsonFactory {
 		}
 		
 		final List<QueryDescription> queryDescriptionList = new ArrayList<> ();
-		for ( final JsonNode queryDescriptionNode: mapNode.path("queryDescriptions")) {
-			final QueryDescription queryDescription = JsonFactory.queryDescription (queryDescriptionNode, queryTermMap, serviceLayerMap);
-			queryDescriptionList.add (queryDescription);
-		}
+		if (mapNode.has("querydescriptions")) {
+			for ( final JsonNode queryDescriptionNode:mapNode.path ("querydescriptions")) {
+				queryDescriptionList.add(queryDescriptionMap.get(queryDescriptionNode.asText()));
+			}
+		}	
 		
-
 		if (mapNode.has("maplayers")) {
 			final List<LayerRef> layerRefList = new ArrayList<> ();
 			//Parse layers:
@@ -108,6 +108,9 @@ public class JsonFactory {
 		} else {
 			throw new IllegalArgumentException ("Missing property: maplayers");
 		}
+		
+		
+		
 	}
 	
 	
@@ -210,28 +213,8 @@ public class JsonFactory {
 		return new FeatureType (content.getId (), content.getService (), content.getName (), content.getLabel ());
 	}
 	
-	public static QueryTerm queryTerm (final JsonNode node, final Map<String, FeatureType> featureTypes) {
-		final JsonNode attribute = node.path("attribute");
-		final JsonNode label = node.path ("label");
-		final JsonNode featureType = node.path ("featureType");
-		
-		if (attribute.isMissingNode ()) {
-			throw new IllegalArgumentException ("Missing property: attribute");
-		}
-		
-		if (featureType.isMissingNode ()) {
-			throw new IllegalArgumentException ("Missing property: featureType");
-		}
-		
-		final FeatureType ft = getFeatureType (featureType.asText (), featureTypes);
-		return new QueryTerm (
-				qName (attribute),
-				label.asText (),
-				ft);
-		
-	}
 	
-	public static QueryDescription queryDescription (final JsonNode node, final Map<String, QueryTerm> queryTermMap, final Map <String, ServiceLayer> serviceLayerMap) {
+	public static QueryDescription queryDescription (final JsonNode node, final Map<String, FeatureType> featureTypeMap, final Map <String, ServiceLayer> serviceLayerMap) {
 		final JsonNode id = node.path("id");
 		final JsonNode label = node.path ("label");
 		final JsonNode serviceLayer = node.path ("serviceLayer");
@@ -254,13 +237,26 @@ public class JsonFactory {
 		}
 
 		final List<QueryTerm> queryTermList = new ArrayList<> ();
-
 		
 		for (final JsonNode queryTermNode: queryTerms) {
-			if (!queryTermMap.containsKey (queryTermNode.asText ())) {
-				throw new IllegalArgumentException ("Undefined queryTerm: " + queryTermNode.asText ());
-			}
-			queryTermList.add (queryTermMap.get (queryTermNode.asText ()));
+				final JsonNode attribute = node.path("attribute");
+				final JsonNode attributeLabel = node.path ("label");
+				final JsonNode featureType = node.path ("featureType");
+				
+				if (attribute.isMissingNode ()) {
+					throw new IllegalArgumentException ("Missing property: attribute");
+				}
+				
+				if (featureType.isMissingNode ()) {
+					throw new IllegalArgumentException ("Missing property: featureType");
+				}
+				
+				final FeatureType ft = getFeatureType (featureType.asText (), featureTypeMap);
+				queryTermList.add (
+						new QueryTerm (
+								qName (attribute),
+								attributeLabel.asText (),
+								ft));
 		}
 		
 		return new QueryDescription(
