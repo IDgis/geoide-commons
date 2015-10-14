@@ -5,14 +5,10 @@
 			"label": "Test map",
 			"maplayers": [			
 				{
-					"id": "test-layer-1",
-					"layer": "test-layer-1",
-					"label": "Layer 1"
+					"layer": "test-layer-1"
 				},
 				{
-					"id": "test-layer-2",
-					"layer": "test-layer-2",
-					"label": "Layer 2"
+					"layer": "test-layer-2"
 				}
 			]
 		}
@@ -21,11 +17,13 @@
 	"layers": [
 		{
 			"id": "test-layer-1",
+			"label": "Layer 1",
 			"layerType": "default",
 			"serviceLayers": [ "test-servicelayer-1" ]			
 		},
 		{
 			"id": "test-layer-2",
+			"label": "Layer 2",
 			"layerType": "default",
 			"serviceLayers": [ "test-servicelayer-2" ]			
 		}

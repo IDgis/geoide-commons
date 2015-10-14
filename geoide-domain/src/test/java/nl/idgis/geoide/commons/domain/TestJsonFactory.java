@@ -32,12 +32,19 @@ public class TestJsonFactory {
 			+ "], "
 			+ "\"layers\": ["
 				+ "{"
+					+ "\"id\": \"layer-1\", "
+					+ "\"label\": \"Layer1\", "
+					+ "\"layerType\": \"default\" "
+				+ "} ,"
+				+ "{"
 					+ "\"id\": \"layer-2\", "
+					+ "\"label\": \"Layer2\", "
 					+ "\"layerType\": \"default\", "
 					+ "\"serviceLayers\": [\"service-layer-1\"] "
 				+ "} ,"
 				+ "{"
 					+ "\"id\": \"layer-3\", "
+					+ "\"label\": \"Layer3\", "
 					+ "\"layerType\": \"default\", "
 					+ "\"serviceLayers\": [\"service-layer-2\"]"
 				+ "}"
@@ -48,18 +55,13 @@ public class TestJsonFactory {
 					+ "\"label\": \"Map definition 1\", "
 					+ "\"maplayers\": ["
 						+ "{"
-							+ "\"id\": \"map-layer-1\", "
-							+ "\"label\": \"Layer 1\", "
+							+ "\"layer\": \"layer-1\", "
 							+ "\"maplayers\": ["
 								+ "{"
-									+ "\"id\": \"map-layer-2\", "
-									+ "\"layer\": \"layer-2\", "
-									+ "\"label\": \"Layer 2\" "
+									+ "\"layer\": \"layer-2\" "
 								+ "}, "
 								+ "{"
-									+ "\"id\": \"map-layer-3\", "
-									+ "\"layer\": \"layer-3\", "
-									+ "\"label\": \"Layer 3\" "
+									+ "\"layer\": \"layer-3\" "
 								+ "}"
 							+ "]"		
 						+ "}"				
@@ -131,28 +133,28 @@ public class TestJsonFactory {
 		assertEquals ("mapdef-1", def.getId ());
 		assertEquals ("Map definition 1", def.getLabel ());
 		
-		final List<Layer> layers = def.getRootLayers ();
+		final List<LayerRef> layers = def.getRootLayers ();
 		
 		assertEquals (1, layers.size ());
 		
 		
-		assertEquals ("map-layer-1", layers.get (0).getId ());
-		assertEquals ("Layer 1", layers.get (0).getLabel ());
-		assertEquals ("service-layer-1", layers.get (0).getLayers().get (0).getServiceLayers ().get (0).getId ());
-		assertEquals ("Service layer 1", layers.get (0).getLayers().get (0).getServiceLayers ().get (0).getLabel ());
-		assertEquals ("layername", layers.get (0).getLayers().get (0).getServiceLayers ().get (0).getName().getLocalName ());
-		assertEquals ("service-1", layers.get (0).getLayers().get (0).getServiceLayers ().get (0).getService ().getId ());
-		assertEquals ("Service 1", layers.get (0).getLayers().get (0).getServiceLayers ().get (0).getService ().getLabel ());
+		assertEquals ("layer-1", layers.get (0).getLayer ().getId ());
+		assertEquals ("Layer1", layers.get (0).getLayer ().getLabel ());
+		assertEquals ("service-layer-1", layers.get (0).getLayerRefs().get (0).getLayer ().getServiceLayers ().get (0).getId ());
+		assertEquals ("Service layer 1", layers.get (0).getLayerRefs().get (0).getLayer ().getServiceLayers ().get (0).getLabel ());
+		assertEquals ("layername", layers.get (0).getLayerRefs().get (0).getLayer ().getServiceLayers ().get (0).getName().getLocalName ());
+		assertEquals ("service-1", layers.get (0).getLayerRefs().get (0).getLayer ().getServiceLayers ().get (0).getService ().getId ());
+		assertEquals ("Service 1", layers.get (0).getLayerRefs().get (0).getLayer ().getServiceLayers ().get (0).getService ().getLabel ());
 		
-		assertEquals ("map-layer-2", layers.get (0).getLayers ().get (0).getId ());
-		assertEquals ("Layer 2", layers.get (0).getLayers ().get (0).getLabel ());
-		assertEquals ("service-layer-2", layers.get (0).getLayers ().get (1).getServiceLayers ().get (0).getId ());
+		assertEquals ("map-layer-2", layers.get (0).getLayerRefs ().get (0).getLayer ().getId ());
+		assertEquals ("Layer 2", layers.get (0).getLayerRefs ().get (0).getLayer ().getLabel ());
+		assertEquals ("service-layer-2", layers.get (0).getLayerRefs ().get (1).getLayer ().getServiceLayers ().get (0).getId ());
 		
-		assertNull (layers.get (0).getLayers().get (0).getServiceLayers ().get (0).getFeatureType ());
-		assertNotNull (layers.get (0).getLayers ().get (1).getServiceLayers ().get (0).getFeatureType ());
-		assertEquals ("feature-type-1", layers.get (0).getLayers ().get (1).getServiceLayers ().get (0).getFeatureType ().getId ());
-		assertEquals ("service-3", layers.get (0).getLayers ().get (1).getServiceLayers ().get (0).getFeatureType ().getService ().getId ());
-		assertEquals ("featureTypeName", layers.get (0).getLayers ().get (1).getServiceLayers ().get (0).getFeatureType ().getName ().getLocalName ());
+		assertNull (layers.get (0).getLayerRefs().get (0).getLayer ().getServiceLayers ().get (0).getFeatureType ());
+		assertNotNull (layers.get (0).getLayerRefs ().get (1).getLayer ().getServiceLayers ().get (0).getFeatureType ());
+		assertEquals ("feature-type-1", layers.get (0).getLayerRefs ().get (1).getLayer ().getServiceLayers ().get (0).getFeatureType ().getId ());
+		assertEquals ("service-3", layers.get (0).getLayerRefs ().get (1).getLayer ().getServiceLayers ().get (0).getFeatureType ().getService ().getId ());
+		assertEquals ("featureTypeName", layers.get (0).getLayerRefs ().get (1).getLayer ().getServiceLayers ().get (0).getFeatureType ().getName ().getLocalName ());
 
 		
 		assertTrue (def.getLayers ().containsKey ("map-layer-1"));

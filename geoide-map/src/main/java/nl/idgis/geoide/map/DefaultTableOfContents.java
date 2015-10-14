@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import nl.idgis.geoide.commons.domain.Layer;
 import nl.idgis.geoide.commons.domain.LayerRef;
 import nl.idgis.geoide.commons.domain.MapDefinition;
 import nl.idgis.geoide.commons.domain.api.TableOfContents;
@@ -30,7 +29,7 @@ public class DefaultTableOfContents implements TableOfContents {
 		for (LayerRef rootLayer : rootLayers){
 			final Traits<LayerType> layerType = layerTypeRegistry.getLayerType (rootLayer.getLayer());
 			if(layerType.has(TOCLayerTypeTrait.class)){
-				tocItems.addAll(layerType.trait(TOCLayerTypeTrait.class).getTOC(layerType, rootLayer.getLayer()));
+				tocItems.addAll(layerType.trait(TOCLayerTypeTrait.class).getTOC(layerType, rootLayer));
 			}
 		}
 		
