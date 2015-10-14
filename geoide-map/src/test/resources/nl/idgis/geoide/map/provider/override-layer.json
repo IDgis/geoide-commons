@@ -2,6 +2,7 @@
 	"layers": [
 		{
 			"id": "test-layer-1",
+			"label": "Layer 1",
 			"layerType": "default-override",
 			"serviceLayers": [ "test-servicelayer-2" ]			
 		}

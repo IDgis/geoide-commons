@@ -239,9 +239,9 @@ public class JsonFactory {
 		final List<QueryTerm> queryTermList = new ArrayList<> ();
 		
 		for (final JsonNode queryTermNode: queryTerms) {
-				final JsonNode attribute = node.path("attribute");
-				final JsonNode attributeLabel = node.path ("label");
-				final JsonNode featureType = node.path ("featureType");
+				final JsonNode attribute = queryTermNode.path("attribute");
+				final JsonNode attributeLabel = queryTermNode.path ("label");
+				final JsonNode featureType = queryTermNode.path ("featureType");
 				
 				if (attribute.isMissingNode ()) {
 					throw new IllegalArgumentException ("Missing property: attribute");
@@ -336,7 +336,6 @@ public class JsonFactory {
 		//state is initial state
 		final JsonNode state = node.path("state");
 		final JsonNode properties = node.path("properties");
-		
 		
 		if (id.isMissingNode () || id.asText ().isEmpty ()) {
 			throw new IllegalArgumentException ("Missing property: id");

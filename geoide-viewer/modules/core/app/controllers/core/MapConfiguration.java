@@ -1,6 +1,9 @@
 package controllers.core;
 
 
+import java.util.Iterator;
+import java.util.Map.Entry;
+
 import javax.inject.Inject;
 
 import nl.idgis.geoide.commons.domain.api.MapProviderApi;
@@ -37,23 +40,48 @@ public class MapConfiguration extends Controller {
 	
 	private static JsonNode filterLayer (final JsonNode map) {
 		final ObjectNode result = Json.newObject ();
-
-		result.put ("id", map.path ("id"));
-		result.put ("label", map.path ("label"));
-		
+			
+		final JsonNode layerNode = map.path ("layer");
+		if (!layerNode.isMissingNode ()) {
+			result.set ("id", layerNode.path ("id"));
+			result.set ("label", layerNode.path ("label"));
+		} else {
+			result.set ("id", map.path ("id"));
+			result.set ("label", map.path ("label"));
+		}
 		final JsonNode initialExtent = map.path ("initial-extent");
 		if (!initialExtent.isMissingNode ()) {
-			result.put ("initial-extent", map.path ("initial-extent"));
+			result.set ("initial-extent", map.path ("initial-extent"));
 		}	
 		
+		final JsonNode layerState = layerNode.path("state");
+			
 		final JsonNode state = map.path ("state");
-		if (!state.isMissingNode ()) {
-			result.put ("state", map.path("state"));
+		
+		if (!layerState.isMissingNode ()) {
+			if (state.isMissingNode ()) {
+				result.set ("state", layerState);
+			} else {
+				ObjectNode combinedState = state.deepCopy();
+				Iterator<Entry<String, JsonNode>> it = layerState.fields();
+				while (it.hasNext()) {
+					Entry<String, JsonNode> st = it.next();
+					if (state.path (st.getKey ()).isMissingNode ()) {
+						combinedState.set (st.getKey (), st.getValue ());
+					} 
+				}
+				result.set ("state", combinedState);
+			}
+			
+		} else {
+			if (!state.isMissingNode ()) {
+				result.set ("state", map.path("state"));
+			}
 		}
 			
 		final JsonNode properties = map.path ("properties");
 		if (!properties.isMissingNode ()) {
-			result.put ("properties", map.path("properties"));
+			result.set ("properties", map.path("properties"));
 		}
 		
 		
@@ -61,8 +89,7 @@ public class MapConfiguration extends Controller {
 		if (!layers.isMissingNode ()) {
 			filterLayers (layers, result.putArray ("layers"));
 		}
-	
-		
+
 		return result;
 	}
 	

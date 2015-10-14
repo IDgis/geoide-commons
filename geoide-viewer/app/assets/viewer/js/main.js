@@ -84,9 +84,7 @@ require ([
 		viewer.on ('moveEnd', function (e) {
 			console.log ('Move end: ', e.viewer.get ('center'), e.viewer.get ('resolution'));
 		});
-		
 		viewer.startup ();
-		
 		return viewer;
 	});
 	

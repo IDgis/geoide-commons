@@ -3,26 +3,36 @@
 		{
 			"id": "group-layer",
 			"label": "Group",
-			"layerType": "default",
+			"layerType": "default"
 		},
 		{
 			"id": "group2-layer",
 			"label": "Group2",
 			"layerType": "default",
-		},
-		
+			"state": {
+				"visible" : false
+			}	
+		},	
 		{
 			"id": "layer-1",
 			"label": "BRT achtergrondkaart",
 			"layerType": "default",
-			"serviceLayers": [ "test-service-1-brtachtergrondkaart", "test-service-1-natura2000" ]			
+			"serviceLayers": [ "test-service-1-brtachtergrondkaart", "test-service-1-natura2000" ],
+			"state": {
+				"visible" : true
+			}			
 		},
 		{
 			"id": "layer-2",
 			"layerType": "default",
 			"label": "LPG",
-			"serviceLayers": [ "test-service-2-p_LPG" ],
-			"state": { }
+			"serviceLayers": [ "test-service-2-p_LPG" ]
+		},
+		{
+			"id": "layer-3",
+			"layerType": "default",
+			"label": "LPG3",
+			"serviceLayers": [ "test-service-2-p_LPG" ]
 		}
 	]
 }	

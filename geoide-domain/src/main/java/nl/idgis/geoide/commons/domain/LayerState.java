@@ -1,5 +1,6 @@
 package nl.idgis.geoide.commons.domain;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,7 +9,10 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-public class LayerState {
+public class LayerState implements Serializable {
+	
+	private static final long serialVersionUID = -3994904706352833262L;
+	
 	private final Map<String, ExternalizableJsonNode> state;
 	
 	public LayerState (final Map <String,JsonNode> state) {
@@ -47,7 +51,6 @@ public class LayerState {
 	
 	
 	public String getStateValue (String stateProperty) {
-		System.out.println("get State Value " + stateProperty + " = " + state.get(stateProperty));
 		if(state.get(stateProperty)!=null){
 			return state.get(stateProperty).getJsonNode ().asText();
 		} 

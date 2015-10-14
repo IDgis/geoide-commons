@@ -40,7 +40,6 @@ public class DefaultMapQuery implements MapQuery {
 	
 	@Override
 	public CompletableFuture<Query> prepareQuery (final ExternalizableJsonNode input) {
-		System.out.println("prepareQuery " + input.getJsonNode ());
 		return CompletableFuture.completedFuture (parseQueryInfo (input.getJsonNode ()));
 	}
 	
@@ -50,7 +49,6 @@ public class DefaultMapQuery implements MapQuery {
 	}
 	
 	private Query parseQueryInfo (final JsonNode queryNode) {
-		System.out.println("parseQueryInfo");
 		return new Query (parseLayerInfos (queryNode.path ("layers")), parseQuery (queryNode.path ("query")));
 	}
 	

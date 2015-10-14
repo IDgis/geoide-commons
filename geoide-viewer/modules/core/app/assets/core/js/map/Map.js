@@ -104,7 +104,8 @@ define ([
 			var layerDictionary = { },
 				layerList = [ ];
 			
-			var processLayers = function (object, parentId) {
+			var processLayers = function (object) {//, parentId) {
+				console.log("processLayers" + object);
 				var pid = object.get ('id');
 				var layers = object.get ('layers');
 				if (!layers) {
@@ -114,16 +115,16 @@ define ([
 				for (var i = 0, length = layers.length (); i < length; ++ i) {
 					var layer = layers.get (i),
 						id = layer.get ('id');
-					
+					console.log(id);
 					if (!(id in layerDictionary)) {
-						layer.set ('parentId', pid);
+						//layer.set ('parentId', pid);
 						layerDictionary[id] = layer;
 						layerList.push (layer);
-					} else if (layerDictionary[id] !== layer) {
-						throw new Error ('Duplicate layer with id: ', id);
-					}
+					} //else if (layerDictionary[id] !== layer) {
+						//throw new Error ('Duplicate layer with id: ', id);
+					//}
 					
-					processLayers (layer, pid);
+					processLayers (layer);//, pid);
 				}
 			};
 			
@@ -146,10 +147,10 @@ define ([
 			return (this.get ('initial-extent'));
 		},
 		
-		getParentLayer: function (layerId) {
-			var layer = this.get ('layerDictionary').get (layerId);
-			return this.get ('layerDictionary').get (layer.get('parentId'));
-		}
+		//getParentLayer: function (layerId) {
+			//var layer = this.get ('layerDictionary').get (layerId);
+			//return this.get ('layerDictionary').get (layer.get('parentId'));
+		//}
 		
 	});
 	

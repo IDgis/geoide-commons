@@ -1,5 +1,6 @@
 package nl.idgis.geoide.commons.domain;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -14,8 +15,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import nl.idgis.geoide.util.Assert;
 
-public class LayerRef {
+public class LayerRef implements Serializable {
 
+	private static final long serialVersionUID = 7884660135101590357L;
 	private final Layer layer;
 	private final List<LayerRef> layerRefs;
 	private final LayerState state;
@@ -66,6 +68,17 @@ public class LayerRef {
 		return state;
 	}
 	
+	
+	public String getInitialStateValue (String stateProperty) {
+		if(state.getStateValue(stateProperty)!=null){
+			return state.getStateValue(stateProperty);
+		} else {
+			if(layer.getLayerState ().getStateValue (stateProperty)!=null) {
+				return layer.getLayerState ().getStateValue (stateProperty);
+			}
+		}
+		return "";
+	}
 	
 }
 

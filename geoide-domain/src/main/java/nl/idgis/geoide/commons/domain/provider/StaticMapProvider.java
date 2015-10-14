@@ -77,8 +77,8 @@ public class StaticMapProvider implements MapProvider, ServiceProvider, ServiceL
 		for (final MapDefinition mapDefinition: mapDefinitions) {
 			Iterator<Entry<String, LayerRef>> layerRefs = mapDefinition.getLayers ().entrySet().iterator();
 			while (layerRefs.hasNext()) {
-				  Entry<String, LayerRef> layerRef = (Entry<String, LayerRef>) layerRefs.next();
-				  if (layerId == layerRef.getKey()) {
+				  Entry<String, LayerRef> layerRef = layerRefs.next();
+				  if (layerId.equals(layerRef.getValue().getLayer().getId())) {
 					  return layerRef.getValue().getLayer();
 				  }
 			}

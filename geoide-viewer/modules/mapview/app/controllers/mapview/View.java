@@ -31,7 +31,7 @@ public class View extends Controller {
 					final ObjectNode result = Json.newObject ();
 					result.put ("result", "ok");
 					result.set ("serviceRequests", Json.toJson (serviceRequests));
-					
+			
 					return (Result) ok (result);
 				}));
 		} catch (IllegalArgumentException e) {

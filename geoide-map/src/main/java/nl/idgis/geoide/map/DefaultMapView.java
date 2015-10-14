@@ -113,7 +113,6 @@ public class DefaultMapView implements MapView {
 	private List<Traits<LayerState>> flattenLayerList (final JsonNode viewerState, final List<Traits<LayerState>> parents) {
 		final List<Traits<LayerState>> layers = new ArrayList<> ();
 		final JsonNode layersNode = viewerState.path ("layers");
-		
 		if (layersNode.isMissingNode ()) {
 			return layers;
 		}

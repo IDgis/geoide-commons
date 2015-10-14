@@ -21,10 +21,9 @@
 									"state": {
 										"visible" : true
 									}
-									
 								},
 								{
-									"layer": "layer-2",
+									"layer": "layer-2"
 								}		
 							]
 						},
@@ -33,12 +32,11 @@
 							"state": {
 								"visible" : true
 							}
-						}
-						
+						}	
 					]
 				},
 				{
-					"layer": "layer-2",
+					"layer": "layer-3",
 					"state": {
 						"visible" : false
 					}

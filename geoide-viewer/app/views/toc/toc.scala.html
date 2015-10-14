@@ -9,7 +9,7 @@
 	<li class="gi-toc-level-@level @if(item.get().isExpandable()){expandable} @if(item.get().isExpanded()){expanded}
 								   @if(item.get().isActivatable()){activatable} @if(item.get().isActive()){active}"
 								   @if(item.has(classOf[TOCItemLayerTrait])){
-								   		data-layer-id = @(((item.`trait`(classOf[TOCItemLayerTrait])).getLayer()).getId())
+								   		data-layer-id = @(((item.`trait`(classOf[TOCItemLayerTrait])).getLayer()).getLayer().getId())
 									}>
 								
 		<label>			

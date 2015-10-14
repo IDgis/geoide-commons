@@ -87,7 +87,6 @@ public class Layer extends Entity {
 				serviceLayersNode.add (serviceLayer.getId ());
 			}
 		}
-		System.out.println(n);
 		return n;
 	}
 
