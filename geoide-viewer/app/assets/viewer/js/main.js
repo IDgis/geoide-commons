@@ -96,20 +96,20 @@ require ([
 		return toc;
 	});
 	
-	window.setLayerVisible = function (layerId, visible) {
-		viewers[0].setLayerState (layerId, 'visible', visible).then (function () {
+	window.setLayerRefVisible = function (layerId, visible) {
+		viewers[0].setLayerRefState (layerId, 'visible', visible).then (function () {
 			console.log ('Visibility change in effect.');
 		});
 	};
 	
-	window.setLayerState = function (layerId, key, value) {
-		viewers[0].setLayerState (layerId, key, value).then (function () {
+	window.setLayerRefState = function (layerId, key, value) {
+		viewers[0].setLayerRefState (layerId, key, value).then (function () {
 			console.log ('State change in effect.');
 		});
 	};
 	
-	window.getLayerState = function (layerId, key) {
-		return viewers[0].getLayerState (layerId, key);
+	window.getLayerRefState = function (layerId, key) {
+		return viewers[0].getLayerRefState (layerId, key);
 	};
 	
 	window.setViewerAttribute = function (name, value) {
@@ -162,7 +162,7 @@ require ([
 	
 	window.model2 = linkedCopy (window.model);
 	
-	var value = {"id":"test-map","label":"Test map","layers":[{"id":"layer-1","label":"BRT achtergrondkaart"},{"id":"layer-2","label":"LPG"}]};
+	var value = {"id":"test-map","label":"Test map","layerRefs":[{"id":"1","layerid":"layer-1","label":"BRT achtergrondkaart"},{"id":"2","layerid":"layer-2","label":"LPG"}]};
 	window.mapModel = new Map (value);
 	window.mapCopy = linkedCopy (window.mapModel);
 	

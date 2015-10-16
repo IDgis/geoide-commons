@@ -133,32 +133,30 @@ public class TestJsonFactory {
 		assertEquals ("mapdef-1", def.getId ());
 		assertEquals ("Map definition 1", def.getLabel ());
 		
-		final List<LayerRef> layers = def.getRootLayers ();
+		final List<LayerRef> layerRefs = def.getRootLayers ();
 		
-		assertEquals (1, layers.size ());
+		assertEquals (1, layerRefs.size ());
 		
 		
-		assertEquals ("layer-1", layers.get (0).getLayer ().getId ());
-		assertEquals ("Layer1", layers.get (0).getLayer ().getLabel ());
-		assertEquals ("service-layer-1", layers.get (0).getLayerRefs().get (0).getLayer ().getServiceLayers ().get (0).getId ());
-		assertEquals ("Service layer 1", layers.get (0).getLayerRefs().get (0).getLayer ().getServiceLayers ().get (0).getLabel ());
-		assertEquals ("layername", layers.get (0).getLayerRefs().get (0).getLayer ().getServiceLayers ().get (0).getName().getLocalName ());
-		assertEquals ("service-1", layers.get (0).getLayerRefs().get (0).getLayer ().getServiceLayers ().get (0).getService ().getId ());
-		assertEquals ("Service 1", layers.get (0).getLayerRefs().get (0).getLayer ().getServiceLayers ().get (0).getService ().getLabel ());
+		assertEquals ("layer-1", layerRefs.get (0).getLayer ().getId ());
+		assertEquals ("Layer1", layerRefs.get (0).getLayer ().getLabel ());
+		assertEquals ("service-layer-1", layerRefs.get (0).getLayerRefs().get (0).getLayer ().getServiceLayers ().get (0).getId ());
+		assertEquals ("Service layer 1", layerRefs.get (0).getLayerRefs().get (0).getLayer ().getServiceLayers ().get (0).getLabel ());
+		assertEquals ("layername", layerRefs.get (0).getLayerRefs().get (0).getLayer ().getServiceLayers ().get (0).getName().getLocalName ());
+		assertEquals ("service-1", layerRefs.get (0).getLayerRefs().get (0).getLayer ().getServiceLayers ().get (0).getService ().getId ());
+		assertEquals ("Service 1", layerRefs.get (0).getLayerRefs().get (0).getLayer ().getServiceLayers ().get (0).getService ().getLabel ());
 		
-		assertEquals ("map-layer-2", layers.get (0).getLayerRefs ().get (0).getLayer ().getId ());
-		assertEquals ("Layer 2", layers.get (0).getLayerRefs ().get (0).getLayer ().getLabel ());
-		assertEquals ("service-layer-2", layers.get (0).getLayerRefs ().get (1).getLayer ().getServiceLayers ().get (0).getId ());
+		assertEquals ("map-layer-2", layerRefs.get (0).getLayerRefs ().get (0).getLayer ().getId ());
+		assertEquals ("Layer 2", layerRefs.get (0).getLayerRefs ().get (0).getLayer ().getLabel ());
+		assertEquals ("service-layer-2", layerRefs.get (0).getLayerRefs ().get (1).getLayer ().getServiceLayers ().get (0).getId ());
 		
-		assertNull (layers.get (0).getLayerRefs().get (0).getLayer ().getServiceLayers ().get (0).getFeatureType ());
-		assertNotNull (layers.get (0).getLayerRefs ().get (1).getLayer ().getServiceLayers ().get (0).getFeatureType ());
-		assertEquals ("feature-type-1", layers.get (0).getLayerRefs ().get (1).getLayer ().getServiceLayers ().get (0).getFeatureType ().getId ());
-		assertEquals ("service-3", layers.get (0).getLayerRefs ().get (1).getLayer ().getServiceLayers ().get (0).getFeatureType ().getService ().getId ());
-		assertEquals ("featureTypeName", layers.get (0).getLayerRefs ().get (1).getLayer ().getServiceLayers ().get (0).getFeatureType ().getName ().getLocalName ());
+		assertNull (layerRefs.get (0).getLayerRefs().get (0).getLayer ().getServiceLayers ().get (0).getFeatureType ());
+		assertNotNull (layerRefs.get (0).getLayerRefs ().get (1).getLayer ().getServiceLayers ().get (0).getFeatureType ());
+		assertEquals ("feature-type-1", layerRefs.get (0).getLayerRefs ().get (1).getLayer ().getServiceLayers ().get (0).getFeatureType ().getId ());
+		assertEquals ("service-3", layerRefs.get (0).getLayerRefs ().get (1).getLayer ().getServiceLayers ().get (0).getFeatureType ().getService ().getId ());
+		assertEquals ("featureTypeName", layerRefs.get (0).getLayerRefs ().get (1).getLayer ().getServiceLayers ().get (0).getFeatureType ().getName ().getLocalName ());
 
 		
-		assertTrue (def.getLayers ().containsKey ("map-layer-1"));
-		assertTrue (def.getLayers ().containsKey ("map-layer-2"));
 		assertTrue (def.getServiceLayers ().containsKey ("service-layer-1"));
 		assertTrue (def.getServiceLayers ().containsKey ("service-layer-2"));
 		assertTrue (def.getServices ().containsKey ("service-1"));

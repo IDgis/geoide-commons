@@ -1,15 +1,15 @@
 @(mapId: String, tocItems:java.util.List[nl.idgis.geoide.commons.domain.traits.Traits[nl.idgis.geoide.commons.domain.toc.TOCItem]])
 
 
-@import nl.idgis.geoide.commons.domain.toc.TOCItemLayerTrait
+@import nl.idgis.geoide.commons.domain.toc.TOCItemLayerRefTrait
 @import nl.idgis.geoide.commons.domain.traits.Trait
 
-@displayItem(item: nl.idgis.geoide.commons.domain.traits.Traits[nl.idgis.geoide.commons.domain.toc.TOCItem], level: Integer = 0) = {
+@displayItem(item: nl.idgis.geoide.commons.domain.traits.Traits[nl.idgis.geoide.commons.domain.toc.TOCItem], level: Integer = 0, layerRefId: String) = {
 	
 	<li class="gi-toc-level-@level @if(item.get().isExpandable()){expandable} @if(item.get().isExpanded()){expanded}
 								   @if(item.get().isActivatable()){activatable} @if(item.get().isActive()){active}"
-								   @if(item.has(classOf[TOCItemLayerTrait])){
-								   		data-layer-id = @(((item.`trait`(classOf[TOCItemLayerTrait])).getLayer()).getLayer().getId())
+								   @if(item.has(classOf[TOCItemLayerRefTrait])){
+								   		data-layerref-id = "@layerRefId" 
 									}>
 								
 		<label>			
@@ -19,11 +19,11 @@
 					<i class="fa fa-plus-square-o"></i>
 				</span>
 			}
-			@if(item.has(classOf[TOCItemLayerTrait])){
+			@if(item.has(classOf[TOCItemLayerRefTrait])){
 				<span>
 					<input type="checkbox" class="toc-checkbox" 
-					@if(((item.`trait`(classOf[TOCItemLayerTrait])).getLayer()).getInitialStateValue("visible")=="true") {checked}
-					@if(((item.`trait`(classOf[TOCItemLayerTrait])).getLayer()).getInitialStateValue("visible") == ""){checked}>
+					@if(((item.`trait`(classOf[TOCItemLayerRefTrait])).getLayerRef()).getInitialStateValue("visible")=="true") {checked}
+					@if(((item.`trait`(classOf[TOCItemLayerRefTrait])).getLayerRef()).getInitialStateValue("visible") == ""){checked}>
 				</span>
 			}
 			<span>
@@ -35,18 +35,25 @@
 			
 		</label>
 		@if(!item.get().getItems().isEmpty()) {
-			<ul>
-		 		@for(child <- item.get().getItems()) {
-		 			@displayItem(child, level + 1)
-				}
-			</ul>
+		
+			@for(index <- 0 until item.get().getItems().size){
+	   			@if(index == 0){
+	        		<ul>
+	    		}
+	    		@displayItem(item.get().getItems()(index), level + 1, layerRefId + "/" + (index + 1))
+	    		@if(index == (item.get().getItems().size - 1)){
+	        		</ul>
+	   			}
+			}
+			
 		}
+
 	</li>
 }
 
 
 <ul class="gi-toc" data-geoide-map="@mapId">
-	@for(tocItem <- tocItems) {
-		@displayItem(tocItem)
+	@for(index <- 0 until tocItems.size){
+   		@displayItem(tocItems(index), 0, "" + (index + 1))
 	}
 </ul>	

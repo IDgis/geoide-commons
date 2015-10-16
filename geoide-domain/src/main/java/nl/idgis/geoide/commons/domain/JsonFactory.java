@@ -146,49 +146,7 @@ public class JsonFactory {
 				layerRefList,
 				stateMap);
 	}
-		
-	// method to merge maplayer and layer
-	//TODO: remove after changes in StaticMapProvider
-	
-	private static JsonNode mergeLayers (final JsonNode mapLayer, final Map<String, JsonNode> layers) {
-		final JsonNode layer = mapLayer.path ("layer");
-		if (layer.isMissingNode () || layer.asText ().isEmpty ()) {
-		
-			((ObjectNode) mapLayer).put("layerType", "default");
-			final JsonNode mapLayers = mapLayer.path ("maplayers");
-			if (mapLayers.isMissingNode ()) {
-				throw new IllegalArgumentException ("Missing property: layer or maplayers");
-			}
-			
-			for ( JsonNode childLayer: mapLayers ) {
-				childLayer = mergeLayers(childLayer, layers);					
-			}
-			((ObjectNode) mapLayer).put("layers", mapLayers);
-			((ObjectNode) mapLayer).remove("maplayers");
-			return mapLayer;
-			
-		}
-		
-		for (final JsonNode lyr: layers.values ()) {
-			if(lyr.path("id").asText().equals(layer.asText())) { 
-				final JsonNode layerType = lyr.path ("layerType");
-				final JsonNode serviceLyrs = lyr.path ("serviceLayers");
-				((ObjectNode) mapLayer).put("layerType", layerType);
-				((ObjectNode) mapLayer).put("serviceLayers", serviceLyrs);
-				//state is initial state
-				if (lyr.hasNonNull("state")) {
-					final JsonNode state = lyr.path("state");
-					if (mapLayer.hasNonNull("state")) {
-						((ObjectNode) state).setAll((ObjectNode) mapLayer.path("state"));
-					}
-					((ObjectNode)mapLayer).put("state", state );
-				} 	
-				
-			}
-		}
-		return mapLayer;
-	}
-		
+		  	
 	public static ServiceLayer serviceLayer (final String json, final Map<String, Service> services, final Map<String, FeatureType> featureTypes) {
 		return serviceLayer (parse (json), services, featureTypes);
 	}
@@ -331,7 +289,6 @@ public class JsonFactory {
 		final JsonNode id = node.path ("id"); 
 		final JsonNode layerType = node.path ("layerType");
 		final JsonNode label = node.path ("label"); 
-		final JsonNode layers = node.path ("layers");
 		final JsonNode serviceLayers = node.path ("serviceLayers");
 		//state is initial state
 		final JsonNode state = node.path("state");
@@ -345,11 +302,6 @@ public class JsonFactory {
 		}
 		if (label.isMissingNode ()) {
 			throw new IllegalArgumentException ("Missing property: label");
-		}
-		
-		final List<Layer> layerList = new ArrayList<> ();
-		for (final JsonNode layerNode: layers) {
-			layerList.add (layer (layerNode, serviceLayerMap));
 		}
 		
 		final List<ServiceLayer> serviceLayerList = new ArrayList<> ();

@@ -13,7 +13,7 @@ define ([
 	StatefulArray
 ) {
 	
-	var LayerList, Layer, LayerState, MapStatefulObject, MapStatefulArray;
+	var LayerRefList, LayerRef, LayerRefState, MapStatefulObject, MapStatefulArray;
 	
 	var defaultState = {
 		visible: true
@@ -26,8 +26,8 @@ define ([
 			} else if ('length' in value) {
 				// Wrap empty arrays or arrays containing objects:
 				if (value.length === 0 || typeof value[0] == 'object') {
-					if (propertyName == 'layers') {
-						return new LayerList (value, self.map ());
+					if (propertyName == 'layerRefs') {
+						return new LayerRefList (value, self.map ());
 					} else {
 						return new MapStatefulArray (value, self.map ());
 					}
@@ -35,13 +35,13 @@ define ([
 					return value;
 				}
 			} else {
-				if (self.isInstanceOf (LayerList)) {
-					return new Layer (lang.mixin ({
-						layers: [ ],
+				if (self.isInstanceOf (LayerRefList)) {
+					return new LayerRef (lang.mixin ({
+						layerRefs: [ ],
 						state: { }
 					}, value), self.map ());
-				} else if (self.isInstanceOf (Layer) && propertyName == 'state') {
-					return new LayerState (lang.mixin (lang.mixin ({}, defaultState), value), self.map ());				
+				} else if (self.isInstanceOf (LayerRef) && propertyName == 'state') {
+					return new LayerRefState (lang.mixin (lang.mixin ({}, defaultState), value), self.map ());				
 					
 				} else {
 					return new MapStatefulObject (value, self.map ());
@@ -77,13 +77,13 @@ define ([
 		}
 	});
 	
-	LayerList = declare ([MapStatefulArray], {
+	LayerRefList = declare ([MapStatefulArray], {
 	});
 	
-	Layer = declare ([MapStatefulObject], {
+	LayerRef = declare ([MapStatefulObject], {
 	});
 	
-	LayerState = declare ([MapStatefulObject], {
+	LayerRefState = declare ([MapStatefulObject], {
 	});
 	
 	return declare ([StatefulObject], {
@@ -100,38 +100,34 @@ define ([
 		constructor: function (content) {
 			this._buildContent (content);
 			
-			// Create layer index:
-			var layerDictionary = { },
-				layerList = [ ];
+			// Create layerRef index:
+			var layerRefDictionary = { },
+				layerRefList = [ ];
 			
-			var processLayers = function (object) {//, parentId) {
-				console.log("processLayers" + object);
-				var pid = object.get ('id');
-				var layers = object.get ('layers');
-				if (!layers) {
+			var processLayerRefs = function (object) {
+				var layerRefs = object.get ('layerRefs');
+				if (!layerRefs) {
 					return;
 				}
 				
-				for (var i = 0, length = layers.length (); i < length; ++ i) {
-					var layer = layers.get (i),
-						id = layer.get ('id');
-					console.log(id);
-					if (!(id in layerDictionary)) {
-						//layer.set ('parentId', pid);
-						layerDictionary[id] = layer;
-						layerList.push (layer);
-					} //else if (layerDictionary[id] !== layer) {
-						//throw new Error ('Duplicate layer with id: ', id);
-					//}
+				for (var i = 0, length = layerRefs.length (); i < length; ++ i) {
+					var layerRef = layerRefs.get (i),
+						id = layerRef.get ('id');
+					if (!(id in layerRefDictionary)) {
+						layerRefDictionary[id] = layerRef;
+						layerRefList.push (layerRef);
+					} else if (layerRefDictionary[id] !== layerRef) {
+						throw new Error ('Duplicate layerRef with id: ', id);
+					}
 					
-					processLayers (layer);//, pid);
+					processLayerRefs (layerRef);//, pid);
 				}
 			};
 			
-			processLayers (this);
+			processLayerRefs (this);
 			
-			this.set ('layerDictionary', layerDictionary);
-			this.set ('layerList', layerList);
+			this.set ('layerRefDictionary', layerRefDictionary);
+			this.set ('layerRefList', layerRefList);
 		},
 		
 		map: function () {
@@ -139,18 +135,13 @@ define ([
 		},
 		
 		
-		getLayerById : function (layerId) {
-			return this.get ('layerDictionary').get (layerId);
+		getLayerRefById : function (layerRefId) {
+			return this.get ('layerDictionary').get (layerRefId);
 		},
 		
 		getInitialExtent: function () {
 			return (this.get ('initial-extent'));
-		},
-		
-		//getParentLayer: function (layerId) {
-			//var layer = this.get ('layerDictionary').get (layerId);
-			//return this.get ('layerDictionary').get (layer.get('parentId'));
-		//}
+		}
 		
 	});
 	

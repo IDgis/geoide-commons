@@ -34,14 +34,17 @@ public class MapDefinition extends Entity {
 		super (id, label);
 		this.prefix = prefix;
 		this.initialExtent = initialExtent;
+		System.out.println ("Aantel rootLayers in map " + id + "="+ rootLayers.size()); 
 		this.rootLayers = rootLayers == null ? Collections.<LayerRef>emptyList () : new ArrayList<> (rootLayers);
 		this.queryDescriptions = queryDescriptions;
 		// Scan the layers and fill the indices:
-		scanLayers (this.rootLayers);
+		scanLayerRefs (this.rootLayers);
 	}
 	
 	@JsonValue
 	public JsonNode serialize () {
+		System.out.println("serialize de Mapdefinition");
+		
 		final ObjectNode obj = JsonFactory.mapper ().createObjectNode ();
 		obj.put ("id", getId ());
 		obj.put ("label", getLabel ());
@@ -69,11 +72,12 @@ public class MapDefinition extends Entity {
 			}
 		}
 		
+		System.out.println("serialize rootlayers ? " + !getRootLayers ().isEmpty ());
 		// Write layers:
 		if (!getRootLayers ().isEmpty ()) {
-			final ArrayNode layersNode = obj.putArray ("layers");
+			final ArrayNode layerRefsNode = obj.putArray ("layerRefs");
 			for (final LayerRef layerRef: getRootLayers ()) {
-				layersNode.add (JsonFactory.mapper ().valueToTree (layerRef));
+				layerRefsNode.add (JsonFactory.mapper ().valueToTree (layerRef));
 			}
 		}
 		return obj;
@@ -103,7 +107,7 @@ public class MapDefinition extends Entity {
 		return Collections.unmodifiableMap (featureTypes);
 	}
 	
-	public Map<String, LayerRef> getLayers () {
+	public Map<String, LayerRef> getLayerRefs () {
 		return Collections.unmodifiableMap (layerRefs);
 	}
 	
@@ -111,7 +115,7 @@ public class MapDefinition extends Entity {
 		return queryDescriptions;
 	}
 	
-	private void scanLayers (final Collection<LayerRef> layerRefs) {
+	private void scanLayerRefs (final Collection<LayerRef> layerRefs) {
 		final LinkedList<LayerRef> fringe = new LinkedList<> (layerRefs);
 		
 		while (!fringe.isEmpty ()) {

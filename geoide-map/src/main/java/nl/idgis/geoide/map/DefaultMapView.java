@@ -112,27 +112,27 @@ public class DefaultMapView implements MapView {
 	
 	private List<Traits<LayerState>> flattenLayerList (final JsonNode viewerState, final List<Traits<LayerState>> parents) {
 		final List<Traits<LayerState>> layers = new ArrayList<> ();
-		final JsonNode layersNode = viewerState.path ("layers");
-		if (layersNode.isMissingNode ()) {
+		final JsonNode layerRefsNode = viewerState.path ("layerRefs");
+		if (layerRefsNode.isMissingNode ()) {
 			return layers;
 		}
 
-		for (final JsonNode layerNode: layersNode) {
-			final Layer layer = getLayer (layerNode.path ("id"));
+		for (final JsonNode layerRefNode: layerRefsNode) {
+			final Layer layer = getLayer (layerRefNode.path ("layerid"));
 			final Traits<LayerType> layerType = layerTypeRegistry.getLayerType (layer);
 			
 			if (layerType == null) {
 				throw new IllegalArgumentException ("Unable to find layer type for " + layer.getLayerType ());
 			}
 
-			final Traits<LayerState> layerState = layerType.get ().createLayerState (layer, layerNode.path ("state"), parents);
+			final Traits<LayerState> layerState = layerType.get ().createLayerState (layer, layerRefNode.path ("state"), parents);
 
 			// Add the layer:
 			layers.add (layerState);
 			
 			// Add all sub-layers of this layer:
 			layers.addAll (flattenLayerList (
-				layerNode, 
+				layerRefNode, 
 				Stream.concat (
 					parents.stream (), 
 					Stream.of (layerState))

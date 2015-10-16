@@ -8,7 +8,7 @@ import nl.idgis.geoide.commons.domain.LayerRef;
 import nl.idgis.geoide.commons.domain.ServiceLayer;
 import nl.idgis.geoide.commons.domain.toc.Symbol;
 import nl.idgis.geoide.commons.domain.toc.TOCItem;
-import nl.idgis.geoide.commons.domain.toc.TOCItemLayerTrait;
+import nl.idgis.geoide.commons.domain.toc.TOCItemLayerRefTrait;
 import nl.idgis.geoide.commons.domain.traits.Traits;
 import nl.idgis.geoide.commons.layer.LayerType;
 import nl.idgis.geoide.service.ServiceType;
@@ -50,7 +50,7 @@ public class TOCdefaultLayerTypeTrait implements TOCLayerTypeTrait {
 				.build ()
 			);
 		
-		tocItem = tocItem.with(new TOCItemLayerTrait(layer));
+		tocItem = tocItem.with(new TOCItemLayerRefTrait(layer));
 		
 		
 		List<Traits<TOCItem>> tocItems = new ArrayList<>();

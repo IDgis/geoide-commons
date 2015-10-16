@@ -44,7 +44,7 @@ public class LayerRef implements Serializable {
 		n.put ("layer", layer.serialize());
 		
 		if (!getLayerRefs ().isEmpty ()) {
-			final ArrayNode layersNode = n.putArray ("layers");
+			final ArrayNode layersNode = n.putArray ("layerRefs");
 			
 			for (final LayerRef layerRef: getLayerRefs ()) {
 				layersNode.add (JsonFactory.mapper ().valueToTree (layerRef));
@@ -70,7 +70,7 @@ public class LayerRef implements Serializable {
 	
 	
 	public String getInitialStateValue (String stateProperty) {
-		if(state.getStateValue(stateProperty)!=null){
+		if(!state.getStateValue (stateProperty).equals ("")) {
 			return state.getStateValue(stateProperty);
 		} else {
 			if(layer.getLayerState ().getStateValue (stateProperty)!=null) {
