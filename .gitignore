@@ -7,3 +7,8 @@
 target/
 /.gradle/
 /build/
+pom.xml.versionsBackup
+*/pom.xml.versionsBackup
+*/logs/application.log
+*/target/
+*/build/

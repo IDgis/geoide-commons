@@ -20,10 +20,8 @@ public class Layer extends Entity {
 	private static final long serialVersionUID = 5628518429669556235L;
 
 	private final String layerType;
-	private final String label;
-	private final List<Layer> layers;
 	private final List<ServiceLayer> serviceLayers;
-	private final Map<String, ExternalizableJsonNode> state;
+	private final LayerState state;
 	private final Map<String, ExternalizableJsonNode> properties;
 	
 	@JsonCreator
@@ -31,20 +29,16 @@ public class Layer extends Entity {
 			final @JsonProperty("id") String id,
 			final @JsonProperty("layerType") String layerType,
 			final @JsonProperty("label") String label,
-			final @JsonProperty("layers") List<Layer> layers,
 			final @JsonProperty("serviceLayers") List<ServiceLayer> serviceLayers,
 			final @JsonProperty("state") Map <String,JsonNode> state,
 			final @JsonProperty("properties") Map <String,JsonNode> properties) {
-		super (id);
+		super (id, label);
 		
-		Assert.notNull (label, "label");
 		Assert.notNull (layerType, "layerType");
 		
 		this.layerType = layerType;
-		this.label = label;
-		this.layers = layers == null ? Collections.<Layer>emptyList () : new ArrayList<> (layers);
 		this.serviceLayers = serviceLayers == null ? Collections.<ServiceLayer>emptyList () : new ArrayList<> (serviceLayers);
-		this.state = externalizeProperties (state); 
+		this.state = new LayerState (state); 
 		this.properties = externalizeProperties (properties); 
 	}
 	
@@ -74,21 +68,8 @@ public class Layer extends Entity {
 		n.put ("label", getLabel ());
 		n.put ("layerType", getLayerType ());
 		
-		if (!getLayers ().isEmpty ()) {
-			final ArrayNode layersNode = n.putArray ("layers");
-			
-			for (final Layer layer: getLayers ()) {
-				layersNode.add (JsonFactory.mapper ().valueToTree (layer));
-			}
-		}
 		
-		if (!state.isEmpty()) {
-			final ObjectNode stateNode = n.putObject("state");
-			
-			for (final Map.Entry<String, ExternalizableJsonNode> entry: state.entrySet ()) {
-				stateNode.put (entry.getKey (), entry.getValue ().getJsonNode ());
-			}
-		}
+		n.put ("state", state.serialize());
 		
 		if (!properties.isEmpty()) {
 			final ObjectNode propertiesNode = n.putObject("properties");
@@ -106,7 +87,6 @@ public class Layer extends Entity {
 				serviceLayersNode.add (serviceLayer.getId ());
 			}
 		}
-		System.out.println(n);
 		return n;
 	}
 
@@ -114,23 +94,13 @@ public class Layer extends Entity {
 		return layerType;
 	}
 
-	public String getLabel () {
-		return label;
-	}
-
-	public List<Layer> getLayers () {
-		return Collections.unmodifiableList (layers);
-	}
 
 	public List<ServiceLayer> getServiceLayers () {
 		return Collections.unmodifiableList (serviceLayers);
 	}
 	
-	public String getInitialStateValue (String stateProperty) {
-		System.out.println("get InitialState Value " + stateProperty + " = " + state.get(stateProperty));
-		if(state.get(stateProperty)!=null){
-			return state.get(stateProperty).getJsonNode ().asText();
-		} 
-		return "";
+	public LayerState getLayerState () {
+		return state;
 	}
+	
 }

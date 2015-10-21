@@ -11,44 +11,32 @@
 			},
 			"maplayers": [			
 				{
-					"id": "afd-group-layer",
-					"label": "Group",
+					"layer": "group-layer",
 					"maplayers": [
 						{
-							"id": "afd-group2-layer",
-							"label": "Group2",
+							"layer": "group2-layer",
 							"maplayers": [ 
 								{
-									"id": "afd-layer-1",
 									"layer": "layer-1",
-									"label": "BRT achtergrondkaart",
 									"state": {
-										"visible" : true
+										"visible" : false
 									}
-									
 								},
 								{
-									"id": "afd-layer-2",
-									"layer": "layer-2",
-									"label": "LPG"
+									"layer": "layer-2"
 								}		
 							]
 						},
 						{
-							"id": "afd-layer-4",
 							"layer": "layer-2",
-							"label": "LPG2",
 							"state": {
 								"visible" : true
 							}
-						}
-						
+						}	
 					]
 				},
 				{
-					"id": "afd-layer-3",
-					"layer": "layer-2",
-					"label": "LPG3",
+					"layer": "layer-3",
 					"state": {
 						"visible" : false
 					}

@@ -36,28 +36,28 @@ public class JsonMapProviderBuilderTest {
 		assertEquals ("Test map", map.getLabel ());
 		
 		assertEquals (2, map.getRootLayers ().size ());
-		assertEquals ("test-layer-1", map.getRootLayers ().get (0).getId ());
-		assertEquals ("Layer 1", map.getRootLayers ().get (0).getLabel ());
-		assertEquals ("default", map.getRootLayers ().get (0).getLayerType ());
-		assertEquals ("test-layer-2", map.getRootLayers ().get (1).getId ());
-		assertEquals ("Layer 2", map.getRootLayers ().get (1).getLabel ());
-		assertEquals ("default", map.getRootLayers ().get (1).getLayerType ());
+		assertEquals ("test-layer-1", map.getRootLayers ().get (0).getLayer ().getId ());
+		assertEquals ("Layer 1", map.getRootLayers ().get (0).getLayer ().getLabel ());
+		assertEquals ("default", map.getRootLayers ().get (0).getLayer ().getLayerType ());
+		assertEquals ("test-layer-2", map.getRootLayers ().get (1).getLayer ().getId ());
+		assertEquals ("Layer 2", map.getRootLayers ().get (1).getLayer ().getLabel ());
+		assertEquals ("default", map.getRootLayers ().get (1).getLayer ().getLayerType ());
 		
-		assertEquals (1, map.getRootLayers ().get (0).getServiceLayers ().size ());
-		assertEquals ("test-servicelayer-1", map.getRootLayers ().get (0).getServiceLayers ().get (0).getId ());
-		assertEquals ("Test servicelayer 1", map.getRootLayers ().get (0).getServiceLayers ().get (0).getLabel ());
-		assertEquals ("test-service-1", map.getRootLayers ().get (0).getServiceLayers ().get (0).getService ().getId ());
-		assertEquals ("Test service 1", map.getRootLayers ().get (0).getServiceLayers ().get (0).getService ().getLabel ());
+		assertEquals (1, map.getRootLayers ().get (0).getLayer ().getServiceLayers ().size ());
+		assertEquals ("test-servicelayer-1", map.getRootLayers ().get (0).getLayer ().getServiceLayers ().get (0).getId ());
+		assertEquals ("Test servicelayer 1", map.getRootLayers ().get (0).getLayer ().getServiceLayers ().get (0).getLabel ());
+		assertEquals ("test-service-1", map.getRootLayers ().get (0).getLayer ().getServiceLayers ().get (0).getService ().getId ());
+		assertEquals ("Test service 1", map.getRootLayers ().get (0).getLayer ().getServiceLayers ().get (0).getService ().getLabel ());
 		
-		assertEquals (1, map.getRootLayers ().get (1).getServiceLayers ().size ());
-		assertEquals ("test-servicelayer-2", map.getRootLayers ().get (1).getServiceLayers ().get (0).getId ());
-		assertEquals ("Test servicelayer 2", map.getRootLayers ().get (1).getServiceLayers ().get (0).getLabel ());
-		assertEquals ("test-service-2", map.getRootLayers ().get (1).getServiceLayers ().get (0).getService ().getId ());
-		assertEquals ("Test service 2", map.getRootLayers ().get (1).getServiceLayers ().get (0).getService ().getLabel ());
+		assertEquals (1, map.getRootLayers ().get (1).getLayer ().getServiceLayers ().size ());
+		assertEquals ("test-servicelayer-2", map.getRootLayers ().get (1).getLayer ().getServiceLayers ().get (0).getId ());
+		assertEquals ("Test servicelayer 2", map.getRootLayers ().get (1).getLayer ().getServiceLayers ().get (0).getLabel ());
+		assertEquals ("test-service-2", map.getRootLayers ().get (1).getLayer ().getServiceLayers ().get (0).getService ().getId ());
+		assertEquals ("Test service 2", map.getRootLayers ().get (1).getLayer ().getServiceLayers ().get (0).getService ().getLabel ());
 		
-		assertEquals ("test-feature-type-1", map.getRootLayers ().get (1).getServiceLayers ().get (0).getFeatureType ().getId ());
-		assertEquals ("Test feature type 1", map.getRootLayers ().get (1).getServiceLayers ().get (0).getFeatureType ().getLabel ());
-		assertEquals ("test-service-2", map.getRootLayers ().get (1).getServiceLayers ().get (0).getFeatureType ().getService ().getId ());
+		assertEquals ("test-feature-type-1", map.getRootLayers ().get (1).getLayer ().getServiceLayers ().get (0).getFeatureType ().getId ());
+		assertEquals ("Test feature type 1", map.getRootLayers ().get (1).getLayer ().getServiceLayers ().get (0).getFeatureType ().getLabel ());
+		assertEquals ("test-service-2", map.getRootLayers ().get (1).getLayer ().getServiceLayers ().get (0).getFeatureType ().getService ().getId ());
 	}
 	
 	@Test
@@ -68,11 +68,11 @@ public class JsonMapProviderBuilderTest {
 				.build ()
 				.getMapDefinition ("test-map");
 		
-		assertEquals (1, map.getRootLayers ().get (1).getServiceLayers ().size ());
-		assertEquals ("test-servicelayer-2", map.getRootLayers ().get (1).getServiceLayers ().get (0).getId ());
-		assertEquals ("Test servicelayer 2 override", map.getRootLayers ().get (1).getServiceLayers ().get (0).getLabel ());
-		assertEquals ("test-service-2", map.getRootLayers ().get (1).getServiceLayers ().get (0).getService ().getId ());
-		assertEquals ("Test service 2", map.getRootLayers ().get (1).getServiceLayers ().get (0).getService ().getLabel ());
+		assertEquals (1, map.getRootLayers ().get (1).getLayer ().getServiceLayers ().size ());
+		assertEquals ("test-servicelayer-2", map.getRootLayers ().get (1).getLayer ().getServiceLayers ().get (0).getId ());
+		assertEquals ("Test servicelayer 2 override", map.getRootLayers ().get (1).getLayer ().getServiceLayers ().get (0).getLabel ());
+		assertEquals ("test-service-2", map.getRootLayers ().get (1).getLayer ().getServiceLayers ().get (0).getService ().getId ());
+		assertEquals ("Test service 2", map.getRootLayers ().get (1).getLayer ().getServiceLayers ().get (0).getService ().getLabel ());
 	}
 	
 	@Test
@@ -83,9 +83,9 @@ public class JsonMapProviderBuilderTest {
 				.build ()
 				.getMapDefinition ("test-map");
 		
-		assertEquals (1, map.getRootLayers ().get (1).getServiceLayers ().size ());
-		assertEquals ("test-service-1", map.getRootLayers ().get (0).getServiceLayers ().get (0).getService ().getId ());
-		assertEquals ("Test service 1 override", map.getRootLayers ().get (0).getServiceLayers ().get (0).getService ().getLabel ());
+		assertEquals (1, map.getRootLayers ().get (1).getLayer ().getServiceLayers ().size ());
+		assertEquals ("test-service-1", map.getRootLayers ().get (0).getLayer ().getServiceLayers ().get (0).getService ().getId ());
+		assertEquals ("Test service 1 override", map.getRootLayers ().get (0).getLayer ().getServiceLayers ().get (0).getService ().getLabel ());
 	}
 	
 	@Test
@@ -97,10 +97,10 @@ public class JsonMapProviderBuilderTest {
 				.getMapDefinition ("test-map");
 		
 		assertEquals (2, map.getRootLayers ().size ());
-		assertEquals ("test-layer-1", map.getRootLayers ().get (0).getId ());
-		assertEquals ("Layer 1", map.getRootLayers ().get (0).getLabel ());
-		assertEquals ("default-override", map.getRootLayers ().get (0).getLayerType ());
-		assertEquals ("test-servicelayer-2", map.getRootLayers ().get (0).getServiceLayers ().get (0).getId ());
+		assertEquals ("test-layer-1", map.getRootLayers ().get (0).getLayer ().getId ());
+		assertEquals ("Layer 1", map.getRootLayers ().get (0).getLayer ().getLabel ());
+		assertEquals ("default-override", map.getRootLayers ().get (0).getLayer ().getLayerType ());
+		assertEquals ("test-servicelayer-2", map.getRootLayers ().get (0).getLayer ().getServiceLayers ().get (0).getId ());
 	}
 	
 	@Test
@@ -126,9 +126,9 @@ public class JsonMapProviderBuilderTest {
 				.build ()
 				.getMapDefinition ("test-map");
 		
-		assertEquals ("test-feature-type-1", map.getRootLayers ().get (1).getServiceLayers ().get (0).getFeatureType ().getId ());
-		assertEquals ("Test feature type 1 override", map.getRootLayers ().get (1).getServiceLayers ().get (0).getFeatureType ().getLabel ());
-		assertEquals ("test-service-1", map.getRootLayers ().get (1).getServiceLayers ().get (0).getFeatureType ().getService ().getId ());
+		assertEquals ("test-feature-type-1", map.getRootLayers ().get (1).getLayer ().getServiceLayers ().get (0).getFeatureType ().getId ());
+		assertEquals ("Test feature type 1 override", map.getRootLayers ().get (1).getLayer ().getServiceLayers ().get (0).getFeatureType ().getLabel ());
+		assertEquals ("test-service-1", map.getRootLayers ().get (1).getLayer ().getServiceLayers ().get (0).getFeatureType ().getService ().getId ());
 	}
 
 	private JsonNode loadResource (final String resource) throws JsonProcessingException, IOException {

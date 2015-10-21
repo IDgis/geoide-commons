@@ -38,10 +38,10 @@ function(
 				var thisObject = this;
 				
 				when (this.map, function(map) {
-					var layers = map.get('layerList');
-					layers.forEach (function (layer) {
-						layer.get ('state').watch ('visible', function(property, oldValue, newValue) { 
-								thisObject.setCheckBox(layer, newValue);
+					var layerRefs = map.get('layerRefList');
+					layerRefs.forEach (function (layerRef) {
+						layerRef.get ('state').watch ('visible', function(property, oldValue, newValue) { 
+								thisObject.setCheckBox(layerRef, newValue);
 						});
 						
 					});
@@ -64,31 +64,31 @@ function(
 	
 		switchVisibility: function (checkboxNode) {
 			
-			var layerId = this.getLayerId(checkboxNode);
+			var layerRefId = this.getLayerRefId(checkboxNode);
 			
 			when (this.map, function(map) {
-				var layer = map.get ('layerDictionary').get (layerId);
-				var layerVisible = layer.get ('state').get ('visible');
-				layer.get ('state').set ('visible', !layerVisible);
+				var layerRef = map.get ('layerRefDictionary').get (layerRefId);
+				var layerRefVisible = layerRef.get ('state').get ('visible');
+				layerRef.get ('state').set ('visible', !layerRefVisible);
 			});
 			
 		},
 		
-		getLayerId: function (node) {
+		getLayerRefId: function (node) {
 			var parent = node;
 			
-			while (parent && !domAttr.get(parent, "data-layer-id")) {
+			while (parent && !domAttr.get(parent, "data-layerref-id")) {
 				parent = parent.parentNode;
 			}
-			var layerId = domAttr.get(parent, "data-layer-id");
-			return layerId;
+			var layerRefId = domAttr.get(parent, "data-layerref-id");
+			return layerRefId;
 			
 		},
 
-		setCheckBox: function(layer, visible) {
+		setCheckBox: function(layerRef, visible) {
 			window.setTimeout (function () {
-				query ('*[data-layer-id="' + layer.get ('id') + '"]', this.node).forEach (function (layerNode) {
-					query ('> label .toc-checkbox', layerNode).forEach(function (checkBoxNode) {
+				query ('*[data-layerref-id="' + layerRef.get ('id') + '"]', this.node).forEach (function (layerRefNode) {
+					query ('> label .toc-checkbox', layerRefNode).forEach(function (checkBoxNode) {
 						checkBoxNode.checked = visible;					
 					});
 				});

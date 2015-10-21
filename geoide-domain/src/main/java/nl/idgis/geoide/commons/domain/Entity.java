@@ -9,15 +9,23 @@ public abstract class Entity implements Serializable {
 	private static final long serialVersionUID = 545601754396146175L;
 	
 	private final String id;
+	private final String label;
 
-	public Entity (final String id) {
+	public Entity (final String id, String label) {
 		Assert.notNull (id, "id");
+		Assert.notNull (label, "label");
 		
 		this.id = id;
+		this.label = label;
+		
 	}
 
 	public String getId () {
 		return id;
+	}
+	
+	public String getLabel () {
+		return label;
 	}
 
 	@Override

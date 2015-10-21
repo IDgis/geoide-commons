@@ -61,7 +61,11 @@ public class JsonFactory {
 		}
 	}
 	
-	public static MapDefinition mapDefinition (final JsonNode mapNode, final Map<String, JsonNode> layerNodes, final Map<String, ServiceLayer> serviceLayerMap) {
+	public static MapDefinition mapDefinition (
+			final JsonNode mapNode, 
+			final Map<String, Layer> layerMap, 
+			final Map<String, ServiceLayer> serviceLayerMap,
+			final Map<String, QueryDescription> queryDescriptionMap) {
 		final JsonNode id = mapNode.path ("id"); 
 		final JsonNode label = mapNode.path ("label");
 		final JsonNode prefix = mapNode.path ("prefix");
@@ -81,62 +85,68 @@ public class JsonFactory {
 		} else {
 			initialExtent = "";
 		}
-
-		if (mapNode.has("maplayers")) {
-			final List<Layer> layerList = new ArrayList<> ();
-			//Parse layers:
-			for ( final JsonNode mapLayer: mapNode.path("maplayers")) {
-				// merge maplayer and layer
-				mergeLayers(mapLayer, layerNodes);
-				final Layer layer = JsonFactory.layer (mapLayer, serviceLayerMap);
-				layerList.add (layer);	
+		
+		final List<QueryDescription> queryDescriptionList = new ArrayList<> ();
+		if (mapNode.has("querydescriptions")) {
+			for ( final JsonNode queryDescriptionNode:mapNode.path ("querydescriptions")) {
+				queryDescriptionList.add(queryDescriptionMap.get(queryDescriptionNode.asText()));
 			}
-			return new MapDefinition (id.asText (), label.asText (), prefix.asText(), initialExtent, layerList);
+		}	
+		
+		if (mapNode.has("maplayers")) {
+			final List<LayerRef> layerRefList = new ArrayList<> ();
+			//Parse layers:
+			for ( final JsonNode layerRefNode: mapNode.path("maplayers")) {
+				
+				// merge maplayer and layer
+				//mergeLayers(mapLayer, layerNodes);
+				
+				final LayerRef layerRef = JsonFactory.layerRef (layerRefNode, layerMap);
+				layerRefList.add (layerRef);	
+			}
+			return new MapDefinition (id.asText (), label.asText (), prefix.asText(), initialExtent, layerRefList, queryDescriptionList);
 		} else {
 			throw new IllegalArgumentException ("Missing property: maplayers");
 		}
+		
+		
+		
 	}
 	
-	// method to merge maplayer and layer
-	private static JsonNode mergeLayers (final JsonNode mapLayer, final Map<String, JsonNode> layers) {
-		final JsonNode layer = mapLayer.path ("layer");
-		if (layer.isMissingNode () || layer.asText ().isEmpty ()) {
+	
+	private static LayerRef layerRef (JsonNode node, Map <String, Layer> layerMap) {
+		final JsonNode layerRefNodes = node.path ("maplayers");
+		final JsonNode layerNode = node.path ("layer");
+		//state is initial state
+		final JsonNode stateNode = node.path("state");		
 		
-			((ObjectNode) mapLayer).put("layerType", "default");
-			final JsonNode mapLayers = mapLayer.path ("maplayers");
-			if (mapLayers.isMissingNode ()) {
-				throw new IllegalArgumentException ("Missing property: layer or maplayers");
-			}
-			
-			for ( JsonNode childLayer: mapLayers ) {
-				childLayer = mergeLayers(childLayer, layers);					
-			}
-			((ObjectNode) mapLayer).put("layers", mapLayers);
-			((ObjectNode) mapLayer).remove("maplayers");
-			return mapLayer;
-			
+		final List<LayerRef> layerRefList = new ArrayList<> ();
+		for (final JsonNode layerRefNode: layerRefNodes) {
+			layerRefList.add (layerRef (layerRefNode, layerMap));
 		}
 		
-		for (final JsonNode lyr: layers.values ()) {
-			if(lyr.path("id").asText().equals(layer.asText())) { 
-				final JsonNode layerType = lyr.path ("layerType");
-				final JsonNode serviceLyrs = lyr.path ("serviceLayers");
-				((ObjectNode) mapLayer).put("layerType", layerType);
-				((ObjectNode) mapLayer).put("serviceLayers", serviceLyrs);
-				//state is initial state
-				if (lyr.hasNonNull("state")) {
-					final JsonNode state = lyr.path("state");
-					if (mapLayer.hasNonNull("state")) {
-						((ObjectNode) state).setAll((ObjectNode) mapLayer.path("state"));
-					}
-					((ObjectNode)mapLayer).put("state", state );
-				} 	
-				
+		final Map<String, JsonNode> stateMap = new HashMap<> ();  
+		
+		
+		if (!layerMap.containsKey (layerNode.asText ())) {
+			throw new IllegalArgumentException ("Undefined layer: " + layerNode.asText ());
+		}
+		Layer layer = layerMap.get (layerNode.asText());
+		
+		if (!stateNode.isMissingNode()){	
+			for (Iterator<Entry<String,JsonNode>> iterator = stateNode.fields(); iterator.hasNext();) {
+				 Entry<String, JsonNode> item = iterator.next();   
+				 stateMap.put(item.getKey(), item.getValue());
 			}
 		}
-		return mapLayer;
+
+	
+		return new LayerRef (
+				layer,
+				layerRefList,
+				stateMap);
 	}
-		
+		  	
 	public static ServiceLayer serviceLayer (final String json, final Map<String, Service> services, final Map<String, FeatureType> featureTypes) {
 		return serviceLayer (parse (json), services, featureTypes);
 	}
@@ -159,6 +169,71 @@ public class JsonFactory {
 	public static FeatureType featureType (final JsonNode node, final Map<String, Service> services) {
 		final ParseNamedServiceEntity content = namedServiceEntity (node, services, null);
 		return new FeatureType (content.getId (), content.getService (), content.getName (), content.getLabel ());
+	}
+	
+	
+	public static QueryDescription queryDescription (final JsonNode node, final Map<String, FeatureType> featureTypeMap, final Map <String, ServiceLayer> serviceLayerMap) {
+		final JsonNode id = node.path("id");
+		final JsonNode label = node.path ("label");
+		final JsonNode serviceLayer = node.path ("serviceLayer");
+		final JsonNode queryTerms = node.path ("queryTerms");
+		
+		if (id.isMissingNode () || id.asText ().isEmpty ()) {
+			throw new IllegalArgumentException ("Missing property: id");
+		}
+		if (label.isMissingNode ()) {
+			throw new IllegalArgumentException ("Missing property: label");
+		}
+		if (serviceLayer.isMissingNode ()) {
+			throw new IllegalArgumentException ("Missing property: serviceLayer");
+		}
+		
+		final String serviceLayerId = serviceLayer.asText ();
+		
+		if (!serviceLayerMap.containsKey (serviceLayerId)) {
+			throw new IllegalArgumentException ("ServiceLayer not defined: " + serviceLayerId);
+		}
+
+		final List<QueryTerm> queryTermList = new ArrayList<> ();
+		
+		for (final JsonNode queryTermNode: queryTerms) {
+				final JsonNode attribute = queryTermNode.path("attribute");
+				final JsonNode attributeLabel = queryTermNode.path ("label");
+				final JsonNode featureType = queryTermNode.path ("featureType");
+				
+				if (attribute.isMissingNode ()) {
+					throw new IllegalArgumentException ("Missing property: attribute");
+				}
+				
+				if (featureType.isMissingNode ()) {
+					throw new IllegalArgumentException ("Missing property: featureType");
+				}
+				
+				final FeatureType ft = getFeatureType (featureType.asText (), featureTypeMap);
+				queryTermList.add (
+						new QueryTerm (
+								qName (attribute),
+								attributeLabel.asText (),
+								ft));
+		}
+		
+		return new QueryDescription(
+				id.asText(), 
+				label.asText(), 
+				queryTermList, 
+				serviceLayerMap.get(serviceLayerId));
+		
+	}
+
+	
+	private static FeatureType getFeatureType (final String featureTypeId, final Map<String, FeatureType> featureTypes) {
+		final FeatureType ft;		
+		if (!featureTypes.containsKey (featureTypeId)) {
+			throw new IllegalArgumentException ("Feature type not defined: " + featureTypeId);
+		}
+		ft = featureTypes.get (featureTypeId);
+		
+		return ft;
 	}
 	
 	private static ParseNamedServiceEntity namedServiceEntity (final JsonNode node, final Map<String, Service> services, final Map<String, FeatureType> featureTypes) {
@@ -190,12 +265,7 @@ public class JsonFactory {
 		final FeatureType ft;
 		if (!featureType.isMissingNode () && !featureType.isNull () && featureTypes != null) {
 			final String featureTypeId = featureType.asText ();
-			
-			if (!featureTypes.containsKey (featureTypeId)) {
-				throw new IllegalArgumentException ("Feature type not defined: " + featureTypeId);
-			}
-			
-			ft = featureTypes.get (featureTypeId);
+			ft = getFeatureType (featureTypeId, featureTypes);
 		} else {
 			ft = null;
 		}
@@ -213,16 +283,16 @@ public class JsonFactory {
 		return layer (parse (json), serviceLayers);
 	}
 	
+
+	
 	public static Layer layer (final JsonNode node, final Map<String, ServiceLayer> serviceLayerMap) {
 		final JsonNode id = node.path ("id"); 
 		final JsonNode layerType = node.path ("layerType");
 		final JsonNode label = node.path ("label"); 
-		final JsonNode layers = node.path ("layers");
 		final JsonNode serviceLayers = node.path ("serviceLayers");
 		//state is initial state
 		final JsonNode state = node.path("state");
 		final JsonNode properties = node.path("properties");
-		
 		
 		if (id.isMissingNode () || id.asText ().isEmpty ()) {
 			throw new IllegalArgumentException ("Missing property: id");
@@ -232,11 +302,6 @@ public class JsonFactory {
 		}
 		if (label.isMissingNode ()) {
 			throw new IllegalArgumentException ("Missing property: label");
-		}
-		
-		final List<Layer> layerList = new ArrayList<> ();
-		for (final JsonNode layerNode: layers) {
-			layerList.add (layer (layerNode, serviceLayerMap));
 		}
 		
 		final List<ServiceLayer> serviceLayerList = new ArrayList<> ();
@@ -263,9 +328,14 @@ public class JsonFactory {
 				 propertiesMap.put(item.getKey(), item.getValue());
 			}
 		}
-		
-		
-		return new Layer (id.asText (), layerType.asText (), label.asText (), layerList, serviceLayerList, initialStateMap, propertiesMap);
+	
+		return new Layer (
+				id.asText (), 
+				layerType.asText (), 
+				label.asText (),  
+				serviceLayerList, 
+				initialStateMap, 
+				propertiesMap);
 	}
 	
 	public static JsonNode serialize (final MapDefinition mapDefinition) {

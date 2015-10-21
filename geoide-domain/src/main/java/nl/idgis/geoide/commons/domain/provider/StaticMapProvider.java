@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import nl.idgis.geoide.commons.domain.FeatureType;
 import nl.idgis.geoide.commons.domain.Layer;
+import nl.idgis.geoide.commons.domain.LayerRef;
 import nl.idgis.geoide.commons.domain.MapDefinition;
 import nl.idgis.geoide.commons.domain.Service;
 import nl.idgis.geoide.commons.domain.ServiceLayer;
@@ -50,13 +53,13 @@ public class StaticMapProvider implements MapProvider, ServiceProvider, ServiceL
 	}
 	
 	@Override
-	public List<Layer> getLayers(String mapId) {
+	public List<LayerRef> getLayers(String mapId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<Layer> getRootLayers(String mapId) {
+	public List<LayerRef> getRootLayers(String mapId) {
 		for (final MapDefinition mapDefinition: mapDefinitions) {
 			if (mapDefinition.getId ().equals (mapId)) {
 				return mapDefinition.getRootLayers();
@@ -71,12 +74,13 @@ public class StaticMapProvider implements MapProvider, ServiceProvider, ServiceL
 		if (layerId == null) {
 			return null;
 		}
-		
 		for (final MapDefinition mapDefinition: mapDefinitions) {
-			final Layer layer = mapDefinition.getLayers ().get (layerId);
-			
-			if (layer != null) {
-				return layer;
+			Iterator<Entry<String, LayerRef>> layerRefs = mapDefinition.getLayerRefs ().entrySet().iterator();
+			while (layerRefs.hasNext()) {
+				  Entry<String, LayerRef> layerRef = layerRefs.next();
+				  if (layerId.equals(layerRef.getValue().getLayer().getId())) {
+					  return layerRef.getValue().getLayer();
+				  }
 			}
 		}
 		

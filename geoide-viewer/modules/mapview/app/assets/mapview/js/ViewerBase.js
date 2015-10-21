@@ -144,15 +144,15 @@ define ([
 		
 		engine: null,
 				
-		layerState: null,
+		layerRefState: null,
 		
-		activeLayer:null,
+		activeLayerRef:null,
 		
 		_engineAttributes: null,
 		_watchHandles: null,
 		
 		constructor: function (selector) {
-			this.layerState = { };
+			this.layerRefState = { };
 			this._watchHandles = [ ];
 			this.engine = new Engine (this, {
 				center: [150000, 450000],
@@ -181,7 +181,7 @@ define ([
 	
 				whenAll (this.map, this.engine.startup (), lang.hitch (this, function (map, engine) {
 					
-					this._watchLayerState ();
+					this._watchLayerRefState ();
 					
 					// Update the viewer for the first time:
 					this._updateViewer ().then (lang.hitch (this, function () {
@@ -210,17 +210,17 @@ define ([
 			return def;
 		},
 		
-		_watchLayerState: function () {
+		_watchLayerRefState: function () {
 			var callback = lang.hitch (this, this._scheduleUpdate);
 			
-			this._watchHandles.push (this.map.get ('layers').watchElements (callback));
-			this.map.get ('layerList').forEach (lang.hitch (this, function (layer) {
-				this._watchHandles.push (layer.get ('state').watch (callback));
-				this._watchHandles.push (layer.get ('layers').watchElements (callback));
+			this._watchHandles.push (this.map.get ('layerRefs').watchElements (callback));
+			this.map.get ('layerRefList').forEach (lang.hitch (this, function (layerRef) {
+				this._watchHandles.push (layerRef.get ('state').watch (callback));
+				this._watchHandles.push (layerRef.get ('layerRefs').watchElements (callback));
 			}));
 		},
 		
-		setLayerState: function (layerId, key, value) {
+		setLayerRefState: function (layerRefId, key, value) {
 			var deferred = new Deferred (),
 				promises = [ ],
 				doUpdate = false,
@@ -235,7 +235,7 @@ define ([
 			var setSingleValue = lang.hitch (this, function (key, value) {
 				var deferred = new Deferred ();
 				
-				when (this._getLayerState (layerId, key), lang.hitch (this, function (previous) {
+				when (this._getLayerRefState (layerRefId, key), lang.hitch (this, function (previous) {
 					if (value === previous) {
 						deferred.resolve ();
 						return;
@@ -243,7 +243,7 @@ define ([
 					
 					doUpdate = true;
 					
-					when (this._setLayerState (layerId, key, value), function () {
+					when (this._setLayerRefState (layerRefId, key, value), function () {
 						deferred.resolve ();
 					});
 				}));
@@ -272,12 +272,12 @@ define ([
 			return deferred;
 		},
 		
-		getLayerState: function (layerId, key) {
-			return this._getLayerState (layerId, key);
+		getLayerRefState: function (layerRefId, key) {
+			return this._getLayerRefState (layerRefId, key);
 		},
 		
-		getLayerProperty: function (layerId, key, defaultValue) {
-			return this._getLayerProperty (layerId, key, defaultValue);
+		getLayerProperty: function (layerRefId, key, defaultValue) {	
+			return this._getLayerProperty (layerRefId, key, defaultValue);
 		},
 		
 		
@@ -294,7 +294,7 @@ define ([
 				extent: this.getCurrentExtent (), 
 				scale: this.get ('scale'), 
 				resolution: this.get ('resolution'), 
-				layers: this._buildViewerState (this.map.get ('layers')) 
+				layerRefs: this._buildViewerState (this.map.get ('layerRefs')) 
 			};
 		},
 		
@@ -370,7 +370,7 @@ define ([
 			var def = new Deferred ();
 			
 			when (this.map, lang.hitch (this, function (map) {
-				var viewerState = { layers: this._buildViewerState (map.get ('layers')) };
+				var viewerState = { layerRefs: this._buildViewerState (map.get ('layerRefs')) };
 				
 				// Post the viewer state:
 				jsonRequest.post (geoideViewerRoutes.controllers.mapview.View.buildView ().url, {
@@ -392,36 +392,36 @@ define ([
 			return def;
 		},
 		
-		_buildViewerState: function (layers) {
+		_buildViewerState: function (layerRefs) {
 			var result = [ ];
 			
-			for (var i = 0, length = layers.length (); i < length; ++ i) {
-				var layer = layers.get (i),
-					mergedLayer = { 
-						id: layer.get ('id'),
-						state: layer.get ('state').extract ()
+			for (var i = 0, length = layerRefs.length (); i < length; ++ i) {
+				var layerRef = layerRefs.get (i),
+					mergedLayerRef = { 
+						layerid: layerRef.get('layerid'),
+						state: layerRef.get ('state').extract ()
 					};
 				
-				if (layer.get ('layers').length () > 0) {
-					mergedLayer.layers = this._buildViewerState (layer.get ('layers'));
+				if (layerRef.get('layerRefs') !== undefined) {//layerRef.get ('layers').length () > 0) {
+					mergedLayerRef.layerRefs = this._buildViewerState (layerRef.get ('layerRefs'));
 				}
 				
-				result.push (mergedLayer);
+				result.push (mergedLayerRef);
 			}
 			
 			return result;
 		},
 
-		_setLayerState: function (layerId, key, value) {
+		_setLayerRefState: function (layerRefId, key, value) {
 			var deferred = new Deferred ();
 			
 			when (this.map, function (map) {
-				var layer = map.get ('layerDictionary').get (layerId);
-				if (!layer) {
-					throw new Error ("Unknown layer: " + layerId);
+				var layerRef = map.get ('layerRefDictionary').get (layerRefId);
+				if (!layerRef) {
+					throw new Error ("Unknown layerRef: " + layerRefId);
 				}
 				
-				layer.get ('state').set (key, value);
+				layerRef.get ('state').set (key, value);
 				
 				deferred.resolve ();
 			});
@@ -429,57 +429,57 @@ define ([
 			return deferred;
 		},
 		
-		_getLayerState: function (layerId, key, defaultValue) {
+		_getLayerRefState: function (layerRefId, key, defaultValue) {
 			if (this.map.then) {
 				var deferred = new Deferred ();
 				
 				when (this.map, function (map) {
-					var layer = map.getLayerById (layerId);
-					if (!layer) {
-						throw new Error ("Unknown layer: " + layerId);
+					var layerRef = map.getLayerRefById (layerRefId);
+					if (!layerRef) {
+						throw new Error ("Unknown layer: " + layerRefId);
 					}
 					
-					var value = layer.get ('state').get (key);
+					var value = layerRef.get ('state').get (key);
 					
 					deferred.resolve (typeof value === 'undefined' ? defaultValue : value);
 				});
 				
 				return deferred;
 			} else {
-				var layer = this.map.getLayerById(layerId);
-				if (!layer) {
-					throw new Error ('Unknown layer: ' + layerId);
+				var layerRef = this.map.getLayerRefById(layerRefId);
+				if (!layerRef) {
+					throw new Error ('Unknown layerRef: ' + layerRefId);
 				}
 
-				var value = layer.get ('state').get (key);
+				var value = layerRef.get ('state').get (key);
 				
 				return typeof value === 'undefined' ? defaultValue : value;
 			}
 		},
-		_getLayerProperty: function (layerId, key, defaultValue) {
+		_getLayerProperty: function (layerRefId, key, defaultValue) {
 			if (this.map.then) {
 				var deferred = new Deferred ();
 				
 				when (this.map, function (map) {
-					var layer = map.getLayerById (layerId);
-					if (!layer) {
-						throw new Error ("Unknown layer: " + layerId);
+					var layerRef = map.getLayerRefById (layerRefId);
+					if (!layerRef) {
+						throw new Error ("Unknown layerRef: " + layerRefId);
 					}
-					if (layer.get ('properties')) {
-						var value = layer.get ('properties').get (key);
+					if (layerRef.get ('properties')) {
+						var value = layerRef.get ('properties').get (key);
 						deferred.resolve (typeof value === 'undefined' ? defaultValue : value);
 					}	
 				});
 				
 				return deferred;
 			} else {
-				var layer = this.map.getLayerById(layerId);
-				if (!layer) {
-					throw new Error ('Unknown layer: ' + layerId);
+				var layerRef = this.map.getLayerRefById (layerRefId);
+				if (!layerRef) {
+					throw new Error ('Unknown layerRef: '  + layerRefId);
 				}
 				var value;
-				if (layer.get ('properties')) {
-					value = layer.get ('properties').get (key);
+				if (layerRef.get ('properties')) {
+					value = layerRef.get ('properties').get (key);
 				}	
 				return typeof value === 'undefined' ? defaultValue : value;
 			}
@@ -500,15 +500,15 @@ define ([
 		},
 		
 		
-		_activeLayerSetter: function (layerId) {
-			if (layerId) {
-				this.activeLayer = layerId;
+		_activeLayerRefSetter: function (layerRefId) {
+			if (layerRefId) {
+				this.activeLayerRef = layerRefId;
 			} else {
-				this.activeLayer = null;
+				this.activeLayerRef = null;
 			}
 		},
-		_activeLayerGetter: function () {
-			return this.activeLayer;
+		_activeLayerRefGetter: function () {
+			return this.activeLayerRef;
 		},
 		
 		

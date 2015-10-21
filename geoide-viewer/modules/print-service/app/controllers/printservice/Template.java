@@ -23,7 +23,7 @@ public class Template extends Controller {
 	}
 		
 	public	 Promise<Result> getTemplates () throws Throwable {
-
+		
 		final Promise<ExternalizableJsonNode> templatePromise = Promises.asPromise (this.templateProvider.getTemplates());
 		
 		return templatePromise.map((templates) -> {
