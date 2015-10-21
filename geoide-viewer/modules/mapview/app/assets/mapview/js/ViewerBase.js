@@ -276,10 +276,8 @@ define ([
 			return this._getLayerRefState (layerRefId, key);
 		},
 		
-		getLayerProperty: function (layerRefId, key, defaultValue) {
-			//TODO get layerId from layerRef
-			var layerId = null;
-			return this._getLayerProperty (layerId, key, defaultValue);
+		getLayerProperty: function (layerRefId, key, defaultValue) {	
+			return this._getLayerProperty (layerRefId, key, defaultValue);
 		},
 		
 		
@@ -463,25 +461,25 @@ define ([
 				var deferred = new Deferred ();
 				
 				when (this.map, function (map) {
-					var layer = map.getLayerRefById (layerRefId).get("layer");
-					if (!layer) {
-						throw new Error ("Unknown layer: " + layer.get("id"));
+					var layerRef = map.getLayerRefById (layerRefId);
+					if (!layerRef) {
+						throw new Error ("Unknown layerRef: " + layerRefId);
 					}
-					if (layer.get ('properties')) {
-						var value = layer.get ('properties').get (key);
+					if (layerRef.get ('properties')) {
+						var value = layerRef.get ('properties').get (key);
 						deferred.resolve (typeof value === 'undefined' ? defaultValue : value);
 					}	
 				});
 				
 				return deferred;
 			} else {
-				var layer = this.map.getLayerRefById (layerRefId).get("layer");
-				if (!layer) {
-					throw new Error ('Unknown layer: '  + layer.get("id"));
+				var layerRef = this.map.getLayerRefById (layerRefId);
+				if (!layerRef) {
+					throw new Error ('Unknown layerRef: '  + layerRefId);
 				}
 				var value;
-				if (layer.get ('properties')) {
-					value = layer.get ('properties').get (key);
+				if (layerRef.get ('properties')) {
+					value = layerRef.get ('properties').get (key);
 				}	
 				return typeof value === 'undefined' ? defaultValue : value;
 			}

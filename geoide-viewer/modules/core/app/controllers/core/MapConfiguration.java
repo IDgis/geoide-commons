@@ -49,7 +49,7 @@ public class MapConfiguration extends Controller {
 			result.set ("label", layerNode.path ("label"));
 			final JsonNode properties = layerNode.path ("properties");
 			if (!properties.isMissingNode ()) {
-				result.set ("properties", map.path("properties"));
+				result.set ("properties", layerNode.path("properties"));
 			}
 		} else {
 			result.set ("id", map.path ("id"));
@@ -89,7 +89,6 @@ public class MapConfiguration extends Controller {
 		if (!layerRefs.isMissingNode ()) {
 			filterLayers (layerRefs, result.putArray ("layerRefs"), layerRefId);
 		}
-		System.out.println("result is nu " + result + "**************");	
 		return result;
 	}
 	

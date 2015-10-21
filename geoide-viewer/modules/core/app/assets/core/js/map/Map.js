@@ -134,9 +134,8 @@ define ([
 			return this;
 		},
 		
-		
 		getLayerRefById : function (layerRefId) {
-			return this.get ('layerDictionary').get (layerRefId);
+			return this.get ('layerRefDictionary').get (layerRefId);
 		},
 		
 		getInitialExtent: function () {

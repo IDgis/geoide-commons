@@ -39,7 +39,6 @@ function(
 				
 				when (this.map, function(map) {
 					var layerRefs = map.get('layerRefList');
-					console.log(layerRefs);
 					layerRefs.forEach (function (layerRef) {
 						layerRef.get ('state').watch ('visible', function(property, oldValue, newValue) { 
 								thisObject.setCheckBox(layerRef, newValue);

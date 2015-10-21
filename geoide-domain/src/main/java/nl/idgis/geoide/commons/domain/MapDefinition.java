@@ -34,7 +34,6 @@ public class MapDefinition extends Entity {
 		super (id, label);
 		this.prefix = prefix;
 		this.initialExtent = initialExtent;
-		System.out.println ("Aantel rootLayers in map " + id + "="+ rootLayers.size()); 
 		this.rootLayers = rootLayers == null ? Collections.<LayerRef>emptyList () : new ArrayList<> (rootLayers);
 		this.queryDescriptions = queryDescriptions;
 		// Scan the layers and fill the indices:
@@ -43,8 +42,6 @@ public class MapDefinition extends Entity {
 	
 	@JsonValue
 	public JsonNode serialize () {
-		System.out.println("serialize de Mapdefinition");
-		
 		final ObjectNode obj = JsonFactory.mapper ().createObjectNode ();
 		obj.put ("id", getId ());
 		obj.put ("label", getLabel ());
@@ -71,8 +68,6 @@ public class MapDefinition extends Entity {
 				featureTypesNode.add (JsonFactory.mapper ().valueToTree (featureType));
 			}
 		}
-		
-		System.out.println("serialize rootlayers ? " + !getRootLayers ().isEmpty ());
 		// Write layers:
 		if (!getRootLayers ().isEmpty ()) {
 			final ArrayNode layerRefsNode = obj.putArray ("layerRefs");

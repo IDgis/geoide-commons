@@ -27,15 +27,15 @@ define ([
 		 * Performs a query for features on one or more layers in the map.
 		 * 
 		 * Options:
-		 * - layers: layers to include in the query, can be one of the following:
-		 *   - Array of layer id's. Include each layer listed with the current layer state.
-		 *   - Map with layer id's as key and objects as values. Includes each layer whose id
+		 * - layerRefs: layerRefs to include in the query, can be one of the following:
+		 *   - Array of layerRef id's. Include each layer listed with the current layer state.
+		 *   - Map with layerRef id's as key and objects as values. Includes each layerRef whose id
 		 *     is a key in the map. Each object can have two keys:
-		 *      query: the query to perform on this layer.
-		 *      state: additional / custom layer state that is mixed in with the current layer state.
+		 *      query: the query to perform on this layerRef.
+		 *      state: additional / custom layer state that is mixed in with the current layerRef state.
 		 *      properties: list of properties to return
-		 * - query: base query that is applied to each layer.
-		 * - queryVisible: if set, only query visible layers.
+		 * - query: base query that is applied to each layerRef.
+		 * - queryVisible: if set, only query visible layerRefs.
 		 * 
 		 * Returns:
 		 * A deferred that resolves to an object containing the following keys:
@@ -106,71 +106,71 @@ define ([
 		
 		_buildQuery: function (/*Map*/map, /*Object*/options) {
 			
-			var layers = options.layers || [ ],
-				queryLayers = [ ],
+			var layerRefs = options.layerRefs || [ ],
+				queryLayerRefs = [ ],
 				queryVisible = ('queryVisible' in options) ? options.queryVisible : false,
 				l;
 
-			if (lang.isArray (layers)) {
-				for (var i = 0; i < layers.length; ++ i) {
-					l = map.getLayerById(layers[i]);
+			if (lang.isArray (layerRefs)) {
+				for (var i = 0; i < layerRefs.length; ++ i) {
+					l = map.getLayerRefById(layerRefs[i]);
 
 					if (!l) {
 						continue;
 					}
 
 					// Add a query layer:
-					queryLayers.push (this._createQueryLayer (map, l, options));
+					queryLayerRefs.push (this._createQueryLayerRef (map, l, options));
 				}
 			} else {
-				for (var j in layers) {
-					if (!layers.hasOwnProperty (j)) {
+				for (var j in layerRefs) {
+					if (!layerRefs.hasOwnProperty (j)) {
 						continue;
 					}
 					
-					l = map.getLayerById (layers[j]);
+					l = map.getLayerRefById (layerRefs[j]);
 					if (!l) {
 						continue;
 					}
 					
-					queryLayers.push (this._createQueryLayers (map, l, layers[j]));
+					queryLayerRefs.push (this._createQueryLayerRef (map, l, layerRefs[j]));
 				}
 			}
 
 			// Filter visible layers:
 			if (queryVisible) {
-				queryLayers = array.filter (queryLayers, function (l) {
+				queryLayerRefs = array.filter (queryLayerRefs, function (l) {
 					return !!l.state.visible;
 				});
 			}
 			
 			return {
-				layers: queryLayers,
+				layers: queryLayerRefs,
 				intersects: options.intersects || null,
 				query: options.query || null
 			};
 		},
 		
-		_createQueryLayer: function (map, layer, properties) {
+		_createQueryLayerRef: function (map, layerRef, properties) {
 
 			properties = properties || { };
 
 			
 			//var layerState = this.layerState[layer.get ('id')] || { };
-			var layerState = { };
+			var layerRefState = { };
 			//tijdelijke hack om query over te zetten
-			var queryState = this.getLayerState(layer.get ('id'), 'query');
+			var queryState = this.getLayerRefState(layerRef.get ('id'), 'query');
 			if(queryState) {
-				layerState = { "query": queryState};
+				layerRefState = { "query": queryState};
 			}
 
 			if (properties.state) {
-				layerState = lang.mixin (lang.mixin ({ }, layerState), properties.state);
+				layerRefState = lang.mixin (lang.mixin ({ }, layerRefState), properties.state);
 			}
 			return {
-				id: layer.get ('id'),
+				id: layerRef.get ('layerid'),
 				query: properties.query || null,
-				state: layerState
+				state: layerRefState
 			};
 		}
 	});
