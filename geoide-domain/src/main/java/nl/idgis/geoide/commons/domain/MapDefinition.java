@@ -15,7 +15,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class MapDefinition extends Entity {
 	private static final long serialVersionUID = -5946086390948660716L;
 	private final List<LayerRef> rootLayers;
-	private final String prefix;
 	private final String initialExtent;
 	
 	private final Map<String, Service> services = new HashMap<> ();
@@ -27,12 +26,10 @@ public class MapDefinition extends Entity {
 	public MapDefinition (
 			final String id, 
 			final String label, 
-			final String prefix, 
 			final String initialExtent, 
 			final List<LayerRef> rootLayers,
 			final List<QueryDescription> queryDescriptions) {
 		super (id, label);
-		this.prefix = prefix;
 		this.initialExtent = initialExtent;
 		this.rootLayers = rootLayers == null ? Collections.<LayerRef>emptyList () : new ArrayList<> (rootLayers);
 		this.queryDescriptions = queryDescriptions;
@@ -45,7 +42,6 @@ public class MapDefinition extends Entity {
 		final ObjectNode obj = JsonFactory.mapper ().createObjectNode ();
 		obj.put ("id", getId ());
 		obj.put ("label", getLabel ());
-		obj.put ("prefix", getPrefix ());
 		obj.put ("initial-extent", getInitialExtent());
 		// Write services:
 		if (!getServices ().values ().isEmpty ()) {
@@ -80,10 +76,6 @@ public class MapDefinition extends Entity {
 	
 	public List<LayerRef> getRootLayers () {
 		return Collections.unmodifiableList (rootLayers);
-	}
-	
-	public String getPrefix () {
-		return prefix;
 	}
 	
 	public String getInitialExtent () {
