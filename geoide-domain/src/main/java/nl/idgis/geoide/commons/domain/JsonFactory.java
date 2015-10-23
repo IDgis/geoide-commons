@@ -11,7 +11,6 @@ import java.util.Map.Entry;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class JsonFactory {
 	
@@ -68,7 +67,6 @@ public class JsonFactory {
 			final Map<String, QueryDescription> queryDescriptionMap) {
 		final JsonNode id = mapNode.path ("id"); 
 		final JsonNode label = mapNode.path ("label");
-		final JsonNode prefix = mapNode.path ("prefix");
 		final String initialExtent;
 		final JsonNode initialExtentNode = mapNode.path("initial-extent");
 		if (!initialExtentNode.isMissingNode ()) {
@@ -104,7 +102,7 @@ public class JsonFactory {
 				final LayerRef layerRef = JsonFactory.layerRef (layerRefNode, layerMap);
 				layerRefList.add (layerRef);	
 			}
-			return new MapDefinition (id.asText (), label.asText (), prefix.asText(), initialExtent, layerRefList, queryDescriptionList);
+			return new MapDefinition (id.asText (), label.asText (),  initialExtent, layerRefList, queryDescriptionList);
 		} else {
 			throw new IllegalArgumentException ("Missing property: maplayers");
 		}
