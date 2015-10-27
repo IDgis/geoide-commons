@@ -3,6 +3,7 @@ package nl.idgis.geoide.service;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
+import akka.actor.ActorRef;
 import akka.actor.ActorRefFactory;
 import nl.idgis.geoide.commons.domain.ParameterizedFeatureType;
 import nl.idgis.geoide.commons.domain.ServiceIdentification;
@@ -15,11 +16,17 @@ import nl.idgis.geoide.commons.http.client.HttpClient;
 public class DefaultServiceManager implements ServiceManager {
 
 	private final ActorRefFactory actorRefFactory;
+	private final ServiceTypeRegistry serviceTypeRegistry;
 	private final HttpClient httpClient;
+	private final ActorRef serviceManagerActor;
 	
-	public DefaultServiceManager (final ActorRefFactory actorRefFactory, final HttpClient httpClient) {
+	public DefaultServiceManager (
+			final ActorRefFactory actorRefFactory, 
+			final ServiceTypeRegistry serviceTypeRegistry, 
+			final HttpClient httpClient) {
 		this.actorRefFactory = Objects.requireNonNull (actorRefFactory, "actorRefFactory cannot be null");
 		this.httpClient = Objects.requireNonNull (httpClient, "httpClient cannot be null");
+		this.serviceTypeRegistry = Objects.requireNonNull (serviceTypeRegistry, "serviceTypeRegistry cannot be null");
 	}
 	
 	@Override
