@@ -18,6 +18,13 @@
 			"name": "p_LPG",
 			"service": "test-service-2",
 			"featureType": "ft-lpg"
+		},
+		{
+			"id": "afdelingen",
+			"label": "Afdelingen",
+			"name": "afdelingen",
+			"service": "service-crs-wms",
+			"featureType": "ft-afdelingen"
 		}
 	]
 }

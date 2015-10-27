@@ -33,6 +33,12 @@
 			"layerType": "default",
 			"label": "LPG3",
 			"serviceLayers": [ "test-service-2-p_LPG" ]
+		},
+		{
+			"id": "afdelingen",
+			"layerType": "default",
+			"label": "Afdelingen",
+			"serviceLayers": [ "afdelingen" ]
 		}
 	]
 }	

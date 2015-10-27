@@ -5,7 +5,12 @@
 			"label": "LPG",
 			"name": "p_LPG",
 			"service": "test-wfs"
+		},
+		{
+			"id": "ft-afdelingen",
+			"label": "Afdelingen",
+			"name": "afdelingen",
+			"service": "service-crs-wfs"
 		}
-		
 	]
 }	

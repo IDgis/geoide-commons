@@ -9,7 +9,18 @@
 				"maxx" : 283000,
 				"maxy" : 617000
 			},
-			"maplayers": [			
+			"maplayers": [		
+				{
+					"id": "afd-afdelingen",
+					"label": "Afdelingen",
+					"layer":  "afdelingen" ,
+					"state": {
+						"visible" : true
+					},
+					"properties": {
+						"applayer": true
+					} 
+				},
 				{
 					"layer": "group-layer",
 					"maplayers": [
