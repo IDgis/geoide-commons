@@ -11,6 +11,7 @@ import nl.idgis.geoide.commons.domain.Layer;
 import nl.idgis.geoide.commons.domain.ParameterizedFeatureType;
 import nl.idgis.geoide.commons.domain.ParameterizedServiceLayer;
 import nl.idgis.geoide.commons.domain.ServiceLayer;
+import nl.idgis.geoide.commons.domain.ServiceLayerParameters;
 import nl.idgis.geoide.commons.domain.layer.LayerState;
 import nl.idgis.geoide.commons.domain.traits.Traits;
 import nl.idgis.geoide.service.ServiceTypeRegistry;
@@ -34,7 +35,7 @@ public final class DefaultLayerType extends LayerType {
 		
 		if (isEffectiveVisible (layerState)) {
 			for (final ServiceLayer serviceLayer: layerState.get ().getLayer ().getServiceLayers ()) {
-				result.add (new ParameterizedServiceLayer<Object> (serviceLayer, null));
+				result.add (new ParameterizedServiceLayer<ServiceLayerParameters> (serviceLayer, new ServiceLayerParameters (isEditable (layerState))));
 			}
 		}
 		
@@ -76,5 +77,9 @@ public final class DefaultLayerType extends LayerType {
 		}
 		
 		return true;
+	}
+	
+	private boolean isEditable (final Traits<LayerState> layerState) {
+		return layerState.get ().getProperties ().path ("editable").asBoolean ();
 	}
 }

@@ -8,6 +8,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import nl.idgis.geoide.commons.domain.ExternalizableJsonNode;
 import nl.idgis.geoide.commons.domain.Layer;
 import nl.idgis.geoide.commons.domain.ParameterizedServiceLayer;
@@ -23,8 +25,6 @@ import nl.idgis.geoide.service.LayerServiceType;
 import nl.idgis.geoide.service.ServiceRequestContext;
 import nl.idgis.geoide.service.ServiceType;
 import nl.idgis.geoide.service.ServiceTypeRegistry;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 public class DefaultMapView implements MapView {
 	private final LayerTypeRegistry layerTypeRegistry;
@@ -63,10 +63,6 @@ public class DefaultMapView implements MapView {
 			
 			if (currentService != null && !service.equals (currentService) && !serviceLayerBatch.isEmpty ()) {
 				final Traits<ServiceType> serviceType = serviceTypeRegistry.getServiceType (currentService.getIdentification ().getServiceType ());
-				
-				if (!(serviceType.get () instanceof LayerServiceType)) {
-					throw new IllegalStateException ("Service type must be a LayerServiceType");
-				}
 				
 				serviceRequests.addAll (((LayerServiceType) serviceType.get ()).getServiceRequests (currentService, serviceLayerBatch, context));
 				serviceLayerBatch.clear ();

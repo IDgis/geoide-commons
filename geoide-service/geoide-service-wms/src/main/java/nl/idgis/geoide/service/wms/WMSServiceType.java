@@ -14,7 +14,9 @@ import play.libs.ws.WSClient;
 import nl.idgis.geoide.commons.domain.ParameterizedServiceLayer;
 import nl.idgis.geoide.commons.domain.Service;
 import nl.idgis.geoide.commons.domain.ServiceIdentification;
+import nl.idgis.geoide.commons.domain.ServiceLayerParameters;
 import nl.idgis.geoide.commons.domain.ServiceRequest;
+import nl.idgis.geoide.commons.domain.service.WFSRequestParameters;
 import nl.idgis.geoide.commons.domain.service.WMSLayerParameters;
 import nl.idgis.geoide.commons.domain.service.WMSRequestParameters;
 import nl.idgis.geoide.service.LayerServiceType;
@@ -69,6 +71,20 @@ public class WMSServiceType extends ServiceType implements LayerServiceType {
 		Map<String, String> currentVendorParameters = Collections.<String, String>emptyMap ();
 		
 		for (final ParameterizedServiceLayer<?> serviceLayer: serviceLayers) {
+			
+			if (serviceLayer.getParameters() != null 
+					&& serviceLayer.getParameters () instanceof ServiceLayerParameters
+					&& ((ServiceLayerParameters) serviceLayer.getParameters()).isEditable ()
+					&& serviceLayer.getServiceLayer ().getFeatureType () != null
+					&& "WFS".equals (serviceLayer.getServiceLayer ().getFeatureType ().getService().getIdentification ().getServiceType ())) {
+				serviceRequests.add (new ServiceRequest (
+						context.nextServiceIdentifier (serviceLayer.getServiceLayer ().getFeatureType ().getService (), null),
+						serviceLayer.getServiceLayer ().getFeatureType ().getService (),
+						new WFSRequestParameters ()
+					));
+				continue;
+			}
+			
 			final WMSLayerParameters parameters = 
 					serviceLayer.getParameters() != null && serviceLayer.getParameters () instanceof WMSLayerParameters
 					? (WMSLayerParameters)serviceLayer.getParameters ()
