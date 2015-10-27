@@ -86,7 +86,7 @@ project.ext.externalDependency = [
 	
 	'webjarsPlay': "org.webjars:webjars-play_2.11:${play2Version}",
 	'webjarsBootstrap': "org.webjars:bootstrap:3.2.0",
-	'webjarsDojoBase': "org.webjars:dojo-base:1.10.0-SNAPSHOT",
+	'webjarsDojo': "org.webjars:dojo:1.10.0",
 	'webjarsOpenLayers': "org.webjars:openlayers:3.8.2",
 	'webjarsPutSelector': "org.webjars:put-selector:0.3.5",
 	'webjarsFontAwesome': "org.webjars:font-awesome:4.2.0"

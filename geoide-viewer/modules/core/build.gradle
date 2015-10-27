@@ -11,7 +11,7 @@ dependencies {
 		
 	play externalDependency.webjarsPlay
 	play externalDependency.webjarsBootstrap
-	play externalDependency.webjarsDojoBase
+	play externalDependency.webjarsDojo
 	play externalDependency.webjarsOpenLayers
 	play externalDependency.webjarsPutSelector
 	play externalDependency.webjarsFontAwesome	
