@@ -36,7 +36,7 @@ libraryDependencies ++= Seq(
   Common.Dependencies.geoideDomain,
   
   Common.Dependencies.webjarsBootstrap,
-  Common.Dependencies.webjarsDojo,
+  Common.Dependencies.webjarsDojoBase,
   Common.Dependencies.webjarsPutSelector,
   Common.Dependencies.webjarsFontAwesome
 )
