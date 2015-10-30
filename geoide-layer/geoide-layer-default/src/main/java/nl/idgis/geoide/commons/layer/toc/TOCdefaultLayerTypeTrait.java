@@ -29,10 +29,9 @@ public class TOCdefaultLayerTypeTrait implements TOCLayerTypeTrait {
 		for( ServiceLayer serviceLayer: serviceLayers) {
 			String serviceTypeName = serviceLayer.getService().getIdentification().getServiceType();
 			Traits<ServiceType> serviceType = serviceTypeRegistry.getServiceType(serviceTypeName);
-			//TODO: ??
-			//if (serviceType.has(TOCServiceTypeTrait.class)){
-				//tocChildItems.addAll(serviceType.trait(TOCServiceTypeTrait.class).getTOC(serviceType,serviceLayer));
-			//}	
+			if (serviceType.has(TOCServiceTypeTrait.class)){
+				tocChildItems.addAll(serviceType.trait(TOCServiceTypeTrait.class).getTOC(serviceType,serviceLayer));
+			}	
 		}
 		List<LayerRef> sublayers = layer.getLayerRefs();
 		for (LayerRef sublayer: sublayers) {
