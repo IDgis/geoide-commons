@@ -18,4 +18,6 @@ dependencies {
 	play externalDependency.webjarsFontAwesome	
 	
 	play externalDependency.jts
+	
+	play externalDependency.playWs
 }

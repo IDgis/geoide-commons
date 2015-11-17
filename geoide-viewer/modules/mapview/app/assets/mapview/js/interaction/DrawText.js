@@ -4,7 +4,7 @@ define ([
 	'./DrawGeometry',
 	'../EditableOverlay',
 	
-	'openlayers/ol'
+	'openlayers/ol-debug'
 ], function (
 	declare,
 	

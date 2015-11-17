@@ -2,7 +2,7 @@ define ([
 	'dojo/_base/declare',
 	'dojo/_base/lang',
 	'dojo/when',
-	'openlayers/ol'
+	'openlayers/ol-debug'
 ], function (
 	declare,
 	lang,

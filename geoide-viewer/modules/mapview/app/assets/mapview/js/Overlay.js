@@ -6,7 +6,7 @@ define ([
 	'dojo/dom-class',
 	'./Stateful',
 	'dojo/Evented',
-	'openlayers/ol'
+	'openlayers/ol-debug'
 ], function (
 	declare,
 	lang,

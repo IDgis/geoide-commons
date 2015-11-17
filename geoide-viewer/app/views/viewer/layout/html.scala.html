@@ -14,7 +14,9 @@
 		@content
 	
 		@* Scripts: *@
-		<script type="text/javascript" src="@controllers.core.routes.Assets.at("lib/dojo/dojo/dojo.js")" data-dojo-config="@controllers.core.RequireJS.getDojoConfig(
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.6/proj4.js"></script>
+		<script src="http://epsg.io/28992.js"></script>
+		<script type="text/javascript" src="@controllers.core.routes.Assets.at("lib/dojo-base/dojo.js")" data-dojo-config="@controllers.core.RequireJS.getDojoConfig(
 			Seq(
 				"geoide-core" -> controllers.core.routes.Assets.at("lib/geoide-core/core/js").url,
 				"geoide-map" -> controllers.core.routes.Assets.at("lib/geoide-mapview/mapview/js").url,
@@ -23,6 +25,7 @@
 		<script type="text/javascript" src="@controllers.core.routes.JavaScript.javascriptRoutes()"></script>
 		<script type="text/javascript" src="@controllers.mapview.routes.JavaScript.javascriptRoutes()"></script>
 		<script type="text/javascript" src="@controllers.printservice.routes.JavaScript.javascriptRoutes()"></script>
+		
 		<script type="text/javascript" src="@controllers.viewer.routes.Assets.at("viewer/js/main.js")"></script>
 	</body>
 </html>

@@ -3,7 +3,9 @@ POST	/view											@controllers.mapview.View.buildView()
 
 # Service requests:
 GET		/services/:serviceId							@controllers.mapview.Services.serviceRequest(serviceId: String)
+GET		/services/:serviceId/features/:localName/:bbox	@controllers.mapview.Query.serviceRequestWithFeatureType(serviceId: String, localName: String, namespace: String ?= "", bbox: String)
 GET		/services/:serviceId/:layerName/*parameters		@controllers.mapview.Services.serviceRequestWithLayer(serviceId: String, layerName: String, parameters: String)
+
 
 # Queries:
 POST	/query											@controllers.mapview.Query.query()

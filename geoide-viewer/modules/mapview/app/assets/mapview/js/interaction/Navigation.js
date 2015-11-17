@@ -2,7 +2,7 @@ define ([
 	'dojo/_base/declare',
 	'./InteractionBase',
 	
-	'openlayers/ol'
+	'openlayers/ol-debug'
 ], function (
 	declare,
 	InteractionBase,

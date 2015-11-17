@@ -9,7 +9,7 @@ define ([
 	
 	'put-selector/put',
 	
-	'openlayers/ol'
+	'openlayers/ol-debug'
 ], function (
 	declare,
 	
@@ -129,6 +129,65 @@ define ([
 			}
 			
 			return true;
+		}
+	});
+	
+	// WFS layer type:
+	registry.registerLayerType ('WFS', {
+		create: function (serviceRequest, map) {
+			console.log ('Creating WFS layer');
+			
+			var localName,
+				namespace;
+			
+			if (typeof serviceRequest.parameters.featureType == 'string') {
+				localName = serviceRequest.parameters.featureType;
+				namespace = '';
+			} else {
+				localName = serviceRequest.parameters.featureType.localName;
+				namespace = serviceRequest.parameters.featureType.namespace;
+			}
+			
+			console.log ('Creating vector source');
+			
+			var vectorSource = new ol.source.Vector ({
+				format: new ol.format.WFS (),
+				url: function (extent, resolution, projection) {
+					console.log ('url: ', extent, resolution, projection);
+					return geoideViewerRoutes.controllers.mapview.Query.serviceRequestWithFeatureType (
+							serviceRequest.serviceId,
+							localName,
+							namespace,
+							extent.join (',')
+						).url;
+				},
+				strategy: ol.loadingstrategy.bbox,
+				useSpatialIndex: false
+			});
+			
+			console.log ('Creating vector layer');
+			
+			var vectorLayer = new ol.layer.Vector ({
+				source: vectorSource,
+				style: new ol.style.Style ({
+					stroke: new ol.style.Stroke ({
+						color: 'rgba(0, 0, 255, 1.0)',
+						width: 2
+					})
+				})
+			});
+			
+			console.log ('Returning vector layer');
+			
+			return vectorLayer;
+		},
+		
+		update: function (existingOlLayer, serviceRequest) {
+			
+		},
+		
+		isReusable: function (existingLayer, serviceRequest) {
+			return false;
 		}
 	});
 
@@ -303,7 +362,7 @@ define ([
 		},
 		
 		createLayer: function (/*Object*/serviceRequest) {
-			return registry.layerType (serviceRequest.serviceIdentification.serviceType).create (serviceRequest);
+			return registry.layerType (serviceRequest.serviceIdentification.serviceType).create (serviceRequest, this.olMap);
 		},
 		
 		updateLayer: function (/*Object*/existingOlLayer, /*Object*/serviceRequest) {
@@ -355,6 +414,31 @@ define ([
 					// Create a new layer and add it to the map:
 					layer.olLayer = this.createLayer (serviceRequest);
 					this.addLayer (layer.olLayer);
+					
+					// Quick hack to add edit controls for the WFS layer:
+					if (serviceRequest.serviceIdentification.serviceType == 'WFS') {
+						var modify = new ol.interaction.Modify ({
+							features: layer.olLayer.getSource ().getFeaturesCollection ()
+						});
+						
+						this.olMap.addInteraction (modify);
+						
+						var map = this.olMap;
+						
+						this.olMap.on ('pointermove', function (e) {
+							if (e.dragging) {
+								return;
+							}
+							
+							var pixel = map.getEventPixel (e.originalEvent),
+								feature = map.forEachFeatureAtPixel (pixel, function (feature, layer) {
+									return feature;
+								}),
+								elem = document.getElementsByTagName ('pre')[0];
+							
+							elem.innerHTML = feature.getId () + ': ' + feature.get ('afdeling');
+						});
+					}
 				}
 				
 				newLayersMap[layer.id] = layer;

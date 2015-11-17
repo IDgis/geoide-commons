@@ -80,7 +80,7 @@ public class WMSServiceType extends ServiceType implements LayerServiceType {
 				serviceRequests.add (new ServiceRequest (
 						context.nextServiceIdentifier (serviceLayer.getServiceLayer ().getFeatureType ().getService (), null),
 						serviceLayer.getServiceLayer ().getFeatureType ().getService (),
-						new WFSRequestParameters ()
+						WFSRequestParameters.build ().setFeatureType (serviceLayer.getServiceLayer ().getFeatureType ().getName ()).get ()
 					));
 				continue;
 			}

@@ -6,7 +6,7 @@ define ([
 	'./Interaction',
 	'./InteractionBase',
 	
-	'openlayers/ol'
+	'openlayers/ol-debug'
 ], function (
 	declare,
 	Evented,

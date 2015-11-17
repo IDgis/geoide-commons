@@ -1,5 +1,7 @@
 package controllers.mapview;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -10,11 +12,23 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import akka.actor.ActorRef;
+import akka.actor.Cancellable;
+import akka.actor.PoisonPill;
+import akka.actor.Props;
+import akka.actor.UntypedActor;
+import akka.pattern.Patterns;
 import nl.idgis.geoide.commons.domain.FeatureQuery;
 import nl.idgis.geoide.commons.domain.FeatureType;
 import nl.idgis.geoide.commons.domain.JsonFactory;
 import nl.idgis.geoide.commons.domain.ParameterizedFeatureType;
 import nl.idgis.geoide.commons.domain.api.MapQuery;
+import nl.idgis.geoide.commons.domain.api.ServiceProviderApi;
 import nl.idgis.geoide.commons.domain.feature.Feature;
 import nl.idgis.geoide.commons.domain.geometry.Envelope;
 import nl.idgis.geoide.commons.domain.geometry.Geometry;
@@ -28,28 +42,26 @@ import play.libs.Akka;
 import play.libs.F.Function;
 import play.libs.F.Promise;
 import play.libs.Json;
+import play.libs.ws.WSClient;
+import play.libs.ws.WSRequest;
 import play.mvc.Controller;
 import play.mvc.Result;
 import scala.concurrent.duration.FiniteDuration;
-import akka.actor.ActorRef;
-import akka.actor.Cancellable;
-import akka.actor.PoisonPill;
-import akka.actor.Props;
-import akka.actor.UntypedActor;
-import akka.pattern.Patterns;
-
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class Query extends Controller {
 	private final static long queryFeaturesTimeout = 20000;
 	
+	private final ServiceProviderApi serviceProvider;
 	private final MapQuery mapQuery;
 	private final ActorRef serviceManager;
+	private final WSClient ws;
 	
 	@Inject
-	public Query (final MapQuery mapQuery, final ActorRef serviceManager) {
+	public Query (final MapQuery mapQuery, final ActorRef serviceManager, final ServiceProviderApi serviceProvider, final WSClient ws) {
 		this.mapQuery = mapQuery;
 		this.serviceManager = serviceManager;
+		this.serviceProvider = serviceProvider;
+		this.ws = ws;
 	}
 	
 	public Promise<Result> query () {
@@ -64,6 +76,68 @@ public class Query extends Controller {
 						return queryFeatureTypes (queryInfo.getFeatureQuery (), featureTypes);
 					});
 			});
+	}
+	
+	public Promise<Result> serviceRequestWithFeatureType (final String serviceId, final String localName, final String namespace, final String bbox) {
+		return Promises.asPromise (serviceProvider.findService (serviceId))
+			.flatMap ((service) -> {
+				Logger.info ("Requesting from service: " + service.getServiceEndpoint ());
+				
+				final String url = service.getServiceEndpoint ();
+				
+				WSRequest request = requestForEndpoint (service.getServiceEndpoint (), 10000)
+					.setQueryParameter ("service", "WFS")
+					.setQueryParameter ("version", service.getServiceVersion ())
+					.setQueryParameter ("request", "GetFeature")
+					.setQueryParameter ("bbox", bbox)
+					.setQueryParameter ("srsname", "EPSG:28992");
+				
+				if (namespace == null || namespace.isEmpty ()) {
+					request = request.setQueryParameter ("typename", localName);
+				} else {
+					request = request
+						.setQueryParameter ("typename", "app:" + localName)
+						.setQueryParameter ("namespace", String.format("xmlns(app=%s)", namespace));
+				}
+				
+				return request
+					.get ()
+					.map ((response) -> {
+						return ok (response.asByteArray ()).as (response.getHeader ("Content-Type"));
+					});
+			});
+	}
+	
+	private WSRequest requestForEndpoint (final String endpoint, final int timeout) {
+		final String url;
+		final String query;
+		final URI uri;
+		
+		// Split the endpoint:
+		final int offset = endpoint.indexOf ('?');
+		if (offset >= 0) {
+			url = endpoint.substring (0, offset);
+			query = endpoint.substring (offset + 1);
+		} else {
+			url = endpoint;
+			query = "";
+		}
+		
+		// Create the request holder:
+		WSRequest holder = ws.url (url).setRequestTimeout (timeout);
+		
+		// Add parameters from the endpoint:
+		if (!query.isEmpty ()) {
+			try {
+				uri = new URI (endpoint);
+				for (final NameValuePair nvp: URLEncodedUtils.parse (uri, "UTF-8")) {
+					holder = holder.setQueryParameter (nvp.getName (), nvp.getValue ());
+				}
+			} catch (URISyntaxException e) {
+			}
+		}
+		
+		return holder;
 	}
 	
 	private Promise<Result> queryFeatureTypes (final Optional<FeatureQuery> query, final List<ParameterizedFeatureType<?>> featureTypes) {

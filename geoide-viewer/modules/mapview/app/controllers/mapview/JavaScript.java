@@ -13,6 +13,7 @@ public class JavaScript extends Controller {
 				controllers.mapview.routes.javascript.View.buildView (),
 				controllers.mapview.routes.javascript.Services.serviceRequest (),
 				controllers.mapview.routes.javascript.Services.serviceRequestWithLayer (),
+				controllers.mapview.routes.javascript.Query.serviceRequestWithFeatureType (),
 				controllers.mapview.routes.javascript.Query.query ()
 			)	
 		);
