@@ -40,7 +40,7 @@
 	   			@if(index == 0){
 	        		<ul>
 	    		}
-	    		@displayItem(item.get().getItems()(index), level + 1, layerRefId + "/" + (index + 1))
+	    		@displayItem(item.get().getItems().get(index), level + 1, layerRefId + "/" + (index + 1))
 	    		@if(index == (item.get().getItems().size - 1)){
 	        		</ul>
 	   			}
@@ -54,6 +54,6 @@
 
 <ul class="gi-toc" data-geoide-map="@mapId">
 	@for(index <- 0 until tocItems.size){
-   		@displayItem(tocItems(index), 0, "" + (index + 1))
+   		@displayItem(tocItems.get(index), 0, "" + (index + 1))
 	}
 </ul>	
