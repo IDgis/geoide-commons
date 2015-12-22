@@ -12,16 +12,26 @@ import akka.actor.UntypedActor;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
 
+/**
+ * Actor that handles the Akka remote method transport.
+ */
 public class TransportActor extends UntypedActor {
 
 	private final LoggingAdapter log = Logging.getLogger (getContext ().system (), this);
 	
 	private final Map<String, ActorRef> listeners = new HashMap<> ();
-	
+
+	/**
+	 * @return A {@link Props} object used to create a new actor.
+	 */
 	public static Props props () {
 		return Props.create (TransportActor.class);
 	}
-	
+
+	/**
+	 * Handles requests to register a new {@link RemoteMethodServerActor}, createing new {@link RemoteMethodServerActor} actors.
+	 * Also dispatches method calls to the correct {@link RemoteMethodServerActor}.
+	 */
 	@Override
 	public void onReceive (final Object message) throws Exception {
 		if (message instanceof AddListener) {

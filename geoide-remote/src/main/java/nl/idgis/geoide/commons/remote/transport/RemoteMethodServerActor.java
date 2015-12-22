@@ -15,6 +15,10 @@ import nl.idgis.geoide.commons.remote.transport.messages.RemoteMethodCallFailure
 import nl.idgis.geoide.util.streams.AkkaSerializablePublisher;
 import nl.idgis.geoide.util.streams.SerializablePublisherActor;
 
+/**
+ * Actor that wraps a {@link RemoteMethodServer} and accepts {@link RemoteMethodCall}s that are
+ * delegated to the server.
+ */
 public class RemoteMethodServerActor extends UntypedActor {
 	
 	private LoggingAdapter log = Logging.getLogger (getContext ().system (), this);
@@ -24,7 +28,12 @@ public class RemoteMethodServerActor extends UntypedActor {
 	public RemoteMethodServerActor (final RemoteMethodServer server, final String name) {
 		this.server = server;
 	}
-	
+
+	/**
+	 * @param server	The {@link RemoteMethodServer} to delegate to. Cannot be null.
+	 * @param name		The name of the server. Cannot be null.
+	 * @return			A {@link Props} object that can be used to create a new actor.	
+	 */
 	public static Props props (final RemoteMethodServer server, final String name) {
 		if (server == null) {
 			throw new NullPointerException ("server cannot be null");
@@ -35,7 +44,11 @@ public class RemoteMethodServerActor extends UntypedActor {
 		
 		return Props.create (RemoteMethodServerActor.class, server, name);
 	}
-	
+
+	/**
+	 * Handles the {@link RemoteMethodCall} message and sends the response back to the sender
+	 * as soon as the {@link CompletableFuture} completes.
+	 */
 	@Override
 	public void onReceive (final Object message) throws Exception {
 		if (message instanceof RemoteMethodCall) {
