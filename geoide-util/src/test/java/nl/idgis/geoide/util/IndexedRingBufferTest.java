@@ -4,8 +4,18 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+/**
+ * Test cases for the {@link IndexedRingBuffer} class: asserts that various aspects of the contract
+ * function properly. 
+ */
 public class IndexedRingBufferTest {
-	
+
+	/**
+	 * Asserts proper operation of the index ring buffer when repeatedly adding items to a buffer
+	 * of length 1:
+	 * - old items should be rotated away.
+	 * - The base index should be incremented for each item.
+	 */
 	@Test
 	public void testAddSize1 () {
 		final IndexedRingBuffer<Integer> buffer = new IndexedRingBuffer<> (1);
@@ -37,6 +47,12 @@ public class IndexedRingBufferTest {
 		assertEquals (45, (int)buffer.get (3).get ());
 	}
 	
+	/**
+	 * Asserts proper operation of the index ring buffer when repeatedly adding items to a buffer
+	 * of length 2:
+	 * - old items should be rotated away.
+	 * - The base index should be incremented for each item.
+	 */
 	@Test
 	public void testAddSize2 () {
 		final IndexedRingBuffer<Integer> buffer = new IndexedRingBuffer<> (2);
@@ -68,16 +84,25 @@ public class IndexedRingBufferTest {
 		assertEquals (45, (int)buffer.get (3).get ());
 	}
 
+	/**
+	 * Asserts that a ring buffer of size zero cannot be created.
+	 */
 	@Test (expected = IllegalArgumentException.class)
 	public void testRingBufferZeroSize () {
 		new IndexedRingBuffer<> (0);
 	}
 	
+	/**
+	 * Asserts that a ring buffer of negative size cannot be created.
+	 */
 	@Test (expected = IllegalArgumentException.class)
 	public void testRingBufferNegativeSize () {
 		new IndexedRingBuffer<> (-1);
 	}
-	
+
+	/**
+	 * Asserts that getting an item at a negative index always fails.
+	 */
 	@Test (expected = IndexOutOfBoundsException.class)
 	public void testGetNegative () {
 		final IndexedRingBuffer<Integer> buffer = new IndexedRingBuffer<> (5);
@@ -88,14 +113,22 @@ public class IndexedRingBufferTest {
 		
 		buffer.get (-1);
 	}
-	
+
+	/**
+	 * Asserts that getting an item from a ring buffer of non-zero size to which
+	 * no items have been added fails.
+	 */
 	@Test (expected = IndexOutOfBoundsException.class)
 	public void testGetEmptyBuffer () {
 		final IndexedRingBuffer<Integer> buffer = new IndexedRingBuffer<> (5);
 		
 		buffer.get (0);
 	}
-	
+
+	/**
+	 * Asserts that requesting an item from a partially filled ring buffer fails. This
+	 * happens when less items have been added than the length of the ring buffer.
+	 */
 	@Test (expected = IndexOutOfBoundsException.class)
 	public void testGetBeyondMaximumPartiallyFilled () {
 		final IndexedRingBuffer<Integer> buffer = new IndexedRingBuffer<> (5);
@@ -106,7 +139,11 @@ public class IndexedRingBufferTest {
 		
 		buffer.get (3);
 	}
-	
+
+	/**
+	 * Asserts that fetching an item at an index beyond the highest added item results
+	 * in an exception.
+	 */
 	@Test (expected = IndexOutOfBoundsException.class)
 	public void testGetBeyondMaximumFullBuffer () {
 		final IndexedRingBuffer<Integer> buffer = new IndexedRingBuffer<> (5);
@@ -121,6 +158,9 @@ public class IndexedRingBufferTest {
 		buffer.get (6);
 	}
 	
+	/**
+	 * Asserts that old values in the ring buffer are overwritten when repeatedly adding new items to it.
+	 */
 	@Test
 	public void testOverwriteBuffer () {
 		final IndexedRingBuffer<Integer> buffer = new IndexedRingBuffer<> (5);
