@@ -20,6 +20,10 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * This test includes asserts to test whether the various types of GeoJSON entities
+ * can be parsed from JSON-strings using Jackson. One for each geometry type.
+ */
 public class TestGeoJsonGeometry {
 
 	@Test

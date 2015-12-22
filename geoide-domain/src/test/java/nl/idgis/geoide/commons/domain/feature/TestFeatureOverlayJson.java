@@ -21,6 +21,11 @@ public class TestFeatureOverlayJson {
 		mapper = new ObjectMapper ();
 	}
 	
+	/**
+	 * Asserts that an overlay can be parsed from a JSON string.
+	 * 
+	 * @throws Throwable
+	 */
 	@Test
 	public void testParseOverlay () throws Throwable {
 		final Overlay overlay = mapper.readValue (overlayValue, Overlay.class);
@@ -41,6 +46,11 @@ public class TestFeatureOverlayJson {
 		assertEquals ("Hello, World!", overlay.getText ());
 	}
 	
+	/**
+	 * Asserts that a styled geometry value can be parsed from a JSON string.
+	 * 
+	 * @throws Throwable
+	 */
 	@Test
 	public void testParseStyledGeometry () throws Throwable {
 		final StyledGeometry styledGeometry = mapper.readValue (styledGeometryValue, StyledGeometry.class);
@@ -58,6 +68,11 @@ public class TestFeatureOverlayJson {
 		assertTrue (styledGeometry.getGeometry () instanceof Point);
 	}
 	
+	/**
+	 * Asserts that an OverlayFeature can be parsed from a JSON string.
+	 * 
+	 * @throws Throwable
+	 */
 	@Test
 	public void testParseOverlayFeature () throws Throwable {
 		final OverlayFeature overlayFeature = mapper.readValue (overlayFeatureValue, OverlayFeature.class);
