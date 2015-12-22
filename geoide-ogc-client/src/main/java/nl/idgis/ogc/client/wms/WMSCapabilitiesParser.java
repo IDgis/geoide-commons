@@ -22,8 +22,18 @@ import nl.idgis.ogc.wms.WMSCapabilities.RequestType;
 import nl.idgis.ogc.wms.WMSCapabilities.Service;
 import nl.idgis.ogc.wms.WMSCapabilities.Style;
 
+/**
+ * Parser for WMS capabilities documents.
+ */
 public class WMSCapabilitiesParser {
 
+	/**
+	 * Parses the given XML {@link InputStream} into a WMS capabilities document.
+	 * 
+	 * @param inputStream		The XML {@link InputStream} to parse.
+	 * @return					A WMS capabilities document.
+	 * @throws ParseException	When the capabilities parsing fails.
+	 */
 	public static WMSCapabilities parseCapabilities (final InputStream inputStream) throws ParseException {
 		try {
 			final XMLInputFactory factory = XMLInputFactory.newFactory ();

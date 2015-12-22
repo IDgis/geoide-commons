@@ -19,6 +19,9 @@ import nl.idgis.ogc.wfs.WFSCapabilities.Operation;
 import nl.idgis.ogc.wfs.WFSCapabilities.OperationType;
 import nl.idgis.ogc.wfs.WFSCapabilities.ServiceIdentification;
 
+/**
+ * Parser for WFS capabilities documents.
+ */
 public class WFSCapabilitiesParser {
 
 	private final static String WFS = "http://www.opengis.net/wfs";
@@ -27,6 +30,13 @@ public class WFSCapabilitiesParser {
 	private final static String OWS_11 = "http://www.opengis.net/ows/1.1";
 	private final static String XLINK = "http://www.w3.org/1999/xlink";
 	
+	/**
+	 * Parses a WFS capabilities document from the given XML {@link InputStream}.
+	 * 
+	 * @param inputStream		The XML {@link InputStream} to parse.
+	 * @return					The parsed capabilities document.
+	 * @throws ParseException	If parsing the capabilities fails.
+	 */
 	public static WFSCapabilities parseCapabilities (final InputStream inputStream) throws ParseException {
 		try {
 			final XMLStreamReader reader = XMLInputFactory.newFactory ().createXMLStreamReader (inputStream);
