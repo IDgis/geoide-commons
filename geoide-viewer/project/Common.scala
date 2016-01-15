@@ -7,7 +7,7 @@ import com.typesafe.sbt.rjs.Import._
 import com.typesafe.sbt.less.Import._
 
 object Common {
-	val geoideCommonsVersion = "1.0.1-SNAPSHOT"
+	val geoideCommonsVersion = "1.0.2-SNAPSHOT"
 	
 	val resolvers = Seq[Resolver] (
 		Resolver.mavenLocal,
@@ -34,9 +34,9 @@ object Common {
 	object Dependencies {
 		val akkaRemote = "com.typesafe.akka" %% "akka-remote" % "2.3.4"
 		
-		val geoideDomain = "nl.idgis.geoide" % "geoide-domain" % "1.0.1-SNAPSHOT"
-		val geoideUtil = "nl.idgis.geoide" % "geoide-util" % "1.0.1-SNAPSHOT"
-		val geoideRemote = "nl.idgis.geoide" % "geoide-remote" % "1.0.1-SNAPSHOT"
+		val geoideDomain = "nl.idgis.geoide" % "geoide-domain" % "1.0.1"
+		val geoideUtil = "nl.idgis.geoide" % "geoide-util" % "1.0.1"
+		val geoideRemote = "nl.idgis.geoide" % "geoide-remote" % "1.0.1"
 		
 		val webjarsPlay = "org.webjars" %% "webjars-play" % "2.3.0"
   		val webjarsBootstrap = "org.webjars" % "bootstrap" % "3.2.0"
