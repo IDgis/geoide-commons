@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>nl.idgis.geoide</groupId>
 		<artifactId>geoide-layer</artifactId>
-		<version>1.0.1-SNAPSHOT</version>
+		<version>1.0.2-SNAPSHOT</version>
 	</parent>
 	<artifactId>geoide-layer-common</artifactId>
 	<name>Geoide - Layer - Common</name>
