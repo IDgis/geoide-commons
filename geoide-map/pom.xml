@@ -24,6 +24,10 @@
 		<dependency>
 			<groupId>nl.idgis.geoide</groupId>
 			<artifactId>geoide-layer-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>nl.idgis.geoide</groupId>
+			<artifactId>geoide-document-cache</artifactId>
 		</dependency>	
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
@@ -39,6 +43,11 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.typesafe.akka</groupId>
+			<artifactId>akka-actor_${scala.abi.version}</artifactId>
+			<scope>provided</scope>
 		</dependency>
   </dependencies>
   

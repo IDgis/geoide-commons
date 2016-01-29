@@ -43,6 +43,10 @@
 			<artifactId>geoide-map</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>nl.idgis.geoide</groupId>
+			<artifactId>geoide-document-cache</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.typesafe.akka</groupId>
 			<artifactId>akka-actor_${scala.abi.version}</artifactId>
 			<scope>provided</scope>

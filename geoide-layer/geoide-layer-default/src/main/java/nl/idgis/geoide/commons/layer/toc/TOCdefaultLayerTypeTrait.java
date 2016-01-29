@@ -3,7 +3,6 @@ package nl.idgis.geoide.commons.layer.toc;
 import java.util.ArrayList;
 import java.util.List;
 
-import nl.idgis.geoide.commons.domain.Layer;
 import nl.idgis.geoide.commons.domain.LayerRef;
 import nl.idgis.geoide.commons.domain.ServiceLayer;
 import nl.idgis.geoide.commons.domain.toc.Symbol;
