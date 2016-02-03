@@ -1,6 +1,5 @@
 package nl.idgis.geoide.commons.domain.document;
 
-import java.awt.Image;
 import java.io.Serializable;
 import java.net.URI;
 
@@ -16,12 +15,11 @@ public final class StoredImage implements Serializable {
 	private final ImageIcon image;
 	
 	public StoredImage (
-			final ImageIcon imageIcon,
+			final ImageIcon image,
 			final URI uri
 			) {
-		this.image = imageIcon;
+		this.image = image;
 		this.uri = uri;
-		
 		
 	}
 	

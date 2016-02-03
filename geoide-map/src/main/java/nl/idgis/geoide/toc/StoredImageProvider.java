@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import javax.swing.ImageIcon;
@@ -15,7 +14,6 @@ import akka.util.ByteString;
 import akka.util.ByteString.ByteStrings;
 import nl.idgis.geoide.commons.domain.document.Document;
 import nl.idgis.geoide.commons.domain.document.StoredImage;
-import nl.idgis.geoide.documentcache.service.DelegatingStore;
 import nl.idgis.geoide.documentcache.service.FileStore;
 import nl.idgis.geoide.util.Futures;
 import nl.idgis.geoide.util.streams.StreamProcessor;
@@ -34,12 +32,12 @@ public class StoredImageProvider implements ImageProvider {
 	}
 	
 
-	public CompletableFuture<StoredImage> getImage(String imageName) {
+	public CompletableFuture<StoredImage> getImage(String imageUrl) {
 		
 		URI uri;
 		
 		try {
-	    	uri = new URI("image:///" + imageName );
+	    	uri = new URI(imageUrl );
 		 }  catch(URISyntaxException e) {	
 		    return Futures.throwing(e);
 		}
@@ -47,8 +45,7 @@ public class StoredImageProvider implements ImageProvider {
     	CompletableFuture<Document> doc = fileStore.fetch(uri);
 		return doc.thenApply ((d) -> {
 			try {
-				URI imageURI = new URI("stored://" + UUID.randomUUID ().toString ());
-				
+								
 				final Publisher<ByteString> body = streamProcessor.resolvePublisherReference (d.getBody (), 5000);
 				final InputStream inputStream = streamProcessor.asInputStream (body, 5000);
 				
@@ -59,11 +56,10 @@ public class StoredImageProvider implements ImageProvider {
 					data = data.concat (ByteStrings.fromArray (buffer, 0, nRead));
 				}
 				inputStream.close ();
-						
+		
 				final StoredImage image = new StoredImage (new ImageIcon(data.toArray ()), uri);
-				
 				return image;
-			} catch (IOException | URISyntaxException e) {
+			} catch (IOException e) {
 				throw new RuntimeException (e);
 			}
 		});

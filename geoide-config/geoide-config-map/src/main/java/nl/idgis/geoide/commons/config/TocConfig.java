@@ -1,14 +1,11 @@
 package nl.idgis.geoide.commons.config;
 
-import nl.idgis.geoide.commons.domain.api.DocumentStore;
+
 import nl.idgis.geoide.commons.domain.traits.spring.TypedTrait;
-import nl.idgis.geoide.commons.http.client.HttpClient;
 import nl.idgis.geoide.commons.layer.DefaultLayerType;
 import nl.idgis.geoide.commons.layer.LayerType;
 import nl.idgis.geoide.commons.layer.toc.TOCdefaultLayerTypeTrait;
-import nl.idgis.geoide.documentcache.service.DelegatingStore;
 import nl.idgis.geoide.documentcache.service.FileStore;
-import nl.idgis.geoide.documentcache.service.HttpDocumentStore;
 import nl.idgis.geoide.service.ServiceType;
 import nl.idgis.geoide.service.ServiceTypeRegistry;
 import nl.idgis.geoide.service.wms.WMSServiceType;
@@ -36,9 +33,9 @@ public class TocConfig {
 	
 	
 	@Bean
-	@Qualifier ("legendFileStore")
+	@Qualifier ("imageFileStore")
 	@Autowired
-	public FileStore legendFileStore (
+	public FileStore imageFileStore (
 			final @Qualifier("streamProcessor") StreamProcessor streamProcessor,
 			final ConfigWrapper config) {
 		String basePath = config.getString ("geoide.service.components.mapProvider.configDir", "C:/Temp");
@@ -59,7 +56,7 @@ public class TocConfig {
 	@Bean
 	@Qualifier ("imageProvider")
 	@Autowired
-	public StoredImageProvider imageProvider(final @Qualifier("legendFileStore") FileStore fileStore, final @Qualifier("streamProcessor") StreamProcessor streamProcessor ) {
+	public StoredImageProvider imageProvider(final @Qualifier("imageFileStore") FileStore fileStore, final @Qualifier("streamProcessor") StreamProcessor streamProcessor ) {
 		return new StoredImageProvider(fileStore,  streamProcessor);
 	}
 	
