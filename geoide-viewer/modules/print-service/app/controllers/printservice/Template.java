@@ -13,7 +13,7 @@ public class Template extends Controller {
 	private final TemplateDocumentProvider templateProvider;
 	
 	@Inject
-	public Template(TemplateDocumentProvider templateProvider) {
+	public Template (TemplateDocumentProvider templateProvider) {
 		this.templateProvider = templateProvider;
 		
 		if (templateProvider  == null) {

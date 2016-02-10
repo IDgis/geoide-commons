@@ -8,14 +8,16 @@ import nl.idgis.geoide.commons.domain.ServiceLayer;
 import nl.idgis.geoide.commons.domain.toc.Symbol;
 import nl.idgis.geoide.commons.domain.toc.TOCItem;
 import nl.idgis.geoide.commons.domain.traits.Traits;
+import nl.idgis.geoide.documentcache.service.FileStore;
 import nl.idgis.geoide.service.ServiceType;
 import nl.idgis.geoide.service.toc.TOCServiceTypeTrait;
 
 
 public class TOCwmsTrait implements TOCServiceTypeTrait{
+
 	
 	public TOCwmsTrait () {
-		
+
 	}
 	
 	@Override
@@ -23,11 +25,12 @@ public class TOCwmsTrait implements TOCServiceTypeTrait{
 		
 		final List<Traits<TOCItem>> tocItems = new ArrayList<>();
 		
+		
 		tocItems.add(Traits.create (
 			TOCItem
 				.builder ()
 				.setLabel (serviceLayer.getLabel ())
-				.setSymbol (new Symbol (serviceLayer.getId()))
+				.setSymbol (new Symbol (serviceLayer.getId(), ""))
 				.build ()
 		));
 			
