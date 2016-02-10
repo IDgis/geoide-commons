@@ -6,8 +6,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.concurrent.CompletableFuture;
 
-import javax.swing.ImageIcon;
-
 import org.reactivestreams.Publisher;
 
 import akka.util.ByteString;
@@ -57,7 +55,7 @@ public class StoredImageProvider implements ImageProvider {
 				}
 				inputStream.close ();
 		
-				final StoredImage image = new StoredImage (new ImageIcon(data.toArray ()), uri);
+				final StoredImage image = new StoredImage (data.toArray (), uri);
 				return image;
 			} catch (IOException e) {
 				throw new RuntimeException (e);
