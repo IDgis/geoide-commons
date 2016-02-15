@@ -7,6 +7,17 @@ import java.util.regex.Pattern;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+/**
+ * A representation of a color value (RGBA). Colors can be represented in different forms:
+ *
+ *  - #RGB
+ *  - #RRGGBB
+ *  - rgb(r, g, b)
+ *  - rgba(r, g, b, a)
+ *  
+ * Color values can be serialized to and from JSON. Accepts an array of doubles as input, or a string.
+ * Color values are always serialized as a string in the form "rgba(r, g, b, a)"
+ */
 public class Color implements Serializable {
 	private static final long serialVersionUID = 7597554911147626562L;
 	
@@ -16,6 +27,11 @@ public class Color implements Serializable {
 	
 	private final double[] rgba;
 	
+	/**
+	 * Creates a new color value from an array of doubles. The array must have 1, 3 or 4 elements.
+	 * 
+	 * @param rgba	An array of RGBA values consisting of 1, 3 or 4 elements.
+	 */
 	@JsonCreator
 	public Color (final double[] rgba) {
 		if (rgba == null) {
@@ -41,6 +57,15 @@ public class Color implements Serializable {
 		}
 	}
 	
+	/**
+	 * Creates a new color value by parsing a string. The string can be in the form:
+	 * - #RGB
+	 * - #RGBA
+	 * - rgb(r, g, b)
+	 * - rgba(r, g, b, a)
+	 * 
+	 * @param color	The color value as a string.
+	 */
 	@JsonCreator
 	public Color (final String color) {
 		if (color == null) {
@@ -106,6 +131,11 @@ public class Color implements Serializable {
 		throw new IllegalArgumentException ("Invalid color: " + color);
 	}
 	
+	/**
+	 * Returns the color value as a string in the form "rgba(r, g, b, a)".
+	 * 
+	 * @return	The current color value as a string.
+	 */
 	@JsonValue
 	public String getRgbaAsString () {
 		return String.format (
@@ -116,19 +146,31 @@ public class Color implements Serializable {
 			rgba[3]
 		);
 	}
-	
+
+	/**
+	 * @return The red component (0-1).
+	 */
 	public double getR () {
 		return rgba[0];
 	}
 	
+	/**
+	 * @return The green component (0-1).
+	 */
 	public double getG () {
 		return rgba[1];
 	}
 	
+	/**
+	 * @return The blue component (0-1).
+	 */
 	public double getB () {
 		return rgba[2];
 	}
 	
+	/**
+	 * @return The alpha component (0-1).
+	 */
 	public double getA () {
 		return rgba[3];
 	}

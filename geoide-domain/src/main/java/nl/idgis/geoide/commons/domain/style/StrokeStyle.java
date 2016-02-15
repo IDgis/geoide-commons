@@ -9,6 +9,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * Represents a stroke style for a line or polygon geometry.
+ */
 @JsonIgnoreProperties (ignoreUnknown = true)
 public class StrokeStyle implements Serializable {
 	private static final long serialVersionUID = 4256687646185356945L;
@@ -20,6 +23,16 @@ public class StrokeStyle implements Serializable {
 	private final Double miterLimit;
 	private final Double width;
 
+	/**
+	 * Constructs a new stroke style.
+	 * 
+	 * @param color			The color of the stroke, cannot be null.
+	 * @param width			The width of the stroke, or null if not set.
+	 * @param lineCap		The lineCap style, or null if not set.
+	 * @param lineDash		The dash style, or null of not set.
+	 * @param lineJoin		The line join style, or null of not set.
+	 * @param miterLimit	The miter limit, or null of not set.
+	 */
 	@JsonCreator
 	public StrokeStyle (
 		final @JsonProperty ("color") Color color,
@@ -41,26 +54,44 @@ public class StrokeStyle implements Serializable {
 		this.miterLimit = miterLimit;
 	}
 
+	/**
+	 * @return The stroke color. This value is never null.
+	 */
 	public Color getColor () {
 		return color;
 	}
 
+	/**
+	 * @return The line cap style, or null if not set.
+	 */
 	public String getLineCap () {
 		return lineCap;
 	}
 
+	/**
+	 * @return The line dash style, or null if not set.
+	 */
 	public List<Double> getLineDash () {
 		return lineDash == null ? null : Collections.unmodifiableList (lineDash);
 	}
 
+	/**
+	 * @return The line join style, or null if not set.
+	 */
 	public String getLineJoin () {
 		return lineJoin;
 	}
 
+	/**
+	 * @return The miter limit, or null if not set.
+	 */
 	public Double getMiterLimit () {
 		return miterLimit;
 	}
 
+	/**
+	 * @return The stroke width, or null if not set.
+	 */
 	public Double getWidth () {
 		return width;
 	}

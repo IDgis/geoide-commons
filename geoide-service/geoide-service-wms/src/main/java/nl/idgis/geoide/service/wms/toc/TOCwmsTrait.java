@@ -8,7 +8,6 @@ import nl.idgis.geoide.commons.domain.ServiceLayer;
 import nl.idgis.geoide.commons.domain.toc.Symbol;
 import nl.idgis.geoide.commons.domain.toc.TOCItem;
 import nl.idgis.geoide.commons.domain.traits.Traits;
-import nl.idgis.geoide.documentcache.service.FileStore;
 import nl.idgis.geoide.service.ServiceType;
 import nl.idgis.geoide.service.toc.TOCServiceTypeTrait;
 

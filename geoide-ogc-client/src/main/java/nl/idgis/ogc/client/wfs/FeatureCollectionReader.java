@@ -30,6 +30,9 @@ import org.deegree.gml.geometry.GML2GeometryReader;
 import org.deegree.gml.geometry.GML3GeometryReader;
 import org.deegree.gml.geometry.GMLGeometryReader;
 
+/**
+ * Reads feature collections from XML documents. Supports both GML and WFS feature collections.
+ */
 public class FeatureCollectionReader {
 	
 	private final GMLVersion gmlVersion;
@@ -238,6 +241,12 @@ public class FeatureCollectionReader {
 		}
 	}
 	
+	/**
+	 * Constructs a new feature collection reader for the given format. Format must be a valid GML
+	 * content type.
+	 * 
+	 * @param format	The GML content type to use.
+	 */
 	public FeatureCollectionReader (final MimeContentType format) {
 		if (format == null) {
 			throw new NullPointerException ("format cannot be null");
@@ -276,6 +285,13 @@ public class FeatureCollectionReader {
 		this.gmlVersion = gmlVersion; 
 	}
 
+	/**
+	 * Creates a feature collection that reads features from the given (XML-) {@link InputStream}.
+	 * 
+	 * @param inputStream		The XML stream to parse. Cannot be null.
+	 * @return					A {@link FeatureCollection} that returns features from the GML document.
+	 * @throws ParseException	When GML parsing fails.
+	 */
 	public FeatureCollection parseCollection (final InputStream inputStream) throws ParseException {
 		try {
 			final XMLStreamReader reader = XMLInputFactory.newFactory().createXMLStreamReader (inputStream);

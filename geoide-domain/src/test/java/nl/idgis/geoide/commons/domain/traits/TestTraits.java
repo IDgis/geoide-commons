@@ -28,6 +28,9 @@ public class TestTraits {
 	public class FourthTrait implements ATrait {
 	}
 	
+	/**
+	 * Asserts that traits objects can be properly created and contain the expected trait instances afterwards.
+	 */
 	@Test
 	public void testTraits () {
 		final A a = new A ();

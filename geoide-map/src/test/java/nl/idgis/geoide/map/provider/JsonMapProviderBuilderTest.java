@@ -14,6 +14,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import nl.idgis.geoide.commons.domain.MapDefinition;
 
+/**
+ * Testcases for {@link JsonMapProviderBuilder}.
+ */
 public class JsonMapProviderBuilderTest {
 
 	private final ObjectMapper mapper = new ObjectMapper ();
@@ -23,7 +26,10 @@ public class JsonMapProviderBuilderTest {
 	public void createBuilder () {
 		builder = JsonMapProviderBuilder.create ();
 	}
-	
+
+	/**
+	 * Asserts that a map configuration can be loaded from a single JSON-file.
+	 */
 	@Test
 	public void testLoadMap () throws Throwable {
 		final MapDefinition map = builder
@@ -60,6 +66,10 @@ public class JsonMapProviderBuilderTest {
 		assertEquals ("test-service-2", map.getRootLayers ().get (1).getLayer ().getServiceLayers ().get (0).getFeatureType ().getService ().getId ());
 	}
 	
+	/**
+	 * Asserts that a service layer can be overridden by loading an additional json-file
+	 * containing just the service layer.
+	 */
 	@Test
 	public void testOverrideServiceLayer () throws Throwable {
 		final MapDefinition map = builder
@@ -74,7 +84,11 @@ public class JsonMapProviderBuilderTest {
 		assertEquals ("test-service-2", map.getRootLayers ().get (1).getLayer ().getServiceLayers ().get (0).getService ().getId ());
 		assertEquals ("Test service 2", map.getRootLayers ().get (1).getLayer ().getServiceLayers ().get (0).getService ().getLabel ());
 	}
-	
+
+	/**
+	 * Asserts that a service can be overridden by loading an additional JSON-file containing
+	 * just the service.
+	 */
 	@Test
 	public void testServiceOverride () throws Throwable {
 		final MapDefinition map = builder
@@ -87,7 +101,11 @@ public class JsonMapProviderBuilderTest {
 		assertEquals ("test-service-1", map.getRootLayers ().get (0).getLayer ().getServiceLayers ().get (0).getService ().getId ());
 		assertEquals ("Test service 1 override", map.getRootLayers ().get (0).getLayer ().getServiceLayers ().get (0).getService ().getLabel ());
 	}
-	
+
+	/**
+	 * Asserts that a layer can be overriden by loading an additional JSON-file containging
+	 * just the layer.
+	 */
 	@Test
 	public void testLayerOverride () throws Throwable {
 		final MapDefinition map = builder
@@ -103,6 +121,10 @@ public class JsonMapProviderBuilderTest {
 		assertEquals ("test-servicelayer-2", map.getRootLayers ().get (0).getLayer ().getServiceLayers ().get (0).getId ());
 	}
 	
+	/**
+	 * Asserts that a map structure can be overridden by loading an additional JSON-file containing just the map
+	 * structure.
+	 */
 	@Test
 	public void testMapOverride () throws Throwable {
 		final MapDefinition map = builder
@@ -118,6 +140,10 @@ public class JsonMapProviderBuilderTest {
 		assertEquals (0, map.getRootLayers ().size ());
 	}
 	
+	/**
+	 * Asserts that a feature type can be overridden by loading an additional JSON file containing just
+	 * the feature type.
+	 */
 	@Test
 	public void testFeatureTypeOverride () throws Throwable {
 		final MapDefinition map = builder

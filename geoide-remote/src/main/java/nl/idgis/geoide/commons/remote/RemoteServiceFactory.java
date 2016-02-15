@@ -8,15 +8,35 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * Factory for creating proxies that dispatch method calls to a remote endpoint. 
+ */
 public class RemoteServiceFactory {
 
 	public RemoteServiceFactory () {
 	}
 	
+	/**
+	 * Creates an implementation of the given interface that delegates all method calls to the given {@link RemoteMethodClient}.
+	 * 
+	 * @param client	The client to delegate all method invocations to. Cannot be null.
+	 * @param cls		The interface class to create a proxy for. Must be an interface.
+	 * @return			A proxy implementation of the given interface.
+	 */
 	public <T> T createServiceReference (final RemoteMethodClient client, final Class<T> cls) {
 		return createServiceReference (client, cls, null);
 	}
 	
+	/**
+	 * Creates an implementation of the given interface that delegates all method calls to the given {@link RemoteMethodClient}.
+	 * Adds a qualifier to the proxy. The qualifier is used to identify concrete implementations of the interface at the remote
+	 * end, use a qualifier if multiple instances of the same interface are available.
+	 * 
+	 * @param client	The client to delegate all method invocations to. Cannot be null.
+	 * @param cls		The interface class to create a proxy for. Must be an interface.
+	 * @param qualifier	A unique qualifier for the proxy.
+	 * @return			A proxy implementation of the given interface.
+	 */
 	public <T> T createServiceReference (final RemoteMethodClient client, final Class<T> cls, final String qualifier) {
 		return createDispatcherInfo (cls).createProxy (client, qualifier);
 	}
@@ -50,6 +70,14 @@ public class RemoteServiceFactory {
 		}
 	}
 	
+	/**
+	 * Creates a {@link RemoteMethodServer}: an endpoint that accepts remote method calls for the given
+	 * {@link ServiceRegistration}'s. Each incomming method call is delegated to one of the implementations
+	 * provided as a service registration.
+	 * 
+	 * @param serviceRegistrations	Service implementations to register.
+	 * @return						The remote method server.
+	 */
 	public RemoteMethodServer createRemoteMethodServer (final ServiceRegistration<?> ... serviceRegistrations) {
 		final Map<MethodWithClassifier, MethodHandle> registrations = new HashMap<> ();
 		

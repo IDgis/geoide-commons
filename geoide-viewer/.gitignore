@@ -1,0 +1,5 @@
+/.gradle/
+/bin/
+/logs/
+/.cache-main
+/.cache-tests

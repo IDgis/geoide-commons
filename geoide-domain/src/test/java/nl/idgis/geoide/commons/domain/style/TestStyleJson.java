@@ -7,6 +7,9 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * This test contains various asserts that verify whether styles can be parsed from JSON strings.
+ */
 public class TestStyleJson {
 
 	private static ObjectMapper mapper;
