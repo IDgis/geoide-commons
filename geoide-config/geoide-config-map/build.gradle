@@ -9,6 +9,7 @@ dependencies {
 	compile project(':geoide-service:geoide-service-common')
 	compile project(':geoide-service:geoide-service-wfs')
 	compile project(':geoide-map')
+	compile project(':geoide-document-cache')
 	
 	provided externalDependency.akkaActor
 	provided externalDependency.playWs

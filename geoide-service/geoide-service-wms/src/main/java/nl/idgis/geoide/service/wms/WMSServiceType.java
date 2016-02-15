@@ -136,7 +136,7 @@ public class WMSServiceType extends ServiceType implements LayerServiceType {
 				}
 			}
 		}
-		//TODO check if svg outputformat is supported
+		//TODO check if svg outputformat is supported or other format is configured
 		
 		String bbox = mapExtent.path("minx") + "," +  mapExtent.path("miny") + "," +
 					 mapExtent.path("maxx") + "," +  mapExtent.path("maxy");
