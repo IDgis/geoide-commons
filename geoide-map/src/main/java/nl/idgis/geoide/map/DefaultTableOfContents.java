@@ -32,21 +32,22 @@ public class DefaultTableOfContents implements TableOfContents {
 				tocItems.addAll(layerType.trait(TOCLayerTypeTrait.class).getTOC(layerType, rootLayer));
 			}
 		}
-		
-		List<Traits<TOCItem>> parentList = new ArrayList<>();
-		return CompletableFuture.completedFuture (Collections.unmodifiableList(revertItems(tocItems, parentList)));
+		return CompletableFuture.completedFuture (Collections.unmodifiableList(reverse(tocItems)));
 	}
 
-	private List<Traits<TOCItem>> revertItems (List<Traits<TOCItem>> tocItems, List<Traits<TOCItem>> parentList) {
-		for(int n = tocItems.size() - 1; n >= 0; n--){
-			Traits<TOCItem> tocItem = tocItems.get(n);
-			List<Traits<TOCItem>> tocChildItems = tocItem.get().getItems();
-			if(tocChildItems.size() > 0) {
-				revertItems(tocChildItems,new ArrayList<Traits<TOCItem>>());
-			}
-			parentList.add(tocItem);	
-		}
-		return parentList;
+	
+
+	private List<Traits<TOCItem>> reverse(List<Traits<TOCItem>> tocItems) {
+	    if(tocItems.size() > 1) {                   
+	    	Traits<TOCItem> value = tocItems.remove(0);
+	    	List<Traits<TOCItem>> tocChildItems = value.get().getItems();
+	    	if(tocChildItems.size() > 0) {
+	    		 reverse(tocChildItems);
+	    	}
+	        reverse(tocItems);
+	        tocItems.add((Traits<TOCItem>) value);
+	    }
+	    return tocItems;
 	}
 	
 }
