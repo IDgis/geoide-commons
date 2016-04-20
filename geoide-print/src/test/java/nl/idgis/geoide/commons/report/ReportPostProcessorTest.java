@@ -85,7 +85,7 @@ public class ReportPostProcessorTest {
 		
 		assertNotNull (request);
 		assertEquals (new URI ("http://www.idgis.nl"), request.getBaseUri ());
-		assertEquals ("text/html", request.getInputDocument().getContentType ().toString ());
+		assertEquals ("text/html", request.getInputDocument().getContentType ().toString ().split("\\;")[0]);
 		assertEquals ("application/pdf", request.getOutputFormat ().toString ());
 		
 		assertEquals (template.getPageFormat(), request.getLayoutParameters ().get ("grid-page-size"));

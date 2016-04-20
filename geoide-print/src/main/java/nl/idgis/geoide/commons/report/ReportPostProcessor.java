@@ -69,12 +69,12 @@ public class ReportPostProcessor {
 		
 		
 		return documentCache
-				.store(documentUri, new MimeContentType ("text/html"), html.html ().getBytes ())
+				.store(documentUri, new MimeContentType ("text/html;charset=utf-8"), html.html ().getBytes ())
 				.thenCompose ((final Document a) -> {
 						try {
 							return printService.print (
 									new PrintRequest (
-											new DocumentReference (new MimeContentType ("text/html"), documentUri), 
+											new DocumentReference (new MimeContentType ("text/html;charset=utf-8"), documentUri), 
 											new MimeContentType ("application/pdf"), 
 											makeBaseUri (template.getUri ()),
 											layoutParameters
