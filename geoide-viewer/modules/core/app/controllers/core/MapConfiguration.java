@@ -93,19 +93,12 @@ public class MapConfiguration extends Controller {
 	}
 	
 	private static void filterLayers (final JsonNode layerRefs, final ArrayNode result, final String layerRefId) {
-		int n = 1;
-		//maplayers in map are bottom up but maplayers in maplayer not
-		if (layerRefId.equals ("")) {
-			n = layerRefs.size();
-		}  
+		//maplayers in map and in maplayer are bottom up 
+		int	n = layerRefs.size();
 
 		for (final JsonNode layerRef: layerRefs) {
 			result.add (filterLayer (layerRef, (!layerRefId.equals("") ? layerRefId + "/" + n : "" + n)));
-			if (layerRefId.equals ("")) {
-				n--;
-			} else {
-				n++;
-			}
+			n--;
 		}
 	}
 	
