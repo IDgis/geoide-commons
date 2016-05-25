@@ -57,6 +57,16 @@ define ([
 		return true;
 	}
 	
+	//function to make all request parameters in uppercase(f.i. transparent=true => TRANSPARENT-true) 
+	//solves the problem of double transparent property in getMap request
+	function capitalizeParams(params) {
+		var paramsC = new Object();
+		for (var a in params) {
+			paramsC[a.toUpperCase()] = params[a];
+		}
+		return paramsC;
+	}
+	
 	// TMS layer type:
 	registry.registerLayerType ('TMS', {
 		create: function (serviceRequest) {
@@ -95,13 +105,13 @@ define ([
 	});
 	
 	// WMS layer type:
-	registry.registerLayerType ('WMS', {
+	registry.registerLayerType ('WMS', {		
 		create: function (serviceRequest) {
 			var serviceUrl = serviceRequest.serviceIdentification.serviceEndpoint;
 			return new ol.layer.Image ({
 				source: new ol.source.ImageWMS ({
 					crossOrigin: null,
-					params: serviceRequest.parameters,
+					params: capitalizeParams(serviceRequest.parameters),
 					resolutions: resolutions,
 					url: serviceUrl 
 				})
@@ -109,7 +119,7 @@ define ([
 		},
 		
 		update: function (existingOlLayer, serviceRequest) {
-			existingOlLayer.getSource ().updateParams (serviceRequest.parameters);
+			existingOlLayer.getSource ().updateParams (capitalizeParams(serviceRequest.parameters));
 		},
 		
 		isReusable: function (existingLayer, serviceRequest) {
