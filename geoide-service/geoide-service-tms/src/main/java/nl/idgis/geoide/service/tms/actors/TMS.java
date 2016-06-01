@@ -142,7 +142,7 @@ public class TMS extends Service {
 		// Locate a tileset:
 		TileSet tileSet = null;
 		for (final TileSet ts: tileMapLayer.tileSets ()) {
-			if (z.equals (Integer.toString (ts.order ()))) {
+			if (z.equals (ts.href().substring(ts.href().lastIndexOf("/") + 1))) {	
 				tileSet = ts;
 				break;
 			}
