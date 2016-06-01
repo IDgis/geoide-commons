@@ -33,6 +33,12 @@
 			"layerType": "default",
 			"label": "LPG3",
 			"serviceLayers": [ "test-service-2-p_LPG" ]
-		}
+		},
+	    {
+	        "id": "top10nl",
+	        "label": "Top10NL",
+	        "layerType": "default",
+	        "serviceLayers": ["top10nlv2"]
+	    }
 	]
 }	
