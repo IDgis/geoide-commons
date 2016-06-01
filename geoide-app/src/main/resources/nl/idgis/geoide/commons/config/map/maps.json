@@ -40,7 +40,11 @@
 					"state": {
 						"visible" : false
 					}
-				}
+				},
+				 {
+                        "layer": "top10nl",
+                        "state": {"visible": false}
+                 }
 			]
 		}
 	]

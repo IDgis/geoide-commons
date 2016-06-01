@@ -18,6 +18,12 @@
 			"name": "p_LPG",
 			"service": "test-service-2",
 			"featureType": "ft-lpg"
-		}
+		},
+		{
+	        "id": "top10nlv2",
+	        "label": "Top10",
+	        "name": "top10nlv2",
+	        "service": "pdok-top10nl"
+    	}
 	]
 }
