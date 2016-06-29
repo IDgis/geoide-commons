@@ -1,0 +1,11 @@
+{
+	"queryDescriptions": [
+		{
+			"id": "qr-lpg",
+			"label": "Zoek LPG",
+			"featureType": "ft-lpg",
+			"attribute": {"localName":"NAAM_INRICHTING", "namespace":"rrgs"},
+			"serviceLayer": "test-service-2-p_LPG"
+		}
+	]
+}	

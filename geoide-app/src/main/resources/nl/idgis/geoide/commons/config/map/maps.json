@@ -45,7 +45,8 @@
                         "layer": "top10nl",
                         "state": {"visible": false}
                  }
-			]
+			],
+			"querydescriptions": ["qr-lpg"]
 		}
 	]
 }	
