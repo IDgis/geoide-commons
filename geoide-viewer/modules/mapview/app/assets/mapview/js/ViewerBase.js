@@ -215,6 +215,7 @@ define ([
 			
 			this._watchHandles.push (this.map.get ('layerRefs').watchElements (callback));
 			this.map.get ('layerRefList').forEach (lang.hitch (this, function (layerRef) {
+				console.log(this.map.get ('layerRefList'));
 				this._watchHandles.push (layerRef.get ('state').watch (callback));
 				this._watchHandles.push (layerRef.get ('layerRefs').watchElements (callback));
 			}));
@@ -368,7 +369,7 @@ define ([
 		 */
 		_updateViewer: function () {
 			var def = new Deferred ();
-			
+			console.log("_updateViewer");
 			when (this.map, lang.hitch (this, function (map) {
 				var viewerState = { layerRefs: this._buildViewerState (map.get ('layerRefs')) };
 				

@@ -67,6 +67,7 @@ define ([
 	
 	MapStatefulObject = declare ([StatefulObject, MapStatefulBase], {
 		constructor: function (content) {
+			
 			this._buildContent (content);
 		}
 	});
@@ -99,7 +100,7 @@ define ([
 		
 		constructor: function (content) {
 			this._buildContent (content);
-			
+			console.log(JSON.stringify(content));
 			// Create layerRef index:
 			var layerRefDictionary = { },
 				layerRefList = [ ];
@@ -141,6 +142,8 @@ define ([
 		getInitialExtent: function () {
 			return (this.get ('initial-extent'));
 		}
+		
+		
 		
 	});
 	

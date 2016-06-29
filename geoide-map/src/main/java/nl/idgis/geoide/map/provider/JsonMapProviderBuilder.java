@@ -75,11 +75,13 @@ public class JsonMapProviderBuilder {
 	 * 			in this builder.
 	 */
 	public StaticMapProvider build () {
+		System.out.println("**************************in build******************************");
 		final Map<String, Service> services = parseServices ();
 		final Map<String, FeatureType> featureTypes = parseFeatureTypes (services);
 		final Map<String, ServiceLayer> serviceLayers = parseServiceLayers (services, featureTypes);
 		final Map<String, QueryDescription> queryDescriptions = parseQueryDescriptions (featureTypes, serviceLayers);  
 		final Map<String, Layer> layers = parseLayers (serviceLayers);
+		
 		
 		return new StaticMapProvider (parseMaps (layers, serviceLayers, queryDescriptions));
 	}
@@ -129,13 +131,14 @@ public class JsonMapProviderBuilder {
 	}
 	
 	private Map<String, QueryDescription> parseQueryDescriptions (final Map<String, FeatureType> featureTypes, final Map <String, ServiceLayer> serviceLayers) {
+		System.out.println("parseQueryDescriptions ");
 		final Map<String, QueryDescription> queryDescriptions = new HashMap<> ();
 		nodes
 		.stream ()
 		.filter (node -> node.has ("queryDescriptions"))
 		.flatMap (node -> StreamSupport
 				.stream (node.path ("queryDescriptions").spliterator (), false)
-				.map (n -> JsonFactory.queryDescription (n, featureTypes, serviceLayers)))
+				.map (n -> JsonFactory.queryDescription (n, serviceLayers, featureTypes)))
 		.forEach (queryDescription -> queryDescriptions.put (queryDescription.getId(), queryDescription));
 		
 		return Collections.unmodifiableMap (queryDescriptions);
@@ -169,7 +172,7 @@ public class JsonMapProviderBuilder {
 			.flatMap (node -> StreamSupport.stream (node.path ("maps").spliterator (), false)
 				.map (mapNode -> JsonFactory.mapDefinition (mapNode, layers, serviceLayers, queryDescriptions)))
 			.forEach (mapDef -> mapDefinitions.put (mapDef.getId (), mapDef));
-		
+			
 		return Collections.unmodifiableCollection (mapDefinitions.values ());
 	}
 

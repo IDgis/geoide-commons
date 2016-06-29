@@ -13,11 +13,12 @@ import nl.idgis.geoide.commons.domain.FeatureType;
 import nl.idgis.geoide.commons.domain.Layer;
 import nl.idgis.geoide.commons.domain.LayerRef;
 import nl.idgis.geoide.commons.domain.MapDefinition;
+import nl.idgis.geoide.commons.domain.QueryDescription;
 import nl.idgis.geoide.commons.domain.Service;
 import nl.idgis.geoide.commons.domain.ServiceLayer;
 import nl.idgis.geoide.util.Assert;
 
-public class StaticMapProvider implements MapProvider, ServiceProvider, ServiceLayerProvider, FeatureTypeProvider, LayerProvider {
+public class StaticMapProvider implements MapProvider, ServiceProvider, ServiceLayerProvider, FeatureTypeProvider, LayerProvider, QueryDescriptionProvider {
 
 	private final Set<MapDefinition> mapDefinitions;
 	
@@ -146,6 +147,22 @@ public class StaticMapProvider implements MapProvider, ServiceProvider, ServiceL
 	@Override
 	public FeatureType getFeatureType(String featureTypeId) {
 		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public QueryDescription getQueryDescription(String queryDescriptionId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<QueryDescription> getQueryDescriptions(String mapId) {
+		for (final MapDefinition mapDefinition: mapDefinitions) {
+			if (mapDefinition.getId ().equals (mapId)) {
+				return mapDefinition.getQueryDescriptions();
+			}
+		}
 		return null;
 	}
 

@@ -71,6 +71,13 @@ public class MapDefinition extends Entity {
 				layerRefsNode.add (JsonFactory.mapper ().valueToTree (layerRef));
 			}
 		}
+		//write queryDescriptions
+		if (!getQueryDescriptions ().isEmpty ()) {
+			final ArrayNode queryDescriptionsNode = obj.putArray ("queryDescriptions");
+			for (final QueryDescription queryDescription: getQueryDescriptions ()) {
+				queryDescriptionsNode.add (JsonFactory.mapper ().valueToTree (queryDescription));
+			}
+		}
 		return obj;
 	}
 	

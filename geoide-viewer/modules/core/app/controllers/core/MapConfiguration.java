@@ -32,14 +32,14 @@ public class MapConfiguration extends Controller {
 			if (mapDefinition == null) {
 				return notFound ("map not found");
 			}
-	
+			
 			final JsonNode node = Json.toJson (mapDefinition);
-
 			return ok (filterLayer (node, ""));
 		});
 	}
 	
 	private static JsonNode filterLayer (final JsonNode map, final String layerRefId) {
+		System.out.println(map.asText());
 		final ObjectNode result = Json.newObject ();
 		
 		final JsonNode layerNode = map.path ("layer");

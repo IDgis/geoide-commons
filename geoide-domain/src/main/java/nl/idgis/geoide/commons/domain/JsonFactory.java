@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -170,11 +171,15 @@ public class JsonFactory {
 	}
 	
 	
-	public static QueryDescription queryDescription (final JsonNode node, final Map<String, FeatureType> featureTypeMap, final Map <String, ServiceLayer> serviceLayerMap) {
+	public static QueryDescription queryDescription (final JsonNode node, final Map<String, ServiceLayer> serviceLayerMap, final Map<String, FeatureType> featureTypeMap) {
+		// Eerst alleen één queryTerm -> featuretype en attribuut info in QueryDescription
 		final JsonNode id = node.path("id");
 		final JsonNode label = node.path ("label");
 		final JsonNode serviceLayer = node.path ("serviceLayer");
-		final JsonNode queryTerms = node.path ("queryTerms");
+		final JsonNode attribute = node.path("attribute");
+		final JsonNode featureType = node.path ("featureType");
+		
+		//final JsonNode queryTerms = node.path ("queryTerms");
 		
 		if (id.isMissingNode () || id.asText ().isEmpty ()) {
 			throw new IllegalArgumentException ("Missing property: id");
@@ -182,17 +187,35 @@ public class JsonFactory {
 		if (label.isMissingNode ()) {
 			throw new IllegalArgumentException ("Missing property: label");
 		}
-		if (serviceLayer.isMissingNode ()) {
-			throw new IllegalArgumentException ("Missing property: serviceLayer");
-		}
+		//serviceLayer mag null zijn (alleen zoomen naar bbox uit ft en geen highlighting)
+		//if (serviceLayer.isMissingNode ()) {
+			//throw new IllegalArgumentException ("Missing property: serviceLayer");
+		//}
 		
 		final String serviceLayerId = serviceLayer.asText ();
 		
-		if (!serviceLayerMap.containsKey (serviceLayerId)) {
-			throw new IllegalArgumentException ("ServiceLayer not defined: " + serviceLayerId);
+		//if (!serviceLayerMap.containsKey (serviceLayerId)) {
+			//throw new IllegalArgumentException ("ServiceLayer not defined: " + serviceLayerId);
+		//}
+		
+		ServiceLayer servLayer = null;
+		if (serviceLayerId!=null) {
+			servLayer = serviceLayerMap.get(serviceLayerId);
 		}
-
-		final List<QueryTerm> queryTermList = new ArrayList<> ();
+		
+		if (attribute.isMissingNode ()) {
+			throw new IllegalArgumentException ("Missing property: attribute");
+		}
+		
+		if (featureType.isMissingNode ()) {
+			throw new IllegalArgumentException ("Missing property: featureType");
+		}
+		
+		final FeatureType ft = getFeatureType (featureType.asText (), featureTypeMap);
+		
+		
+		
+		/*final List<QueryTerm> queryTermList = new ArrayList<> ();
 		
 		for (final JsonNode queryTermNode: queryTerms) {
 				final JsonNode attribute = queryTermNode.path("attribute");
@@ -213,15 +236,18 @@ public class JsonFactory {
 								qName (attribute),
 								attributeLabel.asText (),
 								ft));
-		}
+		};*/
 		
 		return new QueryDescription(
 				id.asText(), 
 				label.asText(), 
-				queryTermList, 
-				serviceLayerMap.get(serviceLayerId));
+				ft, 
+				qName (attribute),
+				servLayer);
 		
 	}
+	
+
 
 	
 	private static FeatureType getFeatureType (final String featureTypeId, final Map<String, FeatureType> featureTypes) {

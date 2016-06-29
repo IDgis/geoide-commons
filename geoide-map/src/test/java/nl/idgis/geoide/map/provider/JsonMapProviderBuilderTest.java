@@ -37,6 +37,7 @@ public class JsonMapProviderBuilderTest {
 			.build ()
 			.getMapDefinition ("test-map");
 		
+		
 		assertNotNull (map);
 		assertEquals ("test-map", map.getId ());
 		assertEquals ("Test map", map.getLabel ());
@@ -64,6 +65,13 @@ public class JsonMapProviderBuilderTest {
 		assertEquals ("test-feature-type-1", map.getRootLayers ().get (1).getLayer ().getServiceLayers ().get (0).getFeatureType ().getId ());
 		assertEquals ("Test feature type 1", map.getRootLayers ().get (1).getLayer ().getServiceLayers ().get (0).getFeatureType ().getLabel ());
 		assertEquals ("test-service-2", map.getRootLayers ().get (1).getLayer ().getServiceLayers ().get (0).getFeatureType ().getService ().getId ());
+		
+		assertEquals ("test-query-1", map.getQueryDescriptions ().get(0).getId ());
+		assertEquals ("Test query 2", map.getQueryDescriptions ().get(1).getLabel ());
+		assertEquals ("test-servicelayer-1", map.getQueryDescriptions ().get(0).getLayer ().getId());
+		assertEquals ("app", map.getQueryDescriptions ().get(1).getAtttribute().getNamespace());
+		assertEquals ("test", map.getQueryDescriptions ().get(1).getAtttribute().getLocalName());
+		
 	}
 	
 	/**
