@@ -100,7 +100,7 @@ define ([
 		
 		constructor: function (content) {
 			this._buildContent (content);
-			console.log(JSON.stringify(content));
+	
 			// Create layerRef index:
 			var layerRefDictionary = { },
 				layerRefList = [ ];
@@ -129,6 +129,23 @@ define ([
 			
 			this.set ('layerRefDictionary', layerRefDictionary);
 			this.set ('layerRefList', layerRefList);
+			
+			var queryDescriptionDictionary = {};
+			
+			var proocessQueryDescriptions = function (object) {
+				var queryDescriptions = object.get ('queryDescriptions');
+				for (var i = 0, length = queryDescriptions.length (); i < length; ++ i) {
+					var queryDescription = queryDescriptions.get (i),
+					id = queryDescription.get ('id');= 
+					if (!(id in queryDescriptionDictionary)) {	
+						queryDescriptionDictionary[id] = queryDescription;
+					}  else if (queryDescriptionDictionary[id] !== queryDescription) {
+						throw new Error ('Duplicate queryDescription with id: ', id);
+					}
+				}
+			}
+			
+			this.set ('queryDescriptionDictionary', queryDescriptionDictionary);	
 		},
 		
 		map: function () {
