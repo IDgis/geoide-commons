@@ -39,7 +39,7 @@ public class MapConfiguration extends Controller {
 	}
 	
 	private static JsonNode filterLayer (final JsonNode map, final String layerRefId) {
-		System.out.println(map.asText());
+		
 		final ObjectNode result = Json.newObject ();
 		
 		final JsonNode layerNode = map.path ("layer");
@@ -88,6 +88,12 @@ public class MapConfiguration extends Controller {
 		final JsonNode layerRefs = map.path ("layerRefs");
 		if (!layerRefs.isMissingNode ()) {
 			filterLayers (layerRefs, result.putArray ("layerRefs"), layerRefId);
+		}
+		
+		
+		final JsonNode queryDescriptions = map.path("queryDescriptions");
+		if (!queryDescriptions .isMissingNode ()) {
+			result.set("queryDescriptions", map.path("queryDescriptions"));
 		}
 		return result;
 	}
