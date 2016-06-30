@@ -130,22 +130,21 @@ define ([
 			this.set ('layerRefDictionary', layerRefDictionary);
 			this.set ('layerRefList', layerRefList);
 			
-			var queryDescriptionDictionary = {};
+			var queryDescriptionList = [];
 			
-			var proocessQueryDescriptions = function (object) {
+			var processQueryDescriptions = function (object) {
 				var queryDescriptions = object.get ('queryDescriptions');
-				for (var i = 0, length = queryDescriptions.length (); i < length; ++ i) {
-					var queryDescription = queryDescriptions.get (i),
-					id = queryDescription.get ('id');= 
-					if (!(id in queryDescriptionDictionary)) {	
-						queryDescriptionDictionary[id] = queryDescription;
-					}  else if (queryDescriptionDictionary[id] !== queryDescription) {
-						throw new Error ('Duplicate queryDescription with id: ', id);
+				if (queryDescriptions){
+					for (var i = 0, length = queryDescriptions.length (); i < length; ++ i) {
+						var queryDescription = queryDescriptions.get (i);
+						queryDescriptionList.push(queryDescription);
 					}
-				}
-			}
+				}	
+			};
 			
-			this.set ('queryDescriptionDictionary', queryDescriptionDictionary);	
+			processQueryDescriptions (this);
+			
+			this.set ('queryDescriptionList', queryDescriptionList);	
 		},
 		
 		map: function () {
