@@ -11,7 +11,7 @@
 					"layer": "test-layer-2"
 				}
 			],
-			"querydescriptions": ["test-query-1","test-query-2"]
+			"searchtemplates": ["test-search-1","test-search-2"]
 			 
 		}
 	],
@@ -76,17 +76,17 @@
 			}
 		}
 	],
-	"queryDescriptions": [
+	"searchTemplates": [
 		{
-			"id": "test-query-1",
-			"label": "Test query 1",
+			"id": "test-search-1",
+			"label": "Test search 1",
 			"featureType": "test-feature-type-1",
 			"attribute": {"localName":"test", "namespace":"app"},
 			"serviceLayer": "test-servicelayer-1"
 		},
 		{
-			"id": "test-query-2",
-			"label": "Test query 2",
+			"id": "test-search-2",
+			"label": "Test search 2",
 			"featureType": "test-feature-type-1",
 			"attribute": {"localName":"test", "namespace":"app"}
 		}

@@ -2,7 +2,7 @@
 	"maps": [ 
 		{
 			"id": "afdelingen",
-			"label": "Afdelingen",
+			"label": "Afdelingennnn",
 			"initial-extent": {
 				"minx" : 3000,
 				"miny" : 306000,
@@ -46,7 +46,7 @@
                         "state": {"visible": false}
                  }
 			],
-			"querydescriptions": ["qr-lpg"]
+			"searchtemplates": ["st-lpg"]
 		}
 	]
 }	

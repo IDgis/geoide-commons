@@ -1,7 +1,7 @@
 {
-	"queryDescriptions": [
+	"searchTemplates": [
 		{
-			"id": "qr-lpg",
+			"id": "st-lpg",
 			"label": "Zoek LPG",
 			"featureType": "ft-lpg",
 			"attribute": {"localName":"NAAM_INRICHTING", "namespace":"rrgs"},

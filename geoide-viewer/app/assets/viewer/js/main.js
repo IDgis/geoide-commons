@@ -4,6 +4,7 @@ require ([
 	'dojo/query',
 	'dojo/dom',
 	'dojo/on',
+	'dojo/when',
 	
 	'put-selector/put',
 	
@@ -11,6 +12,7 @@ require ([
 	'geoide-core/Model',
 	'geoide-core/linkedCopy',
 	'geoide-core/map/Map',
+	'geoide-core/search/Search',
 	'geoide-toc/DefaultTOC',
 	
 	'geoide-map/interaction/Navigation',
@@ -28,6 +30,7 @@ require ([
 	query,
 	dom,
 	on,
+	when,
 	
 	put, 
 	
@@ -35,6 +38,7 @@ require ([
 	Model,
 	linkedCopy,
 	Map,
+	Search,
 	TOC,
 	Navigation,
 	KeyboardNavigation,
@@ -75,8 +79,10 @@ require ([
 		console.log ('Clicked: ', e.coordinate);
 	});
 	
+	var viewer = null;
+	
 	var viewers = query ('.js-geoide-viewer').map (function (viewerNode) {
-		var viewer = new Viewer (viewerNode, {
+		viewer = new Viewer (viewerNode, {
 			resolutions: [3440.640, 1720.320, 860.160, 430.080, 215.040, 107.520, 53.760, 26.880, 13.440, 6.720, 3.360, 1.680, 0.840, 0.420, 0.210],
 			interactions: [new Navigation (), new KeyboardNavigation ()]
 		});
@@ -95,6 +101,16 @@ require ([
 		
 		return toc;
 	});
+	
+	when (viewer.map, function() { 
+		var qdescs = query('.js-query-descriptions-picker').map (function (qdescNode) {
+			var qdesc = new Search (qdescNode, viewer);
+			qdesc.startup();
+			//toc.startup();
+			
+			return qdesc;
+		});
+	});	
 	
 	window.setLayerRefVisible = function (layerId, visible) {
 		viewers[0].setLayerRefState (layerId, 'visible', visible).then (function () {

@@ -91,9 +91,9 @@ public class MapConfiguration extends Controller {
 		}
 		
 		
-		final JsonNode queryDescriptions = map.path("queryDescriptions");
-		if (!queryDescriptions .isMissingNode ()) {
-			result.set("queryDescriptions", map.path("queryDescriptions"));
+		final JsonNode searchTemplates = map.path("searchTemplates");
+		if (!searchTemplates .isMissingNode ()) {
+			result.set("searchTemplates", map.path("searchTemplates"));
 		}
 		return result;
 	}

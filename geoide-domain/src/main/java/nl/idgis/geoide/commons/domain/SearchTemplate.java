@@ -13,7 +13,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import nl.idgis.geoide.util.Assert;
 
-public class QueryDescription extends Entity {
+public class SearchTemplate extends Entity {
 	// Eerst alleen één queryTerm -> featuretype en attribuut info in deze klasse
 	private static final long serialVersionUID = -6404778430711796916L;
 	
@@ -22,7 +22,7 @@ public class QueryDescription extends Entity {
 	private final FeatureType valueFeatureType;
 	private final ServiceLayer layer;
 
-	public QueryDescription(
+	public SearchTemplate(
 		final @JsonProperty("id") String id,
 		final @JsonProperty("label") String label,
 		//final @JsonProperty("queryTerms") List<QueryTerm> queryTerms,
@@ -66,13 +66,6 @@ public class QueryDescription extends Entity {
 
 		return n;
 	}
-	
-	
-		
-		
-	
-	
-	
 	
 	public QName getAttribute () {
 		return attribute;

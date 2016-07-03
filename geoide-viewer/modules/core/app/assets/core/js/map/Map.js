@@ -130,21 +130,21 @@ define ([
 			this.set ('layerRefDictionary', layerRefDictionary);
 			this.set ('layerRefList', layerRefList);
 			
-			var queryDescriptionList = [];
+			var searchTemplateList = [];
 			
-			var processQueryDescriptions = function (object) {
-				var queryDescriptions = object.get ('queryDescriptions');
-				if (queryDescriptions){
-					for (var i = 0, length = queryDescriptions.length (); i < length; ++ i) {
-						var queryDescription = queryDescriptions.get (i);
-						queryDescriptionList.push(queryDescription);
+			var processSearchTemplates = function (object) {
+				var searchTemplates = object.get ('searchTemplates');
+				if (searchTemplates){
+					for (var i = 0, length = searchTemplates.length (); i < length; ++ i) {
+						var searchTemplate = searchTemplates.get (i);
+						searchTemplateList.push(searchTemplate);
 					}
 				}	
 			};
 			
-			processQueryDescriptions (this);
+			processSearchTemplates (this);
 			
-			this.set ('queryDescriptionList', queryDescriptionList);	
+			this.set ('searchTemplateList', searchTemplateList);	
 		},
 		
 		map: function () {

@@ -13,12 +13,12 @@ import nl.idgis.geoide.commons.domain.FeatureType;
 import nl.idgis.geoide.commons.domain.Layer;
 import nl.idgis.geoide.commons.domain.LayerRef;
 import nl.idgis.geoide.commons.domain.MapDefinition;
-import nl.idgis.geoide.commons.domain.QueryDescription;
+import nl.idgis.geoide.commons.domain.SearchTemplate;
 import nl.idgis.geoide.commons.domain.Service;
 import nl.idgis.geoide.commons.domain.ServiceLayer;
 import nl.idgis.geoide.util.Assert;
 
-public class StaticMapProvider implements MapProvider, ServiceProvider, ServiceLayerProvider, FeatureTypeProvider, LayerProvider, QueryDescriptionProvider {
+public class StaticMapProvider implements MapProvider, ServiceProvider, ServiceLayerProvider, FeatureTypeProvider, LayerProvider, SearchTemplateProvider {
 
 	private final Set<MapDefinition> mapDefinitions;
 	
@@ -151,16 +151,16 @@ public class StaticMapProvider implements MapProvider, ServiceProvider, ServiceL
 	}
 
 	@Override
-	public QueryDescription getQueryDescription(String queryDescriptionId) {
+	public SearchTemplate getSearchTemplate(String searchTemplateId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<QueryDescription> getQueryDescriptions(String mapId) {
+	public List<SearchTemplate> getSearchTemplates(String mapId) {
 		for (final MapDefinition mapDefinition: mapDefinitions) {
 			if (mapDefinition.getId ().equals (mapId)) {
-				return mapDefinition.getQueryDescriptions();
+				return mapDefinition.getSearchTemplates();
 			}
 		}
 		return null;
