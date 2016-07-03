@@ -1,4 +1,4 @@
-adpackage nl.idgis.geoide.map.provider;
+package nl.idgis.geoide.map.provider;
 
 import static org.junit.Assert.*;
 
