@@ -32,14 +32,14 @@ public class MapConfiguration extends Controller {
 			if (mapDefinition == null) {
 				return notFound ("map not found");
 			}
-	
+			
 			final JsonNode node = Json.toJson (mapDefinition);
-
 			return ok (filterLayer (node, ""));
 		});
 	}
 	
 	private static JsonNode filterLayer (final JsonNode map, final String layerRefId) {
+		
 		final ObjectNode result = Json.newObject ();
 		
 		final JsonNode layerNode = map.path ("layer");
@@ -88,6 +88,12 @@ public class MapConfiguration extends Controller {
 		final JsonNode layerRefs = map.path ("layerRefs");
 		if (!layerRefs.isMissingNode ()) {
 			filterLayers (layerRefs, result.putArray ("layerRefs"), layerRefId);
+		}
+		
+		
+		final JsonNode searchTemplates = map.path("searchTemplates");
+		if (!searchTemplates .isMissingNode ()) {
+			result.set("searchTemplates", map.path("searchTemplates"));
 		}
 		return result;
 	}

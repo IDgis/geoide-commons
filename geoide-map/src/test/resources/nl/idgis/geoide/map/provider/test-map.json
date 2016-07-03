@@ -10,7 +10,9 @@
 				{
 					"layer": "test-layer-2"
 				}
-			]
+			],
+			"searchtemplates": ["test-search-1","test-search-2"]
+			 
 		}
 	],
 	
@@ -72,6 +74,21 @@
 				"serviceEndpoint": "http://geodata.nationaalgeoregister.nl/tms/1.0.0",
 				"serviceVersion": "1.0.0"
 			}
+		}
+	],
+	"searchTemplates": [
+		{
+			"id": "test-search-1",
+			"label": "Test search 1",
+			"featureType": "test-feature-type-1",
+			"attribute": {"localName":"test", "namespace":"app"},
+			"serviceLayer": "test-servicelayer-1"
+		},
+		{
+			"id": "test-search-2",
+			"label": "Test search 2",
+			"featureType": "test-feature-type-1",
+			"attribute": {"localName":"test", "namespace":"app"}
 		}
 	]
 }

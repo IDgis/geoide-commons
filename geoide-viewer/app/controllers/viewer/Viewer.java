@@ -15,6 +15,7 @@ public class Viewer extends Controller {
 	private final TableOfContents toc;
 	private final MapProviderApi mapProvider;
 	
+	
 	@Inject
 	public Viewer(MapProviderApi mapProvider, final TableOfContents toc){
 		this.mapProvider = mapProvider;

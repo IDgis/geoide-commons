@@ -4,12 +4,18 @@
 @layout.html("Viewer") {
 	
 
-	<pre>@controllers.core.RequireJS.getDojoConfig</pre>
-	
+	<!--  pre>@controllers.core.RequireJS.getDojoConfig</pre>-->
+	<pre>@tocItems</pre>
 	<div id="toc-container">@views.html.toc.toc(mapId, tocItems)</div>
 	
 	<div id="viewer-container" class="js-geoide-viewer" data-geoide-map="@mapId"></div>
-	
+	<p>
+	<div>
+		<select class="selectpicker js-query-descriptions-picker">
+			  
+		</select>	  
+	</div>
+	</p>
 	<p>
 		Draw:
 		<button type="button" id="draw-point">Punt</button>

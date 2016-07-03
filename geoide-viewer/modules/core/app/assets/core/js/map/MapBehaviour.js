@@ -40,6 +40,7 @@ define ([
 				
 				when (this.map, lang.hitch (this, function (map) {
 					this.map = map; 
+					console.log(this.map);
 				}));
 			}
 			

@@ -67,6 +67,7 @@ define ([
 	
 	MapStatefulObject = declare ([StatefulObject, MapStatefulBase], {
 		constructor: function (content) {
+			
 			this._buildContent (content);
 		}
 	});
@@ -99,7 +100,7 @@ define ([
 		
 		constructor: function (content) {
 			this._buildContent (content);
-			
+	
 			// Create layerRef index:
 			var layerRefDictionary = { },
 				layerRefList = [ ];
@@ -128,6 +129,22 @@ define ([
 			
 			this.set ('layerRefDictionary', layerRefDictionary);
 			this.set ('layerRefList', layerRefList);
+			
+			var searchTemplateList = [];
+			
+			var processSearchTemplates = function (object) {
+				var searchTemplates = object.get ('searchTemplates');
+				if (searchTemplates){
+					for (var i = 0, length = searchTemplates.length (); i < length; ++ i) {
+						var searchTemplate = searchTemplates.get (i);
+						searchTemplateList.push(searchTemplate);
+					}
+				}	
+			};
+			
+			processSearchTemplates (this);
+			
+			this.set ('searchTemplateList', searchTemplateList);	
 		},
 		
 		map: function () {
@@ -141,6 +158,8 @@ define ([
 		getInitialExtent: function () {
 			return (this.get ('initial-extent'));
 		}
+		
+		
 		
 	});
 	

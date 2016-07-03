@@ -178,9 +178,10 @@ define ([
 				if (this.started === true) {
 					throw new Error ("Already started");
 				}
-	
+				console.log("startup viewer");
 				whenAll (this.map, this.engine.startup (), lang.hitch (this, function (map, engine) {
-					
+					console.log("startup viewer whenall" );
+					console.log(map);
 					this._watchLayerRefState ();
 					
 					// Update the viewer for the first time:
@@ -368,7 +369,7 @@ define ([
 		 */
 		_updateViewer: function () {
 			var def = new Deferred ();
-			
+			console.log("_updateViewer");
 			when (this.map, lang.hitch (this, function (map) {
 				var viewerState = { layerRefs: this._buildViewerState (map.get ('layerRefs')) };
 				

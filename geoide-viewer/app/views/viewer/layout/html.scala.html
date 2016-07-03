@@ -8,6 +8,7 @@
 		<link href="@controllers.core.routes.Assets.at("lib/font-awesome/css/font-awesome.min.css")" rel="stylesheet">
 		<link rel="stylesheet" href="@controllers.viewer.routes.Assets.at("viewer/css/layout.css")">
 		<link rel="stylesheet" href="@controllers.mapview.routes.Assets.at("lib/openlayers/ol.css")"></script>
+
 	</head>
 	
 	<body@if(bodyClass != null){ class="@bodyClass"}>
@@ -24,5 +25,7 @@
 		<script type="text/javascript" src="@controllers.mapview.routes.JavaScript.javascriptRoutes()"></script>
 		<script type="text/javascript" src="@controllers.printservice.routes.JavaScript.javascriptRoutes()"></script>
 		<script type="text/javascript" src="@controllers.viewer.routes.Assets.at("viewer/js/main.js")"></script>
+		
+
 	</body>
 </html>

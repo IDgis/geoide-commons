@@ -6,6 +6,7 @@ import java.util.concurrent.CompletableFuture;
 import nl.idgis.geoide.commons.domain.Layer;
 import nl.idgis.geoide.commons.domain.LayerRef;
 import nl.idgis.geoide.commons.domain.MapDefinition;
+import nl.idgis.geoide.commons.domain.SearchTemplate;
 import nl.idgis.geoide.commons.domain.Service;
 import nl.idgis.geoide.commons.domain.api.MapProviderApi;
 import nl.idgis.geoide.commons.domain.api.ServiceProviderApi;
@@ -77,6 +78,11 @@ public class MapConfig {
 			@Override
 			public CompletableFuture<List<LayerRef>> getLayers (final String mapId) {
 				return CompletableFuture.completedFuture (mapProvider.getLayers (mapId));
+			}
+			
+			@Override
+			public CompletableFuture<List<SearchTemplate>> getSearchTemplates (final String mapId) {
+				return CompletableFuture.completedFuture (mapProvider.getSearchTemplates (mapId));
 			}
 		};
 	}
