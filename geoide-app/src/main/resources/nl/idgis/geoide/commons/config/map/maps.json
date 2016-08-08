@@ -45,8 +45,7 @@
                         "layer": "top10nl",
                         "state": {"visible": false}
                  }
-			],
-			"searchtemplates": ["st-lpg"]
+			]
 		}
 	]
 }	
