@@ -17,7 +17,8 @@
 			"label": "LPG",
 			"name": "p_LPG",
 			"service": "test-service-2",
-			"featureType": "ft-lpg"
+			"featureType": "ft-lpg",
+			"legendUrl": "http://servicespub.risicokaart.nl/rk_services_pub/services/WMS-risicokaart?request=GetLegendGraphic&version=1.3.0&service=WMS&layer=p_LPG&style=style-rk&format=image/png"
 		},
 		{
 	        "id": "top10nlv2",
