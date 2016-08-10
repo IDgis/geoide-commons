@@ -2,7 +2,7 @@
 GET		/map/:mapId/structure.json						@controllers.core.MapConfiguration.mapStructure(mapId: String)
 
 # Image provider
-GET		/image/:imageId									@controllers.core.Image.getImage(imageId)
+GET		/image/:imageUrl								@controllers.core.Image.getImage(imageUrl)
 
 # JavaScript routes:
 GET		/core/routes									controllers.core.JavaScript.javascriptRoutes()

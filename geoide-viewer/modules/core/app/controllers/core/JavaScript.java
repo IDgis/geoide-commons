@@ -10,7 +10,8 @@ public class JavaScript extends Controller {
 		response ().setContentType ("text/javascript");
 		return ok (
 			Routes.javascriptRouter ("geoideCoreRoutes",
-				controllers.core.routes.javascript.MapConfiguration.mapStructure ()
+				controllers.core.routes.javascript.MapConfiguration.mapStructure (),
+				controllers.core.routes.javascript.Image.getImage()
 			)	
 		);
 	}
