@@ -8,6 +8,6 @@ import nl.idgis.geoide.commons.domain.document.StoredImage;
 
 
 public interface ImageProvider {
-	CompletableFuture<StoredImage> getImage(String imageName) throws IOException;
+	CompletableFuture<StoredImage> getImage(String imageUrl) throws IOException;
 }
 
