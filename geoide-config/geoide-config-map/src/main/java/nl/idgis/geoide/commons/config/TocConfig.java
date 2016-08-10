@@ -29,15 +29,13 @@ import org.springframework.context.annotation.Configuration;
 public class TocConfig {
 	
 	@Bean
-	@Qualifier ("legendHttpDocumentStore")
 	@Autowired
-	public HttpDocumentStore printHttpDocumentStore (final HttpClient httpClient, final StreamProcessor streamProcessor) {
+	public HttpDocumentStore legendHttpDocumentStore (final HttpClient httpClient, final StreamProcessor streamProcessor) {
 		return new HttpDocumentStore (httpClient, streamProcessor);
 	}
 	
 	
 	@Bean
-	@Qualifier ("imageFileStore")
 	@Autowired
 	public FileStore imageFileStore (
 			final @Qualifier("streamProcessor") StreamProcessor streamProcessor,
@@ -49,18 +47,16 @@ public class TocConfig {
 	
 	
 	@Bean
-	@Qualifier ("documentStore")
 	@Autowired
-	public DelegatingStore delegatingStore (final @Qualifier("legendHttpDocumentStore") HttpDocumentStore httpDocumentStore, final @Qualifier("imageFileStore") FileStore fileStore) {
+	public DelegatingStore legendDocumentStore (final @Qualifier("legendHttpDocumentStore") HttpDocumentStore httpDocumentStore, final @Qualifier("imageFileStore") FileStore fileStore) {
 		DocumentStore[] stores = {httpDocumentStore, fileStore};
 		return new DelegatingStore(stores);
 	}
 	
 
 	@Bean
-	@Qualifier ("imageProvider")
 	@Autowired
-	public StoredImageProvider imageProvider(final @Qualifier("documentStore") DocumentStore documentStore, final @Qualifier("streamProcessor") StreamProcessor streamProcessor ) {
+	public StoredImageProvider imageProvider(final @Qualifier("legendDocumentStore") DocumentStore documentStore, final @Qualifier("streamProcessor") StreamProcessor streamProcessor ) {
 		return new StoredImageProvider(documentStore,  streamProcessor);
 	}
 	
