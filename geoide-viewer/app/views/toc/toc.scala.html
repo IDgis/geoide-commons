@@ -28,7 +28,7 @@
 			}
 			<span>
 				@if(item.get().getSymbol()!=null&&item.get().getSymbol()!="") {
-					<img src= @controllers.core.routes.Image.getImage(item.get().getSymbol().getLegendUrl())/>
+					<img src= @controllers.core.routes.Image.getImage(item.get().getSymbol().getLegendUrl())>
 					<img src= @controllers.core.routes.Image.getImage("image:///" + item.get().getSymbol().getId() + ".png")>
 					}
 			</span>
