@@ -60,7 +60,7 @@ public class ProviderConfig {
 		final String featureTypesResource = config.getString ("geoide.service.components.mapProvider.resources.featureTypes", "nl/idgis/geoide/commons/config/map/featuretypes.json");
 		final String serviceLayersResource = config.getString ("geoide.service.components.mapProvider.resources.serviceLayers", "nl/idgis/geoide/commons/config/map/servicelayers.json");
 		final String layersResource = config.getString ("geoide.service.components.mapProvider.resources.layers", "nl/idgis/geoide/commons/config/map/layers.json");
-		final String searchTemplatesResource = config.getString ("geoide.service.components.mapProvider.resources.searchtemplates", "nl/idgis/geoide/commons/config/map/searchtemplates.json");
+		//final String searchTemplatesResource = config.getString ("geoide.service.components.mapProvider.resources.searchtemplates", "nl/idgis/geoide/commons/config/map/searchtemplates.json");
 		
 		final String mapConfigurationDirectory = config.getString ("geoide.service.components.mapProvider.configDir", null);
 		
@@ -72,7 +72,7 @@ public class ProviderConfig {
 		log.info ("Feature types configuration: " + featureTypesResource);
 		log.info ("Service layers configuration: " + serviceLayersResource);
 		log.info ("Layers configuration: " + layersResource);
-		log.info ("SearchTemplates configuration: " + searchTemplatesResource);
+		//log.info ("SearchTemplates configuration: " + searchTemplatesResource);
 
 		// Add default configurations from the classpath:
 		final JsonMapProviderBuilder builder = JsonMapProviderBuilder.create (
@@ -80,8 +80,8 @@ public class ProviderConfig {
 				replaceJsonVariables (servicesResource, cl.getResourceAsStream (servicesResource), config),
 				replaceJsonVariables (featureTypesResource, cl.getResourceAsStream (featureTypesResource), config),
 				replaceJsonVariables (serviceLayersResource, cl.getResourceAsStream (serviceLayersResource), config),
-				replaceJsonVariables (layersResource, cl.getResourceAsStream (layersResource), config),
-				replaceJsonVariables (searchTemplatesResource, cl.getResourceAsStream (searchTemplatesResource), config)
+				replaceJsonVariables (layersResource, cl.getResourceAsStream (layersResource), config)
+				//replaceJsonVariables (searchTemplatesResource, cl.getResourceAsStream (searchTemplatesResource), config)
 			);
 		
 		// Add override configurations from the filesystem:

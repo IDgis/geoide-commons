@@ -29,7 +29,7 @@ public class TOCwmsTrait implements TOCServiceTypeTrait{
 			TOCItem
 				.builder ()
 				.setLabel (serviceLayer.getLabel ())
-				.setSymbol (new Symbol (serviceLayer.getId(), ""))
+				.setSymbol (new Symbol (serviceLayer.getId(), serviceLayer.getLegendUrl()))
 				.build ()
 		));
 			
