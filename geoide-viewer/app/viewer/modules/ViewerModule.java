@@ -21,6 +21,7 @@ import nl.idgis.geoide.commons.domain.api.ReportComposer;
 import nl.idgis.geoide.commons.domain.api.ServiceProviderApi;
 import nl.idgis.geoide.commons.domain.api.TableOfContents;
 import nl.idgis.geoide.commons.domain.api.TemplateDocumentProvider;
+import nl.idgis.geoide.commons.domain.api.ImageProvider;
 import nl.idgis.geoide.commons.remote.RemoteMethodClient;
 import nl.idgis.geoide.commons.remote.RemoteServiceFactory;
 import nl.idgis.geoide.commons.remote.transport.AkkaTransport;
@@ -92,6 +93,12 @@ public class ViewerModule extends AbstractModule implements AkkaGuiceSupport {
 	@Singleton
 	public TemplateDocumentProvider templateDocumentProvider (final RemoteServiceFactory factory, final RemoteMethodClient client) {
 		return factory.createServiceReference (client, TemplateDocumentProvider.class);
+	}
+	
+	@Provides
+	@Singleton
+	public ImageProvider imageProvider (final RemoteServiceFactory factory, final RemoteMethodClient client) {
+		return factory.createServiceReference (client, ImageProvider.class);
 	}
 
 	@Provides
