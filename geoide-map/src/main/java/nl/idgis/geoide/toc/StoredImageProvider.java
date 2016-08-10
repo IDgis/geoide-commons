@@ -10,13 +10,12 @@ import org.reactivestreams.Publisher;
 
 import akka.util.ByteString;
 import akka.util.ByteString.ByteStrings;
-import nl.idgis.geoide.commons.domain.document.Document;
-import nl.idgis.geoide.commons.domain.document.StoredImage;
-import nl.idgis.geoide.documentcache.service.FileStore;
-import nl.idgis.geoide.util.Futures;
-import nl.idgis.geoide.util.streams.StreamProcessor;
 import nl.idgis.geoide.commons.domain.api.DocumentStore;
 import nl.idgis.geoide.commons.domain.api.ImageProvider;
+import nl.idgis.geoide.commons.domain.document.Document;
+import nl.idgis.geoide.commons.domain.document.StoredImage;
+import nl.idgis.geoide.util.Futures;
+import nl.idgis.geoide.util.streams.StreamProcessor;
 
 
 public class StoredImageProvider implements ImageProvider {

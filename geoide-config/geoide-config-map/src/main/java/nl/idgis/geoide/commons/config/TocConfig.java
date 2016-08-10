@@ -60,8 +60,8 @@ public class TocConfig {
 	@Bean
 	@Qualifier ("imageProvider")
 	@Autowired
-	public StoredImageProvider imageProvider(final @Qualifier("imageFileStore") FileStore fileStore, final @Qualifier("streamProcessor") StreamProcessor streamProcessor ) {
-		return new StoredImageProvider(fileStore,  streamProcessor);
+	public StoredImageProvider imageProvider(final @Qualifier("documentStore") DocumentStore documentStore, final @Qualifier("streamProcessor") StreamProcessor streamProcessor ) {
+		return new StoredImageProvider(documentStore,  streamProcessor);
 	}
 	
 	
