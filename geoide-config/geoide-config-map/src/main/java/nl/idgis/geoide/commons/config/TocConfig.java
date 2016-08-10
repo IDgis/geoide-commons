@@ -1,11 +1,15 @@
 package nl.idgis.geoide.commons.config;
 
 
+import nl.idgis.geoide.commons.domain.api.DocumentStore;
 import nl.idgis.geoide.commons.domain.traits.spring.TypedTrait;
+import nl.idgis.geoide.commons.http.client.HttpClient;
 import nl.idgis.geoide.commons.layer.DefaultLayerType;
 import nl.idgis.geoide.commons.layer.LayerType;
 import nl.idgis.geoide.commons.layer.toc.TOCdefaultLayerTypeTrait;
+import nl.idgis.geoide.documentcache.service.DelegatingStore;
 import nl.idgis.geoide.documentcache.service.FileStore;
+import nl.idgis.geoide.documentcache.service.HttpDocumentStore;
 import nl.idgis.geoide.service.ServiceType;
 import nl.idgis.geoide.service.ServiceTypeRegistry;
 import nl.idgis.geoide.service.wms.WMSServiceType;
@@ -24,12 +28,12 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class TocConfig {
 	
-	/*@Bean
+	@Bean
 	@Qualifier ("legendHttpDocumentStore")
 	@Autowired
 	public HttpDocumentStore printHttpDocumentStore (final HttpClient httpClient, final StreamProcessor streamProcessor) {
 		return new HttpDocumentStore (httpClient, streamProcessor);
-	}*/
+	}
 	
 	
 	@Bean
@@ -38,21 +42,21 @@ public class TocConfig {
 	public FileStore imageFileStore (
 			final @Qualifier("streamProcessor") StreamProcessor streamProcessor,
 			final ConfigWrapper config) {
-		String basePath = config.getString ("geoide.service.components.mapProvider.configDir", "C:/Temp");
+		String basePath = config.getString ("geoide.service.components.imageProvider.configDir", "C:/Temp");
 		String protocol = "image";
 		return new FileStore(new File(basePath), protocol, streamProcessor);
 	}
 	
-	/*
+	
 	@Bean
 	@Qualifier ("documentStore")
 	@Autowired
-	public DelegatingStore delegatingStore (final @Qualifier("legendHttpDocumentStore") HttpDocumentStore httpDocumentStore, final @Qualifier("legendFileStore") FileStore fileStore) {
+	public DelegatingStore delegatingStore (final @Qualifier("legendHttpDocumentStore") HttpDocumentStore httpDocumentStore, final @Qualifier("imageFileStore") FileStore fileStore) {
 		DocumentStore[] stores = {httpDocumentStore, fileStore};
 		return new DelegatingStore(stores);
 	}
 	
-	*/
+
 	@Bean
 	@Qualifier ("imageProvider")
 	@Autowired
