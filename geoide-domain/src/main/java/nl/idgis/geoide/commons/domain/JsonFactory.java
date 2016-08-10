@@ -155,12 +155,15 @@ public class JsonFactory {
 	
 	public static ServiceLayer serviceLayer (final JsonNode node, final Map<String, Service> services, final Map<String, FeatureType> featureTypes) {
 		final ParseNamedServiceEntity content = namedServiceEntity (node, services, featureTypes);
+		final JsonNode legendUrl = node.path("legendUrl");
+		
 		return new ServiceLayer (
 				content.getId (), 
 				content.getService (), 
 				content.getName (), 
 				content.getLabel (),
-				content.getFeatureType ()
+				content.getFeatureType (),
+				legendUrl.asText()
 			);
 	}
 	
