@@ -15,18 +15,19 @@ import nl.idgis.geoide.commons.domain.document.StoredImage;
 import nl.idgis.geoide.documentcache.service.FileStore;
 import nl.idgis.geoide.util.Futures;
 import nl.idgis.geoide.util.streams.StreamProcessor;
+import nl.idgis.geoide.commons.domain.api.DocumentStore;
 import nl.idgis.geoide.commons.domain.api.ImageProvider;
 
 
 public class StoredImageProvider implements ImageProvider {
 	
-	private final FileStore fileStore;
+	private final DocumentStore documentStore;
 	private final StreamProcessor streamProcessor;
 	
 	
-	public StoredImageProvider(FileStore fileStore, StreamProcessor streamProcessor) {
+	public StoredImageProvider(DocumentStore documentStore, StreamProcessor streamProcessor) {
 		this.streamProcessor = streamProcessor;
-		this.fileStore = fileStore;
+		this.documentStore = documentStore;
 	}
 	
 
@@ -40,7 +41,7 @@ public class StoredImageProvider implements ImageProvider {
 		    return Futures.throwing(e);
 		}
 		
-    	CompletableFuture<Document> doc = fileStore.fetch(uri);
+    	CompletableFuture<Document> doc = documentStore.fetch(uri);
 		return doc.thenApply ((d) -> {
 			try {
 								
