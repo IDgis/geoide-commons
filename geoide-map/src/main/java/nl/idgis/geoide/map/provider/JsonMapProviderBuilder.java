@@ -75,7 +75,6 @@ public class JsonMapProviderBuilder {
 	 * 			in this builder.
 	 */
 	public StaticMapProvider build () {
-		System.out.println("**************************in build******************************");
 		final Map<String, Service> services = parseServices ();
 		final Map<String, FeatureType> featureTypes = parseFeatureTypes (services);
 		final Map<String, ServiceLayer> serviceLayers = parseServiceLayers (services, featureTypes);
@@ -131,7 +130,6 @@ public class JsonMapProviderBuilder {
 	}
 	
 	private Map<String, SearchTemplate> parseSearchTemplates (final Map<String, FeatureType> featureTypes, final Map <String, ServiceLayer> serviceLayers) {
-		System.out.println("parseSearchTemplates");
 		final Map<String, SearchTemplate> searchTemplates = new HashMap<> ();
 		nodes
 		.stream ()
