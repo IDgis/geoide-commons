@@ -16,7 +16,7 @@ public final class ServiceLayer extends Entity {
 	private final QName name;
 	private final FeatureType featureType;
 
-	private final String legendUrl;
+	private final String legendGraphicUrl;
 	
 	@JsonCreator
 	public ServiceLayer (
@@ -25,7 +25,7 @@ public final class ServiceLayer extends Entity {
 			final @JsonProperty ("name") QName name,
 			final @JsonProperty ("label") String label,
 			final @JsonProperty ("featureType") FeatureType featureType,
-			final @JsonProperty ("legendUrl") String legendUrl ) {
+			final @JsonProperty ("legendGraphicUrl") String legendGraphicUrl ) {
 		super (id, label);
 		
 		Assert.notNull (service, "service");
@@ -36,7 +36,7 @@ public final class ServiceLayer extends Entity {
 		
 		this.featureType = featureType;
 		
-		this.legendUrl = legendUrl;
+		this.legendGraphicUrl = legendGraphicUrl;
 	}
 	
 	@JsonValue
@@ -51,8 +51,8 @@ public final class ServiceLayer extends Entity {
 		if (getFeatureType () != null) {
 			n.put ("featureType", getFeatureType ().getId ());
 		}
-		if (legendUrl != null) { 
-			n.put("legendUrl", legendUrl);
+		if (legendGraphicUrl != null) { 
+			n.put("legendGraphicUrl", legendGraphicUrl);
 		}
 		
 		return n;
@@ -70,7 +70,7 @@ public final class ServiceLayer extends Entity {
 		return featureType;
 	}
 	
-	public String getLegendUrl () {
-		return legendUrl;
+	public String getLegendGraphicUrl () {
+		return legendGraphicUrl;
 	}	
 }
