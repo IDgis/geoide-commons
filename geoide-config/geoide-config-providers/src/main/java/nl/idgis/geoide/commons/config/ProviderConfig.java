@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 
 import nl.idgis.geoide.commons.domain.JsonFactory;
+import nl.idgis.geoide.commons.domain.provider.ReloadableStaticMapProvider;
 import nl.idgis.geoide.commons.domain.provider.StaticMapProvider;
 import nl.idgis.geoide.map.provider.JsonMapProviderBuilder;
 import nl.idgis.geoide.util.ConfigWrapper;
@@ -49,71 +50,73 @@ public class ProviderConfig {
 	 * by the property geoide.service.components.mapProvider.configDir 
 	 * 
 	 * @param config	The application configuration.
-	 * @return 			A configured {@link StaticMapProvider} instance.
+	 * @return 			A configured {@link ReloadableStaticMapProvider} instance.
 	 * @throws			IOException
 	 */
 	@Bean
 	@Autowired
-	public StaticMapProvider mapProvider (final ConfigWrapper config) throws IOException {
-		final String mapsResource = config.getString ("geoide.service.components.mapProvider.resources.maps", "nl/idgis/geoide/commons/config/map/maps.json");
-		final String servicesResource = config.getString ("geoide.service.components.mapProvider.resources.services", "nl/idgis/geoide/commons/config/map/services.json");
-		final String featureTypesResource = config.getString ("geoide.service.components.mapProvider.resources.featureTypes", "nl/idgis/geoide/commons/config/map/featuretypes.json");
-		final String serviceLayersResource = config.getString ("geoide.service.components.mapProvider.resources.serviceLayers", "nl/idgis/geoide/commons/config/map/servicelayers.json");
-		final String layersResource = config.getString ("geoide.service.components.mapProvider.resources.layers", "nl/idgis/geoide/commons/config/map/layers.json");
-		//final String searchTemplatesResource = config.getString ("geoide.service.components.mapProvider.resources.searchtemplates", "nl/idgis/geoide/commons/config/map/searchtemplates.json");
-		
-		final String mapConfigurationDirectory = config.getString ("geoide.service.components.mapProvider.configDir", null);
-		
-		final ClassLoader cl = Thread.currentThread ().getContextClassLoader ();
-		
-		log.info ("Loading static map configuration from classpath");
-		log.info ("Maps configuration: " + mapsResource);
-		log.info ("Services configuration: " + servicesResource);
-		log.info ("Feature types configuration: " + featureTypesResource);
-		log.info ("Service layers configuration: " + serviceLayersResource);
-		log.info ("Layers configuration: " + layersResource);
-		//log.info ("SearchTemplates configuration: " + searchTemplatesResource);
-
-		// Add default configurations from the classpath:
-		final JsonMapProviderBuilder builder = JsonMapProviderBuilder.create (
-				replaceJsonVariables (mapsResource, cl.getResourceAsStream (mapsResource), config),
-				replaceJsonVariables (servicesResource, cl.getResourceAsStream (servicesResource), config),
-				replaceJsonVariables (featureTypesResource, cl.getResourceAsStream (featureTypesResource), config),
-				replaceJsonVariables (serviceLayersResource, cl.getResourceAsStream (serviceLayersResource), config),
-				replaceJsonVariables (layersResource, cl.getResourceAsStream (layersResource), config)
-				//replaceJsonVariables (searchTemplatesResource, cl.getResourceAsStream (searchTemplatesResource), config)
-			);
-		
-		// Add override configurations from the filesystem:
-		if (mapConfigurationDirectory != null) {
-			final File configDir = new File (mapConfigurationDirectory);
+	public ReloadableStaticMapProvider mapProvider (final ConfigWrapper config) throws IOException {
+		return new ReloadableStaticMapProvider(() -> {
+			final String mapsResource = config.getString ("geoide.service.components.mapProvider.resources.maps", "nl/idgis/geoide/commons/config/map/maps.json");
+			final String servicesResource = config.getString ("geoide.service.components.mapProvider.resources.services", "nl/idgis/geoide/commons/config/map/services.json");
+			final String featureTypesResource = config.getString ("geoide.service.components.mapProvider.resources.featureTypes", "nl/idgis/geoide/commons/config/map/featuretypes.json");
+			final String serviceLayersResource = config.getString ("geoide.service.components.mapProvider.resources.serviceLayers", "nl/idgis/geoide/commons/config/map/servicelayers.json");
+			final String layersResource = config.getString ("geoide.service.components.mapProvider.resources.layers", "nl/idgis/geoide/commons/config/map/layers.json");
+			//final String searchTemplatesResource = config.getString ("geoide.service.components.mapProvider.resources.searchtemplates", "nl/idgis/geoide/commons/config/map/searchtemplates.json");
 			
-			log.info ("Overriding map configuration with files from: " + configDir.getAbsolutePath ());
-
-			if (!configDir.exists () || !configDir.isDirectory ()) {
-				throw new IllegalArgumentException ("Map configuration directory: " + configDir + " does not exist or is not a directory");
+			final String mapConfigurationDirectory = config.getString ("geoide.service.components.mapProvider.configDir", null);
+			
+			final ClassLoader cl = Thread.currentThread ().getContextClassLoader ();
+			
+			log.info ("Loading static map configuration from classpath");
+			log.info ("Maps configuration: " + mapsResource);
+			log.info ("Services configuration: " + servicesResource);
+			log.info ("Feature types configuration: " + featureTypesResource);
+			log.info ("Service layers configuration: " + serviceLayersResource);
+			log.info ("Layers configuration: " + layersResource);
+			//log.info ("SearchTemplates configuration: " + searchTemplatesResource);
+	
+			// Add default configurations from the classpath:
+			final JsonMapProviderBuilder builder = JsonMapProviderBuilder.create (
+					replaceJsonVariables (mapsResource, cl.getResourceAsStream (mapsResource), config),
+					replaceJsonVariables (servicesResource, cl.getResourceAsStream (servicesResource), config),
+					replaceJsonVariables (featureTypesResource, cl.getResourceAsStream (featureTypesResource), config),
+					replaceJsonVariables (serviceLayersResource, cl.getResourceAsStream (serviceLayersResource), config),
+					replaceJsonVariables (layersResource, cl.getResourceAsStream (layersResource), config)
+					//replaceJsonVariables (searchTemplatesResource, cl.getResourceAsStream (searchTemplatesResource), config)
+				);
+			
+			// Add override configurations from the filesystem:
+			if (mapConfigurationDirectory != null) {
+				final File configDir = new File (mapConfigurationDirectory);
+				
+				log.info ("Overriding map configuration with files from: " + configDir.getAbsolutePath ());
+	
+				if (!configDir.exists () || !configDir.isDirectory ()) {
+					throw new IllegalArgumentException ("Map configuration directory: " + configDir + " does not exist or is not a directory");
+				}
+				
+				final String[] jsonFiles = configDir.list ((dir, filename) -> filename.toLowerCase ().endsWith (".json"));
+				if (jsonFiles == null) {
+					throw new IllegalStateException ("Unable to list JSON files in " + mapConfigurationDirectory);
+				}
+				
+				builder.addJson (Arrays
+					.stream (jsonFiles)
+					.map (filename -> new File (configDir, filename))
+					.map (file -> { 
+						try { 
+							return replaceJsonVariables (file.toString (), new FileInputStream (file), config); 
+						} catch (Exception e) { 
+							throw new RuntimeException (e); 
+						} 
+					})
+					.collect (Collectors.toList ())
+					.toArray (new JsonNode[0]));
 			}
 			
-			final String[] jsonFiles = configDir.list ((dir, filename) -> filename.toLowerCase ().endsWith (".json"));
-			if (jsonFiles == null) {
-				throw new IllegalStateException ("Unable to list JSON files in " + mapConfigurationDirectory);
-			}
-			
-			builder.addJson (Arrays
-				.stream (jsonFiles)
-				.map (filename -> new File (configDir, filename))
-				.map (file -> { 
-					try { 
-						return replaceJsonVariables (file.toString (), new FileInputStream (file), config); 
-					} catch (Exception e) { 
-						throw new RuntimeException (e); 
-					} 
-				})
-				.collect (Collectors.toList ())
-				.toArray (new JsonNode[0]));
-		}
-		
-		return builder.build ();
+			return builder.build ();
+		});
 	}
 	
 	private JsonNode replaceJsonVariables (final String filename, final InputStream inputStream, final ConfigWrapper config) {

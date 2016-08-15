@@ -84,6 +84,11 @@ public class MapConfig {
 			public CompletableFuture<List<SearchTemplate>> getSearchTemplates (final String mapId) {
 				return CompletableFuture.completedFuture (mapProvider.getSearchTemplates (mapId));
 			}
+
+			@Override
+			public CompletableFuture<Void> refresh() {
+				return CompletableFuture.runAsync(() -> mapProvider.reload());
+			}
 		};
 	}
 }

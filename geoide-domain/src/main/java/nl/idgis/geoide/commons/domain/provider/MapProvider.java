@@ -12,4 +12,5 @@ public interface MapProvider {
 	List<LayerRef> getLayers(String mapId);
 	List<LayerRef> getRootLayers(String mapId);
 	List<SearchTemplate> getSearchTemplates(String mapId);
+	void reload();
 }

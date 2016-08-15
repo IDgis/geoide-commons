@@ -166,5 +166,10 @@ public class StaticMapProvider implements MapProvider, ServiceProvider, ServiceL
 		return null;
 	}
 
+	@Override
+	public void reload() {
+		// reload not implemented for StaticMapProvider		
+	}
+
 	
 }

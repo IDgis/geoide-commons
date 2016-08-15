@@ -13,4 +13,5 @@ public interface MapProviderApi {
 	CompletableFuture<List<LayerRef>> getLayers(String mapId);
 	CompletableFuture<List<LayerRef>> getRootLayers(String mapId);
 	CompletableFuture<List<SearchTemplate>> getSearchTemplates(String mapId);
+	CompletableFuture<Void> refresh();
 }
