@@ -78,6 +78,7 @@ public class ProviderConfig {
 				}
 				
 				final JsonMapProviderBuilder builder = JsonMapProviderBuilder.create ();
+				//TODO: wait
 				
 				allConfigs
 					.map (resource -> replaceJsonVariables (resource, config))

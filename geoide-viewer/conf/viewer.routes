@@ -10,7 +10,7 @@
 
 GET		/map/refresh											@controllers.viewer.Viewer.viewerReload()
 GET 	/map/:mapId												@controllers.viewer.Viewer.startup(mapId)
-GET		/map/:mapId/:token								 		@controllers.viewer.Viewer.viewerForMap(mapId, token)
+GET		/map/viewer/:mapId										 		@controllers.viewer.Viewer.viewerForMap(mapId)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               							@controllers.viewer.Assets.at(path="/public", file)
