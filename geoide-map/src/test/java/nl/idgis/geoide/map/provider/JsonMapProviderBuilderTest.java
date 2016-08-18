@@ -35,7 +35,7 @@ public class JsonMapProviderBuilderTest {
 		final MapDefinition map = builder
 			.addJson (loadResource ("test-map.json"))
 			.build ()
-			.getMapDefinition ("test-map");
+			.getMapDefinition ("test-map", null);
 		
 		
 		assertNotNull (map);
@@ -84,7 +84,7 @@ public class JsonMapProviderBuilderTest {
 				.addJson (loadResource ("test-map.json"))
 				.addJson (loadResource ("override-service-layer.json"))
 				.build ()
-				.getMapDefinition ("test-map");
+				.getMapDefinition ("test-map", null);
 		
 		assertEquals (1, map.getRootLayers ().get (1).getLayer ().getServiceLayers ().size ());
 		assertEquals ("test-servicelayer-2", map.getRootLayers ().get (1).getLayer ().getServiceLayers ().get (0).getId ());
@@ -103,7 +103,7 @@ public class JsonMapProviderBuilderTest {
 				.addJson (loadResource ("test-map.json"))
 				.addJson (loadResource ("override-service.json"))
 				.build ()
-				.getMapDefinition ("test-map");
+				.getMapDefinition ("test-map", null);
 		
 		assertEquals (1, map.getRootLayers ().get (1).getLayer ().getServiceLayers ().size ());
 		assertEquals ("test-service-1", map.getRootLayers ().get (0).getLayer ().getServiceLayers ().get (0).getService ().getId ());
@@ -120,7 +120,7 @@ public class JsonMapProviderBuilderTest {
 				.addJson (loadResource ("test-map.json"))
 				.addJson (loadResource ("override-layer.json"))
 				.build ()
-				.getMapDefinition ("test-map");
+				.getMapDefinition ("test-map", null);
 		
 		assertEquals (2, map.getRootLayers ().size ());
 		assertEquals ("test-layer-1", map.getRootLayers ().get (0).getLayer ().getId ());
@@ -139,7 +139,7 @@ public class JsonMapProviderBuilderTest {
 				.addJson (loadResource ("test-map.json"))
 				.addJson (loadResource ("override-map.json"))
 				.build ()
-				.getMapDefinition ("test-map");
+				.getMapDefinition ("test-map", null);
 		
 		assertNotNull (map);
 		assertEquals ("test-map", map.getId ());
@@ -158,7 +158,7 @@ public class JsonMapProviderBuilderTest {
 				.addJson (loadResource ("test-map.json"))
 				.addJson (loadResource ("override-feature-type.json"))
 				.build ()
-				.getMapDefinition ("test-map");
+				.getMapDefinition ("test-map", null);
 		
 		assertEquals ("test-feature-type-1", map.getRootLayers ().get (1).getLayer ().getServiceLayers ().get (0).getFeatureType ().getId ());
 		assertEquals ("Test feature type 1 override", map.getRootLayers ().get (1).getLayer ().getServiceLayers ().get (0).getFeatureType ().getLabel ());

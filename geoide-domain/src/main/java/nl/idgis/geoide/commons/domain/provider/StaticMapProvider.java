@@ -18,7 +18,7 @@ import nl.idgis.geoide.commons.domain.Service;
 import nl.idgis.geoide.commons.domain.ServiceLayer;
 import nl.idgis.geoide.util.Assert;
 
-public class StaticMapProvider implements MapProvider, ServiceProvider, ServiceLayerProvider, FeatureTypeProvider, LayerProvider, SearchTemplateProvider {
+public class StaticMapProvider implements MapProvider, ServiceProvider, ServiceLayerProvider, FeatureTypeProvider, LayerProvider {
 
 	private final Set<MapDefinition> mapDefinitions;
 	
@@ -43,7 +43,7 @@ public class StaticMapProvider implements MapProvider, ServiceProvider, ServiceL
 	}
 	
 	@Override
-	public MapDefinition getMapDefinition (final String mapId) {
+	public MapDefinition getMapDefinition (final String mapId, final String token) {
 		for (final MapDefinition mapDefinition: mapDefinitions) {
 			if (mapDefinition.getId ().equals (mapId)) {
 				return mapDefinition;
@@ -54,13 +54,13 @@ public class StaticMapProvider implements MapProvider, ServiceProvider, ServiceL
 	}
 	
 	@Override
-	public List<LayerRef> getLayers(String mapId) {
+	public List<LayerRef> getLayers(String mapId, final String token) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<LayerRef> getRootLayers(String mapId) {
+	public List<LayerRef> getRootLayers(String mapId, final String token) {
 		for (final MapDefinition mapDefinition: mapDefinitions) {
 			if (mapDefinition.getId ().equals (mapId)) {
 				return mapDefinition.getRootLayers();
@@ -71,7 +71,7 @@ public class StaticMapProvider implements MapProvider, ServiceProvider, ServiceL
 	
 
 	@Override
-	public Layer getLayer (final String layerId) {
+	public Layer getLayer (final String layerId, final String token) {
 		if (layerId == null) {
 			return null;
 		}
@@ -89,7 +89,7 @@ public class StaticMapProvider implements MapProvider, ServiceProvider, ServiceL
 	}
 
 	@Override
-	public List<Layer> getLayers (final List<String> layerIds) {
+	public List<Layer> getLayers (final List<String> layerIds, final String token) {
 		if (layerIds == null || layerIds.isEmpty ()) {
 			return Collections.emptyList ();
 		}
@@ -97,14 +97,14 @@ public class StaticMapProvider implements MapProvider, ServiceProvider, ServiceL
 		final List<Layer> layers = new ArrayList<Layer> (layerIds.size ());
 		
 		for (final String layerId: layerIds) {
-			layers.add (getLayer (layerId));
+			layers.add (getLayer (layerId, token));
 		}
 		
 		return Collections.unmodifiableList (layers);
 	}
 
 	@Override
-	public Service getService (final String serviceId) {
+	public Service getService (final String serviceId, final String token) {
 		if (serviceId == null) {
 			return null;
 		}
@@ -121,7 +121,7 @@ public class StaticMapProvider implements MapProvider, ServiceProvider, ServiceL
 	}
 	
 	@Override
-	public ServiceLayer getServiceLayer (final String serviceLayerId) {
+	public ServiceLayer getServiceLayer (final String serviceLayerId, final String token) {
 		if (serviceLayerId == null) {
 			return null;
 		}
@@ -139,36 +139,28 @@ public class StaticMapProvider implements MapProvider, ServiceProvider, ServiceL
 
 
 	@Override
-	public List<ServiceLayer> getServiceLayers(List<String> serviceLayerId) {
+	public List<ServiceLayer> getServiceLayers(List<String> serviceLayerId, final String token) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public FeatureType getFeatureType(String featureTypeId) {
+	public FeatureType getFeatureType(String featureTypeId, final String token) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public SearchTemplate getSearchTemplate(String searchTemplateId) {
-		// TODO Auto-generated method stub
-		return null;
+	public boolean reload() {
+		// reload not implemented for StaticMapProvider	
+		return false;
 	}
+	
 
 	@Override
-	public List<SearchTemplate> getSearchTemplates(String mapId) {
-		for (final MapDefinition mapDefinition: mapDefinitions) {
-			if (mapDefinition.getId ().equals (mapId)) {
-				return mapDefinition.getSearchTemplates();
-			}
-		}
+	public String getToken() {
+		// reload not implemented for StaticMapProvider	
 		return null;
-	}
-
-	@Override
-	public void reload() {
-		// reload not implemented for StaticMapProvider		
 	}
 
 	

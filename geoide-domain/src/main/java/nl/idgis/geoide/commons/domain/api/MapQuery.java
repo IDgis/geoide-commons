@@ -9,6 +9,6 @@ import nl.idgis.geoide.commons.domain.query.Query;
 
 public interface MapQuery {
 	
-	CompletableFuture<Query> prepareQuery (ExternalizableJsonNode input);
+	CompletableFuture<Query> prepareQuery (ExternalizableJsonNode input, String token);
 	CompletableFuture<List<ParameterizedFeatureType<?>>> prepareFeatureTypes (Query query);
 }

@@ -25,7 +25,7 @@ public class View extends Controller {
 		final ExternalizableJsonNode viewerState = JsonFactory.externalize (request ().body ().asJson ());
 		// Flatten the layer list in a depth-first fashion:
 		try {
-			return Promises.asPromise (mapView.flattenLayerList (viewerState))
+			return Promises.asPromise (mapView.flattenLayerList (viewerState, ""))
 				.flatMap ((layers) -> Promises.asPromise (mapView.getServiceRequests (layers)).map ((serviceRequests) -> {
 					// Build response:
 					final ObjectNode result = Json.newObject ();

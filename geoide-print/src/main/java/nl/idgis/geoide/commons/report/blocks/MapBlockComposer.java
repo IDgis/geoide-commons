@@ -80,7 +80,7 @@ public class MapBlockComposer implements BlockComposer<MapBlockInfo> {
 		mapRow.attr("class", "map_row");
 				
 		return mapView
-			.flattenLayerList (JsonFactory.externalize(mapInfo.getClientInfo ()))
+			.flattenLayerList (JsonFactory.externalize(mapInfo.getClientInfo ()), null)
 			.thenCompose ((layerStates) -> mapView.getServiceRequests (layerStates).thenCompose ((serviceRequests) -> {
 				final List<CompletableFuture<nl.idgis.geoide.commons.domain.document.Document>> documentPromises = new ArrayList<> ();
 				
