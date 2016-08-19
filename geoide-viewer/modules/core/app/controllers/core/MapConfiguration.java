@@ -28,14 +28,23 @@ public class MapConfiguration extends Controller {
 	}
 
 	public Promise<Result> mapStructure (final String mapId) {
-		return Promises.asPromise (mapProvider.getMapDefinition (mapId,"")).map ((mapDefinition) -> {
-			if (mapDefinition == null) {
-				return notFound ("map not found");
-			}
-			
-			final JsonNode node = Json.toJson (mapDefinition);
-			return ok (filterLayer (node, ""));
-		});
+		String token = request().cookies().get("configToken").value();
+		try {
+			return Promises.asPromise (mapProvider.getMapDefinition (mapId,token)).map ((mapDefinition) -> {
+				if (mapDefinition == null) {
+					return notFound ("map not found");
+				}
+				
+				final JsonNode node = Json.toJson (mapDefinition);
+				return ok (filterLayer (node, ""));
+			});
+		} catch (IllegalStateException e) {
+			System.out.println("refresh nodig");
+			final ObjectNode result = Json.newObject ();
+			result.put ("result", "failed");
+			result.put ("message", e.getMessage ());
+			return Promise.pure (badRequest (result));
+		}
 	}
 	
 	private static JsonNode filterLayer (final JsonNode map, final String layerRefId) {

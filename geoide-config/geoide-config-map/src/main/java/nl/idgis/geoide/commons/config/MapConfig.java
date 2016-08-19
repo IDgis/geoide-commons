@@ -50,8 +50,8 @@ public class MapConfig {
 	@Bean
 	@Autowired
 	public ServiceProviderApi serviceProviderApi (final ServiceProvider serviceProvider) {
-		return (id) -> {
-			final Service service = serviceProvider.getService (id, null);
+		return (id, token) -> {
+			final Service service = serviceProvider.getService (id, token);
 			if (service == null) {
 				return CompletableFuture.completedFuture (null);
 			}
