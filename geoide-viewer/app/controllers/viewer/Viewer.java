@@ -48,13 +48,8 @@ public class Viewer extends Controller {
 		return Promises.asPromise(
 			mapProvider.getMapDefinition(mapId, token)
 				.thenCompose(toc::getItems)
-				.thenApply(tocItems -> (Result)ok(viewer.render (mapId, tocItems)))
-				.exceptionally(e -> {
-					final ObjectNode result = Json.newObject ();
-					result.put ("result", "failed");
-					result.put ("message", e.getMessage ());
-					return (Result)badRequest(result);
-				}));
+				.thenApply(tocItems -> (Result)ok(viewer.render (mapId, tocItems))));
+				
 	}
 	
 	public Promise<Result> viewerReload () {

@@ -25,21 +25,14 @@ public class View extends Controller {
 		final ExternalizableJsonNode viewerState = JsonFactory.externalize (request ().body ().asJson ());
 		// Flatten the layer list in a depth-first fashion:
 		String token = request().cookies().get("configToken").value();
-		try {
-			return Promises.asPromise (mapView.flattenLayerList (viewerState, token))
-				.flatMap ((layers) -> Promises.asPromise (mapView.getServiceRequests (layers)).map ((serviceRequests) -> {
-					// Build response:
-					final ObjectNode result = Json.newObject ();
-					result.put ("result", "ok");
-					result.set ("serviceRequests", Json.toJson (serviceRequests));
-					
-					return (Result) ok (result);
-				}));
-		} catch (IllegalArgumentException e) {
-			final ObjectNode result = Json.newObject ();
-			result.put ("result", "failed");
-			result.put ("message", e.getMessage ());
-			return Promise.pure (badRequest (result));
-		}
+		return Promises.asPromise (mapView.flattenLayerList (viewerState, token))
+			.flatMap ((layers) -> Promises.asPromise (mapView.getServiceRequests (layers)).map ((serviceRequests) -> {
+				// Build response:
+				final ObjectNode result = Json.newObject ();
+				result.put ("result", "ok");
+				result.set ("serviceRequests", Json.toJson (serviceRequests));
+				
+				return (Result) ok (result);
+			}));
 	}
 }
