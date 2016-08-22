@@ -1,15 +1,13 @@
 package nl.idgis.geoide.commons.config;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.slf4j.Logger;
@@ -17,6 +15,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.ResourcePatternResolver;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 
 import nl.idgis.geoide.commons.domain.JsonFactory;
+import nl.idgis.geoide.commons.domain.provider.ReloadableStaticMapProvider;
 import nl.idgis.geoide.commons.domain.provider.StaticMapProvider;
 import nl.idgis.geoide.map.provider.JsonMapProviderBuilder;
 import nl.idgis.geoide.util.ConfigWrapper;
@@ -49,82 +50,62 @@ public class ProviderConfig {
 	 * by the property geoide.service.components.mapProvider.configDir 
 	 * 
 	 * @param config	The application configuration.
-	 * @return 			A configured {@link StaticMapProvider} instance.
+	 * @return 			A configured {@link ReloadableStaticMapProvider} instance.
 	 * @throws			IOException
 	 */
 	@Bean
 	@Autowired
-	public StaticMapProvider mapProvider (final ConfigWrapper config) throws IOException {
-		final String mapsResource = config.getString ("geoide.service.components.mapProvider.resources.maps", "nl/idgis/geoide/commons/config/map/maps.json");
-		final String servicesResource = config.getString ("geoide.service.components.mapProvider.resources.services", "nl/idgis/geoide/commons/config/map/services.json");
-		final String featureTypesResource = config.getString ("geoide.service.components.mapProvider.resources.featureTypes", "nl/idgis/geoide/commons/config/map/featuretypes.json");
-		final String serviceLayersResource = config.getString ("geoide.service.components.mapProvider.resources.serviceLayers", "nl/idgis/geoide/commons/config/map/servicelayers.json");
-		final String layersResource = config.getString ("geoide.service.components.mapProvider.resources.layers", "nl/idgis/geoide/commons/config/map/layers.json");
-		//final String searchTemplatesResource = config.getString ("geoide.service.components.mapProvider.resources.searchtemplates", "nl/idgis/geoide/commons/config/map/searchtemplates.json");
-		
-		final String mapConfigurationDirectory = config.getString ("geoide.service.components.mapProvider.configDir", null);
-		
-		final ClassLoader cl = Thread.currentThread ().getContextClassLoader ();
-		
-		log.info ("Loading static map configuration from classpath");
-		log.info ("Maps configuration: " + mapsResource);
-		log.info ("Services configuration: " + servicesResource);
-		log.info ("Feature types configuration: " + featureTypesResource);
-		log.info ("Service layers configuration: " + serviceLayersResource);
-		log.info ("Layers configuration: " + layersResource);
-		//log.info ("SearchTemplates configuration: " + searchTemplatesResource);
+	public ReloadableStaticMapProvider mapProvider (ResourcePatternResolver resourcePatternResolver, final ConfigWrapper config) throws IOException {
+		return new ReloadableStaticMapProvider (() -> {
+			
+			try {
+				Stream<Resource> configs = Stream.of (				
+					config.getString ("geoide.service.components.mapProvider.resources.maps", "nl/idgis/geoide/commons/config/map/maps.json"),
+					config.getString ("geoide.service.components.mapProvider.resources.services", "nl/idgis/geoide/commons/config/map/services.json"),
+					config.getString ("geoide.service.components.mapProvider.resources.featureTypes", "nl/idgis/geoide/commons/config/map/featuretypes.json"),
+					config.getString ("geoide.service.components.mapProvider.resources.serviceLayers", "nl/idgis/geoide/commons/config/map/servicelayers.json"),
+					config.getString ("geoide.service.components.mapProvider.resources.layers", "nl/idgis/geoide/commons/config/map/layers.json"))
+						.map (resourcePatternResolver::getResource);
+				
+				Stream<Resource> allConfigs;
+				String configDir = config.getString ("geoide.service.components.mapProvider.configDir", null);
+				if (configDir != null) {
+					allConfigs = Stream.concat (
+						configs,
+						Stream.of (resourcePatternResolver.getResources("file:" + configDir + "/*.json")));
+				} else {
+					allConfigs = configs;
+				}
+				
+				final JsonMapProviderBuilder builder = JsonMapProviderBuilder.create ();
+				//TODO: wait
+				
+				allConfigs
+					.map (resource -> replaceJsonVariables (resource, config))
+					.forEach (builder::addJson);
 
-		// Add default configurations from the classpath:
-		final JsonMapProviderBuilder builder = JsonMapProviderBuilder.create (
-				replaceJsonVariables (mapsResource, cl.getResourceAsStream (mapsResource), config),
-				replaceJsonVariables (servicesResource, cl.getResourceAsStream (servicesResource), config),
-				replaceJsonVariables (featureTypesResource, cl.getResourceAsStream (featureTypesResource), config),
-				replaceJsonVariables (serviceLayersResource, cl.getResourceAsStream (serviceLayersResource), config),
-				replaceJsonVariables (layersResource, cl.getResourceAsStream (layersResource), config)
-				//replaceJsonVariables (searchTemplatesResource, cl.getResourceAsStream (searchTemplatesResource), config)
-			);
-		
-		// Add override configurations from the filesystem:
-		if (mapConfigurationDirectory != null) {
-			final File configDir = new File (mapConfigurationDirectory);
+				return builder.build ();
 			
-			log.info ("Overriding map configuration with files from: " + configDir.getAbsolutePath ());
-
-			if (!configDir.exists () || !configDir.isDirectory ()) {
-				throw new IllegalArgumentException ("Map configuration directory: " + configDir + " does not exist or is not a directory");
+			} catch (RuntimeException e) {
+				throw e;			
+			} catch (Exception e) {
+				throw new RuntimeException (e);
 			}
-			
-			final String[] jsonFiles = configDir.list ((dir, filename) -> filename.toLowerCase ().endsWith (".json"));
-			if (jsonFiles == null) {
-				throw new IllegalStateException ("Unable to list JSON files in " + mapConfigurationDirectory);
-			}
-			
-			builder.addJson (Arrays
-				.stream (jsonFiles)
-				.map (filename -> new File (configDir, filename))
-				.map (file -> { 
-					try { 
-						return replaceJsonVariables (file.toString (), new FileInputStream (file), config); 
-					} catch (Exception e) { 
-						throw new RuntimeException (e); 
-					} 
-				})
-				.collect (Collectors.toList ())
-				.toArray (new JsonNode[0]));
-		}
-		
-		return builder.build ();
+		});
 	}
 	
-	private JsonNode replaceJsonVariables (final String filename, final InputStream inputStream, final ConfigWrapper config) {
+	private JsonNode replaceJsonVariables (final Resource resource, final ConfigWrapper config) {
+		log.info ("loading json from: {}", resource);
+		
 		try {
+			final InputStream inputStream = resource.getInputStream ();
 			final JsonNode node = JsonFactory.mapper ().readTree (inputStream);
 			
 			filterNode (node, config);
 			
 			return node;
 		} catch (IOException e) {
-			throw new RuntimeException ("Failed to load " + filename, e);
+			throw new RuntimeException ("Failed to load " + resource, e);
 		}
 	}
 	

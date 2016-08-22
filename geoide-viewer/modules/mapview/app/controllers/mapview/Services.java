@@ -4,11 +4,14 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import nl.idgis.geoide.commons.domain.api.ServiceProviderApi;
 import nl.idgis.geoide.commons.domain.service.messages.ServiceError;
 import nl.idgis.geoide.commons.domain.service.messages.ServiceRequest;
 import nl.idgis.geoide.commons.domain.service.messages.ServiceResponse;
 import nl.idgis.geoide.util.Promises;
+import play.libs.Json;
 import play.libs.F.Function;
 import play.libs.F.Promise;
 import play.mvc.Controller;
@@ -32,7 +35,8 @@ public class Services extends Controller {
 	}
 	
 	public Promise<Result> serviceRequestWithLayer (final String serviceId, final String layerName, final String path) {
-		return Promises.asPromise (serviceProvider.findService (serviceId)).flatMap ((serviceIdentification) -> {
+		String token = request().cookies().get("configToken").value();
+		return Promises.asPromise (serviceProvider.findService (serviceId, token)).flatMap ((serviceIdentification) -> {
 			if (serviceIdentification == null) {
 				return Promise.pure ((Result) notFound ("Service not found"));
 			}

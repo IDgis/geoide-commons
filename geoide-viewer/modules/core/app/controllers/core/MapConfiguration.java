@@ -28,7 +28,8 @@ public class MapConfiguration extends Controller {
 	}
 
 	public Promise<Result> mapStructure (final String mapId) {
-		return Promises.asPromise (mapProvider.getMapDefinition (mapId)).map ((mapDefinition) -> {
+		String token = request().cookies().get("configToken").value();
+		return Promises.asPromise (mapProvider.getMapDefinition (mapId,token)).map ((mapDefinition) -> {
 			if (mapDefinition == null) {
 				return notFound ("map not found");
 			}

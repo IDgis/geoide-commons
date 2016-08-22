@@ -106,11 +106,11 @@ public class DefaultMapView implements MapView {
 	 * @see nl.idgis.geoide.map.MapView#flattenLayerList(com.fasterxml.jackson.databind.JsonNode)
 	 */
 	@Override
-	public CompletableFuture<List<Traits<LayerState>>> flattenLayerList (final ExternalizableJsonNode viewerState) {
-		return CompletableFuture.completedFuture (flattenLayerList (Objects.requireNonNull (viewerState, "viewerState cannot be null").getJsonNode (), Collections.emptyList ()));
+	public CompletableFuture<List<Traits<LayerState>>> flattenLayerList (final ExternalizableJsonNode viewerState, final String token) {
+		return CompletableFuture.completedFuture (flattenLayerList (Objects.requireNonNull (viewerState, "viewerState cannot be null").getJsonNode (), Collections.emptyList (), token));
 	}
 	
-	private List<Traits<LayerState>> flattenLayerList (final JsonNode viewerState, final List<Traits<LayerState>> parents) {
+	private List<Traits<LayerState>> flattenLayerList (final JsonNode viewerState, final List<Traits<LayerState>> parents, final String token) {
 		final List<Traits<LayerState>> layers = new ArrayList<> ();
 		final JsonNode layerRefsNode = viewerState.path ("layerRefs");
 		if (layerRefsNode.isMissingNode ()) {
@@ -118,7 +118,7 @@ public class DefaultMapView implements MapView {
 		}
 
 		for (final JsonNode layerRefNode: layerRefsNode) {
-			final Layer layer = getLayer (layerRefNode.path ("layerid"));
+			final Layer layer = getLayer (layerRefNode.path ("layerid"), token);
 			final Traits<LayerType> layerType = layerTypeRegistry.getLayerType (layer);
 			
 			if (layerType == null) {
@@ -136,18 +136,18 @@ public class DefaultMapView implements MapView {
 				Stream.concat (
 					parents.stream (), 
 					Stream.of (layerState))
-						.collect (Collectors.toList ())));
+						.collect (Collectors.toList ()), token));
 		}
 		
 		return layers;
 	}
 	
-	private Layer getLayer (final JsonNode id) {
+	private Layer getLayer (final JsonNode id, String token) {
 		if (id == null) {
 			throw new IllegalArgumentException ("Missing layer ID");
 		}
 		
-		final Layer layer = layerProvider.getLayer (id.asText ());
+		final Layer layer = layerProvider.getLayer (id.asText (), token);
 		if (layer == null) {
 			throw new IllegalArgumentException ("No layer found with ID " + id.asText ());
 		}

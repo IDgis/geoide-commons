@@ -12,6 +12,6 @@ public interface MapView {
 
 	CompletableFuture<List<ServiceRequest>> getServiceRequests (List<Traits<LayerState>> layerStates);
 
-	CompletableFuture<List<Traits<LayerState>>> flattenLayerList (ExternalizableJsonNode viewerState);
+	CompletableFuture<List<Traits<LayerState>>> flattenLayerList (ExternalizableJsonNode viewerState, String token);
 
 }

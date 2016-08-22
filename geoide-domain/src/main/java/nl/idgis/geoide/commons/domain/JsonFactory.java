@@ -56,6 +56,11 @@ public class JsonFactory {
 		if (node.isObject ()) {
 			return parseObject (node, QName.class);
 		} else {
+			//TODO: node as valid qName object in geoide-composer
+			String [] splitName = node.asText ().split(":");
+			if(splitName.length > 1){
+				return new QName (splitName[1], null); 
+			}
 			return new QName (node.asText ());
 		}
 	}

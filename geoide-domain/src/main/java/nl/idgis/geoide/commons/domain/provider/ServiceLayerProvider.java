@@ -6,7 +6,7 @@ import nl.idgis.geoide.commons.domain.FeatureType;
 import nl.idgis.geoide.commons.domain.ServiceLayer;
 
 public interface ServiceLayerProvider {
-	ServiceLayer getServiceLayer (String serviceLayerId);
-	List<ServiceLayer> getServiceLayers (List<String> serviceLayerId);
-	FeatureType getFeatureType (String serviceLayerId);
+	ServiceLayer getServiceLayer (String serviceLayerId, String token);
+	List<ServiceLayer> getServiceLayers (List<String> serviceLayerId, String token);
+	FeatureType getFeatureType (String serviceLayerId, String token);
 }

@@ -39,8 +39,8 @@ public class DefaultMapQuery implements MapQuery {
 	}
 	
 	@Override
-	public CompletableFuture<Query> prepareQuery (final ExternalizableJsonNode input) {
-		return CompletableFuture.completedFuture (parseQueryInfo (input.getJsonNode ()));
+	public CompletableFuture<Query> prepareQuery (final ExternalizableJsonNode input, final String token) {
+		return CompletableFuture.completedFuture (parseQueryInfo (input.getJsonNode (), token));
 	}
 	
 	@Override
@@ -48,11 +48,11 @@ public class DefaultMapQuery implements MapQuery {
 		return CompletableFuture.completedFuture (createFeatureTypes (query.getLayerInfos ()));
 	}
 	
-	private Query parseQueryInfo (final JsonNode queryNode) {
-		return new Query (parseLayerInfos (queryNode.path ("layers")), parseQuery (queryNode.path ("query")));
+	private Query parseQueryInfo (final JsonNode queryNode, final String token) {
+		return new Query (parseLayerInfos (queryNode.path ("layers"), token), parseQuery (queryNode.path ("query")));
 	}
 	
-	private List<QueryLayerInfo> parseLayerInfos (final JsonNode layersNode) {
+	private List<QueryLayerInfo> parseLayerInfos (final JsonNode layersNode, String token) {
 		if (layersNode.isMissingNode () || !layersNode.isArray ()) {
 			return Collections.emptyList ();
 		}
@@ -60,14 +60,14 @@ public class DefaultMapQuery implements MapQuery {
 		final List<QueryLayerInfo> layerInfos = new ArrayList<QueryLayerInfo> ();
 
 		for (final JsonNode layerNode: layersNode) {
-			layerInfos.add (parseLayerInfo (layerNode));
+			layerInfos.add (parseLayerInfo (layerNode, token));
 		}
 		
 		return layerInfos;
 	}
 	
-	private QueryLayerInfo parseLayerInfo (final JsonNode layerNode) {
-		return new QueryLayerInfo (getLayer (layerNode.path ("id")), Optional.of (layerNode.path ("state")), parseQuery (layerNode.path ("query")));
+	private QueryLayerInfo parseLayerInfo (final JsonNode layerNode, final String token) {
+		return new QueryLayerInfo (getLayer (layerNode.path ("id"), token), Optional.of (layerNode.path ("state")), parseQuery (layerNode.path ("query")));
 	}
 	
 	private Optional<FeatureQuery> parseQuery (final JsonNode queryNode) {
@@ -97,12 +97,12 @@ public class DefaultMapQuery implements MapQuery {
 		
 	}
 
-	private Layer getLayer (final JsonNode id) {
+	private Layer getLayer (final JsonNode id, final String token) {
 		if (id == null) {
 			throw new IllegalArgumentException ("Missing layer ID");
 		}
 		
-		final Layer layer = layerProvider.getLayer (id.asText ());
+		final Layer layer = layerProvider.getLayer (id.asText (), token);
 		if (layer == null) {
 			throw new IllegalArgumentException ("No layer found with ID " + id.asText ());
 		}

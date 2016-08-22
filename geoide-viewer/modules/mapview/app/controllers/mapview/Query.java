@@ -53,7 +53,8 @@ public class Query extends Controller {
 	}
 	
 	public Promise<Result> query () {
-		return Promises.asPromise (mapQuery.prepareQuery (JsonFactory.externalize (request ().body ().asJson ())))
+		String token = request().cookies().get("configToken").value();
+		return Promises.asPromise (mapQuery.prepareQuery (JsonFactory.externalize (request ().body ().asJson ()),token))
 			.flatMap ((queryInfo) -> {
 				Logger.debug ("Querying " + queryInfo.getLayerInfos ().size () + " layers");
 				

@@ -6,5 +6,5 @@ import nl.idgis.geoide.commons.domain.ServiceIdentification;
 
 public interface ServiceProviderApi {
 
-	CompletableFuture<ServiceIdentification> findService (String serviceId);
+	CompletableFuture<ServiceIdentification> findService (String serviceId, String token);
 }
