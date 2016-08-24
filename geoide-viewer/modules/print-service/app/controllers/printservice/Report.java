@@ -91,10 +91,12 @@ public class Report extends Controller {
 	}
 	
 	private Promise<Result> doCompose (final JsonNode reportJson) throws Throwable {
+		String token = request().cookies().get("configToken").value();
+		
 		
 		final Promise<Publisher<PrintEvent>> eventStreamPromise = Promises.asPromise (
 				composer.compose (
-						JsonFactory.externalize (reportJson)));
+						JsonFactory.externalize (reportJson), token));
 
 		return eventStreamPromise.flatMap (eventStream -> {
 			final CompletableFuture<Document> documentFuture = new CompletableFuture<> ();

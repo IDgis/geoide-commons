@@ -80,7 +80,7 @@ public class DefaultReportComposer implements ReportComposer {
 	 * @see nl.idgis.geoide.commons.report.ReportComposer#compose(com.fasterxml.jackson.databind.JsonNode)
 	 */
 	@Override
-	public CompletableFuture<Publisher<PrintEvent>> compose (final ExternalizableJsonNode clientInfo) throws Throwable {
+	public CompletableFuture<Publisher<PrintEvent>> compose (final ExternalizableJsonNode clientInfo, final String token) throws Throwable {
 		Objects.requireNonNull (clientInfo, "clientInfo cannot be null");
 		
 		final JsonNode templateInfo = clientInfo.getJsonNode ().findPath("template");
@@ -91,7 +91,7 @@ public class DefaultReportComposer implements ReportComposer {
 		
 		return doc.thenCompose((d) -> {
 			try { 
-				return composeTemplate (d, clientInfo.getJsonNode ());
+				return composeTemplate (d, clientInfo.getJsonNode (), token);
 			} catch (Throwable e) { 
 				throw new RuntimeException (e);
 			}
@@ -99,7 +99,7 @@ public class DefaultReportComposer implements ReportComposer {
 	}
 		
 		
-	private CompletableFuture<Publisher<PrintEvent>> composeTemplate (TemplateDocument template, JsonNode clientInfo) throws Throwable {	
+	private CompletableFuture<Publisher<PrintEvent>> composeTemplate (TemplateDocument template, JsonNode clientInfo, String token) throws Throwable {	
 		//parse templateInfo
 		final JsonNode templateInfo = clientInfo.findPath("template");
 		final JsonNode viewerStates = clientInfo.findPath("viewerstates");	
@@ -173,18 +173,18 @@ public class DefaultReportComposer implements ReportComposer {
 			BlockInfo blockInfo = preparedBlock._2;
 			if (blockInfo != null) {
 				if (blockElement.hasClass("text") && !blockElement.hasClass("scale")) {
-					promises.add (processBlock (sourceElement, textBlockComposer.compose (blockElement, blockInfo, documentCache)));
+					promises.add (processBlock (sourceElement, textBlockComposer.compose (blockElement, blockInfo, documentCache, token)));
 				}
 				if (blockElement.hasClass("scale")){
 					int scale = (int) mapBlockInfoMap.get(blockInfo.getBlockAttribute("viewerstate-id")).getScale();
 					((ScaleTextBlockInfo) blockInfo).setScale(scale);
-					promises.add (processBlock (sourceElement, textBlockComposer.compose (blockElement, blockInfo, documentCache)));
+					promises.add (processBlock (sourceElement, textBlockComposer.compose (blockElement, blockInfo, documentCache, token)));
 				}
 				if (blockElement.hasClass("map")) {
-					promises.add (processBlock (sourceElement, mapBlockComposer.compose (blockElement, (MapBlockInfo) blockInfo, documentCache)));
+					promises.add (processBlock (sourceElement, mapBlockComposer.compose (blockElement, (MapBlockInfo) blockInfo, documentCache, token)));
 				}
 				if (blockElement.hasClass("scalebar")) {
-					promises.add (processBlock (sourceElement, scaleBarBlockComposer.compose (blockElement, (ScaleBarBlockInfo) blockInfo, documentCache)));
+					promises.add (processBlock (sourceElement, scaleBarBlockComposer.compose (blockElement, (ScaleBarBlockInfo) blockInfo, documentCache, token)));
 				}
 			}	
 			

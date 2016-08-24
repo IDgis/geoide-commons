@@ -14,7 +14,7 @@ import org.jsoup.nodes.Element;
 public class ScaleBarBlockComposer implements BlockComposer<ScaleBarBlockInfo> {
 
 	@Override
-	public CompletableFuture<Block> compose(Element blockElement, ScaleBarBlockInfo barinfo,	DocumentCache documentCache) throws Throwable {
+	public CompletableFuture<Block> compose(Element blockElement, ScaleBarBlockInfo barinfo,	DocumentCache documentCache, String token) throws Throwable {
 		//create svg file
 		URI scaleBarUri = new URI ("stored://" + UUID.randomUUID ().toString ());
 		Document scaleBarDoc = new Document(scaleBarUri.toString());
