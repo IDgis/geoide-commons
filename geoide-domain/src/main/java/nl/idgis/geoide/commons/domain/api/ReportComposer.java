@@ -15,6 +15,6 @@ public interface ReportComposer {
 	 * @param clientInfo 	client information in the form of a Json Node. 
 	 * @return a promise of a report document (html)
 	 */
-	CompletableFuture<Publisher<PrintEvent>> compose (ExternalizableJsonNode clientInfo) throws Throwable;
+	CompletableFuture<Publisher<PrintEvent>> compose (ExternalizableJsonNode clientInfo, String token) throws Throwable;
 
 }

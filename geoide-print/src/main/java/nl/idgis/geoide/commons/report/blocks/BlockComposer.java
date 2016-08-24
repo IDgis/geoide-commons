@@ -27,7 +27,7 @@ public interface BlockComposer<T extends BlockInfo> {
 
 	
 	CompletableFuture<Block> compose(Element blockElement, T info,
-			DocumentCache documentCache) throws Throwable;
+			DocumentCache documentCache, String token) throws Throwable;
 
 
 	

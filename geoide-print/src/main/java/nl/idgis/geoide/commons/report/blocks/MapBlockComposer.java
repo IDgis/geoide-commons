@@ -74,13 +74,13 @@ public class MapBlockComposer implements BlockComposer<MapBlockInfo> {
 	 */
 	
 	@Override
-	public CompletableFuture<Block> compose (Element blockElement, MapBlockInfo mapInfo, DocumentCache documentCache) throws Throwable {
-		
+	public CompletableFuture<Block> compose (Element blockElement, MapBlockInfo mapInfo, DocumentCache documentCache, String token) throws Throwable {
+		System.out.println("compose map");
 		Element mapRow = blockElement.appendElement("div");
 		mapRow.attr("class", "map_row");
 				
 		return mapView
-			.flattenLayerList (JsonFactory.externalize(mapInfo.getClientInfo ()), null)
+			.flattenLayerList (JsonFactory.externalize(mapInfo.getClientInfo ()), token)
 			.thenCompose ((layerStates) -> mapView.getServiceRequests (layerStates).thenCompose ((serviceRequests) -> {
 				final List<CompletableFuture<nl.idgis.geoide.commons.domain.document.Document>> documentPromises = new ArrayList<> ();
 				

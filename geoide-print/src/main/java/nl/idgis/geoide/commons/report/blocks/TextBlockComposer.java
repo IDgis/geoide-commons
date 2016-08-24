@@ -29,7 +29,7 @@ public class TextBlockComposer implements BlockComposer {
 	 **/
 	
 	@Override
-	public CompletableFuture<Block> compose (Element blockElement, BlockInfo info, DocumentCache documentCache) throws Throwable {
+	public CompletableFuture<Block> compose (Element blockElement, BlockInfo info, DocumentCache documentCache, String token) throws Throwable {
 		Element block = getInnerChild(blockElement);
 		block.append (((TextBlockInfo) info).getText());
 		Block textBlock = new Block(blockElement, null);

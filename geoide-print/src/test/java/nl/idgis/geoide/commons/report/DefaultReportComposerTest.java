@@ -152,7 +152,7 @@ public class DefaultReportComposerTest {
 	}
 	
 	private Document doCompose (final ExternalizableJsonNode clientInfo) throws Throwable {
-		final List<PrintEvent> events = StreamProcessor.asList (composer.compose (clientInfo).get (30, TimeUnit.SECONDS)).get (30, TimeUnit.SECONDS);
+		final List<PrintEvent> events = StreamProcessor.asList (composer.compose (clientInfo, "test").get (30, TimeUnit.SECONDS)).get (30, TimeUnit.SECONDS);
 		
 		assertTrue (!events.isEmpty ());
 		assertTrue (events.get (events.size () - 1).getEventType ().equals (PrintEvent.EventType.COMPLETE));
