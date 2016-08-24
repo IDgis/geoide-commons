@@ -40,7 +40,7 @@ public class TocConfig {
 	public FileStore imageFileStore (
 			final @Qualifier("streamProcessor") StreamProcessor streamProcessor,
 			final ConfigWrapper config) {
-		String basePath = config.getString ("geoide.service.components.imageProvider.configDir", "C:/Temp");
+		String basePath = config.getString ("geoide.service.components.imageProvider.dir", "C:/Temp");
 		String protocol = "image";
 		return new FileStore(new File(basePath), protocol, streamProcessor);
 	}
