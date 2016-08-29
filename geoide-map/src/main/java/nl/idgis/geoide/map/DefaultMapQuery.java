@@ -8,6 +8,7 @@ import java.util.concurrent.CompletableFuture;
 
 import nl.idgis.geoide.commons.domain.ExternalizableJsonNode;
 import nl.idgis.geoide.commons.domain.FeatureQuery;
+import nl.idgis.geoide.commons.domain.JsonFactory;
 import nl.idgis.geoide.commons.domain.Layer;
 import nl.idgis.geoide.commons.domain.ParameterizedFeatureType;
 import nl.idgis.geoide.commons.domain.api.MapQuery;
@@ -71,15 +72,33 @@ public class DefaultMapQuery implements MapQuery {
 	}
 	
 	private Optional<FeatureQuery> parseQuery (final JsonNode queryNode) {
+		System.out.println("*********************parseQuery" + queryNode);
+		
 		if (queryNode.isMissingNode ()) {
 			return Optional.empty ();
 		}
+		
+		final Optional<Envelope> envelope;
 		if (queryNode.path ("bbox").isMissingNode ()) {
-			return Optional.empty ();
+			envelope = Optional.empty ();
+		} else {
+			envelope = Optional.of(getEnvelope (queryNode.path ("bbox")));
 		}
 		
-		Envelope envelope = getEnvelope (queryNode.path ("bbox"));
-		return Optional.of (new FeatureQuery (Optional.of(envelope)));
+		final Optional<String> maxFeatures;
+		if (queryNode.path ("maxFeatures").isMissingNode ()) {
+			maxFeatures = Optional.empty ();
+		} else {
+			maxFeatures = Optional.of(queryNode.path ("maxFeatures").textValue());
+		}
+		
+		System.out.println("*********************maxFeatures =" + maxFeatures);
+		
+		if (envelope.isPresent() || maxFeatures.isPresent()) {
+			return Optional.of (new FeatureQuery (envelope, maxFeatures));
+		} else {
+			return Optional.empty();
+		}
 	}
 	
 	private Envelope getEnvelope (final JsonNode bboxNode) {
