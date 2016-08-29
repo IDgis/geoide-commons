@@ -72,8 +72,7 @@ public class DefaultMapQuery implements MapQuery {
 	}
 	
 	private Optional<FeatureQuery> parseQuery (final JsonNode queryNode) {
-		System.out.println("*********************parseQuery" + queryNode);
-		
+
 		if (queryNode.isMissingNode ()) {
 			return Optional.empty ();
 		}
@@ -91,8 +90,6 @@ public class DefaultMapQuery implements MapQuery {
 		} else {
 			maxFeatures = Optional.of(queryNode.path ("maxFeatures").textValue());
 		}
-		
-		System.out.println("*********************maxFeatures =" + maxFeatures);
 		
 		if (envelope.isPresent() || maxFeatures.isPresent()) {
 			return Optional.of (new FeatureQuery (envelope, maxFeatures));
