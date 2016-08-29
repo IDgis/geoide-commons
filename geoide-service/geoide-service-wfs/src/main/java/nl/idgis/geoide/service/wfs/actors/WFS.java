@@ -1,7 +1,7 @@
 package nl.idgis.geoide.service.wfs.actors;
 
 import java.util.Map;
-import java.util.Optional;
+
 
 import akka.actor.ActorRef;
 import akka.actor.Props;
@@ -47,6 +47,7 @@ public class WFS extends OGCService {
 	protected boolean handleServiceMessage (final ServiceMessage message) throws Throwable {
 		if (message instanceof QueryFeatures) {
 			handleQueryFeatures ((QueryFeatures) message);
+			return true;
 		}
 		
 		return super.handleServiceMessage (message);
@@ -151,6 +152,16 @@ public class WFS extends OGCService {
 						String bbox = envelope.getMinX() + "," + envelope.getMinY() + "," + envelope.getMaxX() + "," + envelope.getMaxY();
 						holder = holder.setQueryParameter ("bbox", bbox);
 					}
+					 if (query.getMaxFeatures().isPresent ()) {
+						 String maxFeatures = query.getMaxFeatures().get ();
+						 System.out.println ("zet maxFeatures in holder" + maxFeatures);
+						 
+						 holder = holder.setQueryParameter("maxFeatures", maxFeatures);
+						 System.out.println(holder.getUrl());
+						 
+					 }
+					
+					
 				}
 				
 				final Promise<ServiceMessage> responsePromise = get (holder, sender, self, new ResponseHandler () {

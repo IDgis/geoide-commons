@@ -402,6 +402,8 @@ define ([
 						layerid: layerRef.get('layerid'),
 						state: layerRef.get ('state').extract ()
 					};
+					console.log(mergedLayerRef);
+					console.log(layerRef.get ('id'))
 				
 				if (layerRef.get('layerRefs') !== undefined) {//layerRef.get ('layers').length () > 0) {
 					mergedLayerRef.layerRefs = this._buildViewerState (layerRef.get ('layerRefs'));
