@@ -154,11 +154,11 @@ public class WFS extends OGCService {
 					}
 					 if (query.getMaxFeatures().isPresent ()) {
 						 String maxFeatures = query.getMaxFeatures().get ();
-						 System.out.println ("zet maxFeatures in holder" + maxFeatures);
-						 
-						 holder = holder.setQueryParameter("maxFeatures", maxFeatures);
-						 System.out.println(holder.getUrl());
-						 
+						 if (identification ().getServiceVersion ()=="2.0.0") {
+							 holder = holder.setQueryParameter("count", maxFeatures);
+						 } else {
+							 holder = holder.setQueryParameter("maxFeatures", maxFeatures);
+						 }
 					 }
 					
 					
