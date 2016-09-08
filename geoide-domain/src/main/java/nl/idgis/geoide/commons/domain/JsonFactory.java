@@ -277,9 +277,7 @@ public class JsonFactory {
 		if (id.isMissingNode () || id.asText ().isEmpty ()) {
 			throw new IllegalArgumentException ("Missing property: id");
 		}
-		if (label.isMissingNode ()) {
-			throw new IllegalArgumentException ("Missing property: label");
-		}
+		//label is not prohibited for service entities, this is never shown in the viewer 
 		if (service.isMissingNode ()) {
 			throw new IllegalArgumentException ("Missing property: service");
 		}
