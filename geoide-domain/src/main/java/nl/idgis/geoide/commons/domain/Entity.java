@@ -13,7 +13,7 @@ public abstract class Entity implements Serializable {
 
 	public Entity (final String id, String label) {
 		Assert.notNull (id, "id");
-		Assert.notNull (label, "label");
+		//Assert.notNull (label, "label");
 		
 		this.id = id;
 		this.label = label;
