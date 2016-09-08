@@ -49,6 +49,8 @@ public class DelegatingStore implements DocumentStore {
 		return doc
 			.handle ((document, throwable) -> {
 				if (throwable != null) {
+					throwable.printStackTrace();
+					
 					return fetch (uri, n + 1);
 				} else {
 					return CompletableFuture.<Document>completedFuture (document);
