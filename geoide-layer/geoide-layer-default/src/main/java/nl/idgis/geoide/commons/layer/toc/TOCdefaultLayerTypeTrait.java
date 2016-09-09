@@ -36,6 +36,7 @@ public class TOCdefaultLayerTypeTrait implements TOCLayerTypeTrait {
 		for (LayerRef sublayer: sublayers) {
 			tocChildItems.addAll(getTOC(layerType, sublayer));
 		}
+
 		
 		Traits<TOCItem> tocItem = Traits.create (TOCItem
 				.builder ()
@@ -45,6 +46,7 @@ public class TOCdefaultLayerTypeTrait implements TOCLayerTypeTrait {
 				.setActive (false)
 				.setExpandable (true)
 				.setExpanded (false)
+				.setIsGroup (sublayers.size() > 0)
 				.build ()
 			);
 		

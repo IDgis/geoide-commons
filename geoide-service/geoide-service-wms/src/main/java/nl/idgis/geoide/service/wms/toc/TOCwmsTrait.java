@@ -30,6 +30,7 @@ public class TOCwmsTrait implements TOCServiceTypeTrait{
 				.builder ()
 				.setLabel (serviceLayer.getLabel ())
 				.setSymbol (new Symbol (serviceLayer.getId(), serviceLayer.getLegendGraphicUrl()))
+				.setIsGroup(false)
 				.build ()
 		));
 			

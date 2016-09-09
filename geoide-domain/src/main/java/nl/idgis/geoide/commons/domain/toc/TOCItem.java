@@ -19,6 +19,7 @@ public final class TOCItem implements Serializable {
 	private final boolean active;
 	private final boolean expandable;
 	private final boolean expanded;
+	private final boolean isGroup;
 	private final Symbol symbol;
 	 
 	 
@@ -29,6 +30,7 @@ public final class TOCItem implements Serializable {
 			 boolean active,
 			 boolean expandable,
 			 boolean expanded,
+			 boolean isGroup,
 			 Symbol symbol) {
 		 this.items = items;
 		 this.label = label;
@@ -36,6 +38,7 @@ public final class TOCItem implements Serializable {
 		 this.active = active;
 		 this.expandable = expandable;
 		 this.expanded = expanded;
+		 this.isGroup = isGroup;
 		 this.symbol = symbol;
 	 }
 	  
@@ -69,6 +72,10 @@ public final class TOCItem implements Serializable {
 		return expanded;
 	}
 	
+	public boolean isGroup() {
+		return isGroup;
+	}
+	
 	public static Builder builder () {
 		return new Builder ();
 	}
@@ -80,10 +87,11 @@ public final class TOCItem implements Serializable {
 		private boolean active = false;
 		private boolean expandable = false;
 		private boolean expanded = false;
+		private boolean isGroup = false;
 		private Symbol symbol = null;
 		
 		public TOCItem build () {
-			return new TOCItem (items, label, activatable, active, expandable, expanded, symbol);
+			return new TOCItem (items, label, activatable, active, expandable, expanded, isGroup, symbol);
 		}
 		
 		public List<Traits<TOCItem>> getItems() {
@@ -142,6 +150,15 @@ public final class TOCItem implements Serializable {
 		
 		public Builder setExpanded(boolean expanded) {
 			this.expanded = expanded;
+			return this;
+		}
+		
+		public boolean isGroup() {
+			return expanded;
+		}
+		
+		public Builder setIsGroup(boolean isGroup) {
+			this.isGroup = isGroup;
 			return this;
 		}
 		
