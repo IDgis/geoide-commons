@@ -130,22 +130,49 @@ define ([
 			this.set ('layerRefDictionary', layerRefDictionary);
 			this.set ('layerRefList', layerRefList);
 			
-			var searchTemplateList = [];
 			
-			var processSearchTemplates = function (object) {
-				var searchTemplates = object.get ('searchTemplates');
-				if (searchTemplates){
-					for (var i = 0, length = searchTemplates.length (); i < length; ++ i) {
-						var searchTemplate = searchTemplates.get (i);
-						searchTemplateList.push(searchTemplate);
-					}
-				}	
-			};
-			
-			processSearchTemplates (this);
-			
-			this.set ('searchTemplateList', searchTemplateList);	
 		},
+		
+		changeLayerOrder: function (layerId, oldParentId, newParentId, sibblingId) {
+
+			var movedLayerRef = this.layerRefDictionary[layerId];
+			
+			//remove from oldParent
+			var oldLayerRefs;
+			if (oldParentId !== "root") {
+				var oldParentRef = this.layerRefDictionary[oldParentId];
+				oldLayerRefs = oldParentRef.get('layerRefs');	
+			} else if (oldParentId === "root")	{
+				oldLayerRefs = this.get ('layerRefs');
+			}
+			for(var i = 0; i < oldLayerRefs.length(); i++ ){
+				if (oldLayerRefs.get(i) === movedLayerRef) {
+					oldLayerRefs.splice(i,1);
+					break;
+				} 
+			}
+			
+			//insert in new Parent
+			var newLayerRefs;
+			
+			if (newParentId !== "root") {
+				var newParentRef = this.layerRefDictionary[newParentId];
+				newLayerRefs = newParentRef.get('layerRefs');
+			} else if (newParentId === "root"){
+				newLayerRefs = this.get ('layerRefs')
+			}	
+			if(sibblingId) {
+				var sibblingLayerRef = this.layerRefDictionary[sibblingId];
+				for(var i = 0; i < newLayerRefs.length(); i++ ){
+					if (newLayerRefs.get(i) === sibblingLayerRef) {
+						newLayerRefs.splice(i+1,0, movedLayerRef);
+						break;
+					} 
+				}
+			}
+			
+		},
+		
 		
 		map: function () {
 			return this;
