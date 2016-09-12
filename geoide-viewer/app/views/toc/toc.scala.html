@@ -7,8 +7,8 @@
 @displayItem(item: nl.idgis.geoide.commons.domain.traits.Traits[nl.idgis.geoide.commons.domain.toc.TOCItem], level: Integer = 0, layerRefId: String) = {
 	
 	<li class="gi-toc-level-@level @if(item.get().isExpandable()){expandable} @if(item.get().isExpanded()){expanded}
-								   @if(item.get().isActivatable()){activatable} @if(item.get().isActive()){active}"
-								   @if(item.get().isGroup()) {isGroup}
+								   @if(item.get().isActivatable()){activatable} @if(item.get().isActive()){active}
+								   @if(item.get().isGroup()) {isGroup}"
 								   @if(item.has(classOf[TOCItemLayerRefTrait])){
 								   		data-layerref-id = "@layerRefId" 
 									}>
