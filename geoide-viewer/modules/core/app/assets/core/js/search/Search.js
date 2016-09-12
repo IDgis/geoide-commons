@@ -29,13 +29,7 @@ define ([
 		constructor: function (searchNode, viewer) {
 			
 	
-			
-			viewer.map.get('searchTemplateList').forEach (function(q) {
-				console.log(q);
-			    console.log(q.get('label'));
-			    
-			  
-		});
-	}});
+		
+		}});
 	
 });

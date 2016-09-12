@@ -68,8 +68,7 @@ public class JsonFactory {
 	public static MapDefinition mapDefinition (
 			final JsonNode mapNode, 
 			final Map<String, Layer> layerMap, 
-			final Map<String, ServiceLayer> serviceLayerMap,
-			final Map<String, SearchTemplate> searchTemplateMap) {
+			final Map<String, ServiceLayer> serviceLayerMap) {
 		final JsonNode id = mapNode.path ("id"); 
 		final JsonNode label = mapNode.path ("label");
 		final String initialExtent;
@@ -89,12 +88,12 @@ public class JsonFactory {
 			initialExtent = "";
 		}
 		
-		final List<SearchTemplate> searchTemplateList = new ArrayList<> ();
+		/*final List<SearchTemplate> searchTemplateList = new ArrayList<> ();
 		if (mapNode.has("searchtemplates")) {
 			for ( final JsonNode searchTemplateNode:mapNode.path ("searchtemplates")) {
 				searchTemplateList.add(searchTemplateMap.get(searchTemplateNode.asText()));
 			}
-		}	
+		}	*/
 		
 		if (mapNode.has("maplayers")) {
 			final List<LayerRef> layerRefList = new ArrayList<> ();
@@ -107,7 +106,7 @@ public class JsonFactory {
 				final LayerRef layerRef = JsonFactory.layerRef (layerRefNode, layerMap);
 				layerRefList.add (layerRef);	
 			}
-			return new MapDefinition (id.asText (), label.asText (),  initialExtent, layerRefList, searchTemplateList);
+			return new MapDefinition (id.asText (), label.asText (),  initialExtent, layerRefList);
 		} else {
 			throw new IllegalArgumentException ("Missing property: maplayers");
 		}
