@@ -21,18 +21,16 @@ public class MapDefinition extends Entity {
 	private final Map<String, ServiceLayer> serviceLayers = new HashMap<> ();
 	private final Map<String, FeatureType> featureTypes = new HashMap<> ();
 	private final Map<String, LayerRef> layerRefs = new HashMap<> ();
-	private final List<SearchTemplate> searchTemplates;
+
 
 	public MapDefinition (
 			final String id, 
 			final String label, 
 			final String initialExtent, 
-			final List<LayerRef> rootLayers,
-			final List<SearchTemplate> searchTemplates) {
+			final List<LayerRef> rootLayers) {
 		super (id, label);
 		this.initialExtent = initialExtent;
 		this.rootLayers = rootLayers == null ? Collections.<LayerRef>emptyList () : new ArrayList<> (rootLayers);
-		this.searchTemplates = searchTemplates;
 		// Scan the layers and fill the indices:
 		scanLayerRefs (this.rootLayers);
 	}
@@ -71,13 +69,6 @@ public class MapDefinition extends Entity {
 				layerRefsNode.add (JsonFactory.mapper ().valueToTree (layerRef));
 			}
 		}
-		//write searchTemplates
-		if (!getSearchTemplates ().isEmpty ()) {
-			final ArrayNode searchTemplatesNode = obj.putArray ("searchTemplates");
-			for (final SearchTemplate searchTemplate: getSearchTemplates ()) {
-				searchTemplatesNode.add (JsonFactory.mapper ().valueToTree (searchTemplate));
-			}
-		}
 		return obj;
 	}
 	
@@ -105,9 +96,6 @@ public class MapDefinition extends Entity {
 		return Collections.unmodifiableMap (layerRefs);
 	}
 	
-	public List<SearchTemplate> getSearchTemplates() {
-		return searchTemplates;
-	}
 	
 	private void scanLayerRefs (final Collection<LayerRef> layerRefs) {
 		final LinkedList<LayerRef> fringe = new LinkedList<> (layerRefs);

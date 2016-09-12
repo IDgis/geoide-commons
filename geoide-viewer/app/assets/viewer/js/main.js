@@ -257,4 +257,12 @@ require ([
 		
 		viewers[0].enableInteraction (new DragZoom ());
 	});
+	
+	on (dom.byId ('test'), 'click', function (e) {
+		e.preventDefault ();
+		e.stopPropagation ();
+		viewers[0].map.changeLayerOrder ('2/1','2', 'root','1'); 
+	});
+	
+	
 });
