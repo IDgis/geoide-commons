@@ -49,7 +49,9 @@ public class DelegatingStore implements DocumentStore {
 		return doc
 			.handle ((document, throwable) -> {
 				if (throwable != null) {
-					throwable.printStackTrace();
+					//if document not found then try next store, do not throw error
+					//this will only pollute your log 
+					//throwable.printStackTrace();
 					
 					return fetch (uri, n + 1);
 				} else {

@@ -136,12 +136,24 @@ public class WMSServiceType extends ServiceType implements LayerServiceType {
 				}
 			}
 		}
-		//TODO check if svg outputformat is supported or other format is configured
+		//get the printFormat if configured
+		String printFormat = serviceRequest.getService().getPrintFormat();
+					
+		if(printFormat == null || printFormat == "") {
+			printFormat = "image%2Fsvg%2Bxml";
+		} else {
+			try {
+				printFormat = URLEncoder.encode(printFormat, "UTF8");
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+		}	
+
 		
 		String bbox = mapExtent.path("minx") + "," +  mapExtent.path("miny") + "," +
 					 mapExtent.path("maxx") + "," +  mapExtent.path("maxy");
 		
-		String requestUrl = serviceEndPoint + "?SERVICE=WMS&VERSION=" + serviceVersion +  "&REQUEST=GetMap&FORMAT=image%2Fsvg%2Bxml" +
+		String requestUrl = serviceEndPoint + "?SERVICE=WMS&VERSION=" + serviceVersion +  "&REQUEST=GetMap&FORMAT=" + printFormat +
 				"&layers="  + parameters.getLayers() + "&transparent=" + parameters.getTransparent() + "&CRS=EPSG%3A28992&STYLES=" +
 				"&BBOX=" + bbox + "&WIDTH=" + outputWidth + "&HEIGHT=" + outputHeight + "&" +  vendorParamString;
 		

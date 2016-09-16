@@ -135,12 +135,12 @@ define ([
 		
 		changeLayerOrder: function (layerId, oldParentId, newParentId, sibblingId) {
 
-			var movedLayerRef = this.layerRefDictionary[layerId];
+			var movedLayerRef = this.get ('layerRefDictionary').get(layerId);
 			
 			//remove from oldParent
 			var oldLayerRefs;
 			if (oldParentId !== "root") {
-				var oldParentRef = this.layerRefDictionary[oldParentId];
+				var oldParentRef = this.get ('layerRefDictionary').get(oldParentId);
 				oldLayerRefs = oldParentRef.get('layerRefs');	
 			} else if (oldParentId === "root")	{
 				oldLayerRefs = this.get ('layerRefs');
@@ -152,24 +152,40 @@ define ([
 				} 
 			}
 			
-			//insert in new Parent
+			//insert in new Parent, NB: the order is reversed so sibbling 
+			//after the changed node and changed node will be the last in the group.
 			var newLayerRefs;
 			
 			if (newParentId !== "root") {
-				var newParentRef = this.layerRefDictionary[newParentId];
+				var newParentRef = this.get ('layerRefDictionary').get(newParentId);
 				newLayerRefs = newParentRef.get('layerRefs');
 			} else if (newParentId === "root"){
 				newLayerRefs = this.get ('layerRefs')
 			}	
+			console.log("voor");
+			console.log(newLayerRefs);
 			if(sibblingId) {
-				var sibblingLayerRef = this.layerRefDictionary[sibblingId];
+				var sibblingLayerRef = this.get ('layerRefDictionary').get (sibblingId);
+			    
 				for(var i = 0; i < newLayerRefs.length(); i++ ){
+					console.log(i);
+					console.log(newLayerRefs.get(i));
+					
+					
+					
 					if (newLayerRefs.get(i) === sibblingLayerRef) {
-						newLayerRefs.splice(i+1,0, movedLayerRef);
+						console.log("gelijk aan");
+						console.log(sibblingLayerRef);
+						console.log("break");
+						newLayerRefs.splice(i,0, movedLayerRef);
 						break;
 					} 
 				}
+			} else {
+				newLayerRefs.push(movedLayerRef);
 			}
+			console.log("na");
+			console.log(newLayerRefs);
 			
 		},
 		
