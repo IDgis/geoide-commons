@@ -347,6 +347,7 @@ define ([
 						removeCount: 0,
 						olLayer: null
 					};
+					layer.parameters.version = serviceRequest.serviceIdentification.serviceVersion;
 				
 				if (requestId in this.layersMap && this.isLayerReusable (this.layersMap[requestId], serviceRequest)) {
 					// Re-use a previous layer with the same ID:
