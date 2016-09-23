@@ -59,22 +59,18 @@ public class ProviderConfig {
 		return new ReloadableStaticMapProvider (() -> {
 			
 			try {
-				Stream<Resource> configs = Stream.of (				
-					config.getString ("geoide.service.components.mapProvider.resources.maps", "nl/idgis/geoide/commons/config/map/maps.json"),
-					config.getString ("geoide.service.components.mapProvider.resources.services", "nl/idgis/geoide/commons/config/map/services.json"),
-					config.getString ("geoide.service.components.mapProvider.resources.featureTypes", "nl/idgis/geoide/commons/config/map/featuretypes.json"),
-					config.getString ("geoide.service.components.mapProvider.resources.serviceLayers", "nl/idgis/geoide/commons/config/map/servicelayers.json"),
-					config.getString ("geoide.service.components.mapProvider.resources.layers", "nl/idgis/geoide/commons/config/map/layers.json"))
-						.map (resourcePatternResolver::getResource);
-				
 				Stream<Resource> allConfigs;
 				String configDir = config.getString ("geoide.service.components.mapProvider.configDir", null);
 				if (configDir != null) {
-					allConfigs = Stream.concat (
-						configs,
-						Stream.of (resourcePatternResolver.getResources("file:" + configDir + "/*.json")));
+					allConfigs = Stream.of (resourcePatternResolver.getResources("file:" + configDir + "/*.json"));
 				} else {
-					allConfigs = configs;
+					allConfigs= Stream.of (				
+							config.getString ("geoide.service.components.mapProvider.resources.maps", null),
+							config.getString ("geoide.service.components.mapProvider.resources.services", null),
+							config.getString ("geoide.service.components.mapProvider.resources.featureTypes", null),
+							config.getString ("geoide.service.components.mapProvider.resources.serviceLayers", null),
+							config.getString ("geoide.service.components.mapProvider.resources.layers", null))
+								.map (resourcePatternResolver::getResource);
 				}
 				
 				final JsonMapProviderBuilder builder = JsonMapProviderBuilder.create ();

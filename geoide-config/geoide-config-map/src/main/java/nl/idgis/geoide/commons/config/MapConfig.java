@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 
 import nl.idgis.geoide.commons.domain.LayerRef;
 import nl.idgis.geoide.commons.domain.MapDefinition;
-import nl.idgis.geoide.commons.domain.SearchTemplate;
 import nl.idgis.geoide.commons.domain.Service;
 import nl.idgis.geoide.commons.domain.api.MapProviderApi;
 import nl.idgis.geoide.commons.domain.api.ServiceProviderApi;
