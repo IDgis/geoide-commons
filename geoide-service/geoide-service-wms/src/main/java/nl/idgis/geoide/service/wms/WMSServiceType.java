@@ -120,7 +120,7 @@ public class WMSServiceType extends ServiceType implements LayerServiceType {
 	@Override
 	public List<JsonNode> getLayerRequestUrls (ServiceRequest serviceRequest, JsonNode mapExtent, double resolution, int outputWidth, int outputHeight )  {
 		
-		String serviceEndPoint = serviceRequest.getService().getIdentification().getServiceEndpoint();
+		String serviceEndPoint = this.normalizeEndpoint(serviceRequest.getService().getIdentification().getServiceEndpoint());
 		String serviceVersion = serviceRequest.getService().getIdentification().getServiceVersion();
 		
 		WMSRequestParameters parameters = (WMSRequestParameters) serviceRequest.getParameters();		
@@ -153,8 +153,12 @@ public class WMSServiceType extends ServiceType implements LayerServiceType {
 		String bbox = mapExtent.path("minx") + "," +  mapExtent.path("miny") + "," +
 					 mapExtent.path("maxx") + "," +  mapExtent.path("maxy");
 		
-		String requestUrl = serviceEndPoint + "?SERVICE=WMS&VERSION=" + serviceVersion +  "&REQUEST=GetMap&FORMAT=" + printFormat +
-				"&layers="  + parameters.getLayers() + "&transparent=" + parameters.getTransparent() + "&CRS=EPSG%3A28992&STYLES=" +
+		String referenceParam = "CRS";
+		if(serviceVersion.equals("1.1.1")) {
+			referenceParam = "SRS";
+		}
+		String requestUrl = serviceEndPoint + "SERVICE=WMS&VERSION=" + serviceVersion +  "&REQUEST=GetMap&FORMAT=" + printFormat +
+				"&layers="  + parameters.getLayers() + "&transparent=" + parameters.getTransparent() + "&" + referenceParam + "=EPSG%3A28992&STYLES=" +
 				"&BBOX=" + bbox + "&WIDTH=" + outputWidth + "&HEIGHT=" + outputHeight + "&" +  vendorParamString;
 		
 		ObjectMapper mapper = new ObjectMapper();
@@ -166,7 +170,9 @@ public class WMSServiceType extends ServiceType implements LayerServiceType {
 		request.put("top", 0);
 		request.put("bottom", outputHeight);
 		
+		System.out.println("WMSServiceType: getLayerRequestUrls: requestUrl: " + requestUrl);
 		requests.add(request);
+		
 		
 		return requests;
 	}
