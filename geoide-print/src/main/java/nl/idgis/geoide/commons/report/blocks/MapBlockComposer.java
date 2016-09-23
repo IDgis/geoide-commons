@@ -100,6 +100,10 @@ public class MapBlockComposer implements BlockComposer<MapBlockInfo> {
 						ServiceType serviceType = mapView.getServiceType(request.getService());
 
 						if (serviceType instanceof LayerServiceType) {
+							String printFormat = request.getService().getPrintFormat();
+							if (printFormat == null) {
+								printFormat = "image/svg+xml";
+							}
 							LayerServiceType layerServiceType = (LayerServiceType) serviceType;
 							List<JsonNode> requestUrls = layerServiceType.getLayerRequestUrls(request,
 									mapInfo.getMapExtentJson(), mapInfo.getResolution(), widthpx, heightpx);
@@ -107,7 +111,7 @@ public class MapBlockComposer implements BlockComposer<MapBlockInfo> {
 							if (request.getService().getIdentification().getServiceType().equals("TMS")) {
 
 								for (JsonNode requestUrl : requestUrls) {
-									Element mapLayer = createSVGLayerElement(mapRow, widthmm, heightmm, layernr);
+									Element mapLayer = createLayerElement(mapRow, widthmm, heightmm, layernr);
 									mapCss += getLayerCss(layernr, mapInfo);
 									URI tileSvgUri = createUri("stored://" + UUID.randomUUID().toString());
 									Document tileSvg = createTileSvg(tileSvgUri, requestUrl, mapInfo);
@@ -118,17 +122,20 @@ public class MapBlockComposer implements BlockComposer<MapBlockInfo> {
 								}
 
 							} else {
-								String printFormat = request.getService().getPrintFormat();
-								Element mapLayer = createSVGLayerElement(mapRow, widthmm, heightmm, layernr);
+								Element mapLayer = createLayerElement(mapRow, widthmm, heightmm, layernr);
 								mapCss += getLayerCss(layernr, mapInfo);
 								if (printFormat.indexOf("svg") == -1) {
 									Element imgElem = ((Element) mapLayer.childNode(0)).appendElement("img");
 									imgElem.attr("src", requestUrls.get(0).path("uri").asText())
 											.attr("height", heightmm + "mm").attr("width", widthmm + "mm")
 											.attr("style", "left:0;top:0;padding:0;margin:0;border:0");
+									System.out.println("MapBlockComposer: compose: requestUrl: img " + requestUrls.get(0).path("uri").asText());
 								} else {
 									mapLayer.childNode(0).attr("data", requestUrls.get(0).path("uri").asText());
+									System.out.println("MapBlockComposer: compose: requestUrl: svg " + requestUrls.get(0).path("uri").asText());
 								}
+								
+								
 								layernr += 1;
 
 							}
@@ -227,7 +234,7 @@ public class MapBlockComposer implements BlockComposer<MapBlockInfo> {
 		}
 	}
 
-	private Element createSVGLayerElement(Element mapRow, double width, double height, int layernr) {
+	private Element createLayerElement(Element mapRow, double width, double height, int layernr) {
 		Element mapLayer = mapRow.appendElement("div");
 		mapLayer.attr("id", "map_layer" + layernr);
 		Element layerObject = mapLayer.appendElement("object");
