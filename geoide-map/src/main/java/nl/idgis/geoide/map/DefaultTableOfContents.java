@@ -38,7 +38,7 @@ public class DefaultTableOfContents implements TableOfContents {
 	
 
 	private List<Traits<TOCItem>> reverse(List<Traits<TOCItem>> tocItems) {
-	    if(tocItems.size() > 1) {                   
+	    if(tocItems.size() > 0) {                   
 	    	Traits<TOCItem> value = tocItems.remove(0);
 	    	List<Traits<TOCItem>> tocChildItems = value.get().getItems();
 	    	if(tocChildItems.size() > 0) {
