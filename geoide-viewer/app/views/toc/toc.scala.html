@@ -29,8 +29,9 @@
 			}
 			<span>
 				@if(item.get().getSymbol()!=null&&item.get().getSymbol()!="") {
-					<img src= @controllers.core.routes.Image.getImage(item.get().getSymbol().getLegendGraphicUrl())>
+					<img  alt="Legenda niet beschikbaar" src= @item.get().getSymbol().getLegendGraphicUrl()>
 					<!--  img src= @controllers.core.routes.Image.getImage("image:///" + item.get().getSymbol().getId() + ".png")-->
+					<img alt="Legenda niet beschikbaar" src= @controllers.core.routes.Image.getImage(item.get().getSymbol().getLegendGraphicUrl())>
 					}
 			</span>
 			<span>
