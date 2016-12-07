@@ -61,6 +61,7 @@ public class HttpDocumentStore implements DocumentStore {
 	 */
 	@Override
 	public CompletableFuture<Document> fetch (final URI uri) {
+		Logger.debug("try fetching file from HttpDocumentStore " + uri.getPath());
 		if (!"http".equals (uri.getScheme ()) && !"https".equals (uri.getScheme ())) {
 			Logger.debug ("Bad scheme: " + uri.toString ());
 			return Futures.throwing (new DocumentCacheException.DocumentNotFoundException (uri)); 
@@ -106,6 +107,7 @@ public class HttpDocumentStore implements DocumentStore {
 				final MimeContentType contentType = new MimeContentType (response.getHeader ("Content-Type"));
 				final PublisherReference<ByteString> body = streamProcessor.createPublisherReference (response.getBody (), 5000);
 				
+				Logger.debug("HttpDocumentProvider builder new Document ready " + uri.getPath() );
 				return new Document (uri, contentType, body);
 			});
 	}

@@ -16,6 +16,7 @@ import nl.idgis.geoide.commons.domain.document.Document;
 import nl.idgis.geoide.commons.domain.document.StoredImage;
 import nl.idgis.geoide.util.Futures;
 import nl.idgis.geoide.util.streams.StreamProcessor;
+import play.Logger;
 
 
 public class StoredImageProvider implements ImageProvider {
@@ -31,6 +32,7 @@ public class StoredImageProvider implements ImageProvider {
 	
 
 	public CompletableFuture<StoredImage> getImage(String imageUrl) {
+		Logger.debug("StoredImageProvider getImage from " + imageUrl);
 		
 		URI uri;
 		
@@ -56,8 +58,10 @@ public class StoredImageProvider implements ImageProvider {
 				inputStream.close ();
 		
 				final StoredImage image = new StoredImage (data.toArray (), uri);
+				Logger.debug("StoredImageProvider new StoredImage ready");
 				return image;
 			} catch (IOException e) {
+				System.out.println("StoredImageProvider StoredImage error " + e.getStackTrace());
 				throw new RuntimeException (e);
 			}
 		});

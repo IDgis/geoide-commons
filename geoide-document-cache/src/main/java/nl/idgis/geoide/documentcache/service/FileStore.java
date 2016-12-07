@@ -83,7 +83,7 @@ public class FileStore implements DocumentStore {
 	@Override
 	public CompletableFuture<Document> fetch (URI fileUri) {
 		final File file;
-		
+		Logger.debug("try fetching file from FileStore " + fileUri.getPath());
 		try {
 			file = getFile (fileUri);
 		} catch (DocumentCacheException e) {

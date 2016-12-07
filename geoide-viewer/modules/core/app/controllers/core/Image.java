@@ -23,7 +23,7 @@ public class Image extends Controller {
 	}
 		
 	public	 Promise<Result> getImage (String imageUrl) throws Throwable {
-
+		System.out.println("in GetImage " + imageUrl);
 		final Promise<StoredImage> imagePromise = Promises.asPromise (this.imageProvider.getImage(imageUrl));
 		
 		return imagePromise.map((image) -> {		
