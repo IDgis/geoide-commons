@@ -42,7 +42,6 @@ public class DelegatingStore implements DocumentStore {
 	}
 	
 	private CompletableFuture<Document> fetch(URI uri, int n) {
-		Logger.debug("DelegatingStore loop through stores, try to fetch the document " + n + ":" + stores[n].toString());
 		if(n >=stores.length ) {
 			return Futures.throwing (new DocumentCacheException.DocumentNotFoundException (uri));
 		}
