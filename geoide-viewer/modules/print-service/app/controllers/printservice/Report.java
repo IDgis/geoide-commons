@@ -75,6 +75,8 @@ public class Report extends Controller {
 		
 		URI uri = new URI(u);
 		final Promise<Document> documentPromise = Promises.asPromise (documentCache.fetch(uri));
+
+		
 		
 		return documentPromise.map (new Function<Document, Result> () {
 			//@Override
@@ -93,6 +95,7 @@ public class Report extends Controller {
 	private Promise<Result> doCompose (final JsonNode reportJson) throws Throwable {
 		String token = request().cookies().get("configToken").value();
 		
+		String refererUrl = request().getHeader("referer");
 		
 		final Promise<Publisher<PrintEvent>> eventStreamPromise = Promises.asPromise (
 				composer.compose (
@@ -132,6 +135,7 @@ public class Report extends Controller {
 				final ObjectNode result = Json.newObject ();
 				result.put ("result", "ok");
 				result.put("reportUrl", document.getUri().toString());
+				result.put("refererUrl", refererUrl);
 				return (Result) ok (result);
 				
 			});
