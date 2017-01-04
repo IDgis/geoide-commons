@@ -2,8 +2,10 @@ package nl.idgis.geoide.commons.config;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -32,6 +34,7 @@ import nl.idgis.geoide.util.ConfigWrapper;
 @Configuration
 public class ProviderConfig {
 
+	private static final int RESOURCE_WAIT_TIME = 60000;
 	private final static Logger log = LoggerFactory.getLogger (ProviderConfig.class);
 	
 	/**
@@ -59,12 +62,14 @@ public class ProviderConfig {
 		return new ReloadableStaticMapProvider (() -> {
 			
 			try {
-				Stream<Resource> allConfigs;
+				Supplier<Stream<Resource>> allConfigs;
+				//Stream<Resource> allConfigs;
 				String configDir = config.getString ("geoide.service.components.mapProvider.configDir", null);
 				if (configDir != null) {
-					allConfigs = Stream.of (resourcePatternResolver.getResources("file:" + configDir + "/*.json"));
+					Resource[] resource = resourcePatternResolver.getResources("file:" + configDir + "/*.json");
+					allConfigs = () -> Stream.of (resource);
 				} else {
-					allConfigs= Stream.of (				
+					allConfigs= () -> Stream.of (				
 							config.getString ("geoide.service.components.mapProvider.resources.maps", null),
 							config.getString ("geoide.service.components.mapProvider.resources.services", null),
 							config.getString ("geoide.service.components.mapProvider.resources.featureTypes", null),
@@ -74,9 +79,26 @@ public class ProviderConfig {
 				}
 				
 				final JsonMapProviderBuilder builder = JsonMapProviderBuilder.create ();
-				//TODO: wait
+
+				//check if resource (already) exists
+				Set<Resource> notExists;
+				int waittime = config.getInt("geoide.service.components.mapProvider.resources.waittime", RESOURCE_WAIT_TIME);
+				long maxTime = System.currentTimeMillis() + waittime;
+				do {
+					notExists = allConfigs.get()
+						.filter(resource -> !resource.exists())
+						.collect(Collectors.toSet());
+					
+					notExists.forEach(resource -> log.info("waiting for resource: " + resource));
+					
+					Thread.sleep(1000);
+				} while(!notExists.isEmpty() && maxTime > System.currentTimeMillis());
 				
-				allConfigs
+				if(!notExists.isEmpty()) {
+					throw new IllegalStateException("missing resource");
+				}
+				
+				allConfigs.get()
 					.map (resource -> replaceJsonVariables (resource, config))
 					.forEach (builder::addJson);
 
@@ -86,7 +108,7 @@ public class ProviderConfig {
 				throw e;			
 			} catch (Exception e) {
 				throw new RuntimeException (e);
-			}
+			} 
 		});
 	}
 	
