@@ -94,7 +94,7 @@ project.ext.externalDependency = [
 
 allprojects {
 	// Project metadata (for POM's);
-	version '1.1.0-RC3'
+	version '1.1.0'
 	group 'nl.idgis.geoide.commons'
 	
 	// Default plugins that are available to all projects:
