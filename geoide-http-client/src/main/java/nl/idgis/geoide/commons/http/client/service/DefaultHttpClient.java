@@ -86,7 +86,8 @@ public class DefaultHttpClient implements HttpClient {
 		
 		WSRequest holder = wsClient
 				.url (request.getUrl ())
-				.setRequestTimeout ((int) request.getTimeoutInMillis ())
+				// do not set request timeout this hampers the server when there is no connection
+				//.setRequestTimeout ((int) request.getTimeoutInMillis ())
 				.setFollowRedirects (request.isFollowRedirects ())
 				.setMethod (request.getMethod ().name ());
 
