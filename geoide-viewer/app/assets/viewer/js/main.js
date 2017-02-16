@@ -88,7 +88,7 @@ require ([
 		});
 		
 		viewer.on ('moveEnd', function (e) {
-			console.log ('Move end: ', e.viewer.get ('center'), e.viewer.get ('resolution'));
+			console.log ('Move end: ', e.viewer.get ('center'), e.viewer.get ('resolution') + "blub");
 		});
 		viewer.startup ();
 		return viewer;
@@ -137,6 +137,7 @@ require ([
 	};
 	
 	window.zoomTo = function (center, resolution, animate) {
+		console.log("main zoomto");
 		return viewers[0].zoomTo (center, resolution, animate);
 	};
 	
@@ -261,7 +262,11 @@ require ([
 	on (dom.byId ('test'), 'click', function (e) {
 		e.preventDefault ();
 		e.stopPropagation ();
-		viewers[0].map.changeLayerOrder ('2','root', '3'); 
+		viewer.set ('minResolution', 0.028);
+		//viewer.set ('zoomPolicy', 'nearest');
+		viewer.zoomTo([150000, 460000], 0.10);
+		//viewer.zoomToExtent([150000, 460000, 150600, 460200]);
+		//console.log(viewer.getCurrentExtent());
 	});
 	
 	
