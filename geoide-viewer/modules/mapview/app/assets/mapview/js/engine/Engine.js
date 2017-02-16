@@ -448,21 +448,30 @@ define ([
 						previous = next = i;
 						break;
 					}
-					
-					if (resolutions[i] < resolution && i > previous) {
+					if (resolutions[i] < resolution ) {
 						previous = i;
 					}
-					if (resolutions[i] > resolution && i < next) {
+					if (resolutions[i] > resolution ) {
 						next = i;
 					}
+					if(previous !== -1 && next !== 9999) {
+						//if resolution is between resolutions break;
+						break;
+					}
 				}
-				
-				if (zoomPolicy == 'greater') {
+				//in case resolution is smaller than the min value of resolutions
+				previous = previous === -1 ? next - 1 : previous;
+				//in case resolution is larger than the max value of resolutions
+				next = next === 9999 ? previous + 1 : next;
+
+				if (zoomPolicy == 'greater' || resolution > resolutions[next]) {
 					resolution = resolutions[next];
-				} else if (zoomPolicy == 'smaller') {
+				} else if (zoomPolicy == 'smaller' || resolution < resolutions[previous]) {
 					resolution = resolutions[previous];
-				} else {
+				} else if (zoomPolicy == 'nearest') {
 					resolution = resolution - resolutions[previous] < resolutions[next] - resolution ? resolutions[previous] : resolutions[next];
+				} else {
+					resolution = resolution;
 				}
 			} 
 			
@@ -538,7 +547,6 @@ define ([
 		
 		zoomTo: function (center, resolution, animate) {
 			var def = new Deferred ();
-			
 			if (animate) {
 				var view = this.olMap.getView (),
 					pan = ol.animation.pan ({
@@ -587,8 +595,7 @@ define ([
 				}, 200);
 			} else {
 				def.resolve ();
-			}
-			
+			}		
 			view.fit (extent, this.olMap.getSize ());
 			
 			return def;
