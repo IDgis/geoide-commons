@@ -602,7 +602,13 @@ define ([
 		},
 		
 		getScaleForExtent: function (extent) {
-			var resolution = ol.extent.getWidth(extent) / this.olMap.getSize ()[0];
+			var w = ol.extent.getWidth(extent),
+				h = ol.extent.getHeight(extent),
+				size = this.olMap.getSize ();
+			
+			
+			var resolution = w / size[0] > h / size[1] ? w / size[0] : h / size[1];
+
 			var scale = resolution / this.get ('unitsPerPixel');
 			return scale;
 		},
