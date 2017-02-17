@@ -151,13 +151,21 @@ define ([
 		_engineAttributes: null,
 		_watchHandles: null,
 		
-		constructor: function (selector) {
+		constructor: function (selector, initialSettings) {
+
 			this.layerRefState = { };
 			this._watchHandles = [ ];
-			this.engine = new Engine (this, {
-				center: [150000, 450000],
-				zoom: 8
-			});
+			
+			//set some defaults
+			if (!initialSettings['center']){
+				initialSettings['center'] = [150000, 450000];
+			}
+			if (!initialSettings['zoom']){
+				initialSettings['zoom'] = 8;
+			}
+			
+			this.engine = new Engine (this, initialSettings);
+			
 			this.started = new Deferred ();
 
 		},

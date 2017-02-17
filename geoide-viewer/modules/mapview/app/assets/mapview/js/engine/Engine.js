@@ -27,7 +27,8 @@ define ([
 	var projection = new ol.proj.Projection ({ code: 'EPSG:28992', units: 'm' }),
 		extent = [-7000, 289000, 300000, 629000],
 		origin = [-285401.91999999998370, 22598.08000000000175],
-		resolutions = [3440.640, 1720.320, 860.160, 430.080, 215.040, 107.520, 53.760, 26.880, 13.440, 6.720, 3.360, 1.680, 0.840, 0.420, 0.210];
+		resolutions = [3440.640, 1720.320, 860.160, 430.080, 215.040, 107.520, 53.760, 26.880, 13.440, 6.720, 3.360, 1.680, 0.840, 0.420, 0.210],
+		initialState = null;
 
 	function elastic(t) {
 		return Math.pow(2, -10 * t) * Math.sin((t - 0.075) * (2 * Math.PI) / 0.3) + 1;
@@ -78,7 +79,8 @@ define ([
 					extent: extent,
 					tileGrid: new ol.tilegrid.TileGrid ({
 						origin: origin,
-						resolutions: resolutions
+						//use the resolutions of the nederlandse tiling richtlijn 
+						resolutions: [3440.640, 1720.320, 860.160, 430.080, 215.040, 107.520, 53.760, 26.880, 13.440, 6.720, 3.360, 1.680, 0.840, 0.420, 0.210]
 					}),
 					tileUrlFunction: function (tileCoord, pixelRatio, projection) {
 						var path = projection.getCode () + '/' + tileCoord[0] + '/' + tileCoord[1] + '/' + tileCoord[2] + '.png';
@@ -249,6 +251,7 @@ define ([
 		 */
 		minResolution: 0.21,
 		
+
 		/**
 		 * The maximum resolution.
 		 */
@@ -260,15 +263,23 @@ define ([
 		 */
 		resolutions: null,
 		
+		
 		constructor: function (viewer, initialState) {
+			
 			this.viewer = viewer;
 			this.layersList = [ ];
 			this.layersMap = { };
+			if (initialState['resolutions']) {
+				resolutions = initialState['resolutions'];
+				this.set ('minResolution', resolutions[resolutions.length -1]);
+				this.set ('maxResolution', resolutions[0]);
+			}	
+			this.initialState = initialState;
+			
 		},
 		
 		startup: function () {
 			var domNode = this.viewer.node;
-
 			this.mapNode = put (domNode, 'div.geoide-map-ol3');
 			
 			this._vectorSource = new ol.source.Vector ();
@@ -291,14 +302,13 @@ define ([
 				})
 			});
 			
-			
 			this.olMap = new ol.Map ({
 				layers: [ ],
 				renderer: 'canvas',
 				target: this.mapNode,
 				view: new ol.View ({
-					center: [150000, 450000],
-					zoom: 8,
+					center: this.initialState['center'],
+					zoom: this.initialState['zoom'],
 					projection: projection,
 					minResolution: this.get ('minResolution'),
 					maxResolution: this.get ('maxResolution')
@@ -306,7 +316,15 @@ define ([
 				interactions: [ ],// Map defaults to no interactions.
 				controls: ol.control.defaults({ attribution: false }) // default no attribution control
 			});
-			
+
+			for (var s in this.initialState) {
+				var v = this.initialState[s];
+				if( s === 'resolutions') {
+					this.resolutions = v;
+				}
+				this.set(s,v);
+			}
+
 			this.olMap.on ('moveend', this._onMoveEnd, this);
 			
 			return this;
@@ -428,6 +446,7 @@ define ([
 		 * - rounds to one of the fixed resolutions if this is dicated by the zoomPolicy
 		 */
 		_normalizeResolution: function (resolution) {
+			
 			if (resolution < this.get ('minResolution')) {
 				resolution = this.get ('minResolution');
 			}
@@ -512,6 +531,24 @@ define ([
 		_resolutionSetter: function (resolution) {
 			this.olMap.getView ().setResolution (this._normalizeResolution (resolution));
 		},
+		
+		_zoomGetter: function () {
+			return this.olMap.getView ().getZoom ();
+		},
+		
+		_zoomSetter: function (zoom) {
+			this.olMap.getView ().setZoom (zoom);
+		},
+		
+		_zoomGetter: function () {
+			return this.olMap.getView ().getZoom ();
+		},
+		
+		_zoomSetter: function (zoom) {
+			this.olMap.getView ().setZoom (zoom);
+		},
+		
+			
 		
 		_centerResolutionRotationGetter: function () {
 			return {

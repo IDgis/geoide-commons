@@ -83,13 +83,10 @@ require ([
 	
 	var viewers = query ('.js-geoide-viewer').map (function (viewerNode) {
 		viewer = new Viewer (viewerNode, {
-			resolutions: [3440.640, 1720.320, 860.160, 430.080, 215.040, 107.520, 53.760, 26.880, 13.440, 6.720, 3.360, 1.680, 0.840, 0.420, 0.210],
+			resolutions: [3440.640, 1720.320, 860.160, 430.080, 215.040, 107.520, 53.760, 26.880, 13.440, 6.720, 3.360, 1.680, 0.840, 0.420, 0.210, 0.140, 0.070, 0.028],
 			interactions: [new Navigation (), new KeyboardNavigation ()]
 		});
 		
-		viewer.on ('moveEnd', function (e) {
-			console.log ('Move end: ', e.viewer.get ('center'), e.viewer.get ('resolution') + "blub");
-		});
 		viewer.startup ();
 		return viewer;
 	});
