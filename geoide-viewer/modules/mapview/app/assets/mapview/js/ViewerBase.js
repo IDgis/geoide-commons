@@ -151,13 +151,21 @@ define ([
 		_engineAttributes: null,
 		_watchHandles: null,
 		
-		constructor: function (selector) {
+		constructor: function (selector, initialSettings) {
+
 			this.layerRefState = { };
 			this._watchHandles = [ ];
-			this.engine = new Engine (this, {
-				center: [150000, 450000],
-				zoom: 8
-			});
+			
+			//set some defaults
+			if (!initialSettings['center']){
+				initialSettings['center'] = [150000, 450000];
+			}
+			if (!initialSettings['zoom']){
+				initialSettings['zoom'] = 8;
+			}
+			
+			this.engine = new Engine (this, initialSettings);
+			
 			this.started = new Deferred ();
 
 		},
@@ -178,10 +186,7 @@ define ([
 				if (this.started === true) {
 					throw new Error ("Already started");
 				}
-				console.log("startup viewer");
 				whenAll (this.map, this.engine.startup (), lang.hitch (this, function (map, engine) {
-					console.log("startup viewer whenall" );
-					console.log(map);
 					this._watchLayerRefState ();
 					
 					// Update the viewer for the first time:
@@ -369,7 +374,6 @@ define ([
 		 */
 		_updateViewer: function () {
 			var def = new Deferred ();
-			console.log("_updateViewer");
 			when (this.map, lang.hitch (this, function (map) {
 				var viewerState = { layerRefs: this._buildViewerState (map.get ('layerRefs')) };
 				
@@ -595,6 +599,14 @@ define ([
 		
 		_resolutionSetter: function (value) {
 			return this._setEngineAttribute ('resolution', value);
+		},
+		
+		_minResolutionSetter: function (value) {
+			return this._setEngineAttribute ('minResolution', value);
+		},
+		
+		_zoomPolicySetter: function (value) {
+			return this._setEngineAttribute ('zoomPolicy', value);
 		},
 		
 		_centerResolutionRotationGetter: function () {

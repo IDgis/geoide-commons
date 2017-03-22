@@ -83,13 +83,10 @@ require ([
 	
 	var viewers = query ('.js-geoide-viewer').map (function (viewerNode) {
 		viewer = new Viewer (viewerNode, {
-			resolutions: [3440.640, 1720.320, 860.160, 430.080, 215.040, 107.520, 53.760, 26.880, 13.440, 6.720, 3.360, 1.680, 0.840, 0.420, 0.210],
+			resolutions: [3440.640, 1720.320, 860.160, 430.080, 215.040, 107.520, 53.760, 26.880, 13.440, 6.720, 3.360, 1.680, 0.840, 0.420, 0.210, 0.140, 0.070, 0.028],
 			interactions: [new Navigation (), new KeyboardNavigation ()]
 		});
 		
-		viewer.on ('moveEnd', function (e) {
-			console.log ('Move end: ', e.viewer.get ('center'), e.viewer.get ('resolution'));
-		});
 		viewer.startup ();
 		return viewer;
 	});
@@ -137,6 +134,7 @@ require ([
 	};
 	
 	window.zoomTo = function (center, resolution, animate) {
+		console.log("main zoomto");
 		return viewers[0].zoomTo (center, resolution, animate);
 	};
 	
@@ -261,7 +259,11 @@ require ([
 	on (dom.byId ('test'), 'click', function (e) {
 		e.preventDefault ();
 		e.stopPropagation ();
-		viewers[0].map.changeLayerOrder ('2','root', '3'); 
+		viewer.set ('minResolution', 0.028);
+		//viewer.set ('zoomPolicy', 'nearest');
+		viewer.zoomTo([150000, 460000], 0.10);
+		//viewer.zoomToExtent([150000, 460000, 150600, 460200]);
+		//console.log(viewer.getCurrentExtent());
 	});
 	
 	
