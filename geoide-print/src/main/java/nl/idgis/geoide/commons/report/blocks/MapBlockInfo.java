@@ -77,8 +77,8 @@ public class MapBlockInfo extends BlockInfo {
 		if(getBlockAttribute("border-width")!= null ) {
 			if(getBlockAttribute("border-width").endsWith("mm")) {
 				double borderWidth = Double.parseDouble(getBlockAttribute("border-width").substring(0, getBlockAttribute("border-width").length() - 2));
-				blockWidthmm -= borderWidth;
-			    blockHeightmm -= borderWidth;
+				blockWidthmm -= 2 * borderWidth;
+			    blockHeightmm -= 2 * borderWidth;
 			}
 		}
 		
