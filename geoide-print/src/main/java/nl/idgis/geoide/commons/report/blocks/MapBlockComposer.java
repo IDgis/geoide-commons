@@ -29,7 +29,6 @@ import nl.idgis.geoide.commons.domain.feature.FeatureOverlay;
 import nl.idgis.geoide.commons.domain.feature.Overlay;
 import nl.idgis.geoide.commons.domain.feature.OverlayFeature;
 import nl.idgis.geoide.commons.domain.geometry.Envelope;
-import nl.idgis.geoide.commons.print.service.HtmlPrintService;
 import nl.idgis.geoide.commons.report.render.OverlayRenderer;
 import nl.idgis.geoide.commons.report.render.OverlayRenderer.PositionedTextOverlay;
 import nl.idgis.geoide.commons.report.render.SvgRenderer.SvgPoint;
@@ -46,7 +45,7 @@ import nl.idgis.geoide.util.Futures;
 public class MapBlockComposer implements BlockComposer<MapBlockInfo> {
 	final DefaultMapView mapView;
 	private URI mapCssUri;
-	private static Logger log = LoggerFactory.getLogger(HtmlPrintService.class);
+	private static Logger log = LoggerFactory.getLogger(MapBlockComposer.class);
 
 	/**
 	 * Constructs a mapblockcomposer object.
@@ -79,7 +78,6 @@ public class MapBlockComposer implements BlockComposer<MapBlockInfo> {
 	@Override
 	public CompletableFuture<Block> compose(Element blockElement, MapBlockInfo mapInfo, DocumentCache documentCache,
 			String token) throws Throwable {
-		System.out.println("compose map");
 		Element mapRow = blockElement.appendElement("div");
 		mapRow.attr("class", "map_row");
 
@@ -97,6 +95,7 @@ public class MapBlockComposer implements BlockComposer<MapBlockInfo> {
 					double heightmm = mapInfo.getBlockHeight();
 
 					for (final ServiceRequest request : serviceRequests) {
+						
 						ServiceType serviceType = mapView.getServiceType(request.getService());
 
 						if (serviceType instanceof LayerServiceType) {
@@ -105,6 +104,7 @@ public class MapBlockComposer implements BlockComposer<MapBlockInfo> {
 								printFormat = "image/svg+xml";
 							}
 							LayerServiceType layerServiceType = (LayerServiceType) serviceType;
+							
 							List<JsonNode> requestUrls = layerServiceType.getLayerRequestUrls(request,
 									mapInfo.getMapExtentJson(), mapInfo.getResolution(), widthpx, heightpx);
 
