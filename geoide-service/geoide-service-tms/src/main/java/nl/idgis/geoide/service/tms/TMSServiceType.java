@@ -101,55 +101,57 @@ public class TMSServiceType extends ServiceType implements LayerServiceType {
 		final double ulYExtent = mapExtent.path("maxy").asDouble();
 		final String href = props.getTileSets().get(resolution);
 		final String ext = props.getExtension(); 
-
+		
 		int tileNrX = (int) Math.floor ((llXExtent-props.getLowerLeftX())/(resolution*tileWidth));
 		int tileNrY = (int) Math.floor ((ulYExtent-props.getLowerLeftY() )/(resolution*tileHeight));
 		double startTileXm  =  props.getLowerLeftX() + tileNrX * tileWidth * resolution;
 		double startTileYm  =  props.getLowerLeftY() + tileNrY * tileHeight * resolution;
 		int llposX = (int) ((startTileXm - llXExtent) / resolution);
 		int ulPosY = (int) ((ulYExtent - startTileYm) / resolution) - tileHeight ;
-
+		
 		ObjectMapper mapper = new ObjectMapper();
 		List<JsonNode> tileRequests = new ArrayList();
 		double tileXm = startTileXm;
 		int tileX = tileNrX; 
 		int posX = llposX;
 		
-		
-		while( tileXm  <  mapExtent.path("maxx").asDouble() ) {
-			double tileYm = startTileYm;
-			int tileY = tileNrY; 
-			int posY = ulPosY;
-			while( tileYm + (resolution * tileHeight) >  mapExtent.path("miny").asDouble()) {
-				ObjectNode tileRequest = mapper.createObjectNode();
-				
-				tileRequest.put("uri", href + "/" + tileX + "/" + tileY + "." + ext);
-				tileRequest.put("left", posX);
-				tileRequest.put("right", posX + tileWidth);
-				tileRequest.put("top", posY);
-				tileRequest.put("bottom", posY + tileHeight);
-				tileRequest.put("resolution", resolution);
-				tileRequests.add(tileRequest);
-				tileY -= 1;
-				posY += tileHeight;
-				tileYm -= tileHeight * resolution;
-				if (tileRequests.size() > 15*15) {
-					log.info("Large number of tiles: {}", tileRequests.size());					
+		if(href != null) {
+			while( tileXm  <  mapExtent.path("maxx").asDouble() ) {
+				double tileYm = startTileYm;
+				int tileY = tileNrY; 
+				int posY = ulPosY;
+				while( tileYm + (resolution * tileHeight) >  mapExtent.path("miny").asDouble()) {
+					ObjectNode tileRequest = mapper.createObjectNode();
+					
+					tileRequest.put("uri", href + "/" + tileX + "/" + tileY + "." + ext);
+					tileRequest.put("left", posX);
+					tileRequest.put("right", posX + tileWidth);
+					tileRequest.put("top", posY);
+					tileRequest.put("bottom", posY + tileHeight);
+					tileRequest.put("resolution", resolution);
+					tileRequests.add(tileRequest);
+					tileY -= 1;
+					posY += tileHeight;
+					tileYm -= tileHeight * resolution;
+					if (tileRequests.size() > 15*15) {
+						log.info("Large number of tiles: {}", tileRequests.size());
+					}
 				}
+				
+				tileX += 1;
+				posX += tileWidth;
+				tileXm += tileWidth *resolution;
 			}
+		} else {
+			log.debug("href is null");
+			log.debug("tilesets: " + props.getTileSets());
+			log.debug("resolution: " + resolution);
 			
-			tileX += 1;
-			posX += tileWidth;
-			tileXm += tileWidth *resolution;
 		}
 		
 		return tileRequests;
-		
-		
-		
 	}
 	
-
 	@Override
 	public Props createServiceActorProps (final ActorRef serviceManager, final WSClient wsClient, final ServiceIdentification identification) {
 		return TMS.mkProps (serviceManager, wsClient, identification);
