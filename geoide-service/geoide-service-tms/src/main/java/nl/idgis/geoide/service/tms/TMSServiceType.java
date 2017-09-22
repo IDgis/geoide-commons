@@ -10,6 +10,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -99,7 +101,24 @@ public class TMSServiceType extends ServiceType implements LayerServiceType {
 		final int  tileHeight = props.getTileHeight();
 		final double llXExtent = mapExtent.path("minx").asDouble();
 		final double ulYExtent = mapExtent.path("maxy").asDouble();
-		final String href = props.getTileSets().get(resolution);
+		
+		Map<Double, String> levels = props.getTileSets();
+		SortedSet<Double> keys = new TreeSet<Double>(Collections.reverseOrder());
+		keys.addAll(levels.keySet());
+		
+		String href = null;
+		
+		for(Double entry : keys) {
+			if(resolution < entry) {
+				continue;	
+			}
+			
+			href = levels.get(entry);
+			resolution = entry;
+			
+			break;
+		}
+		
 		final String ext = props.getExtension(); 
 		
 		int tileNrX = (int) Math.floor ((llXExtent-props.getLowerLeftX())/(resolution*tileWidth));
@@ -110,7 +129,7 @@ public class TMSServiceType extends ServiceType implements LayerServiceType {
 		int ulPosY = (int) ((ulYExtent - startTileYm) / resolution) - tileHeight ;
 		
 		ObjectMapper mapper = new ObjectMapper();
-		List<JsonNode> tileRequests = new ArrayList();
+		List<JsonNode> tileRequests = new ArrayList<JsonNode>();
 		double tileXm = startTileXm;
 		int tileX = tileNrX; 
 		int posX = llposX;
