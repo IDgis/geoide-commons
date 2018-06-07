@@ -36,7 +36,7 @@ public final class ServiceLayer extends Entity {
 		
 		this.featureType = featureType;
 		
-		this.legendGraphicUrl = legendGraphicUrl;
+		this.legendGraphicUrl = legendGraphicUrl.replace(' ', '+');
 	}
 	
 	@JsonValue
