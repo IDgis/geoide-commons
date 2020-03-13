@@ -88,8 +88,7 @@ public class HtmlPrintService implements PrintService, Closeable {
 	private static Logger log = LoggerFactory.getLogger (HtmlPrintService.class);
 
 	private final Path logDir;
-	private final PrintWriter traceLogWriter;
-	
+
 	private final DocumentCache documentCache;
 	private final StreamProcessor streamProcessor;
 	private final long cacheTimeoutMillis;
@@ -124,9 +123,6 @@ public class HtmlPrintService implements PrintService, Closeable {
 
 		try {
 			logDir = Files.createTempDirectory("html-print-service-");
-			Path traceLogPath = logDir.resolve("trace.log");
-			traceLogWriter = new PrintWriter(Files.newBufferedWriter(traceLogPath));
-
 			writeToTraceLog("HtmlPrintService initialized");
 		} catch(IOException e) {
 			throw new IllegalStateException("Failed to initialize trace log", e);
@@ -134,24 +130,23 @@ public class HtmlPrintService implements PrintService, Closeable {
 	}
 
 	private synchronized void writeToTraceLog(String line) {
-		traceLogWriter.print("[");
-		traceLogWriter.print(LocalDateTime.now());
-		traceLogWriter.print("] ");
-		traceLogWriter.println(line);
-		traceLogWriter.flush();
+		System.out.print("[");
+		System.out.print(LocalDateTime.now());
+		System.out.print("] ");
+		System.out.println(line);
 	}
 
 	private void writeToTraceLog(String description, String extention, InputStream inputStream) {
 		String fileName = UUID.randomUUID() + extention;
+		Path filePath = logDir.resolve(fileName);
 
 		try {
-			Path filePath = logDir.resolve(fileName);
 			OutputStream outputStream = Files.newOutputStream(filePath);
 			IOUtils.copy(inputStream, outputStream);
-			writeToTraceLog("Captured " + description + " to " + fileName);
+			writeToTraceLog("Captured " + description + " to " + filePath);
 		} catch(IOException e) {
 			e.printStackTrace();
-			writeToTraceLog("Failed to write " + description + " to " + fileName);
+			writeToTraceLog("Failed to write " + description + " to " + filePath);
 		}
 	}
 
@@ -174,7 +169,6 @@ public class HtmlPrintService implements PrintService, Closeable {
 	public void close () {
 		executor.shutdownNow ();
 		writeToTraceLog("HtmlPrintService stopped");
-		traceLogWriter.close();
 	}
 	
 	private URI makeBaseUri (final URI uri) throws URISyntaxException {
