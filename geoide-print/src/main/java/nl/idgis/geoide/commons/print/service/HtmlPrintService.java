@@ -121,6 +121,7 @@ public class HtmlPrintService implements PrintService, Closeable {
 		this.cacheTimeoutMillis = cacheTimeoutMillis;
 		this.executor = new ThreadPoolExecutor (1, maxThreads, 10, TimeUnit.SECONDS, workQueue);
 
+		log.debug("HtmlPrintService gestart");
 		try {
 			logDir = Files.createTempDirectory("html-print-service-");
 			writeToTraceLog("HtmlPrintService initialized");
