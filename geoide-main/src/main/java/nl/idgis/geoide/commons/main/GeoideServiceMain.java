@@ -1,6 +1,7 @@
 package nl.idgis.geoide.commons.main;
 
 import java.io.File;
+import java.util.Objects;
 
 import nl.idgis.geoide.util.ConfigWrapper;
 import nl.idgis.geoide.util.GeoideScheduler;
@@ -88,10 +89,50 @@ public class GeoideServiceMain implements AutoCloseable {
 		final GeoideScheduler scheduler = applicationContext.getBean (GeoideScheduler.class);
 		scheduler.waitForCompletion ();
 	}
+
+	public static void retry(final int maxAttempts, final long initialTimeout, final Runnable r)
+			throws InterruptedException {
+
+		if (maxAttempts <= 0) {
+			throw new IllegalArgumentException("maxAttempts parameter is less than one: " + maxAttempts);
+		}
+		if (initialTimeout < 0) {
+			throw new IllegalArgumentException("initialTimeout parameter is not positive: " + initialTimeout);
+		}
+		Objects.requireNonNull(r, "r parameter should not be null");
+
+		int attemptsLeft = maxAttempts;
+		long timeout = initialTimeout;
+
+		Throwable lastThrowable = null;
+		while (attemptsLeft > 0) {
+			try {
+				r.run();
+				return;
+			} catch(Throwable t) {
+				lastThrowable = t;
+
+				attemptsLeft--;
+				if (attemptsLeft > 0) {
+					int currentAttempt = maxAttempts - attemptsLeft;
+					log.error("Unexpected failure (attempt " + currentAttempt + "/" + maxAttempts + ")", t);
+				}
+			}
+
+			Thread.sleep(timeout);
+			timeout *= 2;
+		}
+
+		throw new IllegalStateException("Out of retry attempts, giving up", lastThrowable);
+	}
 	
 	public static void main (final String[] args) throws Throwable {
-		try (final GeoideServiceMain main = new GeoideServiceMain ()) {
-			main.start ();
-		}
+		int maxAttempts = 5;
+		long timeout = 1500;
+		retry(maxAttempts, timeout, () -> {
+			try (final GeoideServiceMain main = new GeoideServiceMain ()) {
+				main.start ();
+			}
+		});
 	}
 }
