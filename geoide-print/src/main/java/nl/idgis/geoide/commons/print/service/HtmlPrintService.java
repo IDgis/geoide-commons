@@ -1,13 +1,18 @@
 package nl.idgis.geoide.commons.print.service;
 
 import java.io.ByteArrayOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -23,6 +28,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.time.LocalDateTime;
 
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLOutputFactory;
@@ -44,6 +50,8 @@ import org.xhtmlrenderer.pdf.ITextOutputDevice;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 import org.xhtmlrenderer.pdf.ITextReplacedElementFactory;
 import org.xhtmlrenderer.pdf.ITextUserAgent;
+
+import org.apache.commons.io.IOUtils;
 
 import akka.util.ByteString;
 import nl.idgis.geoide.commons.domain.MimeContentType;
@@ -78,6 +86,9 @@ import nl.idgis.geoide.util.streams.StreamProcessor;
 public class HtmlPrintService implements PrintService, Closeable {
 
 	private static Logger log = LoggerFactory.getLogger (HtmlPrintService.class);
+
+	private final Path logDir;
+	private final PrintWriter traceLogWriter;
 	
 	private final DocumentCache documentCache;
 	private final StreamProcessor streamProcessor;
@@ -110,6 +121,49 @@ public class HtmlPrintService implements PrintService, Closeable {
 		this.streamProcessor = streamProcessor;
 		this.cacheTimeoutMillis = cacheTimeoutMillis;
 		this.executor = new ThreadPoolExecutor (1, maxThreads, 10, TimeUnit.SECONDS, workQueue);
+
+		try {
+			logDir = Files.createTempDirectory("html-print-service-");
+			Path traceLogPath = logDir.resolve("trace.log");
+			traceLogWriter = new PrintWriter(Files.newBufferedWriter(traceLogPath));
+
+			writeToTraceLog("HtmlPrintService initialized");
+		} catch(IOException e) {
+			throw new IllegalStateException("Failed to initialize trace log", e);
+		}
+	}
+
+	private synchronized void writeToTraceLog(String line) {
+		traceLogWriter.print("[");
+		traceLogWriter.print(LocalDateTime.now());
+		traceLogWriter.print("] ");
+		traceLogWriter.println(line);
+		traceLogWriter.flush();
+	}
+
+	private void writeToTraceLog(String description, String extention, InputStream inputStream) {
+		String fileName = UUID.randomUUID() + extention;
+
+		try {
+			Path filePath = logDir.resolve(fileName);
+			OutputStream outputStream = Files.newOutputStream(filePath);
+			IOUtils.copy(inputStream, outputStream);
+			writeToTraceLog("Captured " + description + " to " + fileName);
+		} catch(IOException e) {
+			e.printStackTrace();
+			writeToTraceLog("Failed to write " + description + " to " + fileName);
+		}
+	}
+
+	private void writeToTraceLog(String description, String extention, byte[] content) {
+		InputStream inputStream = new ByteArrayInputStream(content);
+		writeToTraceLog(description, extention, inputStream);
+	}
+
+	private void writeToTraceLog(String description, String extention, Document document) {
+		Publisher<ByteString> body = streamProcessor.resolvePublisherReference(document.getBody(), cacheTimeoutMillis);
+		InputStream inputStream = streamProcessor.asInputStream(body, cacheTimeoutMillis);
+		writeToTraceLog(description, extention, inputStream);
 	}
 
 	/**
@@ -119,6 +173,8 @@ public class HtmlPrintService implements PrintService, Closeable {
 	@Override
 	public void close () {
 		executor.shutdownNow ();
+		writeToTraceLog("HtmlPrintService stopped");
+		traceLogWriter.close();
 	}
 	
 	private URI makeBaseUri (final URI uri) throws URISyntaxException {
@@ -169,6 +225,10 @@ public class HtmlPrintService implements PrintService, Closeable {
 				|| !"html".equals (printRequest.getInputDocument().getContentType ().subType ())
 				|| !"application".equals (printRequest.getOutputFormat ().type ())
 				|| !"pdf".equals (printRequest.getOutputFormat ().subType ())) {
+			writeToTraceLog("Unsupported format, contentType: "
+					+ printRequest.getInputDocument ().getContentType ()
+					+ ", outputFormat: "
+					+ printRequest.getOutputFormat ());
 			return Futures.throwing (new PrintException.UnsupportedFormat (printRequest.getInputDocument ().getContentType (), printRequest.getOutputFormat ()));
 		}
 		
@@ -201,9 +261,10 @@ public class HtmlPrintService implements PrintService, Closeable {
 			public void run () {
 				try {
 					log.debug ("Printing document: " + printRequest.getInputDocument ().getUri ().toString ());
-					
 					// Load the input document:
 					final Document cachedDocument = documentCache.fetch (printRequest.getInputDocument ().getUri ()).get (cacheTimeoutMillis, TimeUnit.MILLISECONDS);
+
+					writeToTraceLog("cached input document", ".html", cachedDocument);
 					
 					// Create the parameters map for less:
 					final Map<String, String> lessParameters = new HashMap<> ();
@@ -257,6 +318,8 @@ public class HtmlPrintService implements PrintService, Closeable {
 					renderer.setDocumentFromString (xmlDocument, baseUrl.endsWith ("/") ? baseUrl : baseUrl + "/");
 					renderer.layout ();
 					renderer.createPDF (os);
+
+					writeToTraceLog("print result", ".pdf", os.toByteArray());
 					
 					// Store the document in the cache:
 					os.close ();
