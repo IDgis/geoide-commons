@@ -252,6 +252,26 @@ public class HtmlPrintService implements PrintService, Closeable {
 		});
 		
         executor.execute (new Runnable () {
+            
+            private void addException(Throwable t, StringBuilder sb) {
+                addException(t, sb, "");
+            }
+
+            private void addException(Throwable t, StringBuilder sb, String messagePrefix) {
+                sb.append("<h2>").append(messagePrefix).append(t.getMessage()).append("</h2>");
+
+                sb.append("<ul>");
+                for(StackTraceElement ste : t.getStackTrace()) {
+                    sb.append("<li>at ").append(ste).append("</li>");
+                }
+                sb.append("</ul>");
+
+                Throwable cause = t.getCause();
+                if (cause != null) {
+                    addException(cause, sb, "Caused by: ");
+                }
+            }
+        
 			@Override
 			public void run () {
 				try {
@@ -327,10 +347,40 @@ public class HtmlPrintService implements PrintService, Closeable {
 						eventStream.complete ();
 					});
 				} catch (Throwable t) {
-					tickPublisher.stop ().thenAccept (r -> {
-						eventStream.publish (new PrintEvent (t));
-						eventStream.complete ();
-					});
+					t.printStackTrace();
+                    
+					try {
+						ITextRenderer renderer = new ITextRenderer();
+
+						StringBuilder sb = new StringBuilder("<html><body>");
+
+						sb.append("<h1>Exception</h1>");
+						addException(t, sb);
+						sb.append("</body></html>");
+
+						renderer.setDocumentFromString(sb.toString());
+						renderer.layout();
+
+						ByteArrayOutputStream os = new ByteArrayOutputStream ();
+						renderer.createPDF(os);
+						os.close();
+                        
+						final URI resultUri = new URI ("generated://" + UUID.randomUUID ().toString () + ".pdf");
+						log.debug ("Storing result for " + printRequest.getInputDocument ().getUri ().toString () + " as " + resultUri.toString ());
+						final Document resultDocument = documentCache.store (resultUri, new MimeContentType ("application/pdf"), os.toByteArray ()).get (cacheTimeoutMillis, TimeUnit.MILLISECONDS);
+                        
+						tickPublisher.stop ().thenAccept (r -> {
+							eventStream.publish (new PrintEvent (resultDocument));
+							eventStream.complete ();
+                        });
+					} catch(Throwable t2) {
+						t2.printStackTrace();
+						
+						tickPublisher.stop ().thenAccept (r -> {
+							eventStream.publish (new PrintEvent (t2));
+							eventStream.complete ();
+						});
+					}
 				}
 			}
 		});
