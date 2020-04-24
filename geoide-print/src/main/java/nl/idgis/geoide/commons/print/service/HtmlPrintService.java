@@ -142,8 +142,7 @@ public class HtmlPrintService implements PrintService, Closeable {
 		String fileName = UUID.randomUUID() + extention;
 		Path filePath = logDir.resolve(fileName);
 
-		try {
-			OutputStream outputStream = Files.newOutputStream(filePath);
+		try(OutputStream outputStream = Files.newOutputStream(filePath)) {
 			IOUtils.copy(inputStream, outputStream);
 			writeToTraceLog("Captured " + description + " to " + filePath);
 		} catch(IOException e) {
