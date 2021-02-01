@@ -13,7 +13,7 @@ buildscript {
 ext {
 	deegree3Version = "3.4-pre17"
 	jtsVersion = "1.13"
-	batikVersion = "1.7"
+	batikVersion = "1.14"
 	fopVersion = "1.1"
 	flyingSaucerVersion = "9.0.7"
 	jsoupVersion = "1.8.1"
