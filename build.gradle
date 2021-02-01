@@ -13,7 +13,7 @@ buildscript {
 ext {
 	deegree3Version = "3.4-pre17"
 	jtsVersion = "1.13"
-	batikVersion = "1.7"
+	batikVersion = "1.14"
 	fopVersion = "1.1"
 	flyingSaucerVersion = "9.0.7"
 	jsoupVersion = "1.8.1"
@@ -94,7 +94,7 @@ project.ext.externalDependency = [
 
 allprojects {
 	// Project metadata (for POM's);
-	version '1.2.1'
+	version '1.2.2'
 	group 'nl.idgis.geoide.commons'
 	
 	// Default plugins that are available to all projects:
